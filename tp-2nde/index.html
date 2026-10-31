@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Travaux pratiques de physique-chimie pour la classe de seconde : activités expérimentales et acquisitions simulées.">
+<title>Travaux pratiques — Classe de seconde</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --vert:#0e7c5b; --vert-clair:#d4efe6; --vert-pale:#f0faf6;
+  --bleu:#1a5fa8; --bleu-clair:#ddeaf9;
+  --gris-bg:#f7f6f2; --gris-bord:#dddbd4;
+  --texte:#1e1e1e; --texte-2:#4a4a4a; --texte-3:#7a7a7a;
+  --blanc:#ffffff;
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--sans);background:var(--gris-bg);color:var(--texte);line-height:1.6;padding:2rem 1rem 4rem;}
+.page{max-width:780px;margin:0 auto;background:var(--blanc);border-radius:12px;box-shadow:0 2px 16px rgba(0,0,0,.07);overflow:hidden;}
+
+/* EN-TÊTE (identique aux menus des cours) */
+.header{background:var(--vert);color:var(--blanc);padding:2.5rem 2.5rem 2rem;position:relative;overflow:hidden;}
+.header::after{content:'';position:absolute;bottom:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06);}
+.header .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;margin-bottom:.9rem;color:rgba(255,255,255,.92);}
+.header h1{font-family:var(--serif);font-size:2rem;font-weight:600;line-height:1.25;margin-bottom:.4rem;}
+.header .sous{font-size:15px;color:rgba(255,255,255,.75);font-style:italic;}
+
+/* LISTE DES TRAVAUX PRATIQUES */
+.contenu{padding:2rem 2.5rem 2.5rem;}
+.intro{color:var(--texte-2);margin-bottom:1.5rem;}
+.cours{list-style:none;display:grid;gap:1rem;}
+.carte{border:1px solid var(--gris-bord);border-radius:10px;padding:1.25rem 1.4rem;transition:border-color .2s,box-shadow .2s;}
+.carte:hover{border-color:var(--vert);box-shadow:0 2px 12px rgba(14,124,91,.12);}
+.carte .theme{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--vert);margin-bottom:.25rem;}
+.carte h2{font-family:var(--serif);font-size:1.3rem;font-weight:600;line-height:1.3;margin-bottom:.6rem;}
+.carte h2 a{color:var(--texte);text-decoration:none;}
+.carte h2 a::after{content:' →';color:var(--vert);}
+.carte h2 a:hover{color:var(--vert);}
+.carte h2 a:focus-visible{outline:2px solid var(--vert);outline-offset:3px;border-radius:4px;}
+.carte .desc{color:var(--texte-2);font-size:15px;}
+.parties{list-style:none;display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.2rem;}
+.parties li{font-size:13px;color:var(--texte-2);background:var(--vert-pale);border:1px solid var(--vert-clair);border-radius:20px;padding:1px 10px;}
+.telecharger{display:inline-block;margin-top:.7rem;font-size:14px;font-weight:600;color:var(--bleu);text-decoration:none;}
+.telecharger:hover{text-decoration:underline;}
+.telecharger:focus-visible{outline:2px solid var(--bleu);outline-offset:3px;border-radius:4px;}
+.retour{display:block;width:fit-content;margin-bottom:.9rem;font-size:14px;font-weight:600;color:rgba(255,255,255,.9);text-decoration:none;}
+.retour:hover{text-decoration:underline;}
+.retour:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:4px;}
+.pied{margin-top:2rem;font-size:13px;color:var(--texte-3);text-align:center;}
+
+@media (max-width:560px){
+  body{padding:0 0 3rem;}
+  .page{border-radius:0;box-shadow:none;}
+  .header{padding:2rem 1.25rem 1.6rem;}
+  .header h1{font-size:1.6rem;}
+  .contenu{padding:1.5rem 1rem 2rem;}
+  .carte{padding:1rem 1.1rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="header">
+    <a class="retour" href="../">← Accueil</a>
+    <span class="tag">Physique-chimie · Classe de seconde</span>
+    <h1>Travaux pratiques</h1>
+    <p class="sous">Activités expérimentales et acquisitions simulées</p>
+  </header>
+
+  <main class="contenu">
+    <p class="intro">Choisis un TP. Il s'ouvre directement dans le navigateur ; tu peux aussi le télécharger pour le faire sans connexion.</p>
+
+    <ul class="cours">
+      <li class="carte">
+        <p class="theme">Constitution et transformations de la matière</p>
+        <h2><a href="AE04_preparation_solution_dissolution/">Précision de la verrerie et dissolution</a></h2>
+        <p class="desc">Préparer le plus précisément possible une solution aqueuse de concentration en masse donnée.</p>
+        <a class="telecharger" href="AE04_preparation_solution_dissolution/index.html" download="AE04_preparation_solution_dissolution.html">⤓ Télécharger le TP</a>
+      </li>
+      <li class="carte">
+        <p class="theme">Constitution et transformations de la matière</p>
+        <h2><a href="AE_Energie_Changement_Etat/">Énergie et changement d'état</a></h2>
+        <p class="desc">Mesurer au calorimètre l'énergie à fournir à une masse de glace pour la faire fondre.</p>
+        <a class="telecharger" href="AE_Energie_Changement_Etat/index.html" download="AE_Energie_Changement_Etat.html">⤓ Télécharger le TP</a>
+      </li>
+      <li class="carte">
+        <p class="theme">Ondes et signaux</p>
+        <h2><a href="AE06_vitesse_son/">Mesure de la vitesse d'un signal sonore</a></h2>
+        <p class="desc">Montage émetteur / récepteur d'ultrasons et acquisition simulée pour mesurer la vitesse du son.</p>
+        <a class="telecharger" href="AE06_vitesse_son/index.html" download="AE06_vitesse_son.html">⤓ Télécharger le TP</a>
+      </li>
+      <li class="carte">
+        <p class="theme">Ondes et signaux</p>
+        <h2><a href="AE08_caracteristiques_son/">Caractéristiques d'un son</a></h2>
+        <p class="desc">Son d'une corde de guitare, hauteur et timbre, à partir d'une acquisition simulée.</p>
+        <a class="telecharger" href="AE08_caracteristiques_son/index.html" download="AE08_caracteristiques_son.html">⤓ Télécharger le TP</a>
+      </li>
+    </ul>
+
+    <p class="pied">Physique-chimie · Classe de seconde</p>
+  </main>
+</div>
+
+</body>
+</html>
