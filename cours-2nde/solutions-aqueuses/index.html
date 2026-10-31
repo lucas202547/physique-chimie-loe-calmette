@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapitre — Les solutions aqueuses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --vert:#0e7c5b; --vert-clair:#d4efe6; --vert-pale:#f0faf6;
+  --bleu:#1a5fa8; --bleu-clair:#ddeaf9;
+  --orange:#c8620a; --orange-clair:#fdecd8;
+  --rouge:#c0392b;
+  --gris-bg:#f7f6f2; --gris-bord:#dddbd4;
+  --texte:#1e1e1e; --texte-2:#4a4a4a; --texte-3:#7a7a7a;
+  --blanc:#ffffff;
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--gris-bg);color:var(--texte);line-height:1.7;padding:2rem 1rem 4rem;}
+.page{max-width:780px;margin:0 auto;background:var(--blanc);border-radius:12px;box-shadow:0 2px 16px rgba(0,0,0,.07);overflow:hidden;}
+
+/* EN-TÊTE */
+.header{background:var(--vert);color:var(--blanc);padding:2.5rem 2.5rem 2rem;position:relative;overflow:hidden;}
+.header::after{content:'';position:absolute;bottom:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06);}
+.header .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;margin-bottom:.9rem;color:rgba(255,255,255,.92);}
+.header h1{font-family:var(--serif);font-size:2rem;font-weight:600;line-height:1.25;margin-bottom:.4rem;}
+.header .sous{font-size:15px;color:rgba(255,255,255,.75);font-style:italic;}
+.chap-num{width:2.6ch;font:inherit;color:inherit;text-align:center;background:rgba(255,255,255,.12);border:2px dashed rgba(255,255,255,.6);border-radius:8px;padding:0 .2rem;margin:0 .1rem;outline:none;vertical-align:baseline;line-height:1.1;}
+.chap-num:focus{border-style:solid;border-color:#fff;background:rgba(255,255,255,.2);}
+@media print{.chap-num{border:none;background:none;}}
+
+/* SOMMAIRE */
+.sommaire{background:var(--vert-pale);border-bottom:1px solid var(--gris-bord);padding:1.2rem 2.5rem;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;}
+.sommaire a{font-size:13px;color:var(--vert);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;}
+.sommaire a:hover{text-decoration:underline;}
+.sommaire a .num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--vert);color:white;font-size:11px;}
+
+/* BARRE DE PROGRESSION (exercices) */
+.score-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:1rem;background:var(--vert-pale);border-bottom:1px solid var(--vert-clair);padding:.7rem 2.5rem;font-size:14px;}
+.score-val{font-weight:600;color:var(--vert);font-size:15px;white-space:nowrap;}
+.score-progress{flex:1;height:6px;background:var(--vert-clair);border-radius:3px;overflow:hidden;}
+.score-progress-inner{height:100%;background:var(--vert);border-radius:3px;transition:width .4s ease;width:0%;}
+
+/* CORPS */
+.corps{padding:0 2.5rem 2.5rem;}
+.section{padding-top:2.5rem;}
+.section-titre{display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;padding-bottom:.7rem;border-bottom:2px solid var(--vert-clair);}
+.section-titre .num{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--vert);color:white;font-size:15px;font-weight:600;flex-shrink:0;}
+.section-titre h2{font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--vert);}
+.corps > .section > p, .section > p{font-size:14.5px;margin-bottom:.8rem;}
+
+/* BLOCS */
+.def{border-left:4px solid var(--vert);background:var(--vert-pale);border-radius:0 8px 8px 0;padding:.9rem 1.2rem;margin-bottom:1rem;}
+.def .label,.retenir .label,.exemple .label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--vert);margin-bottom:.35rem;}
+.def p{font-size:14.5px;color:var(--texte);line-height:1.65;}
+.def p + p{margin-top:.4rem;}
+.retenir{background:var(--vert-clair);border-radius:8px;padding:.9rem 1.2rem;margin:1rem 0;}
+.retenir .label{color:var(--vert);}
+.retenir p,.retenir li{font-size:14px;color:#0a4a33;line-height:1.65;}
+.retenir ol,.retenir ul{padding-left:1.2rem;}
+.retenir li{margin-bottom:.2rem;}
+.exemple{background:var(--gris-bg);border:1px solid var(--gris-bord);border-radius:8px;padding:.9rem 1.2rem;margin-bottom:1rem;}
+.exemple .label{color:var(--texte-3);}
+.exemple p,.exemple li{font-size:14px;color:var(--texte-2);line-height:1.6;}
+.exemple ul{padding-left:1.2rem;}
+.exemple.attention{background:#fdf0f0;border-color:#f5c0c0;}
+.exemple.attention .label{color:var(--rouge);}
+.exemple.attention p{color:#7a1515;}
+.formule{text-align:center;font-family:var(--serif);font-size:1.3rem;color:var(--vert);background:var(--vert-pale);border:1px solid var(--vert-clair);border-radius:8px;padding:.9rem 1rem;margin:1rem 0;letter-spacing:.02em;}
+.formule .unites{display:block;font-family:var(--sans);font-size:13px;color:var(--texte-2);margin-top:.5rem;letter-spacing:0;}
+.frac{display:inline-block;text-align:center;vertical-align:middle;}
+.frac > span{display:block;padding:0 6px;}
+.frac > span:first-child{border-bottom:2px solid var(--vert);}
+.schema{border:1px solid var(--gris-bord);border-radius:10px;background:var(--gris-bg);margin:1rem 0;overflow:hidden;}
+.schema svg{display:block;width:100%;height:auto;}
+.schema-legende{font-size:12px;color:var(--texte-3);text-align:center;padding:.4rem 1rem .7rem;font-style:italic;}
+.deux-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;}
+.prop-card{border:1px solid var(--gris-bord);border-radius:8px;padding:.9rem 1rem;background:var(--blanc);}
+.prop-card .titre{font-size:13px;font-weight:600;color:var(--texte);margin-bottom:.3rem;}
+.prop-card .desc{font-size:13px;color:var(--texte-2);line-height:1.5;}
+.card-bleu{border-top:3px solid var(--bleu);background:var(--bleu-clair);}
+.card-bleu .titre{color:var(--bleu);} .card-bleu .desc{color:#1a3a60;}
+.card-orange{border-top:3px solid var(--orange);background:var(--orange-clair);}
+.card-orange .titre{color:var(--orange);} .card-orange .desc{color:#5a2d0a;}
+.sep{border:none;border-top:1px solid var(--gris-bord);margin:2rem 0 0;}
+strong{font-weight:600;} em{font-style:italic;} sub{font-size:.75em;}
+.var{font-family:var(--serif);font-style:italic;}
+
+/* VIDÉOS */
+.videos{border:1px solid var(--gris-bord);border-radius:10px;margin:1.2rem 0 0;overflow:hidden;}
+.videos .v-titre{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-3);padding:.6rem 1rem;background:var(--gris-bg);border-bottom:1px solid var(--gris-bord);}
+.video{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;text-decoration:none;color:var(--texte);border-bottom:1px solid var(--gris-bord);transition:background .15s;}
+.video:last-child{border-bottom:none;}
+.video:hover{background:var(--vert-pale);}
+.play{display:flex;align-items:center;justify-content:center;width:34px;height:24px;border-radius:6px;background:#d93025;flex-shrink:0;}
+.play::after{content:'';border-left:9px solid white;border-top:5.5px solid transparent;border-bottom:5.5px solid transparent;margin-left:2px;}
+.video .vt{font-size:14px;font-weight:600;line-height:1.35;}
+.video .vs{font-size:12px;color:var(--texte-3);}
+
+/* EXERCICES */
+.exercice{border:1px solid var(--gris-bord);border-radius:10px;margin-top:1.5rem;overflow:hidden;transition:border-color .2s;}
+.exercice.correct{border-color:var(--vert);}
+.ex-header{display:flex;align-items:flex-start;gap:12px;padding:1rem 1.2rem;background:#eef3fa;border-bottom:1px solid var(--gris-bord);}
+.ex-num{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#1a3a60;color:white;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px;}
+.exercice.correct .ex-num{background:var(--vert);}
+.ex-type{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#1a3a60;margin-bottom:3px;}
+.ex-question{font-size:14.5px;color:var(--texte);line-height:1.55;}
+.ex-body{padding:1rem 1.2rem;}
+.q-row{display:block;margin-bottom:.6rem;font-size:14px;line-height:2.5;}
+.q-row .ql{display:inline-block;font-weight:600;color:#1a3a60;min-width:1.6rem;}
+.blank{border:1.5px dashed #9fb3cc;border-radius:8px;padding:.4rem .7rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:#fbfcfe;width:130px;outline:none;margin:0 4px;line-height:1.4;transition:border-color .15s,background .15s;}
+.blank.large{width:210px;}
+.blank:focus{border-style:solid;border-color:var(--bleu);background:var(--blanc);}
+select.blank{width:auto;max-width:100%;cursor:pointer;}
+.blank.ok{border-style:solid;border-color:var(--vert);background:var(--vert-pale);}
+.blank.ko{border-style:solid;border-color:var(--rouge);background:#fdf0f0;}
+.u{color:var(--texte-3);}
+.ex-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:.4rem;}
+.btn-verif{padding:.55rem 1.3rem;border-radius:8px;border:1.5px solid #1a3a60;background:#1a3a60;color:white;font-family:var(--sans);font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s;}
+.btn-verif:hover{background:#12294a;}
+.btn-corr{padding:.55rem 1.1rem;border-radius:8px;border:1.5px solid var(--gris-bord);background:var(--blanc);color:var(--texte-2);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;display:none;}
+.btn-corr.show{display:inline-block;}
+.btn-corr:hover{border-color:var(--texte-3);}
+.feedback{margin-top:.8rem;padding:.7rem 1rem;border-radius:8px;font-size:13.5px;line-height:1.6;display:none;}
+.feedback.show{display:block;}
+.feedback.ok{background:var(--vert-pale);color:#0a4a33;border:1px solid var(--vert-clair);}
+.feedback.ko{background:#fdf0f0;color:#7a1515;border:1px solid #f5c0c0;}
+.feedback.corr{background:#eef3fa;color:#1a3a60;border:1px solid #c9d8ec;}
+
+/* ÉVALUATION */
+.eval-header{background:#2c1a4a;color:white;padding:2rem 2.5rem 1.6rem;position:relative;overflow:hidden;}
+.eval-header::after{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.eval-header .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,0.15);border-radius:20px;padding:3px 12px;margin-bottom:.8rem;color:rgba(255,255,255,0.85);}
+.eval-header h2{font-family:var(--serif);font-size:1.5rem;font-weight:600;margin-bottom:.3rem;}
+.eval-header p{font-size:14px;color:rgba(255,255,255,0.65);}
+.eval-consignes{background:#f5f0ff;border-bottom:1px solid #d8ccf0;padding:1rem 2.5rem;display:flex;gap:.5rem 2rem;flex-wrap:wrap;}
+.consigne-item{display:flex;align-items:center;gap:8px;font-size:13px;color:#3a2060;}
+.consigne-item .dot{width:8px;height:8px;border-radius:50%;background:#7c4dff;flex-shrink:0;}
+.eval-corps{padding:0 2.5rem 2rem;}
+.eq{margin-top:2rem;border:1px solid var(--gris-bord);border-radius:10px;overflow:hidden;}
+.eq-header{display:flex;align-items:flex-start;gap:12px;padding:.9rem 1.2rem;background:#faf8ff;border-bottom:1px solid var(--gris-bord);}
+.eq-num{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#2c1a4a;color:white;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px;}
+.eq-meta{flex:1;}
+.eq-intitule{font-size:14.5px;color:var(--texte);font-weight:600;line-height:1.5;}
+.eq-pts{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7c4dff;white-space:nowrap;margin-top:2px;}
+.eq-body{padding:1rem 1.2rem;}
+.eval-textarea{width:100%;border:1.5px solid var(--gris-bord);border-radius:8px;padding:.7rem 1rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:var(--blanc);resize:vertical;min-height:70px;outline:none;transition:border-color .15s;line-height:1.6;}
+.eval-textarea:focus{border-color:#7c4dff;}
+.eval-textarea:disabled{background:var(--gris-bg);color:var(--texte-2);}
+.eval-input{border:1.5px solid var(--gris-bord);border-radius:8px;padding:.5rem .9rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:var(--blanc);width:130px;outline:none;transition:border-color .15s;}
+.eval-input:focus{border-color:#7c4dff;}
+.eval-input:disabled{background:var(--gris-bg);}
+.eval-choice{display:flex;align-items:center;gap:10px;border:1.5px solid var(--gris-bord);border-radius:8px;padding:.6rem 1rem;background:var(--blanc);cursor:pointer;font-family:var(--sans);font-size:14px;color:var(--texte);text-align:left;transition:all .15s;width:100%;margin-bottom:8px;}
+.eval-choice:hover:not(:disabled){border-color:#7c4dff;background:#f5f0ff;}
+.eval-choice:disabled{cursor:default;}
+.eval-choice.sel{border-color:#7c4dff;background:#f5f0ff;}
+.eval-cletter{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--gris-bord);font-size:12px;font-weight:600;flex-shrink:0;color:var(--texte-2);}
+.btn-remettre{display:block;margin:2rem auto 0;padding:.8rem 2.5rem;border-radius:10px;border:none;background:#2c1a4a;color:white;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;transition:background .15s;letter-spacing:.02em;}
+.btn-remettre:hover{background:#1e1035;}
+.btn-remettre:disabled{opacity:.45;cursor:default;}
+.eval-resultat{display:none;margin:2rem 0 0;border-radius:12px;overflow:hidden;border:1px solid var(--gris-bord);}
+.eval-resultat.show{display:block;}
+.res-top{padding:2rem 2.5rem;text-align:center;}
+.res-note{font-family:var(--serif);font-size:3.5rem;font-weight:600;line-height:1;margin-bottom:.5rem;}
+.res-mention{font-size:16px;font-weight:600;margin-bottom:.3rem;}
+.res-sous{font-size:14px;color:var(--texte-2);}
+.res-detail{border-top:1px solid var(--gris-bord);padding:1.2rem 2rem;background:var(--gris-bg);}
+.res-detail-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-3);margin-bottom:.8rem;}
+.res-ligne{display:flex;align-items:flex-start;gap:10px;padding:.6rem 0;border-bottom:1px solid var(--gris-bord);font-size:13.5px;}
+.res-ligne:last-child{border-bottom:none;}
+.res-icone{font-size:14px;flex-shrink:0;margin-top:2px;}
+.res-q{flex:1;color:var(--texte-2);line-height:1.5;}
+.res-pts{font-weight:600;white-space:nowrap;}
+.res-correction{font-size:12.5px;color:#0a4a33;background:var(--vert-pale);border-radius:6px;padding:4px 10px;margin-top:4px;display:inline-block;border:1px solid var(--vert-clair);}
+.res-correction.ko{color:#7a1515;background:#fdf0f0;border-color:#f5c0c0;}
+.res-correction{display:block;font-size:13px;line-height:1.6;padding:.5rem .8rem;margin-top:.5rem;}
+.res-rep{font-size:13px;color:var(--texte-2);margin-top:.2rem;word-break:break-word;}
+.res-analyse{list-style:none;margin:.35rem 0 0;font-size:13px;line-height:1.55;}
+.res-analyse li{margin-bottom:.15rem;}
+.btn-recommencer{display:none;margin:1rem auto 0;padding:.6rem 1.6rem;border-radius:10px;border:1.5px solid #2c1a4a;background:white;color:#2c1a4a;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;}
+.btn-recommencer:hover{background:#f5f0ff;}
+
+@media(max-width:540px){
+  body{padding:1rem .5rem 3rem;}
+  .corps,.eval-corps{padding:0 1.2rem 2rem;}
+  .header{padding:1.8rem 1.2rem 1.5rem;}
+  .sommaire,.score-bar,.eval-consignes{padding-left:1.2rem;padding-right:1.2rem;}
+  .eval-header{padding:1.6rem 1.2rem 1.4rem;}
+  .deux-col{grid-template-columns:1fr;}
+  .formule{font-size:1.1rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header">
+    <span class="tag">Physique-chimie · Classe de seconde</span>
+    <h1>Chapitre <input class="chap-num" id="chap-num" type="text" inputmode="numeric" maxlength="3" autocomplete="off" aria-label="Numéro du chapitre"> — Les solutions aqueuses</h1>
+    <p class="sous">Constitution de la matière : corps purs et mélanges</p>
+  </div>
+
+  <nav class="sommaire">
+    <a href="#s1"><span class="num">1</span>Notion de solution</a>
+    <a href="#s2"><span class="num">2</span>Concentration en masse</a>
+    <a href="#s3"><span class="num">3</span>Dissolution</a>
+    <a href="#s4"><span class="num">4</span>Concentration maximale</a>
+    <a href="#s5"><span class="num">5</span>Dilution</a>
+    <a href="#s6"><span class="num">6</span>Dosage par étalonnage</a>
+    <a href="#s7"><span class="num">7</span>Réviser</a>
+    <a href="#evaluation"><span class="num">★</span>Évaluation</a>
+  </nav>
+
+  <div class="score-bar">
+    <span style="color:var(--texte-3);">Exercices réussis :</span>
+    <span class="score-val" id="score-display">0 / 6</span>
+    <div class="score-progress"><div class="score-progress-inner" id="score-bar"></div></div>
+  </div>
+
+  <div class="corps">
+
+    <!-- ================= 1. NOTION DE SOLUTION ================= -->
+    <div class="section" id="s1">
+      <div class="section-titre"><span class="num">1</span><h2>Notion de solution</h2></div>
+
+      <div class="def">
+        <p class="label">Définition — Solution</p>
+        <p>Une <strong>solution</strong> est un mélange homogène obtenu en dissolvant un ou plusieurs <strong>solutés</strong> dans un <strong>solvant</strong>.</p>
+      </div>
+
+      <div class="deux-col">
+        <div class="prop-card card-bleu">
+          <p class="titre">Le solvant</p>
+          <p class="desc">Espèce chimique qui dissout. Il est en général majoritaire.</p>
+        </div>
+        <div class="prop-card card-orange">
+          <p class="titre">Le soluté</p>
+          <p class="desc">Espèce chimique dissoute dans le solvant. Il peut être solide, liquide ou gazeux.</p>
+        </div>
+      </div>
+
+      <div class="retenir">
+        <p class="label">À retenir</p>
+        <p>Si le solvant est l'eau, la solution est dite <strong>aqueuse</strong>.</p>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemples</p>
+        <ul>
+          <li>L'eau salée : solution aqueuse de chlorure de sodium (soluté : chlorure de sodium ; solvant : eau).</li>
+          <li>L'eau sucrée : solution aqueuse de saccharose.</li>
+          <li>La teinture d'iode : solution de diiode dans l'éthanol. Le solvant n'est pas l'eau : ce n'est <strong>pas</strong> une solution aqueuse.</li>
+        </ul>
+      </div>
+
+      <p>Au laboratoire, une solution se prépare par <strong>dissolution</strong> (partie 3) ou par <strong>dilution</strong> (partie 5).</p>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=4jVi9BmCXtQ&t=14s" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Qu'est-ce qu'une solution aqueuse ?</span><br><span class="vs">Paul Olivier · Cours complet, extrait à partir de 0:14</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex1">
+        <div class="ex-header">
+          <span class="ex-num">1</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">On dissout quelques cristaux bleus de <strong>sulfate de cuivre</strong> dans de l'<strong>eau</strong> distillée. Par ailleurs, la teinture d'iode est obtenue en dissolvant du <strong>diiode</strong> dans de l'<strong>éthanol</strong>. Complète les cases.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Le soluté de la première solution est : <input class="blank large" id="ex1-a" type="text" autocomplete="off"></div>
+          <div class="q-row"><span class="ql">b.</span>Le solvant de la première solution est : <input class="blank large" id="ex1-b" type="text" autocomplete="off"></div>
+          <div class="q-row"><span class="ql">c.</span>La première solution est
+            <select class="blank" id="ex1-c"><option value="">— choisir —</option><option value="aq">aqueuse</option><option value="naq">non aqueuse</option></select>
+          </div>
+          <div class="q-row"><span class="ql">d.</span>Le solvant de la teinture d'iode est : <input class="blank large" id="ex1-d" type="text" autocomplete="off"></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(1)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr1" onclick="corriger(1)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb1"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 2. CONCENTRATION EN MASSE ================= -->
+    <div class="section" id="s2">
+      <div class="section-titre"><span class="num">2</span><h2>La concentration en masse</h2></div>
+
+      <div class="def">
+        <p class="label">Définition — Concentration en masse</p>
+        <p>La concentration en masse <span class="var">C</span><sub>m</sub> d'un soluté est le quotient de la masse de soluté dissous par le volume de la solution.</p>
+      </div>
+
+      <div class="formule">
+        <span class="var">C</span><sub>m</sub> &nbsp;=&nbsp;
+        <span class="frac"><span><span class="var">m</span><sub>soluté</sub></span><span><span class="var">V</span><sub>solution</sub></span></span>
+        <span class="unites"><span class="var">m</span><sub>soluté</sub> en g &nbsp;·&nbsp; <span class="var">V</span><sub>solution</sub> en L &nbsp;·&nbsp; <span class="var">C</span><sub>m</sub> en g·L<sup>−1</sup></span>
+      </div>
+
+      <div class="exemple attention">
+        <p class="label">Attention — erreur fréquente</p>
+        <p>Le volume doit être exprimé en <strong>litres</strong> : 250 mL = 250.10<sup>−3</sup> L.</p>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemple</p>
+        <p>On dissout 5,0 g de sel pour obtenir 250 mL de solution : <span class="var">C</span><sub>m</sub> = 5,0 / (250.10<sup>−3</sup>) = <strong>20 g·L<sup>−1</sup></strong>.</p>
+      </div>
+
+      <p>Il ne faut pas confondre la concentration en masse avec la <strong>masse volumique</strong> de la solution :</p>
+      <div class="formule">
+        <span class="var">ρ</span> &nbsp;=&nbsp;
+        <span class="frac"><span><span class="var">m</span><sub>solution</sub></span><span><span class="var">V</span><sub>solution</sub></span></span>
+      </div>
+      <div class="deux-col">
+        <div class="prop-card card-bleu">
+          <p class="titre">Concentration en masse C<sub>m</sub></p>
+          <p class="desc">Fait intervenir la masse du <strong>soluté</strong> seulement.</p>
+        </div>
+        <div class="prop-card card-orange">
+          <p class="titre">Masse volumique ρ</p>
+          <p class="desc">Fait intervenir la masse de <strong>toute la solution</strong> (soluté + solvant).</p>
+        </div>
+      </div>
+      <div class="exemple">
+        <p class="label">Exemple</p>
+        <p>Pour l'eau de mer, ρ ≈ 1 025 g·L<sup>−1</sup>, alors que la concentration en masse des sels dissous vaut environ 35 g·L<sup>−1</sup>.</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=0uJ9G86DaDE" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Concentration massique</span><br><span class="vs">e-profs</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex2">
+        <div class="ex-header">
+          <span class="ex-num">2</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">On dissout <strong>3,0 g</strong> de sucre dans de l'eau pour obtenir <strong>200 mL</strong> de solution. La masse totale de la solution est de <strong>203 g</strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Volume de la solution en litres : <span class="var">V</span> = <input class="blank" id="ex2-a" type="text" autocomplete="off" placeholder="ex. : 250.10^-3"> <span class="u">L</span></div>
+          <div class="q-row"><span class="ql">b.</span>Concentration en masse du sucre : <span class="var">C</span><sub>m</sub> = <input class="blank" id="ex2-b" type="text" inputmode="decimal" autocomplete="off"> <span class="u">g·L<sup>−1</sup></span></div>
+          <div class="q-row"><span class="ql">c.</span>Masse volumique de la solution : <span class="var">ρ</span> = <input class="blank" id="ex2-c" type="text" inputmode="decimal" autocomplete="off"> <span class="u">g·L<sup>−1</sup></span></div>
+          <div class="q-row"><span class="ql">d.</span>La grandeur qui renseigne sur la quantité de sucre dissous est
+            <select class="blank" id="ex2-d"><option value="">— choisir —</option><option value="cm">la concentration en masse</option><option value="rho">la masse volumique</option></select>
+          </div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(2)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr2" onclick="corriger(2)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb2"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 3. DISSOLUTION ================= -->
+    <div class="section" id="s3">
+      <div class="section-titre"><span class="num">3</span><h2>Préparer une solution par dissolution</h2></div>
+
+      <p>Pour préparer un volume <span class="var">V</span> de solution de concentration en masse <span class="var">C</span><sub>m</sub>, on calcule d'abord la masse de soluté à peser :</p>
+      <div class="formule"><span class="var">m</span><sub>soluté</sub> &nbsp;=&nbsp; <span class="var">C</span><sub>m</sub> × <span class="var">V</span><sub>solution</sub></div>
+
+      <div class="retenir">
+        <p class="label">Méthode — Protocole de dissolution</p>
+        <ol>
+          <li>Peser la masse <span class="var">m</span> de soluté dans une coupelle, à l'aide d'une balance.</li>
+          <li>L'introduire dans une <strong>fiole jaugée</strong> à l'aide d'un entonnoir, puis rincer coupelle et entonnoir à l'eau distillée.</li>
+          <li>Remplir la fiole aux trois quarts avec de l'eau distillée, boucher et agiter jusqu'à dissolution complète.</li>
+          <li>Compléter avec de l'eau distillée jusqu'au <strong>trait de jauge</strong>, boucher et homogénéiser.</li>
+        </ol>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=VO3LnyjCS4Y" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Protocole de la dissolution</span><br><span class="vs">e-profs</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex3">
+        <div class="ex-header">
+          <span class="ex-num">3</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">On veut préparer <strong>250,0 mL</strong> d'une solution de sulfate de cuivre de concentration en masse <strong><span class="var">C</span><sub>m</sub> = 8,0 g·L<sup>−1</sup></strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Masse de sulfate de cuivre à peser : <span class="var">m</span> = <input class="blank" id="ex3-a" type="text" inputmode="decimal" autocomplete="off"> <span class="u">g</span></div>
+          <div class="q-row"><span class="ql">b.</span>Récipient dans lequel on prépare la solution :
+            <select class="blank" id="ex3-b"><option value="">— choisir —</option><option value="becher">un bécher de 250 mL</option><option value="eprouvette">une éprouvette graduée de 250 mL</option><option value="fiole">une fiole jaugée de 250,0 mL</option></select>
+          </div>
+          <div class="q-row" style="margin-bottom:.3rem;"><span class="ql">c.</span>Remets les étapes dans l'ordre :</div>
+          <div class="exemple" style="margin:0 0 .6rem 1.9rem;">
+            <p><strong>A</strong> — Compléter avec de l'eau distillée jusqu'au trait de jauge.<br>
+               <strong>B</strong> — Peser le sulfate de cuivre dans une coupelle.<br>
+               <strong>C</strong> — Remplir aux trois quarts et agiter jusqu'à dissolution.<br>
+               <strong>D</strong> — Introduire le solide dans la fiole et rincer la coupelle.</p>
+          </div>
+          <div class="q-row" style="padding-left:1.9rem;">
+            1<sup>re</sup> <select class="blank" id="ex3-c1"><option value="">?</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+            → 2<sup>e</sup> <select class="blank" id="ex3-c2"><option value="">?</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+            → 3<sup>e</sup> <select class="blank" id="ex3-c3"><option value="">?</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+            → 4<sup>e</sup> <select class="blank" id="ex3-c4"><option value="">?</option><option>A</option><option>B</option><option>C</option><option>D</option></select>
+          </div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(3)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr3" onclick="corriger(3)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb3"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 4. CONCENTRATION MAXIMALE ================= -->
+    <div class="section" id="s4">
+      <div class="section-titre"><span class="num">4</span><h2>La concentration maximale (solubilité)</h2></div>
+
+      <div class="def">
+        <p class="label">Définition — Concentration maximale</p>
+        <p>À une température donnée, on ne peut pas dissoudre une quantité illimitée de soluté dans un solvant. La <strong>concentration maximale</strong> (ou <strong>solubilité</strong>) est la plus grande concentration en masse que peut atteindre le soluté.</p>
+        <p>Au-delà, le soluté ne se dissout plus : il reste du solide au fond, et la solution est dite <strong>saturée</strong>.</p>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemple</p>
+        <p>À 20 °C, on peut dissoudre au maximum environ 360 g de chlorure de sodium dans 1 L d'eau.</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=4jVi9BmCXtQ&t=209s" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Solution saturée (limite de solubilité)</span><br><span class="vs">Paul Olivier · Cours complet, extrait à partir de 3:29</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex4">
+        <div class="ex-header">
+          <span class="ex-num">4</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">À 20 °C, on peut dissoudre au maximum <strong>360 g</strong> de sel dans <strong>1 L d'eau</strong>. On verse <strong>50 g</strong> de sel dans <strong>100 mL d'eau</strong> et on agite longuement.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Masse maximale de sel que peuvent dissoudre 100 mL d'eau : <input class="blank" id="ex4-a" type="text" inputmode="decimal" autocomplete="off"> <span class="u">g</span></div>
+          <div class="q-row"><span class="ql">b.</span>La solution obtenue est-elle saturée ?
+            <select class="blank" id="ex4-b"><option value="">— choisir —</option><option value="oui">oui</option><option value="non">non</option></select>
+          </div>
+          <div class="q-row"><span class="ql">c.</span>Masse de sel restée solide au fond du récipient : <input class="blank" id="ex4-c" type="text" inputmode="decimal" autocomplete="off"> <span class="u">g</span></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(4)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr4" onclick="corriger(4)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb4"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 5. DILUTION ================= -->
+    <div class="section" id="s5">
+      <div class="section-titre"><span class="num">5</span><h2>La dilution</h2></div>
+
+      <div class="def">
+        <p class="label">Définition — Dilution</p>
+        <p>Une <strong>dilution</strong> consiste à ajouter du solvant à une solution « <strong>mère</strong> » afin d'obtenir une solution « <strong>fille</strong> » moins concentrée.</p>
+      </div>
+
+      <div class="schema">
+        <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3',sans-serif">
+          <defs>
+            <marker id="fl-vert" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
+              <path d="M0,0 L0,8 L12,4 z" fill="#0e7c5b"/>
+            </marker>
+          </defs>
+          <!-- Bécher, solution mère -->
+          <path d="M80,150 L80,250 Q80,258 88,258 L182,258 Q190,258 190,250 L190,150 Z" fill="#3d70ba" opacity=".85"/>
+          <path d="M72,92 L80,100 L80,250 Q80,258 88,258 L182,258 Q190,258 190,250 L190,100" fill="none" stroke="#4a4a4a" stroke-width="2.5"/>
+          <text x="135" y="282" text-anchor="middle" font-size="13" fill="#4a4a4a">Bécher : solution mère</text>
+          <text x="135" y="210" text-anchor="middle" font-size="14" fill="#ffffff" font-family="'Lora',serif" font-style="italic">C</text>
+          <text x="144" y="214" font-size="10" fill="#ffffff">mère</text>
+
+          <!-- Pipette jaugée + poire -->
+          <ellipse cx="350" cy="38" rx="14" ry="17" fill="#c8620a"/>
+          <rect x="345" y="52" width="10" height="68" fill="#ffffff" stroke="#4a4a4a" stroke-width="2"/>
+          <path d="M345,120 Q330,130 330,160 Q330,190 345,200 L345,200 L355,200 Q370,190 370,160 Q370,130 355,120 Z" fill="#3d70ba" opacity=".85" stroke="#4a4a4a" stroke-width="2"/>
+          <path d="M345,200 L346,250 L350,262 L354,250 L355,200" fill="#3d70ba" opacity=".85" stroke="#4a4a4a" stroke-width="2"/>
+          <rect x="346" y="90" width="8" height="30" fill="#3d70ba" opacity=".85"/>
+          <line x1="338" y1="90" x2="362" y2="90" stroke="#c0392b" stroke-width="2"/>
+          <text x="370" y="94" font-size="12" fill="#c0392b">trait de jauge</text>
+          <text x="350" y="282" text-anchor="middle" font-size="13" fill="#4a4a4a">Pipette jaugée :</text>
+          <text x="350" y="297" text-anchor="middle" font-size="13" fill="#4a4a4a">volume <tspan font-family="'Lora',serif" font-style="italic">V</tspan><tspan font-size="10" dy="3">mère</tspan></text>
+
+          <!-- Fiole jaugée -->
+          <path d="M560,160 C525,172 512,198 515,225 Q518,250 540,250 L620,250 Q642,250 645,225 C648,198 635,172 600,160 Z" fill="#a9c6ea"/>
+          <rect x="562" y="70" width="36" height="92" fill="#a9c6ea"/>
+          <path d="M562,30 L562,160 C525,172 512,198 515,225 Q518,250 540,250 L620,250 Q642,250 645,225 C648,198 635,172 598,160 L598,30" fill="none" stroke="#4a4a4a" stroke-width="2.5"/>
+          <line x1="554" y1="70" x2="606" y2="70" stroke="#c0392b" stroke-width="2"/>
+          <text x="612" y="74" font-size="12" fill="#c0392b">trait de jauge</text>
+          <text x="580" y="215" text-anchor="middle" font-size="14" fill="#1a3a60" font-family="'Lora',serif" font-style="italic">C</text>
+          <text x="589" y="219" font-size="10" fill="#1a3a60">fille</text>
+          <text x="580" y="282" text-anchor="middle" font-size="13" fill="#4a4a4a">Fiole jaugée : solution fille,</text>
+          <text x="580" y="297" text-anchor="middle" font-size="13" fill="#4a4a4a">volume <tspan font-family="'Lora',serif" font-style="italic">V</tspan><tspan font-size="10" dy="3">fille</tspan></text>
+
+          <!-- Flèches -->
+          <path d="M200,140 Q260,80 318,120" fill="none" stroke="#0e7c5b" stroke-width="2.5" marker-end="url(#fl-vert)"/>
+          <text x="255" y="78" text-anchor="middle" font-size="13" fill="#0e7c5b" font-weight="600">① prélever</text>
+          <path d="M385,200 Q450,140 515,165" fill="none" stroke="#0e7c5b" stroke-width="2.5" marker-end="url(#fl-vert)"/>
+          <text x="450" y="140" text-anchor="middle" font-size="13" fill="#0e7c5b" font-weight="600">② verser</text>
+          <text x="470" y="22" text-anchor="middle" font-size="12" fill="#0e7c5b">③ compléter à l'eau distillée</text>
+          <text x="470" y="38" text-anchor="middle" font-size="12" fill="#0e7c5b">jusqu'au trait de jauge</text>
+          <text x="470" y="54" text-anchor="middle" font-size="12" fill="#0e7c5b">④ boucher, homogénéiser</text>
+        </svg>
+        <p class="schema-legende">Préparation d'une solution fille par dilution d'une solution mère</p>
+      </div>
+
+      <p>Au cours d'une dilution, on ajoute seulement du solvant : la <strong>masse de soluté se conserve</strong>.</p>
+      <div class="formule">
+        <span class="var">m</span><sub>mère</sub> = <span class="var">m</span><sub>fille</sub>
+        &nbsp;&nbsp;⟹&nbsp;&nbsp;
+        <span class="var">C</span><sub>mère</sub> × <span class="var">V</span><sub>mère</sub> = <span class="var">C</span><sub>fille</sub> × <span class="var">V</span><sub>fille</sub>
+        <span class="unites"><span class="var">C</span><sub>mère</sub>, <span class="var">V</span><sub>mère</sub> : concentration de la solution mère et volume prélevé &nbsp;·&nbsp; <span class="var">C</span><sub>fille</sub>, <span class="var">V</span><sub>fille</sub> : concentration et volume de la solution fille</span>
+      </div>
+
+      <div class="retenir">
+        <p class="label">À retenir — Facteur de dilution</p>
+        <p style="text-align:center;font-family:var(--serif);font-size:1.15rem;margin:.3rem 0;">
+          <span class="var">F</span> =
+          <span class="frac"><span><span class="var">V</span><sub>fille</sub></span><span><span class="var">V</span><sub>mère</sub></span></span>
+          =
+          <span class="frac"><span><span class="var">C</span><sub>mère</sub></span><span><span class="var">C</span><sub>fille</sub></span></span>
+        </p>
+        <p><span class="var">F</span> &gt; 1 : la solution fille est <span class="var">F</span> fois moins concentrée que la solution mère.</p>
+      </div>
+
+      <div class="retenir">
+        <p class="label">Méthode — Protocole de dilution</p>
+        <ol>
+          <li>Verser un peu de solution mère dans un bécher (on ne pipette jamais directement dans le flacon).</li>
+          <li>Prélever le volume <span class="var">V</span><sub>mère</sub> à la <strong>pipette jaugée</strong> munie d'une poire aspirante.</li>
+          <li>Le verser dans une <strong>fiole jaugée</strong> de volume <span class="var">V</span><sub>fille</sub>.</li>
+          <li>Compléter avec de l'eau distillée jusqu'au trait de jauge, boucher et homogénéiser.</li>
+        </ol>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemple</p>
+        <p>Préparer 100,0 mL de solution à 2,0 g·L<sup>−1</sup> à partir d'une solution mère à 10 g·L<sup>−1</sup> :
+        <span class="var">F</span> = 10 / 2,0 = 5,0, donc <span class="var">V</span><sub>mère</sub> = 100,0 / 5,0 = 20,0 mL.
+        On utilise une pipette jaugée de 20,0 mL et une fiole jaugée de 100,0 mL.</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=9qjnOI4Gy4Y" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Dilution — conservation de la masse</span><br><span class="vs">e-profs</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex5">
+        <div class="ex-header">
+          <span class="ex-num">5</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">On dispose d'une solution mère de concentration <strong><span class="var">C</span><sub>mère</sub> = 20 g·L<sup>−1</sup></strong>. On veut préparer <strong>50,0 mL</strong> de solution fille de concentration <strong><span class="var">C</span><sub>fille</sub> = 4,0 g·L<sup>−1</sup></strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Facteur de dilution : <span class="var">F</span> = <input class="blank" id="ex5-a" type="text" inputmode="decimal" autocomplete="off"></div>
+          <div class="q-row"><span class="ql">b.</span>Volume de solution mère à prélever : <span class="var">V</span><sub>mère</sub> = <input class="blank" id="ex5-b" type="text" inputmode="decimal" autocomplete="off"> <span class="u">mL</span></div>
+          <div class="q-row"><span class="ql">c.</span>Pour prélever ce volume, on utilise
+            <select class="blank" id="ex5-c"><option value="">— choisir —</option><option value="eprouvette">une éprouvette graduée</option><option value="pipette">une pipette jaugée</option><option value="becher">un bécher gradué</option></select>
+          </div>
+          <div class="q-row"><span class="ql">d.</span>On le verse dans une fiole jaugée de <input class="blank" id="ex5-d" type="text" inputmode="decimal" autocomplete="off"> <span class="u">mL</span></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(5)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr5" onclick="corriger(5)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb5"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 6. DOSAGE PAR ÉTALONNAGE ================= -->
+    <div class="section" id="s6">
+      <div class="section-titre"><span class="num">6</span><h2>Le dosage par étalonnage</h2></div>
+
+      <div class="def">
+        <p class="label">Définition — Doser</p>
+        <p><strong>Doser</strong> une espèce chimique, c'est déterminer sa concentration dans une solution.</p>
+      </div>
+
+      <p>Pour un <strong>dosage par étalonnage</strong>, on prépare par dilution une gamme de <strong>solutions étalons</strong> de concentrations connues, puis on compare la solution inconnue à cette gamme.</p>
+
+      <div class="deux-col">
+        <div class="prop-card card-bleu">
+          <p class="titre">Avec une échelle de teintes</p>
+          <p class="desc">Pour une espèce colorée, on compare la couleur de la solution inconnue à celles des étalons. Sa concentration est encadrée par celles des deux étalons de teintes les plus proches.</p>
+        </div>
+        <div class="prop-card card-orange">
+          <p class="titre">Avec la masse volumique</p>
+          <p class="desc">On mesure ρ de chaque étalon et on trace la courbe d'étalonnage ρ = f(<span class="var">C</span><sub>m</sub>). On y lit la concentration qui correspond à la masse volumique de la solution inconnue.</p>
+        </div>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=4jVi9BmCXtQ&t=650s" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Dosage par étalonnage</span><br><span class="vs">Paul Olivier · Cours complet, extrait à partir de 10:50</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex6">
+        <div class="ex-header">
+          <span class="ex-num">6</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">On a préparé une échelle de teintes avec des solutions étalons de sulfate de cuivre. On veut déterminer la concentration de la solution <strong>S</strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="schema" style="margin-top:0;">
+            <svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3',sans-serif">
+              <g id="tubes"></g>
+            </svg>
+            <p class="schema-legende">Solutions étalons (concentrations en g·L<sup>−1</sup>) et solution inconnue S</p>
+          </div>
+          <div class="q-row"><span class="ql">a.</span>La concentration de S est comprise entre
+            <input class="blank" id="ex6-a" type="text" inputmode="decimal" autocomplete="off" style="width:80px;"> <span class="u">g·L<sup>−1</sup></span>
+            et <input class="blank" id="ex6-b" type="text" inputmode="decimal" autocomplete="off" style="width:80px;"> <span class="u">g·L<sup>−1</sup></span>
+          </div>
+          <div class="q-row"><span class="ql">b.</span>Valeur estimée de la concentration de S : <input class="blank" id="ex6-c" type="text" inputmode="decimal" autocomplete="off" style="width:80px;"> <span class="u">g·L<sup>−1</sup></span></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(6)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr6" onclick="corriger(6)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb6"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 7. RÉVISER ================= -->
+    <div class="section" id="s7">
+      <div class="section-titre"><span class="num">7</span><h2>Pour réviser tout le chapitre</h2></div>
+      <div class="videos" style="margin-top:0;">
+        <p class="v-titre">Vidéo de révision</p>
+        <a class="video" href="https://www.youtube.com/watch?v=EUGrJ-qXDI4" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Dilution &amp; dissolution — quiz de révision</span><br><span class="vs">Paul Olivier · 3 min 23</span></span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= ÉVALUATION ================= -->
+<div class="page" style="margin-top:2rem;" id="evaluation">
+  <div class="eval-header">
+    <span class="tag">Évaluation</span>
+    <h2>Exercice d'application — Les solutions aqueuses</h2>
+    <p>Classe de seconde &nbsp;·&nbsp; Durée conseillée : 20 min</p>
+  </div>
+
+  <div class="eval-consignes">
+    <span class="consigne-item"><span class="dot"></span>Répondez à toutes les questions, puis cliquez sur « Vérifier mes résultats »</span>
+    <span class="consigne-item"><span class="dot"></span>Chaque réponse est analysée et corrigée</span>
+    <span class="consigne-item"><span class="dot"></span>Barème : /10 points</span>
+  </div>
+
+  <div class="eval-corps">
+    <div class="eq" id="eq1">
+      <div class="eq-header">
+        <span class="eq-num">1</span>
+        <div class="eq-meta"><p class="eq-intitule">Définissez la concentration en masse d'un soluté et donnez son unité.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body"><textarea class="eval-textarea" id="rep1" placeholder="Votre réponse…"></textarea></div>
+    </div>
+
+    <div class="eq" id="eq2">
+      <div class="eq-header">
+        <span class="eq-num">2</span>
+        <div class="eq-meta"><p class="eq-intitule">On dilue une solution mère avec un facteur de dilution <strong>F = 4</strong>. La concentration de la solution fille est :</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <button class="eval-choice" data-q="2" data-v="A"><span class="eval-cletter">A</span> 4 fois plus grande que celle de la solution mère</button>
+        <button class="eval-choice" data-q="2" data-v="B"><span class="eval-cletter">B</span> 4 fois plus petite que celle de la solution mère</button>
+        <button class="eval-choice" data-q="2" data-v="C"><span class="eval-cletter">C</span> égale à celle de la solution mère</button>
+        <button class="eval-choice" data-q="2" data-v="D"><span class="eval-cletter">D</span> 2 fois plus petite que celle de la solution mère</button>
+      </div>
+    </div>
+
+    <div class="eq" id="eq3">
+      <div class="eq-header">
+        <span class="eq-num">3</span>
+        <div class="eq-meta"><p class="eq-intitule">On dissout <strong>12 g</strong> de sel dans de l'eau pour obtenir <strong>400 mL</strong> de solution. Calculez la concentration en masse du sel.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:14px;color:var(--texte-2);"><span class="var">C</span><sub>m</sub> =</span>
+          <input class="eval-input" id="rep3" type="text" inputmode="decimal" placeholder="?">
+          <span style="font-size:14px;color:var(--texte-3);">g·L<sup>−1</sup></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="eq" id="eq4">
+      <div class="eq-header">
+        <span class="eq-num">4</span>
+        <div class="eq-meta"><p class="eq-intitule">On veut préparer <strong>200,0 mL</strong> de solution à <strong>5,0 g·L<sup>−1</sup></strong> à partir d'une solution mère à <strong>50 g·L<sup>−1</sup></strong>. Calculez le volume de solution mère à prélever.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:14px;color:var(--texte-2);"><span class="var">V</span><sub>mère</sub> =</span>
+          <input class="eval-input" id="rep4" type="text" inputmode="decimal" placeholder="?">
+          <span style="font-size:14px;color:var(--texte-3);">mL</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="eq" id="eq5">
+      <div class="eq-header">
+        <span class="eq-num">5</span>
+        <div class="eq-meta"><p class="eq-intitule">Justifiez la relation <span class="var">C</span><sub>mère</sub> × <span class="var">V</span><sub>mère</sub> = <span class="var">C</span><sub>fille</sub> × <span class="var">V</span><sub>fille</sub> utilisée lors d'une dilution.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body"><textarea class="eval-textarea" id="rep5" placeholder="Votre justification…"></textarea></div>
+    </div>
+
+    <button class="btn-remettre" id="btn-verif-eval" onclick="verifierResultats()">Vérifier mes résultats →</button>
+
+    <div class="eval-resultat" id="eval-resultat">
+      <div class="res-top" id="res-top"></div>
+      <div class="res-detail">
+        <p class="res-detail-title">Analyse et correction par question</p>
+        <div id="res-detail-content"></div>
+      </div>
+    </div>
+    <button class="btn-recommencer" id="btn-recommencer" onclick="recommencerEval()">↺ Recommencer</button>
+  </div>
+</div>
+
+<script>
+/* ---------- Numéro du chapitre (case à compléter) ---------- */
+(function () {
+  const champ = document.getElementById('chap-num');
+  const CLE = 'solutions-aqueuses-chapitre';
+  const maj = () => {
+    const n = champ.value.trim();
+    document.title = 'Chapitre ' + (n ? n + ' ' : '') + '— Les solutions aqueuses';
+  };
+  try { champ.value = localStorage.getItem(CLE) || ''; } catch (e) {}
+  maj();
+  champ.addEventListener('input', () => {
+    maj();
+    try { localStorage.setItem(CLE, champ.value.trim()); } catch (e) {}
+  });
+})();
+
+/* ---------- Outils ---------- */
+function norm(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[’']/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function num(s) {
+  // accepte 0,2 · 0.2 · 200.10^-3 · 200×10^-3 · 200*10-3 · 200e-3
+  const t = String(s || '').replace(/\s/g, '').replace(/,/g, '.').replace(/[−–]/g, '-');
+  const m = t.match(/^([-+]?\d+(?:\.\d+)?)(?:[.x×*]10\^?\(?([-+]?\d+)\)?)?$/i);
+  if (m) return parseFloat(m[1]) * (m[2] !== undefined ? Math.pow(10, parseInt(m[2], 10)) : 1);
+  const v = Number(t);
+  return isNaN(v) || t === '' ? null : v;
+}
+
+/* ---------- Exercices d'application ----------
+   type 'num'   : valeur attendue + tolérance
+   type 'texte' : expression régulière testée sur la réponse normalisée
+   type 'choix' : valeur exacte du menu déroulant                       */
+const EXOS = {
+  1: {
+    champs: [
+      { id: 'ex1-a', type: 'texte', re: /sulfate de cuivre/, sol: 'le sulfate de cuivre' },
+      { id: 'ex1-b', type: 'texte', re: /^(l |de l |la )?eau( distillee)?$/, sol: 'l’eau' },
+      { id: 'ex1-c', type: 'choix', val: 'aq', sol: 'aqueuse' },
+      { id: 'ex1-d', type: 'texte', re: /^(l |de l )?(ethanol|alcool)$/, sol: 'l’éthanol' }
+    ],
+    explication: 'Le <strong>soluté</strong> est l’espèce dissoute (le sulfate de cuivre), le <strong>solvant</strong> est l’espèce qui dissout (l’eau). Comme le solvant est l’eau, la solution est <strong>aqueuse</strong>. Dans la teinture d’iode, le solvant est l’<strong>éthanol</strong> : ce n’est donc pas une solution aqueuse.'
+  },
+  2: {
+    champs: [
+      { id: 'ex2-a', type: 'num', val: 0.200, tol: 0.0005, sol: '200.10<sup>−3</sup>' },
+      { id: 'ex2-b', type: 'num', val: 15, tol: 0.1, sol: '15' },
+      { id: 'ex2-c', type: 'num', val: 1015, tol: 1, sol: '1 015' },
+      { id: 'ex2-d', type: 'choix', val: 'cm', sol: 'la concentration en masse' }
+    ],
+    explication: 'a. 200 mL = <strong>200.10<sup>−3</sup> L</strong>.<br>b. <span class="var">C</span><sub>m</sub> = <span class="var">m</span><sub>soluté</sub> / <span class="var">V</span><sub>solution</sub> = 3,0 / (200.10<sup>−3</sup>) = <strong>15 g·L<sup>−1</sup></strong>.<br>c. ρ = <span class="var">m</span><sub>solution</sub> / <span class="var">V</span><sub>solution</sub> = 203 / (200.10<sup>−3</sup>) = <strong>1 015 g·L<sup>−1</sup></strong>.<br>d. Seule la <strong>concentration en masse</strong> fait intervenir la masse de sucre. La masse volumique fait intervenir la masse de toute la solution, eau comprise.'
+  },
+  3: {
+    champs: [
+      { id: 'ex3-a', type: 'num', val: 2.0, tol: 0.05, sol: '2,0' },
+      { id: 'ex3-b', type: 'choix', val: 'fiole', sol: 'une fiole jaugée de 250,0 mL' },
+      { id: 'ex3-c1', type: 'choix', val: 'B', sol: 'B' },
+      { id: 'ex3-c2', type: 'choix', val: 'D', sol: 'D' },
+      { id: 'ex3-c3', type: 'choix', val: 'C', sol: 'C' },
+      { id: 'ex3-c4', type: 'choix', val: 'A', sol: 'A' }
+    ],
+    explication: 'a. <span class="var">m</span> = <span class="var">C</span><sub>m</sub> × <span class="var">V</span> = 8,0 × 250,0.10<sup>−3</sup> = <strong>2,0 g</strong>, car 250,0 mL = 250,0.10<sup>−3</sup> L.<br>b. Seule la <strong>fiole jaugée</strong> permet d’obtenir un volume précis de solution. Le bécher et l’éprouvette ne sont pas assez précis.<br>c. Ordre : <strong>B → D → C → A</strong>. On pèse, on introduit le solide dans la fiole, on dissout, puis on complète jusqu’au trait de jauge.'
+  },
+  4: {
+    champs: [
+      { id: 'ex4-a', type: 'num', val: 36, tol: 0.1, sol: '36' },
+      { id: 'ex4-b', type: 'choix', val: 'oui', sol: 'oui' },
+      { id: 'ex4-c', type: 'num', val: 14, tol: 0.1, sol: '14' }
+    ],
+    explication: 'a. 100 mL = 100.10<sup>−3</sup> L d’eau, donc la masse maximale vaut 360 × 100.10<sup>−3</sup> = <strong>36 g</strong>.<br>b. On a versé 50 g, soit plus que 36 g : la solution est <strong>saturée</strong>.<br>c. Il reste 50 − 36 = <strong>14 g</strong> de sel non dissous au fond.'
+  },
+  5: {
+    champs: [
+      { id: 'ex5-a', type: 'num', val: 5, tol: 0.01, sol: '5' },
+      { id: 'ex5-b', type: 'num', val: 10, tol: 0.05, sol: '10,0' },
+      { id: 'ex5-c', type: 'choix', val: 'pipette', sol: 'une pipette jaugée' },
+      { id: 'ex5-d', type: 'num', val: 50, tol: 0.05, sol: '50,0' }
+    ],
+    explication: 'a. <span class="var">F</span> = <span class="var">C</span><sub>mère</sub> / <span class="var">C</span><sub>fille</sub> = 20 / 4,0 = <strong>5</strong>.<br>b. <span class="var">V</span><sub>mère</sub> = <span class="var">V</span><sub>fille</sub> / <span class="var">F</span> = 50,0 / 5 = <strong>10,0 mL</strong>. On obtient le même résultat avec <span class="var">C</span><sub>mère</sub> × <span class="var">V</span><sub>mère</sub> = <span class="var">C</span><sub>fille</sub> × <span class="var">V</span><sub>fille</sub>.<br>c. Un volume précis se prélève avec une <strong>pipette jaugée</strong> (ici de 10,0 mL).<br>d. La fiole jaugée doit avoir le volume de la solution fille : <strong>50,0 mL</strong>.'
+  },
+  6: {
+    champs: [
+      { id: 'ex6-a', type: 'num', val: 6, tol: 0.01, sol: '6' },
+      { id: 'ex6-b', type: 'num', val: 8, tol: 0.01, sol: '8' },
+      { id: 'ex6-c', type: 'intervalle', min: 6.01, max: 7.99, sol: '7 (toute valeur strictement comprise entre 6 et 8)' }
+    ],
+    explication: 'La teinte de S est plus foncée que celle de l’étalon à 6 g·L<sup>−1</sup> et plus claire que celle de l’étalon à 8 g·L<sup>−1</sup>. Donc <strong>6 g·L<sup>−1</sup> &lt; <span class="var">C</span><sub>S</sub> &lt; 8 g·L<sup>−1</sup></strong>, et on peut estimer <span class="var">C</span><sub>S</sub> ≈ <strong>7 g·L<sup>−1</sup></strong>. Une échelle de teintes donne seulement un <strong>encadrement</strong> de la concentration.'
+  }
+};
+
+const reussis = new Set();
+const NB_EXOS = Object.keys(EXOS).length;
+
+function testerChamp(c) {
+  const el = document.getElementById(c.id);
+  const v = el.value;
+  if (c.type === 'num') { const x = num(v); return x !== null && Math.abs(x - c.val) <= c.tol; }
+  if (c.type === 'intervalle') { const x = num(v); return x !== null && x >= c.min && x <= c.max; }
+  if (c.type === 'texte') return c.re.test(norm(v));
+  if (c.type === 'choix') return v === c.val;
+  return false;
+}
+
+function verifier(n) {
+  const ex = EXOS[n];
+  let nbOk = 0, vides = 0;
+  ex.champs.forEach(c => {
+    const el = document.getElementById(c.id);
+    el.classList.remove('ok', 'ko');
+    if (!el.value.trim()) { vides++; return; }
+    const ok = testerChamp(c);
+    el.classList.add(ok ? 'ok' : 'ko');
+    if (ok) nbOk++;
+  });
+  const fb = document.getElementById('fb' + n);
+  const total = ex.champs.length;
+  if (vides === total) {
+    fb.className = 'feedback show ko';
+    fb.innerHTML = 'Complète les cases avant de vérifier.';
+    return;
+  }
+  if (nbOk === total) {
+    fb.className = 'feedback show ok';
+    fb.innerHTML = '<strong>✓ Bravo, tout est juste !</strong><br>' + ex.explication;
+    document.getElementById('ex' + n).classList.add('correct');
+    document.getElementById('corr' + n).classList.remove('show');
+    if (!reussis.has(n)) { reussis.add(n); majScore(); }
+  } else {
+    fb.className = 'feedback show ko';
+    fb.innerHTML = '<strong>✗ ' + nbOk + ' réponse' + (nbOk > 1 ? 's' : '') + ' juste' + (nbOk > 1 ? 's' : '') + ' sur ' + total + '.</strong> ' +
+      (vides ? 'Il reste ' + vides + ' case' + (vides > 1 ? 's' : '') + ' vide' + (vides > 1 ? 's' : '') + '. ' : '') +
+      'Corrige les cases en rouge, puis vérifie à nouveau.';
+    document.getElementById('corr' + n).classList.add('show');
+  }
+}
+
+function corriger(n) {
+  const ex = EXOS[n];
+  const fb = document.getElementById('fb' + n);
+  const liste = ex.champs.map(c => c.sol);
+  fb.className = 'feedback show corr';
+  fb.innerHTML = '<strong>Correction</strong><br>' + ex.explication +
+    '<br><span style="font-size:12.5px;color:#4a6a90;">Réponses attendues : ' + liste.join(' · ') + '</span>';
+}
+
+function majScore() {
+  document.getElementById('score-display').textContent = reussis.size + ' / ' + NB_EXOS;
+  document.getElementById('score-bar').style.width = Math.round(reussis.size / NB_EXOS * 100) + '%';
+}
+
+// Entrée = vérifier
+document.querySelectorAll('.exercice input.blank').forEach(inp => {
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') verifier(parseInt(inp.id.match(/^ex(\d+)/)[1], 10));
+  });
+});
+
+/* ---------- Échelle de teintes (SVG) ---------- */
+(function dessinerTubes() {
+  const g = document.getElementById('tubes');
+  const coul = c => { const t = c / 10; return `rgb(${Math.round(225 - 205 * t)},${Math.round(240 - 160 * t)},${Math.round(252 - 82 * t)})`; };
+  const tubes = [
+    { x: 70, c: 2, lab: '2' }, { x: 160, c: 4, lab: '4' }, { x: 250, c: 6, lab: '6' },
+    { x: 340, c: 8, lab: '8' }, { x: 430, c: 10, lab: '10' }, { x: 590, c: 7, lab: 'S', inconnu: true }
+  ];
+  let s = '';
+  tubes.forEach(t => {
+    const w = 34, top = 30, liq = 70, bas = 165;
+    const corps = `M${t.x - w / 2},${top} L${t.x - w / 2},${bas} A${w / 2},${w / 2} 0 0 0 ${t.x + w / 2},${bas} L${t.x + w / 2},${top}`;
+    const liquide = `M${t.x - w / 2},${liq} L${t.x - w / 2},${bas} A${w / 2},${w / 2} 0 0 0 ${t.x + w / 2},${bas} L${t.x + w / 2},${liq} Z`;
+    s += `<path d="${liquide}" fill="${coul(t.c)}"/>`;
+    s += `<path d="${corps}" fill="none" stroke="#4a4a4a" stroke-width="2"/>`;
+    s += `<text x="${t.x}" y="204" text-anchor="middle" font-size="${t.inconnu ? 16 : 14}" font-weight="600" fill="${t.inconnu ? '#c0392b' : '#1e1e1e'}">${t.lab}</text>`;
+  });
+  s += `<line x1="510" y1="25" x2="510" y2="190" stroke="#dddbd4" stroke-width="2" stroke-dasharray="5 5"/>`;
+  s += `<text x="250" y="18" text-anchor="middle" font-size="12" fill="#7a7a7a">Solutions étalons</text>`;
+  s += `<text x="590" y="18" text-anchor="middle" font-size="12" fill="#c0392b">Solution inconnue</text>`;
+  g.innerHTML = s;
+})();
+
+/* ---------- Exercice d'application final : analyse et correction ---------- */
+const CORRIGE = {
+  1: 'La concentration en masse <span class="var">C</span><sub>m</sub> d’un soluté est le quotient de la masse de soluté dissous par le volume de la solution : <span class="var">C</span><sub>m</sub> = <span class="var">m</span><sub>soluté</sub> / <span class="var">V</span><sub>solution</sub>. Elle s’exprime en <strong>g·L<sup>−1</sup></strong>.',
+  2: '<strong>Réponse B.</strong> <span class="var">F</span> = <span class="var">C</span><sub>mère</sub> / <span class="var">C</span><sub>fille</sub> = 4, donc <span class="var">C</span><sub>fille</sub> = <span class="var">C</span><sub>mère</sub> / 4 : la solution fille est 4 fois moins concentrée.',
+  3: '400 mL = 400.10<sup>−3</sup> L, donc <span class="var">C</span><sub>m</sub> = <span class="var">m</span> / <span class="var">V</span> = 12 / (400.10<sup>−3</sup>) = <strong>30 g·L<sup>−1</sup></strong>.',
+  4: '<span class="var">F</span> = <span class="var">C</span><sub>mère</sub> / <span class="var">C</span><sub>fille</sub> = 50 / 5,0 = 10, donc <span class="var">V</span><sub>mère</sub> = <span class="var">V</span><sub>fille</sub> / <span class="var">F</span> = 200,0 / 10 = <strong>20,0 mL</strong>. On peut aussi écrire <span class="var">V</span><sub>mère</sub> = <span class="var">C</span><sub>fille</sub> × <span class="var">V</span><sub>fille</sub> / <span class="var">C</span><sub>mère</sub> = 5,0 × 200,0 / 50.',
+  5: 'Lors d’une dilution, on ajoute seulement du solvant (de l’eau) : la <strong>masse de soluté se conserve</strong>, donc <span class="var">m</span><sub>mère</sub> = <span class="var">m</span><sub>fille</sub>. Or <span class="var">m</span> = <span class="var">C</span><sub>m</sub> × <span class="var">V</span>, d’où <span class="var">C</span><sub>mère</sub> × <span class="var">V</span><sub>mère</sub> = <span class="var">C</span><sub>fille</sub> × <span class="var">V</span><sub>fille</sub>.'
+};
+
+// Critères d'analyse des réponses rédigées (0,5 pt chacun)
+const CRITERES = {
+  1: [
+    { re: /masse.{0,25}(solute|dissous)|(solute|dissous).{0,25}masse/, ok: 'tu parles de la masse de soluté', ko: 'il faut parler de la <strong>masse de soluté</strong> (et non de la masse de la solution)' },
+    { re: /volume/, ok: 'tu parles du volume', ko: 'il manque le <strong>volume de solution</strong>' },
+    { re: /quotient|divis|rapport|par litre|par l\b|\/|sur le volume|sur v|par (le )?volume/, ok: 'tu indiques qu’on divise la masse par le volume', ko: 'il faut dire qu’on <strong>divise</strong> la masse par le volume (quotient)' },
+    { re: /g\s*[\/.·]?\s*l|g\s*l\s*-?\s*1|gramme.{0,4}par.{0,3}litre/, ok: 'l’unité g·L⁻¹ est donnée', ko: 'il manque l’<strong>unité</strong> : g·L<sup>−1</sup>' }
+  ],
+  5: [
+    { re: /conserv|ne change pas|ne varie pas|reste (la )?(meme|identique|constante)|meme masse|identique/, ok: 'tu évoques la conservation', ko: 'l’idée clé manque : quelque chose <strong>se conserve</strong>' },
+    { re: /masse/, ok: 'tu identifies la grandeur conservée : la masse', ko: 'précise que c’est la <strong>masse de soluté</strong> qui se conserve' },
+    { re: /ajout|eau|solvant/, ok: 'tu rappelles qu’on ajoute seulement du solvant', ko: 'rappelle qu’on n’ajoute que du <strong>solvant (eau)</strong>' },
+    { re: /m\s*=\s*c|c\s*m?\s*[x×*.]\s*v|c\s*[x×*.]\s*v|cm\s*v|concentration\s*(fois|x|×)\s*volume/, ok: 'tu utilises la relation m = C<sub>m</sub> × V', ko: 'il manque la relation <strong><span class="var">m</span> = <span class="var">C</span><sub>m</sub> × <span class="var">V</span></strong> qui permet de conclure' }
+  ]
+};
+
+const QCM_Q2 = {
+  A: 'Une dilution diminue la concentration : elle ne peut pas la rendre plus grande.',
+  B: '',
+  C: 'On ajoute du solvant : la masse de soluté est la même, mais dans un volume plus grand, donc la concentration diminue.',
+  D: 'Attention : c’est le facteur de dilution lui-même qui donne le rapport des concentrations, ici 4 et non 2.'
+};
+
+let evalQ2sel = null;
+document.querySelectorAll('.eval-choice[data-q="2"]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    if (this.disabled) return;
+    document.querySelectorAll('.eval-choice[data-q="2"]').forEach(b => b.classList.remove('sel'));
+    this.classList.add('sel');
+    evalQ2sel = this.dataset.v;
+  });
+});
+
+function analyserTexte(q, rep) {
+  const t = norm(rep);
+  const res = CRITERES[q].map(c => ({ ok: c.re.test(t), msg: c.re.test(t) ? c.ok : c.ko }));
+  const pts = res.filter(r => r.ok).length * 0.5;
+  const notes = res.map(r => (r.ok ? '✓ ' : '✗ ') + r.msg);
+  if (q === 1 && /masse\s+(de\s+la\s+|d\s*une\s+)?solution/.test(t))
+    notes.push('⚠ Attention : la « masse de la solution » correspond à la <strong>masse volumique</strong>, pas à la concentration en masse.');
+  return { pts, notes };
+}
+
+function analyserCalcul(q, rep) {
+  const v = num(rep);
+  const proche = (a, b, tol) => v !== null && Math.abs(a - b) <= tol;
+  if (v === null) return { pts: 0, notes: ['✗ Réponse non numérique : écris uniquement un nombre (ex. : 30 ou 30.10^0).'] };
+  if (q === 3) {
+    if (proche(v, 30, 0.5)) return { pts: 2, notes: ['✓ Bon calcul, avec le volume bien converti en litres.'] };
+    if (proche(v, 0.03, 0.001)) return { pts: 1, notes: ['✗ Le volume n’a pas été converti : 400 mL = 400.10<sup>−3</sup> L. Ta méthode est bonne, mais le résultat serait en g·mL<sup>−1</sup>.'] };
+    if (proche(v, 33.3, 0.5) || proche(v, 0.0333, 0.002)) return { pts: 0, notes: ['✗ Tu as inversé le calcul : on divise la <strong>masse</strong> par le <strong>volume</strong>, pas l’inverse.'] };
+    if (proche(v, 4.8, 0.1) || proche(v, 4800, 1)) return { pts: 0, notes: ['✗ Tu as multiplié la masse par le volume : il faut les <strong>diviser</strong>.'] };
+    return { pts: 0, notes: ['✗ Résultat incorrect. Utilise <span class="var">C</span><sub>m</sub> = <span class="var">m</span> / <span class="var">V</span>, avec <span class="var">V</span> en litres.'] };
+  }
+  if (q === 4) {
+    if (proche(v, 20, 0.2)) return { pts: 2, notes: ['✓ Bon calcul du volume à prélever.'] };
+    if (proche(v, 0.02, 0.0005)) return { pts: 1, notes: ['✗ Ton résultat est juste mais en litres : 20.10<sup>−3</sup> L = 20 mL. La réponse était demandée en mL.'] };
+    if (proche(v, 2000, 5)) return { pts: 0, notes: ['✗ Tu as multiplié par le facteur de dilution : <span class="var">V</span><sub>mère</sub> = <span class="var">V</span><sub>fille</sub> / <span class="var">F</span>. Le volume prélevé est toujours <strong>plus petit</strong> que le volume final.'] };
+    if (proche(v, 10, 0.01)) return { pts: 0.5, notes: ['✗ 10 est le facteur de dilution <span class="var">F</span>, pas le volume : il faut encore calculer <span class="var">V</span><sub>fille</sub> / <span class="var">F</span>.'] };
+    if (proche(v, 1, 0.01)) return { pts: 0, notes: ['✗ Vérifie ta relation : <span class="var">V</span><sub>mère</sub> = <span class="var">C</span><sub>fille</sub> × <span class="var">V</span><sub>fille</sub> / <span class="var">C</span><sub>mère</sub>.'] };
+    return { pts: 0, notes: ['✗ Résultat incorrect. Calcule d’abord <span class="var">F</span> = <span class="var">C</span><sub>mère</sub> / <span class="var">C</span><sub>fille</sub>, puis <span class="var">V</span><sub>mère</sub> = <span class="var">V</span><sub>fille</sub> / <span class="var">F</span>.'] };
+  }
+}
+
+const fr = x => String(x).replace('.', ',');
+
+function verifierResultats() {
+  const rep1 = document.getElementById('rep1').value.trim();
+  const rep3 = document.getElementById('rep3').value.trim();
+  const rep4 = document.getElementById('rep4').value.trim();
+  const rep5 = document.getElementById('rep5').value.trim();
+
+  if (!rep1 || !evalQ2sel || !rep3 || !rep4 || !rep5) {
+    let msg = document.getElementById('msg-manque');
+    if (!msg) {
+      msg = document.createElement('p'); msg.id = 'msg-manque';
+      msg.style.cssText = 'color:#c0392b;font-size:13px;text-align:center;margin-top:.8rem;';
+      document.getElementById('btn-verif-eval').insertAdjacentElement('afterend', msg);
+    }
+    msg.textContent = 'Répondez à toutes les questions avant de vérifier vos résultats.';
+    return;
+  }
+
+  document.getElementById('btn-verif-eval').disabled = true;
+  document.querySelectorAll('.eval-textarea,.eval-input,.eval-choice').forEach(el => el.disabled = true);
+  const m = document.getElementById('msg-manque'); if (m) m.remove();
+
+  const detail = [];
+  const a1 = analyserTexte(1, rep1);
+  detail.push({ q: 1, label: 'Q1 — Définition de la concentration en masse', reponse: rep1, ...a1 });
+
+  const ok2 = evalQ2sel === 'B';
+  detail.push({ q: 2, label: 'Q2 — Effet d’une dilution', reponse: 'Réponse ' + evalQ2sel, pts: ok2 ? 2 : 0,
+    notes: [ok2 ? '✓ Bonne réponse.' : '✗ ' + QCM_Q2[evalQ2sel]] });
+
+  const a3 = analyserCalcul(3, rep3);
+  detail.push({ q: 3, label: 'Q3 — Calcul d’une concentration en masse', reponse: rep3 + ' g·L⁻¹', ...a3 });
+
+  const a4 = analyserCalcul(4, rep4);
+  detail.push({ q: 4, label: 'Q4 — Volume de solution mère à prélever', reponse: rep4 + ' mL', ...a4 });
+
+  const a5 = analyserTexte(5, rep5);
+  detail.push({ q: 5, label: 'Q5 — Justification de la relation de dilution', reponse: rep5, ...a5 });
+
+  const total = detail.reduce((s, d) => s + d.pts, 0);
+
+  let mention, couleurTop, couleurNote;
+  if (total >= 9)      { mention = 'Très bien !';    couleurTop = '#e8f8f0'; couleurNote = '#0e7c5b'; }
+  else if (total >= 7) { mention = 'Bien';           couleurTop = '#eef4ff'; couleurNote = '#1a5fa8'; }
+  else if (total >= 5) { mention = 'Assez bien';     couleurTop = '#fff8e8'; couleurNote = '#c8620a'; }
+  else                 { mention = 'À retravailler'; couleurTop = '#fdf0f0'; couleurNote = '#c0392b'; }
+
+  const top = document.getElementById('res-top');
+  top.style.background = couleurTop;
+  top.innerHTML = `
+    <div class="res-note" style="color:${couleurNote};">${fr(total)}<span style="font-size:1.5rem;color:var(--texte-3);"> / 10</span></div>
+    <p class="res-mention" style="color:${couleurNote};">${mention}</p>
+    <p class="res-sous">${total === 10 ? 'Score parfait : toutes les compétences sont maîtrisées.' : 'Lis l’analyse de chaque réponse et la correction ci-dessous.'}</p>
+    <p class="res-sous" style="font-size:12px;margin-top:.4rem;">Les réponses rédigées (Q1 et Q5) sont analysées automatiquement à partir des idées attendues : relis la correction pour vérifier ta formulation.</p>`;
+
+  document.getElementById('res-detail-content').innerHTML = detail.map(d => {
+    const plein = d.pts === 2, nul = d.pts === 0;
+    const coul = plein ? '#0e7c5b' : (nul ? '#c0392b' : '#c8620a');
+    return `
+    <div class="res-ligne">
+      <span class="res-icone" style="color:${coul};">${plein ? '✓' : (nul ? '✗' : '≈')}</span>
+      <div class="res-q">
+        <div style="font-weight:600;color:var(--texte);">${d.label}</div>
+        <div class="res-rep">Ta réponse : <em>${escapeHtml(d.reponse)}</em></div>
+        <ul class="res-analyse">${d.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+        <div class="res-correction">${'<strong>Correction :</strong> ' + CORRIGE[d.q]}</div>
+      </div>
+      <span class="res-pts" style="color:${coul};">${fr(d.pts)} / 2</span>
+    </div>`;
+  }).join('');
+
+  // Détail pour l'enseignant (F12 → Console)
+  console.group('%c📋 RÉSULTATS — ' + new Date().toLocaleTimeString('fr-FR'), 'font-size:14px;font-weight:bold;color:#2c1a4a;');
+  console.log('%cNote finale : %c' + fr(total) + ' / 10 (' + mention + ')', 'font-size:13px;color:#555;', 'font-size:16px;font-weight:bold;color:' + couleurNote);
+  detail.forEach(d => {
+    console.group(d.label + ' — ' + fr(d.pts) + '/2');
+    console.log('Réponse élève : ' + d.reponse);
+    console.log('Analyse : ' + d.notes.map(n => n.replace(/<[^>]+>/g, '')).join(' | '));
+    console.groupEnd();
+  });
+  console.groupEnd();
+
+  document.getElementById('btn-recommencer').style.display = 'block';
+  const res = document.getElementById('eval-resultat');
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function recommencerEval() {
+  document.querySelectorAll('.eval-textarea,.eval-input').forEach(el => { el.disabled = false; el.value = ''; });
+  document.querySelectorAll('.eval-choice').forEach(el => { el.disabled = false; el.classList.remove('sel'); });
+  evalQ2sel = null;
+  document.getElementById('btn-verif-eval').disabled = false;
+  document.getElementById('btn-recommencer').style.display = 'none';
+  document.getElementById('eval-resultat').classList.remove('show');
+  document.getElementById('evaluation').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+</script>
+</body>
+</html>

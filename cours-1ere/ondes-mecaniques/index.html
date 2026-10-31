@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapitre — Les ondes mécaniques</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --vert:#0e7c5b; --vert-clair:#d4efe6; --vert-pale:#f0faf6;
+  --bleu:#1a5fa8; --bleu-clair:#ddeaf9;
+  --orange:#c8620a; --orange-clair:#fdecd8;
+  --rouge:#c0392b;
+  --gris-bg:#f7f6f2; --gris-bord:#dddbd4;
+  --texte:#1e1e1e; --texte-2:#4a4a4a; --texte-3:#7a7a7a;
+  --blanc:#ffffff;
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--gris-bg);color:var(--texte);line-height:1.7;padding:2rem 1rem 4rem;}
+.page{max-width:780px;margin:0 auto;background:var(--blanc);border-radius:12px;box-shadow:0 2px 16px rgba(0,0,0,.07);overflow:hidden;}
+
+/* EN-TÊTE */
+.header{background:var(--vert);color:var(--blanc);padding:2.5rem 2.5rem 2rem;position:relative;overflow:hidden;}
+.header::after{content:'';position:absolute;bottom:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06);}
+.header .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;margin-bottom:.9rem;color:rgba(255,255,255,.92);}
+.header h1{font-family:var(--serif);font-size:2rem;font-weight:600;line-height:1.25;margin-bottom:.4rem;}
+.header .sous{font-size:15px;color:rgba(255,255,255,.75);font-style:italic;}
+
+/* SOMMAIRE */
+.sommaire{background:var(--vert-pale);border-bottom:1px solid var(--gris-bord);padding:1.2rem 2.5rem;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;}
+.sommaire a{font-size:13px;color:var(--vert);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;}
+.sommaire a:hover{text-decoration:underline;}
+.sommaire a .num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--vert);color:white;font-size:11px;}
+
+/* BARRE DE PROGRESSION (exercices) */
+.score-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:1rem;background:var(--vert-pale);border-bottom:1px solid var(--vert-clair);padding:.7rem 2.5rem;font-size:14px;}
+.score-val{font-weight:600;color:var(--vert);font-size:15px;white-space:nowrap;}
+.score-progress{flex:1;height:6px;background:var(--vert-clair);border-radius:3px;overflow:hidden;}
+.score-progress-inner{height:100%;background:var(--vert);border-radius:3px;transition:width .4s ease;width:0%;}
+
+/* CORPS */
+.corps{padding:0 2.5rem 2.5rem;}
+.section{padding-top:2.5rem;}
+.section-titre{display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;padding-bottom:.7rem;border-bottom:2px solid var(--vert-clair);}
+.section-titre .num{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--vert);color:white;font-size:15px;font-weight:600;flex-shrink:0;}
+.section-titre h2{font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--vert);}
+.corps > .section > p, .section > p{font-size:14.5px;margin-bottom:.8rem;}
+
+/* BLOCS */
+.def{border-left:4px solid var(--vert);background:var(--vert-pale);border-radius:0 8px 8px 0;padding:.9rem 1.2rem;margin-bottom:1rem;}
+.def .label,.retenir .label,.exemple .label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--vert);margin-bottom:.35rem;}
+.def p{font-size:14.5px;color:var(--texte);line-height:1.65;}
+.def p + p{margin-top:.4rem;}
+.retenir{background:var(--vert-clair);border-radius:8px;padding:.9rem 1.2rem;margin:1rem 0;}
+.retenir .label{color:var(--vert);}
+.retenir p,.retenir li{font-size:14px;color:#0a4a33;line-height:1.65;}
+.retenir ol,.retenir ul{padding-left:1.2rem;}
+.retenir li{margin-bottom:.2rem;}
+.exemple{background:var(--gris-bg);border:1px solid var(--gris-bord);border-radius:8px;padding:.9rem 1.2rem;margin-bottom:1rem;}
+.exemple .label{color:var(--texte-3);}
+.exemple p,.exemple li{font-size:14px;color:var(--texte-2);line-height:1.6;}
+.exemple ul{padding-left:1.2rem;}
+.exemple.attention{background:#fdf0f0;border-color:#f5c0c0;}
+.exemple.attention .label{color:var(--rouge);}
+.exemple.attention p{color:#7a1515;}
+.formule{text-align:center;font-family:var(--serif);font-size:1.3rem;color:var(--vert);background:var(--vert-pale);border:1px solid var(--vert-clair);border-radius:8px;padding:.9rem 1rem;margin:1rem 0;letter-spacing:.02em;}
+.formule .unites{display:block;font-family:var(--sans);font-size:13px;color:var(--texte-2);margin-top:.5rem;letter-spacing:0;}
+.frac{display:inline-block;text-align:center;vertical-align:middle;}
+.frac > span{display:block;padding:0 6px;}
+.frac > span:first-child{border-bottom:2px solid var(--vert);}
+.schema{border:1px solid var(--gris-bord);border-radius:10px;background:var(--gris-bg);margin:1rem 0;overflow:hidden;}
+.schema svg{display:block;width:100%;height:auto;}
+.schema-legende{font-size:12px;color:var(--texte-3);text-align:center;padding:.4rem 1rem .7rem;font-style:italic;}
+.deux-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;}
+.prop-card{border:1px solid var(--gris-bord);border-radius:8px;padding:.9rem 1rem;background:var(--blanc);}
+.prop-card .titre{font-size:13px;font-weight:600;color:var(--texte);margin-bottom:.3rem;}
+.prop-card .desc{font-size:13px;color:var(--texte-2);line-height:1.5;}
+.card-bleu{border-top:3px solid var(--bleu);background:var(--bleu-clair);}
+.card-bleu .titre{color:var(--bleu);} .card-bleu .desc{color:#1a3a60;}
+.card-orange{border-top:3px solid var(--orange);background:var(--orange-clair);}
+.card-orange .titre{color:var(--orange);} .card-orange .desc{color:#5a2d0a;}
+.sep{border:none;border-top:1px solid var(--gris-bord);margin:2rem 0 0;}
+strong{font-weight:600;} em{font-style:italic;} sub{font-size:.75em;}
+.var{font-family:var(--serif);font-style:italic;}
+
+/* VIDÉOS */
+.videos{border:1px solid var(--gris-bord);border-radius:10px;margin:1.2rem 0 0;overflow:hidden;}
+.videos .v-titre{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-3);padding:.6rem 1rem;background:var(--gris-bg);border-bottom:1px solid var(--gris-bord);}
+.video{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;text-decoration:none;color:var(--texte);border-bottom:1px solid var(--gris-bord);transition:background .15s;}
+.video:last-child{border-bottom:none;}
+.video:hover{background:var(--vert-pale);}
+.play{display:flex;align-items:center;justify-content:center;width:34px;height:24px;border-radius:6px;background:#d93025;flex-shrink:0;}
+.play::after{content:'';border-left:9px solid white;border-top:5.5px solid transparent;border-bottom:5.5px solid transparent;margin-left:2px;}
+.video .vt{font-size:14px;font-weight:600;line-height:1.35;}
+.video .vs{font-size:12px;color:var(--texte-3);}
+
+/* EXERCICES */
+.exercice{border:1px solid var(--gris-bord);border-radius:10px;margin-top:1.5rem;overflow:hidden;transition:border-color .2s;}
+.exercice.correct{border-color:var(--vert);}
+.ex-header{display:flex;align-items:flex-start;gap:12px;padding:1rem 1.2rem;background:#eef3fa;border-bottom:1px solid var(--gris-bord);}
+.ex-num{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#1a3a60;color:white;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px;}
+.exercice.correct .ex-num{background:var(--vert);}
+.ex-type{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#1a3a60;margin-bottom:3px;}
+.ex-question{font-size:14.5px;color:var(--texte);line-height:1.55;}
+.ex-body{padding:1rem 1.2rem;}
+.q-row{display:block;margin-bottom:.6rem;font-size:14px;line-height:2.5;}
+.q-row .ql{display:inline-block;font-weight:600;color:#1a3a60;min-width:1.6rem;}
+.blank{border:1.5px dashed #9fb3cc;border-radius:8px;padding:.4rem .7rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:#fbfcfe;width:130px;outline:none;margin:0 4px;line-height:1.4;transition:border-color .15s,background .15s;}
+.blank.large{width:210px;}
+.blank:focus{border-style:solid;border-color:var(--bleu);background:var(--blanc);}
+select.blank{width:auto;max-width:100%;cursor:pointer;}
+.blank.ok{border-style:solid;border-color:var(--vert);background:var(--vert-pale);}
+.blank.ko{border-style:solid;border-color:var(--rouge);background:#fdf0f0;}
+.u{color:var(--texte-3);}
+.ex-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:.4rem;}
+.btn-verif{padding:.55rem 1.3rem;border-radius:8px;border:1.5px solid #1a3a60;background:#1a3a60;color:white;font-family:var(--sans);font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s;}
+.btn-verif:hover{background:#12294a;}
+.btn-corr{padding:.55rem 1.1rem;border-radius:8px;border:1.5px solid var(--gris-bord);background:var(--blanc);color:var(--texte-2);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;display:none;}
+.btn-corr.show{display:inline-block;}
+.btn-corr:hover{border-color:var(--texte-3);}
+.feedback{margin-top:.8rem;padding:.7rem 1rem;border-radius:8px;font-size:13.5px;line-height:1.6;display:none;}
+.feedback.show{display:block;}
+.feedback.ok{background:var(--vert-pale);color:#0a4a33;border:1px solid var(--vert-clair);}
+.feedback.ko{background:#fdf0f0;color:#7a1515;border:1px solid #f5c0c0;}
+.feedback.corr{background:#eef3fa;color:#1a3a60;border:1px solid #c9d8ec;}
+
+/* ÉVALUATION */
+.eval-header{background:#2c1a4a;color:white;padding:2rem 2.5rem 1.6rem;position:relative;overflow:hidden;}
+.eval-header::after{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.eval-header .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,0.15);border-radius:20px;padding:3px 12px;margin-bottom:.8rem;color:rgba(255,255,255,0.85);}
+.eval-header h2{font-family:var(--serif);font-size:1.5rem;font-weight:600;margin-bottom:.3rem;}
+.eval-header p{font-size:14px;color:rgba(255,255,255,0.65);}
+.eval-consignes{background:#f5f0ff;border-bottom:1px solid #d8ccf0;padding:1rem 2.5rem;display:flex;gap:.5rem 2rem;flex-wrap:wrap;}
+.consigne-item{display:flex;align-items:center;gap:8px;font-size:13px;color:#3a2060;}
+.consigne-item .dot{width:8px;height:8px;border-radius:50%;background:#7c4dff;flex-shrink:0;}
+.eval-corps{padding:0 2.5rem 2rem;}
+.eq{margin-top:2rem;border:1px solid var(--gris-bord);border-radius:10px;overflow:hidden;}
+.eq-header{display:flex;align-items:flex-start;gap:12px;padding:.9rem 1.2rem;background:#faf8ff;border-bottom:1px solid var(--gris-bord);}
+.eq-num{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#2c1a4a;color:white;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px;}
+.eq-meta{flex:1;}
+.eq-intitule{font-size:14.5px;color:var(--texte);font-weight:600;line-height:1.5;}
+.eq-pts{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7c4dff;white-space:nowrap;margin-top:2px;}
+.eq-body{padding:1rem 1.2rem;}
+.eval-textarea{width:100%;border:1.5px solid var(--gris-bord);border-radius:8px;padding:.7rem 1rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:var(--blanc);resize:vertical;min-height:70px;outline:none;transition:border-color .15s;line-height:1.6;}
+.eval-textarea:focus{border-color:#7c4dff;}
+.eval-textarea:disabled{background:var(--gris-bg);color:var(--texte-2);}
+.eval-input{border:1.5px solid var(--gris-bord);border-radius:8px;padding:.5rem .9rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:var(--blanc);width:130px;outline:none;transition:border-color .15s;}
+.eval-input:focus{border-color:#7c4dff;}
+.eval-input:disabled{background:var(--gris-bg);}
+.eval-choice{display:flex;align-items:center;gap:10px;border:1.5px solid var(--gris-bord);border-radius:8px;padding:.6rem 1rem;background:var(--blanc);cursor:pointer;font-family:var(--sans);font-size:14px;color:var(--texte);text-align:left;transition:all .15s;width:100%;margin-bottom:8px;}
+.eval-choice:hover:not(:disabled){border-color:#7c4dff;background:#f5f0ff;}
+.eval-choice:disabled{cursor:default;}
+.eval-choice.sel{border-color:#7c4dff;background:#f5f0ff;}
+.eval-cletter{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--gris-bord);font-size:12px;font-weight:600;flex-shrink:0;color:var(--texte-2);}
+.btn-remettre{display:block;margin:2rem auto 0;padding:.8rem 2.5rem;border-radius:10px;border:none;background:#2c1a4a;color:white;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;transition:background .15s;letter-spacing:.02em;}
+.btn-remettre:hover{background:#1e1035;}
+.btn-remettre:disabled{opacity:.45;cursor:default;}
+.eval-resultat{display:none;margin:2rem 0 0;border-radius:12px;overflow:hidden;border:1px solid var(--gris-bord);}
+.eval-resultat.show{display:block;}
+.res-top{padding:2rem 2.5rem;text-align:center;}
+.res-note{font-family:var(--serif);font-size:3.5rem;font-weight:600;line-height:1;margin-bottom:.5rem;}
+.res-mention{font-size:16px;font-weight:600;margin-bottom:.3rem;}
+.res-sous{font-size:14px;color:var(--texte-2);}
+.res-detail{border-top:1px solid var(--gris-bord);padding:1.2rem 2rem;background:var(--gris-bg);}
+.res-detail-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-3);margin-bottom:.8rem;}
+.res-ligne{display:flex;align-items:flex-start;gap:10px;padding:.6rem 0;border-bottom:1px solid var(--gris-bord);font-size:13.5px;}
+.res-ligne:last-child{border-bottom:none;}
+.res-icone{font-size:14px;flex-shrink:0;margin-top:2px;}
+.res-q{flex:1;color:var(--texte-2);line-height:1.5;}
+.res-pts{font-weight:600;white-space:nowrap;}
+.res-correction{font-size:12.5px;color:#0a4a33;background:var(--vert-pale);border-radius:6px;padding:4px 10px;margin-top:4px;display:inline-block;border:1px solid var(--vert-clair);}
+.res-correction.ko{color:#7a1515;background:#fdf0f0;border-color:#f5c0c0;}
+.res-correction{display:block;font-size:13px;line-height:1.6;padding:.5rem .8rem;margin-top:.5rem;}
+.res-rep{font-size:13px;color:var(--texte-2);margin-top:.2rem;word-break:break-word;}
+.res-analyse{list-style:none;margin:.35rem 0 0;font-size:13px;line-height:1.55;}
+.res-analyse li{margin-bottom:.15rem;}
+.btn-recommencer{display:none;margin:1rem auto 0;padding:.6rem 1.6rem;border-radius:10px;border:1.5px solid #2c1a4a;background:white;color:#2c1a4a;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;}
+.btn-recommencer:hover{background:#f5f0ff;}
+
+@media(max-width:540px){
+  body{padding:1rem .5rem 3rem;}
+  .corps,.eval-corps{padding:0 1.2rem 2rem;}
+  .header{padding:1.8rem 1.2rem 1.5rem;}
+  .sommaire,.score-bar,.eval-consignes{padding-left:1.2rem;padding-right:1.2rem;}
+  .eval-header{padding:1.6rem 1.2rem 1.4rem;}
+  .deux-col{grid-template-columns:1fr;}
+  .formule{font-size:1.1rem;}
+}
+
+/* ---- Ajouts chapitre 4 ---- */
+.iso{display:inline-flex;align-items:center;font-family:var(--serif);white-space:nowrap;font-size:1.2em;}
+.iso .az{display:inline-flex;flex-direction:column;align-items:flex-end;font-size:.62em;line-height:1.05;margin-right:1px;}
+.frise{list-style:none;position:relative;margin:1rem 0 1rem .4rem;padding-left:1.4rem;border-left:3px solid var(--vert-clair);}
+.frise li{position:relative;margin-bottom:.75rem;font-size:14px;line-height:1.5;display:grid;grid-template-columns:7rem 1fr;column-gap:.8rem;align-items:start;}
+.frise li::before{content:'';position:absolute;left:-1.4rem;top:.35rem;width:13px;height:13px;border-radius:50%;background:var(--vert);transform:translateX(-8px);border:2px solid white;box-shadow:0 0 0 1px var(--vert);}
+.frise .date{font-weight:700;color:var(--vert);}
+@media(max-width:540px){.frise li{grid-template-columns:1fr;}}
+.legende-frise{background:var(--gris-bg);border:1px solid var(--gris-bord);border-radius:8px;padding:.6rem 1rem;margin:-.2rem 0 1rem;}
+.legende-frise p{display:flex;align-items:flex-start;gap:.6rem;font-size:13px;color:var(--texte-2);line-height:1.5;margin:.15rem 0;}
+.legende-frise .pt{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:.25rem;}
+.pt-orange{background:var(--orange);} .pt-vert{background:var(--vert);}
+.frise li.cle::before{background:var(--orange);box-shadow:0 0 0 1px var(--orange);}
+.frise li.cle .date{color:var(--orange);}
+.tab{width:100%;border-collapse:collapse;font-size:14px;margin:.6rem 0 1rem;}
+.tab th,.tab td{border:1px solid var(--gris-bord);padding:7px 10px;text-align:center;}
+.tab th{background:var(--vert-pale);color:var(--vert);font-weight:600;}
+.tab td:first-child{text-align:left;font-weight:600;background:var(--gris-bg);}
+.tab-wrap{overflow-x:auto;}
+.tab .blank{width:70px;}
+.ion{font-family:var(--serif);}
+
+/* ---- Ajouts chapitre 8 ---- */
+.ex-body .schema{margin-bottom:.8rem;}
+/* Numéro du chapitre à compléter */
+.chap-num{width:2.6ch;font:inherit;color:inherit;text-align:center;background:rgba(255,255,255,.12);border:2px dashed rgba(255,255,255,.6);border-radius:8px;padding:0 .2rem;margin:0 .1rem;outline:none;vertical-align:baseline;line-height:1.1;}
+.chap-num:focus{border-style:solid;border-color:#fff;background:rgba(255,255,255,.2);}
+@media print{.chap-num{border:none;background:none;}}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header">
+    <span class="tag">Physique-chimie · Première spécialité</span>
+    <h1>Chapitre <input class="chap-num" id="chap-num" type="text" inputmode="numeric" maxlength="3" autocomplete="off" aria-label="Numéro du chapitre"> — Les ondes mécaniques</h1>
+    <p class="sous">Ondes et signaux&nbsp;: décrire et caractériser la propagation d'une onde mécanique</p>
+  </div>
+
+  <nav class="sommaire">
+    <a href="#s1"><span class="num">1</span>Onde mécanique</a>
+    <a href="#s2"><span class="num">2</span>Retard et célérité</a>
+    <a href="#s3"><span class="num">3</span>Ondes périodiques</a>
+    <a href="#s4"><span class="num">4</span>Double périodicité</a>
+    <a href="#s5"><span class="num">5</span>Réviser</a>
+    <a href="#evaluation"><span class="num">★</span>Exercice final</a>
+  </nav>
+
+  <div class="score-bar">
+    <span style="color:var(--texte-3);">Exercices réussis&nbsp;:</span>
+    <span class="score-val" id="score-display">0 / 4</span>
+    <div class="score-progress"><div class="score-progress-inner" id="score-bar"></div></div>
+  </div>
+
+  <div class="corps">
+
+    <!-- ================= 1. ONDE MÉCANIQUE ================= -->
+    <div class="section" id="s1">
+      <div class="section-titre"><span class="num">1</span><h2>Qu'est-ce qu'une onde mécanique progressive&nbsp;?</h2></div>
+
+      <p>Les vaguelettes créées par la chute d'un galet dans l'eau, les sons que nous entendons, les secousses d'un séisme&nbsp;: tous ces phénomènes sont des <strong>ondes mécaniques progressives</strong>.</p>
+
+      <div class="def">
+        <p class="label">Définition — Onde progressive</p>
+        <p>Une <strong>onde progressive</strong> est le phénomène de <strong>propagation d'une perturbation</strong> à partir d'une source. La perturbation avance à une vitesse finie appelée <strong>célérité</strong>.</p>
+        <p>Une fois la perturbation passée, le milieu retrouve son état initial&nbsp;: une onde transporte de l'<strong>énergie</strong>, mais <strong>pas de matière</strong>.</p>
+      </div>
+
+      <div class="def">
+        <p class="label">Définition — Onde mécanique</p>
+        <p>Une <strong>onde mécanique</strong> est la propagation d'une perturbation dans un <strong>milieu matériel</strong> élastique&nbsp;: un solide, un liquide ou un gaz.</p>
+        <p>Une onde mécanique ne peut <strong>pas se propager dans le vide</strong>.</p>
+      </div>
+
+      <p>Pour comprendre comment la perturbation avance, on modélise le milieu par des billes reliées par des ressorts. Quand une bille se déplace, elle entraîne sa voisine, qui entraîne la suivante, et ainsi de suite&nbsp;: la perturbation se propage <strong>de proche en proche</strong>.</p>
+      <div class="schema">
+        <svg role="img" aria-label="Modèle de proche en proche : billes reliées par des ressorts" viewBox="0 0 640 315" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3','Segoe UI',Arial,sans-serif">
+<defs>
+<marker id="pror" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto"><path d="M0,0 L0,10 L13,5 z" fill="#c0392b"/></marker>
+<marker id="prob" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#1a5fa8"/></marker>
+<marker id="prok" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#4a4a4a"/></marker>
+<marker id="prov" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#0e7c5b"/></marker>
+<marker id="proo" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#c8620a"/></marker>
+</defs>
+<rect width="640" height="315" fill="#f7f6f2"/>
+<text x="18" y="76" font-size="19" fill="#1e1e1e" font-style="italic" font-family="Lora,Georgia,serif">t<tspan font-size="14" dy="5">1</tspan></text>
+<path d="M70.0,58.0 L75.5,61.2 L81.0,49.5 L86.5,57.8 L92.0,46.0 L97.5,54.2 L103.0,42.5 L108.5,50.8 L114.0,44.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M114.0,44.0 L119.5,50.8 L125.0,42.5 L130.5,54.2 L136.0,46.0 L141.5,57.8 L147.0,49.5 L152.5,61.2 L158.0,58.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M158.0,58.0 L163.5,64.5 L169.0,56.0 L174.5,67.5 L180.0,59.0 L185.5,70.5 L191.0,62.0 L196.5,73.5 L202.0,70.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M202.0,70.0 L207.5,75.0 L213.0,65.0 L218.5,75.0 L224.0,65.0 L229.5,75.0 L235.0,65.0 L240.5,75.0 L246.0,70.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M246.0,70.0 L251.5,75.0 L257.0,65.0 L262.5,75.0 L268.0,65.0 L273.5,75.0 L279.0,65.0 L284.5,75.0 L290.0,70.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M290.0,70.0 L295.5,75.0 L301.0,65.0 L306.5,75.0 L312.0,65.0 L317.5,75.0 L323.0,65.0 L328.5,75.0 L334.0,70.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M334.0,70.0 L339.5,75.0 L345.0,65.0 L350.5,75.0 L356.0,65.0 L361.5,75.0 L367.0,65.0 L372.5,75.0 L378.0,70.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M378.0,70.0 L383.5,75.0 L389.0,65.0 L394.5,75.0 L400.0,65.0 L405.5,75.0 L411.0,65.0 L416.5,75.0 L422.0,70.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M422.0,70.0 L427.5,75.0 L433.0,65.0 L438.5,75.0 L444.0,65.0 L449.5,75.0 L455.0,65.0 L460.5,75.0 L466.0,70.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M466.0,70.0 L471.5,75.0 L477.0,65.0 L482.5,75.0 L488.0,65.0 L493.5,75.0 L499.0,65.0 L504.5,75.0 L510.0,70.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M510.0,70.0 L515.5,75.0 L521.0,65.0 L526.5,75.0 L532.0,65.0 L537.5,75.0 L543.0,65.0 L548.5,75.0 L554.0,70.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<circle cx="70" cy="58" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="114" cy="44" r="9" fill="#c8620a" stroke="white" stroke-width="1.5"/>
+<circle cx="158" cy="58" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="202" cy="70" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="246" cy="70" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="290" cy="70" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="334" cy="70" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="378" cy="70" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="422" cy="70" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="466" cy="70" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="510" cy="70" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="554" cy="70" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<line x1="70" y1="70" x2="554" y2="70" stroke="#7a7a7a" stroke-width="0.8" stroke-dasharray="3 4"/>
+<text x="18" y="166" font-size="19" fill="#1e1e1e" font-style="italic" font-family="Lora,Georgia,serif">t<tspan font-size="14" dy="5">2</tspan></text>
+<path d="M70.0,160.0 L75.5,165.0 L81.0,155.0 L86.5,165.0 L92.0,155.0 L97.5,165.0 L103.0,155.0 L108.5,165.0 L114.0,160.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M114.0,160.0 L119.5,165.0 L125.0,155.0 L130.5,165.0 L136.0,155.0 L141.5,165.0 L147.0,155.0 L152.5,165.0 L158.0,160.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M158.0,160.0 L163.5,163.5 L169.0,152.0 L174.5,160.5 L180.0,149.0 L185.5,157.5 L191.0,146.0 L196.5,154.5 L202.0,148.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M202.0,148.0 L207.5,151.2 L213.0,139.5 L218.5,147.8 L224.0,136.0 L229.5,144.2 L235.0,132.5 L240.5,140.8 L246.0,134.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M246.0,134.0 L251.5,140.8 L257.0,132.5 L262.5,144.2 L268.0,136.0 L273.5,147.8 L279.0,139.5 L284.5,151.2 L290.0,148.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M290.0,148.0 L295.5,154.5 L301.0,146.0 L306.5,157.5 L312.0,149.0 L317.5,160.5 L323.0,152.0 L328.5,163.5 L334.0,160.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M334.0,160.0 L339.5,165.0 L345.0,155.0 L350.5,165.0 L356.0,155.0 L361.5,165.0 L367.0,155.0 L372.5,165.0 L378.0,160.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M378.0,160.0 L383.5,165.0 L389.0,155.0 L394.5,165.0 L400.0,155.0 L405.5,165.0 L411.0,155.0 L416.5,165.0 L422.0,160.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M422.0,160.0 L427.5,165.0 L433.0,155.0 L438.5,165.0 L444.0,155.0 L449.5,165.0 L455.0,155.0 L460.5,165.0 L466.0,160.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M466.0,160.0 L471.5,165.0 L477.0,155.0 L482.5,165.0 L488.0,155.0 L493.5,165.0 L499.0,155.0 L504.5,165.0 L510.0,160.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M510.0,160.0 L515.5,165.0 L521.0,155.0 L526.5,165.0 L532.0,155.0 L537.5,165.0 L543.0,155.0 L548.5,165.0 L554.0,160.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<circle cx="70" cy="160" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="114" cy="160" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="158" cy="160" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="202" cy="148" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="246" cy="134" r="9" fill="#c8620a" stroke="white" stroke-width="1.5"/>
+<circle cx="290" cy="148" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="334" cy="160" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="378" cy="160" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="422" cy="160" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="466" cy="160" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="510" cy="160" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="554" cy="160" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<line x1="70" y1="160" x2="554" y2="160" stroke="#7a7a7a" stroke-width="0.8" stroke-dasharray="3 4"/>
+<text x="18" y="256" font-size="19" fill="#1e1e1e" font-style="italic" font-family="Lora,Georgia,serif">t<tspan font-size="14" dy="5">3</tspan></text>
+<path d="M70.0,250.0 L75.5,255.0 L81.0,245.0 L86.5,255.0 L92.0,245.0 L97.5,255.0 L103.0,245.0 L108.5,255.0 L114.0,250.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M114.0,250.0 L119.5,255.0 L125.0,245.0 L130.5,255.0 L136.0,245.0 L141.5,255.0 L147.0,245.0 L152.5,255.0 L158.0,250.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M158.0,250.0 L163.5,255.0 L169.0,245.0 L174.5,255.0 L180.0,245.0 L185.5,255.0 L191.0,245.0 L196.5,255.0 L202.0,250.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M202.0,250.0 L207.5,255.0 L213.0,245.0 L218.5,255.0 L224.0,245.0 L229.5,255.0 L235.0,245.0 L240.5,255.0 L246.0,250.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M246.0,250.0 L251.5,255.0 L257.0,245.0 L262.5,255.0 L268.0,245.0 L273.5,255.0 L279.0,245.0 L284.5,255.0 L290.0,250.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M290.0,250.0 L295.5,253.5 L301.0,242.0 L306.5,250.5 L312.0,239.0 L317.5,247.5 L323.0,236.0 L328.5,244.5 L334.0,238.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M334.0,238.0 L339.5,241.2 L345.0,229.5 L350.5,237.8 L356.0,226.0 L361.5,234.2 L367.0,222.5 L372.5,230.8 L378.0,224.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M378.0,224.0 L383.5,230.8 L389.0,222.5 L394.5,234.2 L400.0,226.0 L405.5,237.8 L411.0,229.5 L416.5,241.2 L422.0,238.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M422.0,238.0 L427.5,244.5 L433.0,236.0 L438.5,247.5 L444.0,239.0 L449.5,250.5 L455.0,242.0 L460.5,253.5 L466.0,250.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M466.0,250.0 L471.5,255.0 L477.0,245.0 L482.5,255.0 L488.0,245.0 L493.5,255.0 L499.0,245.0 L504.5,255.0 L510.0,250.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<path d="M510.0,250.0 L515.5,255.0 L521.0,245.0 L526.5,255.0 L532.0,245.0 L537.5,255.0 L543.0,245.0 L548.5,255.0 L554.0,250.0" fill="none" stroke="#7a7a7a" stroke-width="1.6"/>
+<circle cx="70" cy="250" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="114" cy="250" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="158" cy="250" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="202" cy="250" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="246" cy="250" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="290" cy="250" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="334" cy="238" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="378" cy="224" r="9" fill="#c8620a" stroke="white" stroke-width="1.5"/>
+<circle cx="422" cy="238" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="466" cy="250" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="510" cy="250" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<circle cx="554" cy="250" r="9" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<line x1="70" y1="250" x2="554" y2="250" stroke="#7a7a7a" stroke-width="0.8" stroke-dasharray="3 4"/>
+<text x="320" y="300" font-size="16" text-anchor="middle" fill="#4a4a4a">La perturbation avance&nbsp;; chaque bille revient ensuite à sa place.</text>
+<line x1="520" y1="30" x2="600" y2="30" stroke="#c0392b" stroke-width="3" marker-end="url(#pror)"/>
+<text x="510" y="36" font-size="15" text-anchor="end" fill="#c0392b">propagation</text>
+</svg>
+        <p class="schema-legende">Modèle qualitatif&nbsp;: la même perturbation (bille orange) à trois dates successives t<sub>1</sub>, t<sub>2</sub> et t<sub>3</sub>.</p>
+      </div>
+
+      <div class="retenir">
+        <p class="label">À retenir — Élongation</p>
+        <p>L'<strong>élongation</strong> d'un point du milieu est son déplacement par rapport à sa position de repos. On la note souvent <span class="var">y</span>&nbsp;; elle s'exprime en mètre (m).</p>
+      </div>
+
+      <div class="exemple attention">
+        <p class="label">Erreur fréquente</p>
+        <p>Un bouchon posé sur l'eau monte et descend quand une vague passe, mais il n'avance pas avec elle. L'onde ne transporte pas la matière&nbsp;: seule la perturbation (et l'énergie) se déplace.</p>
+      </div>
+
+      <p>On distingue deux types d'ondes selon la direction du déplacement des points du milieu&nbsp;:</p>
+      <div class="deux-col">
+        <div class="prop-card card-bleu">
+          <p class="titre">Onde transversale</p>
+          <p class="desc">Les points du milieu se déplacent <strong>perpendiculairement</strong> à la direction de propagation. Exemples&nbsp;: onde le long d'une corde, ondes S d'un séisme.</p>
+        </div>
+        <div class="prop-card card-orange">
+          <p class="titre">Onde longitudinale</p>
+          <p class="desc">Les points du milieu se déplacent <strong>parallèlement</strong> à la direction de propagation. Exemples&nbsp;: le son (des compressions et des dilatations de l'air qui se propagent), ondes P d'un séisme.</p>
+        </div>
+      </div>
+      <div class="schema">
+        <svg role="img" aria-label="Ondes sismiques P (longitudinales) et S (transversales)" viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3','Segoe UI',Arial,sans-serif">
+<defs>
+<marker id="sisr" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto"><path d="M0,0 L0,10 L13,5 z" fill="#c0392b"/></marker>
+<marker id="sisb" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#1a5fa8"/></marker>
+<marker id="sisk" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#4a4a4a"/></marker>
+<marker id="sisv" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#0e7c5b"/></marker>
+<marker id="siso" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#c8620a"/></marker>
+</defs>
+<rect width="640" height="400" fill="#f7f6f2"/>
+<text x="24" y="34" font-size="19" font-weight="700" fill="#1e1e1e">Onde P&nbsp;: onde longitudinale</text>
+<line x1="60.0" y1="62" x2="60.0" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="77.2" y1="62" x2="77.2" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="93.4" y1="62" x2="93.4" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="107.9" y1="62" x2="107.9" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="120.5" y1="62" x2="120.5" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="131.1" y1="62" x2="131.1" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="140.3" y1="62" x2="140.3" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="149.0" y1="62" x2="149.0" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="158.2" y1="62" x2="158.2" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="168.7" y1="62" x2="168.7" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="181.0" y1="62" x2="181.0" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="195.4" y1="62" x2="195.4" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="211.5" y1="62" x2="211.5" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="228.7" y1="62" x2="228.7" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="245.9" y1="62" x2="245.9" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="262.2" y1="62" x2="262.2" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="276.9" y1="62" x2="276.9" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="289.6" y1="62" x2="289.6" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="300.3" y1="62" x2="300.3" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="309.6" y1="62" x2="309.6" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="318.3" y1="62" x2="318.3" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="327.4" y1="62" x2="327.4" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="337.8" y1="62" x2="337.8" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="350.0" y1="62" x2="350.0" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="364.3" y1="62" x2="364.3" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="380.3" y1="62" x2="380.3" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="397.3" y1="62" x2="397.3" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="414.6" y1="62" x2="414.6" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="431.0" y1="62" x2="431.0" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="445.8" y1="62" x2="445.8" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="458.7" y1="62" x2="458.7" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="469.5" y1="62" x2="469.5" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="478.9" y1="62" x2="478.9" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="487.7" y1="62" x2="487.7" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="496.7" y1="62" x2="496.7" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="506.9" y1="62" x2="506.9" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="519.0" y1="62" x2="519.0" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="533.1" y1="62" x2="533.1" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="549.0" y1="62" x2="549.0" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="566.0" y1="62" x2="566.0" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="583.3" y1="62" x2="583.3" y2="128" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="60" y1="62" x2="580" y2="62" stroke="#7a7a7a" stroke-width="1" stroke-dasharray="3 4"/>
+<line x1="60" y1="128" x2="580" y2="128" stroke="#7a7a7a" stroke-width="1" stroke-dasharray="3 4"/>
+<line x1="430" y1="46" x2="575" y2="46" stroke="#c0392b" stroke-width="3" marker-end="url(#sisr)"/>
+<line x1="490" y1="148" x2="566" y2="148" stroke="#1a5fa8" stroke-width="3" marker-start="url(#sisb)" marker-end="url(#sisb)"/>
+<line x1="301" y1="134" x2="329" y2="134" stroke="#4a4a4a" stroke-width="1.5"/>
+<text x="315" y="153" font-size="16" text-anchor="middle" fill="#4a4a4a">compression</text>
+<line x1="392" y1="134" x2="420" y2="134" stroke="#4a4a4a" stroke-width="1.5"/>
+<text x="406" y="153" font-size="16" text-anchor="middle" fill="#4a4a4a">dilatation</text>
+<text x="24" y="210" font-size="19" font-weight="700" fill="#1e1e1e">Onde S&nbsp;: onde transversale</text>
+<line x1="60" y1="250.0" x2="60" y2="304.0" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="73" y1="259.2" x2="73" y2="313.2" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="86" y1="266.4" x2="86" y2="320.4" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="99" y1="269.8" x2="99" y2="323.8" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="112" y1="268.8" x2="112" y2="322.8" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="125" y1="263.5" x2="125" y2="317.5" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="138" y1="255.1" x2="138" y2="309.1" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="151" y1="245.6" x2="151" y2="299.6" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="164" y1="237.1" x2="164" y2="291.1" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="177" y1="231.5" x2="177" y2="285.5" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="190" y1="230.1" x2="190" y2="284.1" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="203" y1="233.2" x2="203" y2="287.2" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="216" y1="240.1" x2="216" y2="294.1" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="229" y1="249.3" x2="229" y2="303.3" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="242" y1="258.6" x2="242" y2="312.6" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="255" y1="266.0" x2="255" y2="320.0" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="268" y1="269.7" x2="268" y2="323.7" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="281" y1="269.0" x2="281" y2="323.0" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="294" y1="264.0" x2="294" y2="318.0" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="307" y1="255.8" x2="307" y2="309.8" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="320" y1="246.3" x2="320" y2="300.3" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="333" y1="237.7" x2="333" y2="291.7" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="346" y1="231.8" x2="346" y2="285.8" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="359" y1="230.0" x2="359" y2="284.0" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="372" y1="232.8" x2="372" y2="286.8" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="385" y1="239.5" x2="385" y2="293.5" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="398" y1="248.5" x2="398" y2="302.5" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="411" y1="257.9" x2="411" y2="311.9" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="424" y1="265.5" x2="424" y2="319.5" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="437" y1="269.6" x2="437" y2="323.6" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="450" y1="269.2" x2="450" y2="323.2" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="463" y1="264.5" x2="463" y2="318.5" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="476" y1="256.5" x2="476" y2="310.5" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="489" y1="247.1" x2="489" y2="301.1" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="502" y1="238.2" x2="502" y2="292.2" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="515" y1="232.1" x2="515" y2="286.1" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="528" y1="230.0" x2="528" y2="284.0" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="541" y1="232.4" x2="541" y2="286.4" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="554" y1="238.9" x2="554" y2="292.9" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="567" y1="247.8" x2="567" y2="301.8" stroke="#4a4a4a" stroke-width="2.2"/>
+<line x1="580" y1="257.2" x2="580" y2="311.2" stroke="#4a4a4a" stroke-width="2.2"/>
+<path d="M60.0,250.0 L73.0,259.2 L86.0,266.4 L99.0,269.8 L112.0,268.8 L125.0,263.5 L138.0,255.1 L151.0,245.6 L164.0,237.1 L177.0,231.5 L190.0,230.1 L203.0,233.2 L216.0,240.1 L229.0,249.3 L242.0,258.6 L255.0,266.0 L268.0,269.7 L281.0,269.0 L294.0,264.0 L307.0,255.8 L320.0,246.3 L333.0,237.7 L346.0,231.8 L359.0,230.0 L372.0,232.8 L385.0,239.5 L398.0,248.5 L411.0,257.9 L424.0,265.5 L437.0,269.6 L450.0,269.2 L463.0,264.5 L476.0,256.5 L489.0,247.1 L502.0,238.2 L515.0,232.1 L528.0,230.0 L541.0,232.4 L554.0,238.9 L567.0,247.8 L580.0,257.2" fill="none" stroke="#4a4a4a" stroke-width="1.5"/>
+<path d="M60.0,304.0 L73.0,313.2 L86.0,320.4 L99.0,323.8 L112.0,322.8 L125.0,317.5 L138.0,309.1 L151.0,299.6 L164.0,291.1 L177.0,285.5 L190.0,284.1 L203.0,287.2 L216.0,294.1 L229.0,303.3 L242.0,312.6 L255.0,320.0 L268.0,323.7 L281.0,323.0 L294.0,318.0 L307.0,309.8 L320.0,300.3 L333.0,291.7 L346.0,285.8 L359.0,284.0 L372.0,286.8 L385.0,293.5 L398.0,302.5 L411.0,311.9 L424.0,319.5 L437.0,323.6 L450.0,323.2 L463.0,318.5 L476.0,310.5 L489.0,301.1 L502.0,292.2 L515.0,286.1 L528.0,284.0 L541.0,286.4 L554.0,292.9 L567.0,301.8 L580.0,311.2" fill="none" stroke="#4a4a4a" stroke-width="1.5"/>
+<line x1="430" y1="222" x2="575" y2="222" stroke="#c0392b" stroke-width="3" marker-end="url(#sisr)"/>
+<line x1="608" y1="240" x2="608" y2="316" stroke="#1a5fa8" stroke-width="3" marker-start="url(#sisb)" marker-end="url(#sisb)"/>
+<line x1="40" y1="352" x2="92" y2="352" stroke="#c0392b" stroke-width="3" marker-end="url(#sisr)"/>
+<text x="104" y="358" font-size="17" fill="#1e1e1e">direction de propagation de l'onde</text>
+<line x1="40" y1="380" x2="92" y2="380" stroke="#1a5fa8" stroke-width="3" marker-start="url(#sisb)" marker-end="url(#sisb)"/>
+<text x="104" y="386" font-size="17" fill="#1e1e1e">déplacement des points du milieu</text>
+</svg>
+        <p class="schema-legende">Les deux types d'ondes sismiques&nbsp;: les ondes P (longitudinales) et les ondes S (transversales).</p>
+      </div>
+
+      <div class="exemple">
+        <p class="label">À noter</p>
+        <p>La lumière est aussi une onde, mais ce n'est pas une onde mécanique&nbsp;: elle peut se propager dans le vide (c'est ainsi que la lumière du Soleil nous parvient).</p>
+      </div>
+
+      <p>Au cours de la propagation, l'amplitude de l'onde diminue souvent. Les frottements <strong>amortissent</strong> l'onde. De plus, quand l'onde se propage dans un plan (ronds dans l'eau) ou dans l'espace (son), son énergie se répartit sur un cercle ou une sphère de plus en plus grands&nbsp;: c'est la <strong>dilution de l'énergie</strong>.</p>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=o_yyndStwBQ" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Onde mécanique progressive</span><br><span class="vs">Les Bons Profs · 4 min 24</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex1">
+        <div class="ex-header">
+          <span class="ex-num">1</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">Choisis la bonne réponse pour chaque affirmation.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Une onde mécanique peut se propager dans le vide&nbsp;:
+            <select class="blank" id="ex1-a"><option value="">—</option><option value="vrai">vrai</option><option value="faux">faux</option></select></div>
+          <div class="q-row"><span class="ql">b.</span>Après le passage d'une vague, le bouchon posé sur l'eau
+            <select class="blank" id="ex1-b"><option value="">—</option><option value="emporte">a été emporté par la vague</option><option value="revient">est revenu à sa position initiale</option></select></div>
+          <div class="q-row"><span class="ql">c.</span>Une onde le long d'une corde secouée verticalement est
+            <select class="blank" id="ex1-c"><option value="">—</option><option value="transversale">transversale</option><option value="longitudinale">longitudinale</option></select></div>
+          <div class="q-row"><span class="ql">d.</span>Une onde sonore dans l'air est
+            <select class="blank" id="ex1-d"><option value="">—</option><option value="transversale">transversale</option><option value="longitudinale">longitudinale</option></select></div>
+          <div class="q-row"><span class="ql">e.</span>Une onde transporte
+            <select class="blank" id="ex1-e"><option value="">—</option><option value="matiere">de la matière</option><option value="energie">de l'énergie, sans matière</option><option value="les2">de la matière et de l'énergie</option></select></div>
+          <div class="q-row"><span class="ql">f.</span>La lumière d'un éclair est une onde mécanique&nbsp;:
+            <select class="blank" id="ex1-f"><option value="">—</option><option value="vrai">vrai</option><option value="faux">faux</option></select></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(1)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr1" onclick="corriger(1)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb1"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 2. RETARD ET CÉLÉRITÉ ================= -->
+    <div class="section" id="s2">
+      <div class="section-titre"><span class="num">2</span><h2>Retard et célérité d'une onde</h2></div>
+
+      <p>Tout point du milieu reproduit la perturbation imposée par la source, mais plus tard&nbsp;: il faut du temps pour que la perturbation arrive jusqu'à lui.</p>
+
+      <div class="def">
+        <p class="label">Définition — Retard</p>
+        <p>La perturbation atteint un point A à la date <span class="var">t</span><sub>1</sub>, puis un point B à la date <span class="var">t</span><sub>2</sub>. Le point B reproduit le mouvement du point A avec un <strong>retard</strong> <span class="var">τ</span> (en s)&nbsp;:</p>
+        <p style="text-align:center;font-family:var(--serif);font-size:1.15rem;margin:.3rem 0;"><span class="var">τ</span> = <span class="var">t</span><sub>2</sub> − <span class="var">t</span><sub>1</sub></p>
+      </div>
+
+      <div class="schema">
+        <svg role="img" aria-label="Perturbation le long d une corde : elle passe en A à la date t1 puis en B à la date t2" viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3','Segoe UI',Arial,sans-serif">
+<defs>
+<marker id="corr" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto"><path d="M0,0 L0,10 L13,5 z" fill="#c0392b"/></marker>
+<marker id="corb" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#1a5fa8"/></marker>
+<marker id="cork" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#4a4a4a"/></marker>
+<marker id="corv" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#0e7c5b"/></marker>
+<marker id="coro" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#c8620a"/></marker>
+</defs>
+<rect width="640" height="300" fill="#f7f6f2"/>
+<line x1="198.20000000000002" y1="30" x2="198.20000000000002" y2="292" stroke="#7a7a7a" stroke-width="1.2" stroke-dasharray="5 4"/>
+<line x1="463.8" y1="30" x2="463.8" y2="292" stroke="#7a7a7a" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="18" y="101" font-size="19" fill="#1e1e1e" font-style="italic" font-family="Lora,Georgia,serif">t<tspan font-size="14" dy="5">1</tspan></text>
+<path d="M65.4,95.0 L67.5,95.0 L69.5,95.0 L71.6,95.0 L73.7,95.0 L75.8,95.0 L77.8,95.0 L79.9,95.0 L82.0,95.0 L84.1,95.0 L86.2,95.0 L88.2,95.0 L90.3,95.0 L92.4,95.0 L94.5,95.0 L96.5,95.0 L98.6,95.0 L100.7,95.0 L102.8,95.0 L104.8,95.0 L106.9,95.0 L109.0,95.0 L111.1,95.0 L113.1,95.0 L115.2,95.0 L117.3,92.6 L119.3,90.3 L121.4,88.0 L123.5,85.7 L125.6,83.5 L127.7,81.4 L129.7,79.3 L131.8,77.4 L133.9,75.5 L135.9,73.8 L138.0,72.2 L140.1,70.7 L142.2,69.4 L144.2,68.3 L146.3,67.3 L148.4,66.5 L150.5,65.8 L152.6,65.4 L154.6,65.1 L156.7,65.0 L158.8,65.1 L160.9,65.4 L162.9,65.8 L165.0,66.5 L167.1,67.3 L169.2,68.3 L171.2,69.4 L173.3,70.7 L175.4,72.2 L177.4,73.8 L179.5,75.5 L181.6,77.4 L183.7,79.3 L185.8,81.4 L187.8,83.5 L189.9,85.7 L192.0,88.0 L194.1,90.3 L196.1,92.6 L198.2,95.0 L200.3,95.0 L202.4,95.0 L204.4,95.0 L206.5,95.0 L208.6,95.0 L210.7,95.0 L212.7,95.0 L214.8,95.0 L216.9,95.0 L219.0,95.0 L221.0,95.0 L223.1,95.0 L225.2,95.0 L227.2,95.0 L229.3,95.0 L231.4,95.0 L233.5,95.0 L235.6,95.0 L237.6,95.0 L239.7,95.0 L241.8,95.0 L243.9,95.0 L245.9,95.0 L248.0,95.0 L250.1,95.0 L252.2,95.0 L254.2,95.0 L256.3,95.0 L258.4,95.0 L260.5,95.0 L262.5,95.0 L264.6,95.0 L266.7,95.0 L268.8,95.0 L270.8,95.0 L272.9,95.0 L275.0,95.0 L277.1,95.0 L279.1,95.0 L281.2,95.0 L283.3,95.0 L285.4,95.0 L287.4,95.0 L289.5,95.0 L291.6,95.0 L293.6,95.0 L295.7,95.0 L297.8,95.0 L299.9,95.0 L302.0,95.0 L304.0,95.0 L306.1,95.0 L308.2,95.0 L310.2,95.0 L312.3,95.0 L314.4,95.0 L316.5,95.0 L318.6,95.0 L320.6,95.0 L322.7,95.0 L324.8,95.0 L326.9,95.0 L328.9,95.0 L331.0,95.0 L333.1,95.0 L335.2,95.0 L337.2,95.0 L339.3,95.0 L341.4,95.0 L343.5,95.0 L345.5,95.0 L347.6,95.0 L349.7,95.0 L351.8,95.0 L353.8,95.0 L355.9,95.0 L358.0,95.0 L360.1,95.0 L362.1,95.0 L364.2,95.0 L366.3,95.0 L368.4,95.0 L370.4,95.0 L372.5,95.0 L374.6,95.0 L376.7,95.0 L378.7,95.0 L380.8,95.0 L382.9,95.0 L385.0,95.0 L387.0,95.0 L389.1,95.0 L391.2,95.0 L393.2,95.0 L395.3,95.0 L397.4,95.0 L399.5,95.0 L401.6,95.0 L403.6,95.0 L405.7,95.0 L407.8,95.0 L409.9,95.0 L411.9,95.0 L414.0,95.0 L416.1,95.0 L418.2,95.0 L420.2,95.0 L422.3,95.0 L424.4,95.0 L426.5,95.0 L428.5,95.0 L430.6,95.0 L432.7,95.0 L434.8,95.0 L436.8,95.0 L438.9,95.0 L441.0,95.0 L443.1,95.0 L445.1,95.0 L447.2,95.0 L449.3,95.0 L451.4,95.0 L453.4,95.0 L455.5,95.0 L457.6,95.0 L459.7,95.0 L461.7,95.0 L463.8,95.0 L465.9,95.0 L468.0,95.0 L470.0,95.0 L472.1,95.0 L474.2,95.0 L476.3,95.0 L478.3,95.0 L480.4,95.0 L482.5,95.0 L484.6,95.0 L486.6,95.0 L488.7,95.0 L490.8,95.0 L492.9,95.0 L494.9,95.0 L497.0,95.0 L499.1,95.0 L501.2,95.0 L503.2,95.0 L505.3,95.0 L507.4,95.0 L509.5,95.0 L511.5,95.0 L513.6,95.0 L515.7,95.0 L517.8,95.0 L519.8,95.0 L521.9,95.0 L524.0,95.0 L526.0,95.0 L528.1,95.0 L530.2,95.0 L532.3,95.0 L534.4,95.0 L536.4,95.0 L538.5,95.0 L540.6,95.0 L542.7,95.0 L544.7,95.0 L546.8,95.0 L548.9,95.0 L551.0,95.0 L553.0,95.0 L555.1,95.0 L557.2,95.0 L559.2,95.0 L561.3,95.0 L563.4,95.0 L565.5,95.0 L567.6,95.0 L569.6,95.0 L571.7,95.0 L573.8,95.0 L575.9,95.0 L577.9,95.0 L580.0,95.0 L582.1,95.0 L584.2,95.0 L586.2,95.0 L588.3,95.0 L590.4,95.0 L592.5,95.0 L594.5,95.0 L596.6,95.0" fill="none" stroke="#c8620a" stroke-width="4" stroke-linecap="round"/>
+<rect x="65.4" y="119" width="531.2" height="26" rx="3" fill="#efe6d2" stroke="#c9b98f"/>
+<line x1="82.0" y1="119" x2="82.0" y2="129" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="90.3" y1="119" x2="90.3" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="98.6" y1="119" x2="98.6" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="106.9" y1="119" x2="106.9" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="115.2" y1="119" x2="115.2" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="123.5" y1="119" x2="123.5" y2="126" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="131.8" y1="119" x2="131.8" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="140.1" y1="119" x2="140.1" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="148.4" y1="119" x2="148.4" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="156.7" y1="119" x2="156.7" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="165.0" y1="119" x2="165.0" y2="129" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="173.3" y1="119" x2="173.3" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="181.6" y1="119" x2="181.6" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="189.9" y1="119" x2="189.9" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="198.2" y1="119" x2="198.2" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="206.5" y1="119" x2="206.5" y2="126" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="214.8" y1="119" x2="214.8" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="223.1" y1="119" x2="223.1" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="231.4" y1="119" x2="231.4" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="239.7" y1="119" x2="239.7" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="248.0" y1="119" x2="248.0" y2="129" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="256.3" y1="119" x2="256.3" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="264.6" y1="119" x2="264.6" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="272.9" y1="119" x2="272.9" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="281.2" y1="119" x2="281.2" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="289.5" y1="119" x2="289.5" y2="126" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="297.8" y1="119" x2="297.8" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="306.1" y1="119" x2="306.1" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="314.4" y1="119" x2="314.4" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="322.7" y1="119" x2="322.7" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="331.0" y1="119" x2="331.0" y2="129" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="339.3" y1="119" x2="339.3" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="347.6" y1="119" x2="347.6" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="355.9" y1="119" x2="355.9" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="364.2" y1="119" x2="364.2" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="372.5" y1="119" x2="372.5" y2="126" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="380.8" y1="119" x2="380.8" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="389.1" y1="119" x2="389.1" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="397.4" y1="119" x2="397.4" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="405.7" y1="119" x2="405.7" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="414.0" y1="119" x2="414.0" y2="129" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="422.3" y1="119" x2="422.3" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="430.6" y1="119" x2="430.6" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="438.9" y1="119" x2="438.9" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="447.2" y1="119" x2="447.2" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="455.5" y1="119" x2="455.5" y2="126" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="463.8" y1="119" x2="463.8" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="472.1" y1="119" x2="472.1" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="480.4" y1="119" x2="480.4" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="488.7" y1="119" x2="488.7" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="497.0" y1="119" x2="497.0" y2="129" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="505.3" y1="119" x2="505.3" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="513.6" y1="119" x2="513.6" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="521.9" y1="119" x2="521.9" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="530.2" y1="119" x2="530.2" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="538.5" y1="119" x2="538.5" y2="126" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="546.8" y1="119" x2="546.8" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="555.1" y1="119" x2="555.1" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="563.4" y1="119" x2="563.4" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="571.7" y1="119" x2="571.7" y2="123" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="580.0" y1="119" x2="580.0" y2="129" stroke="#4a4a4a" stroke-width="1"/>
+<text x="82.0" y="142" font-size="13" text-anchor="middle" fill="#1e1e1e">0</text>
+<text x="165.0" y="142" font-size="13" text-anchor="middle" fill="#1e1e1e">10</text>
+<text x="248.0" y="142" font-size="13" text-anchor="middle" fill="#1e1e1e">20</text>
+<text x="331.0" y="142" font-size="13" text-anchor="middle" fill="#1e1e1e">30</text>
+<text x="414.0" y="142" font-size="13" text-anchor="middle" fill="#1e1e1e">40</text>
+<text x="497.0" y="142" font-size="13" text-anchor="middle" fill="#1e1e1e">50</text>
+<text x="580.0" y="142" font-size="13" text-anchor="middle" fill="#1e1e1e">60</text>
+<text x="602.6" y="138" font-size="13" fill="#4a4a4a">cm</text>
+<circle cx="198.20000000000002" cy="95.0" r="6" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<text x="207.20000000000002" y="83.0" font-size="18" font-weight="700" fill="#1a5fa8">A</text>
+<circle cx="463.8" cy="95.0" r="6" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<text x="472.8" y="83.0" font-size="18" font-weight="700" fill="#1a5fa8">B</text>
+<text x="18" y="231" font-size="19" fill="#1e1e1e" font-style="italic" font-family="Lora,Georgia,serif">t<tspan font-size="14" dy="5">2</tspan></text>
+<path d="M65.4,225.0 L67.5,225.0 L69.5,225.0 L71.6,225.0 L73.7,225.0 L75.8,225.0 L77.8,225.0 L79.9,225.0 L82.0,225.0 L84.1,225.0 L86.2,225.0 L88.2,225.0 L90.3,225.0 L92.4,225.0 L94.5,225.0 L96.5,225.0 L98.6,225.0 L100.7,225.0 L102.8,225.0 L104.8,225.0 L106.9,225.0 L109.0,225.0 L111.1,225.0 L113.1,225.0 L115.2,225.0 L117.3,225.0 L119.3,225.0 L121.4,225.0 L123.5,225.0 L125.6,225.0 L127.7,225.0 L129.7,225.0 L131.8,225.0 L133.9,225.0 L135.9,225.0 L138.0,225.0 L140.1,225.0 L142.2,225.0 L144.2,225.0 L146.3,225.0 L148.4,225.0 L150.5,225.0 L152.6,225.0 L154.6,225.0 L156.7,225.0 L158.8,225.0 L160.9,225.0 L162.9,225.0 L165.0,225.0 L167.1,225.0 L169.2,225.0 L171.2,225.0 L173.3,225.0 L175.4,225.0 L177.4,225.0 L179.5,225.0 L181.6,225.0 L183.7,225.0 L185.8,225.0 L187.8,225.0 L189.9,225.0 L192.0,225.0 L194.1,225.0 L196.1,225.0 L198.2,225.0 L200.3,225.0 L202.4,225.0 L204.4,225.0 L206.5,225.0 L208.6,225.0 L210.7,225.0 L212.7,225.0 L214.8,225.0 L216.9,225.0 L219.0,225.0 L221.0,225.0 L223.1,225.0 L225.2,225.0 L227.2,225.0 L229.3,225.0 L231.4,225.0 L233.5,225.0 L235.6,225.0 L237.6,225.0 L239.7,225.0 L241.8,225.0 L243.9,225.0 L245.9,225.0 L248.0,225.0 L250.1,225.0 L252.2,225.0 L254.2,225.0 L256.3,225.0 L258.4,225.0 L260.5,225.0 L262.5,225.0 L264.6,225.0 L266.7,225.0 L268.8,225.0 L270.8,225.0 L272.9,225.0 L275.0,225.0 L277.1,225.0 L279.1,225.0 L281.2,225.0 L283.3,225.0 L285.4,225.0 L287.4,225.0 L289.5,225.0 L291.6,225.0 L293.6,225.0 L295.7,225.0 L297.8,225.0 L299.9,225.0 L302.0,225.0 L304.0,225.0 L306.1,225.0 L308.2,225.0 L310.2,225.0 L312.3,225.0 L314.4,225.0 L316.5,225.0 L318.6,225.0 L320.6,225.0 L322.7,225.0 L324.8,225.0 L326.9,225.0 L328.9,225.0 L331.0,225.0 L333.1,225.0 L335.2,225.0 L337.2,225.0 L339.3,225.0 L341.4,225.0 L343.5,225.0 L345.5,225.0 L347.6,225.0 L349.7,225.0 L351.8,225.0 L353.8,225.0 L355.9,225.0 L358.0,225.0 L360.1,225.0 L362.1,225.0 L364.2,225.0 L366.3,225.0 L368.4,225.0 L370.4,225.0 L372.5,225.0 L374.6,225.0 L376.7,225.0 L378.7,225.0 L380.8,225.0 L382.9,222.6 L385.0,220.3 L387.0,218.0 L389.1,215.7 L391.2,213.5 L393.2,211.4 L395.3,209.3 L397.4,207.4 L399.5,205.5 L401.6,203.8 L403.6,202.2 L405.7,200.7 L407.8,199.4 L409.9,198.3 L411.9,197.3 L414.0,196.5 L416.1,195.8 L418.2,195.4 L420.2,195.1 L422.3,195.0 L424.4,195.1 L426.5,195.4 L428.5,195.8 L430.6,196.5 L432.7,197.3 L434.8,198.3 L436.8,199.4 L438.9,200.7 L441.0,202.2 L443.1,203.8 L445.1,205.5 L447.2,207.4 L449.3,209.3 L451.4,211.4 L453.4,213.5 L455.5,215.7 L457.6,218.0 L459.7,220.3 L461.7,222.6 L463.8,225.0 L465.9,225.0 L468.0,225.0 L470.0,225.0 L472.1,225.0 L474.2,225.0 L476.3,225.0 L478.3,225.0 L480.4,225.0 L482.5,225.0 L484.6,225.0 L486.6,225.0 L488.7,225.0 L490.8,225.0 L492.9,225.0 L494.9,225.0 L497.0,225.0 L499.1,225.0 L501.2,225.0 L503.2,225.0 L505.3,225.0 L507.4,225.0 L509.5,225.0 L511.5,225.0 L513.6,225.0 L515.7,225.0 L517.8,225.0 L519.8,225.0 L521.9,225.0 L524.0,225.0 L526.0,225.0 L528.1,225.0 L530.2,225.0 L532.3,225.0 L534.4,225.0 L536.4,225.0 L538.5,225.0 L540.6,225.0 L542.7,225.0 L544.7,225.0 L546.8,225.0 L548.9,225.0 L551.0,225.0 L553.0,225.0 L555.1,225.0 L557.2,225.0 L559.2,225.0 L561.3,225.0 L563.4,225.0 L565.5,225.0 L567.6,225.0 L569.6,225.0 L571.7,225.0 L573.8,225.0 L575.9,225.0 L577.9,225.0 L580.0,225.0 L582.1,225.0 L584.2,225.0 L586.2,225.0 L588.3,225.0 L590.4,225.0 L592.5,225.0 L594.5,225.0 L596.6,225.0" fill="none" stroke="#c8620a" stroke-width="4" stroke-linecap="round"/>
+<rect x="65.4" y="249" width="531.2" height="26" rx="3" fill="#efe6d2" stroke="#c9b98f"/>
+<line x1="82.0" y1="249" x2="82.0" y2="259" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="90.3" y1="249" x2="90.3" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="98.6" y1="249" x2="98.6" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="106.9" y1="249" x2="106.9" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="115.2" y1="249" x2="115.2" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="123.5" y1="249" x2="123.5" y2="256" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="131.8" y1="249" x2="131.8" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="140.1" y1="249" x2="140.1" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="148.4" y1="249" x2="148.4" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="156.7" y1="249" x2="156.7" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="165.0" y1="249" x2="165.0" y2="259" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="173.3" y1="249" x2="173.3" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="181.6" y1="249" x2="181.6" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="189.9" y1="249" x2="189.9" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="198.2" y1="249" x2="198.2" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="206.5" y1="249" x2="206.5" y2="256" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="214.8" y1="249" x2="214.8" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="223.1" y1="249" x2="223.1" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="231.4" y1="249" x2="231.4" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="239.7" y1="249" x2="239.7" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="248.0" y1="249" x2="248.0" y2="259" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="256.3" y1="249" x2="256.3" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="264.6" y1="249" x2="264.6" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="272.9" y1="249" x2="272.9" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="281.2" y1="249" x2="281.2" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="289.5" y1="249" x2="289.5" y2="256" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="297.8" y1="249" x2="297.8" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="306.1" y1="249" x2="306.1" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="314.4" y1="249" x2="314.4" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="322.7" y1="249" x2="322.7" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="331.0" y1="249" x2="331.0" y2="259" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="339.3" y1="249" x2="339.3" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="347.6" y1="249" x2="347.6" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="355.9" y1="249" x2="355.9" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="364.2" y1="249" x2="364.2" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="372.5" y1="249" x2="372.5" y2="256" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="380.8" y1="249" x2="380.8" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="389.1" y1="249" x2="389.1" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="397.4" y1="249" x2="397.4" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="405.7" y1="249" x2="405.7" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="414.0" y1="249" x2="414.0" y2="259" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="422.3" y1="249" x2="422.3" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="430.6" y1="249" x2="430.6" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="438.9" y1="249" x2="438.9" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="447.2" y1="249" x2="447.2" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="455.5" y1="249" x2="455.5" y2="256" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="463.8" y1="249" x2="463.8" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="472.1" y1="249" x2="472.1" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="480.4" y1="249" x2="480.4" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="488.7" y1="249" x2="488.7" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="497.0" y1="249" x2="497.0" y2="259" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="505.3" y1="249" x2="505.3" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="513.6" y1="249" x2="513.6" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="521.9" y1="249" x2="521.9" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="530.2" y1="249" x2="530.2" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="538.5" y1="249" x2="538.5" y2="256" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="546.8" y1="249" x2="546.8" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="555.1" y1="249" x2="555.1" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="563.4" y1="249" x2="563.4" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="571.7" y1="249" x2="571.7" y2="253" stroke="#4a4a4a" stroke-width="1"/>
+<line x1="580.0" y1="249" x2="580.0" y2="259" stroke="#4a4a4a" stroke-width="1"/>
+<text x="82.0" y="272" font-size="13" text-anchor="middle" fill="#1e1e1e">0</text>
+<text x="165.0" y="272" font-size="13" text-anchor="middle" fill="#1e1e1e">10</text>
+<text x="248.0" y="272" font-size="13" text-anchor="middle" fill="#1e1e1e">20</text>
+<text x="331.0" y="272" font-size="13" text-anchor="middle" fill="#1e1e1e">30</text>
+<text x="414.0" y="272" font-size="13" text-anchor="middle" fill="#1e1e1e">40</text>
+<text x="497.0" y="272" font-size="13" text-anchor="middle" fill="#1e1e1e">50</text>
+<text x="580.0" y="272" font-size="13" text-anchor="middle" fill="#1e1e1e">60</text>
+<text x="602.6" y="268" font-size="13" fill="#4a4a4a">cm</text>
+<circle cx="198.20000000000002" cy="225.0" r="6" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<text x="207.20000000000002" y="213.0" font-size="18" font-weight="700" fill="#1a5fa8">A</text>
+<circle cx="463.8" cy="225.0" r="6" fill="#1a5fa8" stroke="white" stroke-width="1.5"/>
+<text x="472.8" y="213.0" font-size="18" font-weight="700" fill="#1a5fa8">B</text>
+<line x1="505.3" y1="50" x2="588.3000000000001" y2="50" stroke="#c0392b" stroke-width="3" marker-end="url(#corr)"/>
+<text x="546.8000000000001" y="38" font-size="15" text-anchor="middle" fill="#c0392b">propagation</text>
+</svg>
+        <p class="schema-legende">Une perturbation se propage le long d'une corde&nbsp;: elle atteint le point A à la date t<sub>1</sub>, puis le point B à la date t<sub>2</sub>.</p>
+      </div>
+
+      <p>La <strong>célérité</strong> <span class="var">v</span> d'une onde est sa vitesse de propagation. C'est le quotient de la distance <span class="var">d</span> parcourue par la perturbation par la durée Δ<span class="var">t</span> de ce parcours&nbsp;:</p>
+      <div class="formule">
+        <span class="var">v</span> = <span class="frac"><span><span class="var">d</span></span><span>Δ<span class="var">t</span></span></span>
+        &nbsp;&nbsp;soit&nbsp;&nbsp;
+        <span class="var">v</span> = <span class="frac"><span>AB</span><span><span class="var">τ</span></span></span> = <span class="frac"><span>AB</span><span><span class="var">t</span><sub>2</sub> − <span class="var">t</span><sub>1</sub></span></span>
+        <span class="unites"><span class="var">v</span> en m⋅s<sup>−1</sup> · <span class="var">d</span> et AB en m · Δ<span class="var">t</span> et <span class="var">τ</span> en s</span>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemple</p>
+        <p>Sur le schéma, A est à 14 cm et B à 46 cm&nbsp;: AB = 46 − 14 = 32 cm = 32.10<sup>−2</sup> m. Si la perturbation met <span class="var">τ</span> = 0,40 s pour aller de A à B&nbsp;:</p>
+        <p style="text-align:center;margin-top:.3rem;"><span class="var">v</span> = <span class="frac"><span>32.10<sup>−2</sup></span><span>0,40</span></span> = <strong>0,80 m⋅s<sup>−1</sup></strong></p>
+      </div>
+
+      <div class="retenir">
+        <p class="label">À retenir — De quoi dépend la célérité&nbsp;?</p>
+        <p>La célérité <strong>ne dépend pas</strong> de l'amplitude ni de la forme de la perturbation. Elle dépend des <strong>propriétés du milieu</strong>&nbsp;: sa nature, son état physique, sa température, la tension d'une corde…</p>
+      </div>
+      <div class="tab-wrap">
+        <table class="tab">
+          <tr><th>Onde et milieu</th><th>Célérité (ordre de grandeur)</th></tr>
+          <tr><td>Son dans l'air (20 °C)</td><td>340 m⋅s<sup>−1</sup></td></tr>
+          <tr><td>Son dans l'eau</td><td>1,5.10<sup>3</sup> m⋅s<sup>−1</sup></td></tr>
+          <tr><td>Son dans l'acier</td><td>5.10<sup>3</sup> à 6.10<sup>3</sup> m⋅s<sup>−1</sup></td></tr>
+          <tr><td>Ondes sismiques P (croûte terrestre)</td><td>6.10<sup>3</sup> m⋅s<sup>−1</sup></td></tr>
+          <tr><td>Ondes sismiques S (croûte terrestre)</td><td>3,5.10<sup>3</sup> m⋅s<sup>−1</sup></td></tr>
+        </table>
+      </div>
+
+      <div class="retenir">
+        <p class="label">Méthode — Localiser une source</p>
+        <p>Si l'on connaît la célérité <span class="var">v</span> et la durée de propagation Δ<span class="var">t</span>, on calcule la distance parcourue&nbsp;: <span class="var">d</span> = <span class="var">v</span> × Δ<span class="var">t</span>. On peut ainsi savoir à quelle distance se trouve la source.</p>
+      </div>
+      <div class="exemple">
+        <p class="label">Exemple — L'orage</p>
+        <p>On entend le tonnerre Δ<span class="var">t</span> = 3,0 s après avoir vu l'éclair. La lumière nous parvient presque instantanément&nbsp;; le son, lui, a parcouru&nbsp;:</p>
+        <p style="text-align:center;margin-top:.3rem;"><span class="var">d</span> = <span class="var">v</span> × Δ<span class="var">t</span> = 340 × 3,0 = 1,0.10<sup>3</sup> m&nbsp;: l'orage est à environ <strong>1 km</strong>.</p>
+        <p style="margin-top:.4rem;">De la même façon, l'écart entre les arrivées des ondes P et des ondes S (plus lentes) à une station sismique permet de calculer la distance de l'épicentre d'un séisme.</p>
+      </div>
+      <div class="exemple attention">
+        <p class="label">Erreur fréquente</p>
+        <p>Les distances doivent être en mètres et les durées en secondes&nbsp;: 1,5 km = 1,5.10<sup>3</sup> m&nbsp;; 250 ms = 250.10<sup>−3</sup> s&nbsp;; 32 cm = 32.10<sup>−2</sup> m.</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=CFfODZUUqJ4" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Onde mécanique&nbsp;: célérité et retard</span><br><span class="vs">Paul Olivier · 3 min 36</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex2">
+        <div class="ex-header">
+          <span class="ex-num">2</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">Une perturbation se propage le long d'une corde. Elle passe au point A à la date <strong>t<sub>1</sub> = 0,20 s</strong> et au point B à la date <strong>t<sub>2</sub> = 0,70 s</strong>. La distance entre A et B est <strong>AB = 150 cm</strong>. Tu peux écrire les puissances de dix sous la forme <strong>150.10^-2</strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Retard de B sur A&nbsp;: <span class="var">τ</span> = <input class="blank" id="ex2-a" type="text" autocomplete="off"> <span class="u">s</span></div>
+          <div class="q-row"><span class="ql">b.</span>Distance AB en mètre&nbsp;: AB = <input class="blank" id="ex2-b" type="text" autocomplete="off" placeholder="ex. : 150.10^-2"> <span class="u">m</span></div>
+          <div class="q-row"><span class="ql">c.</span>Célérité de l'onde&nbsp;: <span class="var">v</span> = <input class="blank" id="ex2-c" type="text" autocomplete="off"> <span class="u">m⋅s<sup>−1</sup></span></div>
+          <div class="q-row"><span class="ql">d.</span>On secoue la corde plus fort (amplitude plus grande). La célérité
+            <select class="blank" id="ex2-d"><option value="">—</option><option value="augmente">augmente</option><option value="change pas">ne change pas</option><option value="diminue">diminue</option></select></div>
+          <div class="q-row"><span class="ql">e.</span>Lors d'un orage, on entend le tonnerre <strong>4,5 s</strong> après l'éclair. Avec <strong><span class="var">v</span><sub>son</sub> = 340 m⋅s<sup>−1</sup></strong>, l'orage est à <span class="var">d</span> = <input class="blank" id="ex2-e" type="text" autocomplete="off"> <span class="u">m</span></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(2)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr2" onclick="corriger(2)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb2"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 3. ONDES PÉRIODIQUES ================= -->
+    <div class="section" id="s3">
+      <div class="section-titre"><span class="num">3</span><h2>Ondes mécaniques périodiques</h2></div>
+
+      <div class="def">
+        <p class="label">Définition — Phénomène périodique</p>
+        <p>Un phénomène est <strong>périodique</strong> s'il se répète identique à lui-même à intervalles de temps égaux.</p>
+        <p>La <strong>période</strong> <span class="var">T</span> (en s) est la plus petite durée au bout de laquelle le phénomène se répète. La <strong>fréquence</strong> <span class="var">f</span> est le nombre de périodes par seconde.</p>
+      </div>
+      <div class="formule">
+        <span class="var">f</span> = <span class="frac"><span>1</span><span><span class="var">T</span></span></span>
+        <span class="unites"><span class="var">f</span> en hertz (Hz) · <span class="var">T</span> en seconde (s)</span>
+      </div>
+      <div class="exemple">
+        <p class="label">Exemple</p>
+        <p>Le «&nbsp;la&nbsp;» d'un diapason a une fréquence <span class="var">f</span> = 440 Hz. Sa période vaut <span class="var">T</span> = <span class="frac"><span>1</span><span>440</span></span> = 2,27.10<sup>−3</sup> s, soit 2,27 ms.</p>
+      </div>
+
+      <div class="def">
+        <p class="label">Définition — Onde progressive périodique</p>
+        <p>Une onde progressive est <strong>périodique</strong> lorsque la source impose au milieu une perturbation qui se répète à intervalles de temps égaux.</p>
+        <p>À un instant donné, une «&nbsp;photographie&nbsp;» du milieu montre alors un <strong>motif qui se répète dans l'espace</strong>.</p>
+      </div>
+      <div class="schema">
+        <svg role="img" aria-label="Onde périodique : le motif se répète tous les lambda mètres" viewBox="0 0 640 228" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3','Segoe UI',Arial,sans-serif">
+<defs>
+<marker id="perr" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto"><path d="M0,0 L0,10 L13,5 z" fill="#c0392b"/></marker>
+<marker id="perb" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#1a5fa8"/></marker>
+<marker id="perk" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#4a4a4a"/></marker>
+<marker id="perv" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#0e7c5b"/></marker>
+<marker id="pero" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#c8620a"/></marker>
+</defs>
+<rect width="640" height="228" fill="#f7f6f2"/>
+<line x1="55" y1="125" x2="612" y2="125" stroke="#7a7a7a" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#perk)"/>
+<path d="M55.0,114.8 L56.0,117.5 L57.0,120.3 L58.0,123.0 L59.0,125.8 L60.0,128.7 L61.0,131.5 L62.0,134.3 L63.0,137.2 L64.0,140.0 L65.0,142.8 L66.0,145.5 L67.0,148.2 L68.0,150.8 L69.0,153.4 L70.0,155.9 L71.0,158.3 L72.0,160.6 L73.0,162.9 L74.0,165.0 L75.0,167.0 L76.0,168.8 L77.0,170.6 L78.0,172.2 L79.0,173.6 L80.0,174.9 L81.0,176.1 L82.0,177.1 L83.0,178.0 L84.0,178.7 L85.0,179.3 L86.0,179.7 L87.0,179.9 L88.0,180.0 L89.0,179.9 L90.0,179.7 L91.0,179.3 L92.0,178.8 L93.0,178.2 L94.0,177.4 L95.0,176.5 L96.0,175.4 L97.0,174.3 L98.0,173.0 L99.0,171.6 L100.0,170.2 L101.0,168.6 L102.0,166.9 L103.0,165.2 L104.0,163.4 L105.0,161.6 L106.0,159.7 L107.0,157.8 L108.0,155.8 L109.0,153.9 L110.0,151.9 L111.0,149.9 L112.0,147.9 L113.0,145.9 L114.0,143.9 L115.0,142.0 L116.0,140.1 L117.0,138.2 L118.0,136.4 L119.0,134.6 L120.0,132.9 L121.0,131.2 L122.0,129.7 L123.0,128.1 L124.0,126.7 L125.0,125.3 L126.0,124.0 L127.0,122.8 L128.0,121.7 L129.0,120.7 L130.0,119.7 L131.0,118.8 L132.0,118.0 L133.0,117.3 L134.0,116.6 L135.0,116.0 L136.0,115.5 L137.0,115.0 L138.0,114.6 L139.0,114.3 L140.0,114.0 L141.0,113.8 L142.0,113.6 L143.0,113.4 L144.0,113.3 L145.0,113.2 L146.0,113.1 L147.0,113.1 L148.0,113.0 L149.0,112.9 L150.0,112.9 L151.0,112.8 L152.0,112.7 L153.0,112.6 L154.0,112.5 L155.0,112.3 L156.0,112.1 L157.0,111.9 L158.0,111.6 L159.0,111.3 L160.0,110.9 L161.0,110.5 L162.0,110.0 L163.0,109.5 L164.0,108.9 L165.0,108.3 L166.0,107.6 L167.0,106.9 L168.0,106.1 L169.0,105.3 L170.0,104.4 L171.0,103.4 L172.0,102.5 L173.0,101.5 L174.0,100.4 L175.0,99.3 L176.0,98.2 L177.0,97.1 L178.0,96.0 L179.0,94.9 L180.0,93.8 L181.0,92.6 L182.0,91.5 L183.0,90.4 L184.0,89.4 L185.0,88.4 L186.0,87.4 L187.0,86.4 L188.0,85.6 L189.0,84.8 L190.0,84.0 L191.0,83.4 L192.0,82.8 L193.0,82.3 L194.0,82.0 L195.0,81.7 L196.0,81.5 L197.0,81.5 L198.0,81.6 L199.0,81.8 L200.0,82.1 L201.0,82.5 L202.0,83.1 L203.0,83.8 L204.0,84.7 L205.0,85.6 L206.0,86.8 L207.0,88.0 L208.0,89.4 L209.0,90.9 L210.0,92.5 L211.0,94.3 L212.0,96.2 L213.0,98.2 L214.0,100.3 L215.0,102.5 L216.0,104.8 L217.0,107.2 L218.0,109.7 L219.0,112.2 L220.0,114.8 L221.0,117.5 L222.0,120.3 L223.0,123.0 L224.0,125.8 L225.0,128.7 L226.0,131.5 L227.0,134.3 L228.0,137.2 L229.0,140.0 L230.0,142.8 L231.0,145.5 L232.0,148.2 L233.0,150.8 L234.0,153.4 L235.0,155.9 L236.0,158.3 L237.0,160.6 L238.0,162.9 L239.0,165.0 L240.0,167.0 L241.0,168.8 L242.0,170.6 L243.0,172.2 L244.0,173.6 L245.0,174.9 L246.0,176.1 L247.0,177.1 L248.0,178.0 L249.0,178.7 L250.0,179.3 L251.0,179.7 L252.0,179.9 L253.0,180.0 L254.0,179.9 L255.0,179.7 L256.0,179.3 L257.0,178.8 L258.0,178.2 L259.0,177.4 L260.0,176.5 L261.0,175.4 L262.0,174.3 L263.0,173.0 L264.0,171.6 L265.0,170.2 L266.0,168.6 L267.0,166.9 L268.0,165.2 L269.0,163.4 L270.0,161.6 L271.0,159.7 L272.0,157.8 L273.0,155.8 L274.0,153.9 L275.0,151.9 L276.0,149.9 L277.0,147.9 L278.0,145.9 L279.0,143.9 L280.0,142.0 L281.0,140.1 L282.0,138.2 L283.0,136.4 L284.0,134.6 L285.0,132.9 L286.0,131.2 L287.0,129.7 L288.0,128.1 L289.0,126.7 L290.0,125.3 L291.0,124.0 L292.0,122.8 L293.0,121.7 L294.0,120.7 L295.0,119.7 L296.0,118.8 L297.0,118.0 L298.0,117.3 L299.0,116.6 L300.0,116.0 L301.0,115.5 L302.0,115.0 L303.0,114.6 L304.0,114.3 L305.0,114.0 L306.0,113.8 L307.0,113.6 L308.0,113.4 L309.0,113.3 L310.0,113.2 L311.0,113.1 L312.0,113.1 L313.0,113.0 L314.0,112.9 L315.0,112.9 L316.0,112.8 L317.0,112.7 L318.0,112.6 L319.0,112.5 L320.0,112.3 L321.0,112.1 L322.0,111.9 L323.0,111.6 L324.0,111.3 L325.0,110.9 L326.0,110.5 L327.0,110.0 L328.0,109.5 L329.0,108.9 L330.0,108.3 L331.0,107.6 L332.0,106.9 L333.0,106.1 L334.0,105.3 L335.0,104.4 L336.0,103.4 L337.0,102.5 L338.0,101.5 L339.0,100.4 L340.0,99.3 L341.0,98.2 L342.0,97.1 L343.0,96.0 L344.0,94.9 L345.0,93.8 L346.0,92.6 L347.0,91.5 L348.0,90.4 L349.0,89.4 L350.0,88.4 L351.0,87.4 L352.0,86.4 L353.0,85.6 L354.0,84.8 L355.0,84.0 L356.0,83.4 L357.0,82.8 L358.0,82.3 L359.0,82.0 L360.0,81.7 L361.0,81.5 L362.0,81.5 L363.0,81.6 L364.0,81.8 L365.0,82.1 L366.0,82.5 L367.0,83.1 L368.0,83.8 L369.0,84.7 L370.0,85.6 L371.0,86.8 L372.0,88.0 L373.0,89.4 L374.0,90.9 L375.0,92.5 L376.0,94.3 L377.0,96.2 L378.0,98.2 L379.0,100.3 L380.0,102.5 L381.0,104.8 L382.0,107.2 L383.0,109.7 L384.0,112.2 L385.0,114.8 L386.0,117.5 L387.0,120.3 L388.0,123.0 L389.0,125.8 L390.0,128.7 L391.0,131.5 L392.0,134.3 L393.0,137.2 L394.0,140.0 L395.0,142.8 L396.0,145.5 L397.0,148.2 L398.0,150.8 L399.0,153.4 L400.0,155.9 L401.0,158.3 L402.0,160.6 L403.0,162.9 L404.0,165.0 L405.0,167.0 L406.0,168.8 L407.0,170.6 L408.0,172.2 L409.0,173.6 L410.0,174.9 L411.0,176.1 L412.0,177.1 L413.0,178.0 L414.0,178.7 L415.0,179.3 L416.0,179.7 L417.0,179.9 L418.0,180.0 L419.0,179.9 L420.0,179.7 L421.0,179.3 L422.0,178.8 L423.0,178.2 L424.0,177.4 L425.0,176.5 L426.0,175.4 L427.0,174.3 L428.0,173.0 L429.0,171.6 L430.0,170.2 L431.0,168.6 L432.0,166.9 L433.0,165.2 L434.0,163.4 L435.0,161.6 L436.0,159.7 L437.0,157.8 L438.0,155.8 L439.0,153.9 L440.0,151.9 L441.0,149.9 L442.0,147.9 L443.0,145.9 L444.0,143.9 L445.0,142.0 L446.0,140.1 L447.0,138.2 L448.0,136.4 L449.0,134.6 L450.0,132.9 L451.0,131.2 L452.0,129.7 L453.0,128.1 L454.0,126.7 L455.0,125.3 L456.0,124.0 L457.0,122.8 L458.0,121.7 L459.0,120.7 L460.0,119.7 L461.0,118.8 L462.0,118.0 L463.0,117.3 L464.0,116.6 L465.0,116.0 L466.0,115.5 L467.0,115.0 L468.0,114.6 L469.0,114.3 L470.0,114.0 L471.0,113.8 L472.0,113.6 L473.0,113.4 L474.0,113.3 L475.0,113.2 L476.0,113.1 L477.0,113.1 L478.0,113.0 L479.0,112.9 L480.0,112.9 L481.0,112.8 L482.0,112.7 L483.0,112.6 L484.0,112.5 L485.0,112.3 L486.0,112.1 L487.0,111.9 L488.0,111.6 L489.0,111.3 L490.0,110.9 L491.0,110.5 L492.0,110.0 L493.0,109.5 L494.0,108.9 L495.0,108.3 L496.0,107.6 L497.0,106.9 L498.0,106.1 L499.0,105.3 L500.0,104.4 L501.0,103.4 L502.0,102.5 L503.0,101.5 L504.0,100.4 L505.0,99.3 L506.0,98.2 L507.0,97.1 L508.0,96.0 L509.0,94.9 L510.0,93.8 L511.0,92.6 L512.0,91.5 L513.0,90.4 L514.0,89.4 L515.0,88.4 L516.0,87.4 L517.0,86.4 L518.0,85.6 L519.0,84.8 L520.0,84.0 L521.0,83.4 L522.0,82.8 L523.0,82.3 L524.0,82.0 L525.0,81.7 L526.0,81.5 L527.0,81.5 L528.0,81.6 L529.0,81.8 L530.0,82.1 L531.0,82.5 L532.0,83.1 L533.0,83.8 L534.0,84.7 L535.0,85.6 L536.0,86.8 L537.0,88.0 L538.0,89.4 L539.0,90.9 L540.0,92.5 L541.0,94.3 L542.0,96.2 L543.0,98.2 L544.0,100.3 L545.0,102.5 L546.0,104.8 L547.0,107.2 L548.0,109.7 L549.0,112.2 L550.0,114.8" fill="none" stroke="#1a5fa8" stroke-width="3.2"/>
+<line x1="197" y1="34" x2="197" y2="81.5" stroke="#7a7a7a" stroke-width="1.2" stroke-dasharray="4 3"/>
+<line x1="362" y1="34" x2="362" y2="81.5" stroke="#7a7a7a" stroke-width="1.2" stroke-dasharray="4 3"/>
+<line x1="527" y1="34" x2="527" y2="81.5" stroke="#7a7a7a" stroke-width="1.2" stroke-dasharray="4 3"/>
+<line x1="199" y1="42" x2="360" y2="42" stroke="#0e7c5b" stroke-width="2.4" marker-start="url(#perv)" marker-end="url(#perv)"/>
+<text x="279.5" y="34" font-size="22" text-anchor="middle" fill="#0e7c5b" font-style="italic" font-family="Lora,Georgia,serif">λ</text>
+<line x1="364" y1="42" x2="525" y2="42" stroke="#0e7c5b" stroke-width="2.4" marker-start="url(#perv)" marker-end="url(#perv)"/>
+<text x="444.5" y="34" font-size="22" text-anchor="middle" fill="#0e7c5b" font-style="italic" font-family="Lora,Georgia,serif">λ</text>
+<circle cx="55" cy="125" r="5" fill="#1e1e1e"/><text x="47" y="149" font-size="19" font-weight="700" text-anchor="end" fill="#1e1e1e">S</text>
+<text x="614" y="151" font-size="19" font-style="italic" font-family="Lora,Georgia,serif" fill="#1e1e1e">x</text>
+<text x="320" y="212" font-size="16" text-anchor="middle" fill="#4a4a4a">Aspect du milieu à une date t («&nbsp;photographie&nbsp;» de l'onde)</text>
+</svg>
+        <p class="schema-legende">Onde périodique issue de la source S&nbsp;: le même motif se répète tous les λ mètres.</p>
+      </div>
+
+      <p>Une <strong>onde sinusoïdale</strong> est une onde périodique pour laquelle l'élongation de la source est une fonction sinusoïdale du temps. Si l'élongation est maximale à <span class="var">t</span> = 0, elle s'écrit&nbsp;:</p>
+      <div class="formule">
+        <span class="var">y</span>(<span class="var">t</span>) = <span class="var">A</span> × cos<span style="font-size:1.4em;">(</span><span class="frac"><span>2π</span><span><span class="var">T</span></span></span> × <span class="var">t</span><span style="font-size:1.4em;">)</span>
+        <span class="unites"><span class="var">A</span>&nbsp;: amplitude (élongation maximale) · <span class="var">T</span>&nbsp;: période</span>
+      </div>
+      <p>La représentation graphique de <span class="var">y</span>(<span class="var">t</span>) est une courbe en cosinus&nbsp;: sa hauteur maximale est l'<strong>amplitude</strong> <span class="var">A</span> et le motif se répète toutes les <span class="var">T</span> secondes. Toute onde périodique peut être vue comme une superposition d'ondes sinusoïdales.</p>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=baUAeWXAdX4" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Signal périodique&nbsp;: déterminer la période et la fréquence</span><br><span class="vs">Paul Olivier · 4 min 52</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex3">
+        <div class="ex-header">
+          <span class="ex-num">3</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">On a enregistré l'<strong>élongation <span class="var">y</span> d'un point d'une corde</strong> au cours du temps. Lis le graphique pour compléter.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="schema" style="margin-top:0;">
+            <svg role="img" aria-label="Élongation d un point de la corde en fonction du temps" viewBox="0 0 640 310" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3','Segoe UI',Arial,sans-serif">
+<defs>
+<marker id="temr" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto"><path d="M0,0 L0,10 L13,5 z" fill="#c0392b"/></marker>
+<marker id="temb" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#1a5fa8"/></marker>
+<marker id="temk" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#4a4a4a"/></marker>
+<marker id="temv" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#0e7c5b"/></marker>
+<marker id="temo" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#c8620a"/></marker>
+</defs>
+<rect width="640" height="310" fill="#f7f6f2"/>
+<line x1="70.0" y1="40.0" x2="70.0" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="70.0" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a">0</text>
+<line x1="113.3" y1="40.0" x2="113.3" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="113.3" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="156.7" y1="40.0" x2="156.7" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="156.7" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a">0,2</text>
+<line x1="200.0" y1="40.0" x2="200.0" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="200.0" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="243.3" y1="40.0" x2="243.3" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="243.3" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a">0,4</text>
+<line x1="286.7" y1="40.0" x2="286.7" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="286.7" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="330.0" y1="40.0" x2="330.0" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="330.0" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a">0,6</text>
+<line x1="373.3" y1="40.0" x2="373.3" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="373.3" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="416.7" y1="40.0" x2="416.7" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="416.7" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a">0,8</text>
+<line x1="460.0" y1="40.0" x2="460.0" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="460.0" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="503.3" y1="40.0" x2="503.3" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="503.3" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a">1</text>
+<line x1="546.7" y1="40.0" x2="546.7" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="546.7" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="590.0" y1="40.0" x2="590.0" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="590.0" y="300.0" font-size="15" text-anchor="middle" fill="#4a4a4a">1,2</text>
+<line x1="70" y1="40.0" x2="590" y2="40.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="45.0" font-size="15" text-anchor="end" fill="#4a4a4a">3</text>
+<line x1="70" y1="80.0" x2="590" y2="80.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="85.0" font-size="15" text-anchor="end" fill="#4a4a4a">2</text>
+<line x1="70" y1="120.0" x2="590" y2="120.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="125.0" font-size="15" text-anchor="end" fill="#4a4a4a">1</text>
+<line x1="70" y1="160.0" x2="590" y2="160.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="165.0" font-size="15" text-anchor="end" fill="#4a4a4a">0</text>
+<line x1="70" y1="200.0" x2="590" y2="200.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="205.0" font-size="15" text-anchor="end" fill="#4a4a4a">−1</text>
+<line x1="70" y1="240.0" x2="590" y2="240.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="245.0" font-size="15" text-anchor="end" fill="#4a4a4a">−2</text>
+<line x1="70" y1="280.0" x2="590" y2="280.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="285.0" font-size="15" text-anchor="end" fill="#4a4a4a">−3</text>
+<line x1="70" y1="160" x2="608" y2="160" stroke="#4a4a4a" stroke-width="1.6" marker-end="url(#temk)"/>
+<line x1="70" y1="280.0" x2="70" y2="24.0" stroke="#4a4a4a" stroke-width="1.6" marker-end="url(#temk)"/>
+<text x="606" y="150" font-size="16" text-anchor="end" fill="#1e1e1e">t (s)</text>
+<text x="78" y="34.0" font-size="16" fill="#1e1e1e">y (cm)</text>
+<path d="M70.0,80.0 L71.0,80.1 L72.0,80.2 L73.0,80.5 L74.0,80.8 L75.0,81.3 L76.0,81.9 L77.0,82.6 L78.0,83.3 L79.0,84.2 L80.0,85.2 L81.0,86.3 L82.0,87.5 L83.0,88.7 L84.0,90.1 L85.0,91.5 L86.0,93.1 L87.0,94.7 L88.0,96.4 L89.0,98.2 L90.0,100.1 L91.0,102.1 L92.0,104.1 L93.0,106.2 L94.0,108.4 L95.0,110.7 L96.0,113.0 L97.0,115.4 L98.0,117.8 L99.0,120.3 L100.0,122.8 L101.0,125.4 L102.0,128.1 L103.0,130.7 L104.0,133.4 L105.0,136.2 L106.0,139.0 L107.0,141.8 L108.0,144.6 L109.0,147.5 L110.0,150.4 L111.0,153.2 L112.0,156.1 L113.0,159.0 L114.0,161.9 L115.0,164.8 L116.0,167.7 L117.0,170.6 L118.0,173.5 L119.0,176.3 L120.0,179.1 L121.0,181.9 L122.0,184.7 L123.0,187.5 L124.0,190.2 L125.0,192.8 L126.0,195.5 L127.0,198.0 L128.0,200.6 L129.0,203.0 L130.0,205.4 L131.0,207.8 L132.0,210.1 L133.0,212.3 L134.0,214.5 L135.0,216.6 L136.0,218.6 L137.0,220.5 L138.0,222.4 L139.0,224.1 L140.0,225.8 L141.0,227.4 L142.0,229.0 L143.0,230.4 L144.0,231.7 L145.0,233.0 L146.0,234.1 L147.0,235.1 L148.0,236.1 L149.0,236.9 L150.0,237.7 L151.0,238.3 L152.0,238.9 L153.0,239.3 L154.0,239.6 L155.0,239.9 L156.0,240.0 L157.0,240.0 L158.0,239.9 L159.0,239.7 L160.0,239.4 L161.0,239.0 L162.0,238.5 L163.0,237.9 L164.0,237.2 L165.0,236.4 L166.0,235.5 L167.0,234.5 L168.0,233.3 L169.0,232.1 L170.0,230.8 L171.0,229.4 L172.0,228.0 L173.0,226.4 L174.0,224.7 L175.0,223.0 L176.0,221.1 L177.0,219.2 L178.0,217.2 L179.0,215.2 L180.0,213.0 L181.0,210.8 L182.0,208.6 L183.0,206.2 L184.0,203.8 L185.0,201.4 L186.0,198.9 L187.0,196.3 L188.0,193.7 L189.0,191.1 L190.0,188.4 L191.0,185.6 L192.0,182.9 L193.0,180.1 L194.0,177.3 L195.0,174.4 L196.0,171.6 L197.0,168.7 L198.0,165.8 L199.0,162.9 L200.0,160.0 L201.0,157.1 L202.0,154.2 L203.0,151.3 L204.0,148.4 L205.0,145.6 L206.0,142.7 L207.0,139.9 L208.0,137.1 L209.0,134.4 L210.0,131.6 L211.0,128.9 L212.0,126.3 L213.0,123.7 L214.0,121.1 L215.0,118.6 L216.0,116.2 L217.0,113.8 L218.0,111.4 L219.0,109.2 L220.0,107.0 L221.0,104.8 L222.0,102.8 L223.0,100.8 L224.0,98.9 L225.0,97.0 L226.0,95.3 L227.0,93.6 L228.0,92.0 L229.0,90.6 L230.0,89.2 L231.0,87.9 L232.0,86.7 L233.0,85.5 L234.0,84.5 L235.0,83.6 L236.0,82.8 L237.0,82.1 L238.0,81.5 L239.0,81.0 L240.0,80.6 L241.0,80.3 L242.0,80.1 L243.0,80.0 L244.0,80.0 L245.0,80.1 L246.0,80.4 L247.0,80.7 L248.0,81.1 L249.0,81.7 L250.0,82.3 L251.0,83.1 L252.0,83.9 L253.0,84.9 L254.0,85.9 L255.0,87.0 L256.0,88.3 L257.0,89.6 L258.0,91.0 L259.0,92.6 L260.0,94.2 L261.0,95.9 L262.0,97.6 L263.0,99.5 L264.0,101.4 L265.0,103.4 L266.0,105.5 L267.0,107.7 L268.0,109.9 L269.0,112.2 L270.0,114.6 L271.0,117.0 L272.0,119.4 L273.0,122.0 L274.0,124.5 L275.0,127.2 L276.0,129.8 L277.0,132.5 L278.0,135.3 L279.0,138.1 L280.0,140.9 L281.0,143.7 L282.0,146.5 L283.0,149.4 L284.0,152.3 L285.0,155.2 L286.0,158.1 L287.0,161.0 L288.0,163.9 L289.0,166.8 L290.0,169.6 L291.0,172.5 L292.0,175.4 L293.0,178.2 L294.0,181.0 L295.0,183.8 L296.0,186.6 L297.0,189.3 L298.0,191.9 L299.0,194.6 L300.0,197.2 L301.0,199.7 L302.0,202.2 L303.0,204.6 L304.0,207.0 L305.0,209.3 L306.0,211.6 L307.0,213.8 L308.0,215.9 L309.0,217.9 L310.0,219.9 L311.0,221.8 L312.0,223.6 L313.0,225.3 L314.0,226.9 L315.0,228.5 L316.0,229.9 L317.0,231.3 L318.0,232.5 L319.0,233.7 L320.0,234.8 L321.0,235.8 L322.0,236.7 L323.0,237.4 L324.0,238.1 L325.0,238.7 L326.0,239.2 L327.0,239.5 L328.0,239.8 L329.0,239.9 L330.0,240.0 L331.0,239.9 L332.0,239.8 L333.0,239.5 L334.0,239.2 L335.0,238.7 L336.0,238.1 L337.0,237.4 L338.0,236.7 L339.0,235.8 L340.0,234.8 L341.0,233.7 L342.0,232.5 L343.0,231.3 L344.0,229.9 L345.0,228.5 L346.0,226.9 L347.0,225.3 L348.0,223.6 L349.0,221.8 L350.0,219.9 L351.0,217.9 L352.0,215.9 L353.0,213.8 L354.0,211.6 L355.0,209.3 L356.0,207.0 L357.0,204.6 L358.0,202.2 L359.0,199.7 L360.0,197.2 L361.0,194.6 L362.0,191.9 L363.0,189.3 L364.0,186.6 L365.0,183.8 L366.0,181.0 L367.0,178.2 L368.0,175.4 L369.0,172.5 L370.0,169.6 L371.0,166.8 L372.0,163.9 L373.0,161.0 L374.0,158.1 L375.0,155.2 L376.0,152.3 L377.0,149.4 L378.0,146.5 L379.0,143.7 L380.0,140.9 L381.0,138.1 L382.0,135.3 L383.0,132.5 L384.0,129.8 L385.0,127.2 L386.0,124.5 L387.0,122.0 L388.0,119.4 L389.0,117.0 L390.0,114.6 L391.0,112.2 L392.0,109.9 L393.0,107.7 L394.0,105.5 L395.0,103.4 L396.0,101.4 L397.0,99.5 L398.0,97.6 L399.0,95.9 L400.0,94.2 L401.0,92.6 L402.0,91.0 L403.0,89.6 L404.0,88.3 L405.0,87.0 L406.0,85.9 L407.0,84.9 L408.0,83.9 L409.0,83.1 L410.0,82.3 L411.0,81.7 L412.0,81.1 L413.0,80.7 L414.0,80.4 L415.0,80.1 L416.0,80.0 L417.0,80.0 L418.0,80.1 L419.0,80.3 L420.0,80.6 L421.0,81.0 L422.0,81.5 L423.0,82.1 L424.0,82.8 L425.0,83.6 L426.0,84.5 L427.0,85.5 L428.0,86.7 L429.0,87.9 L430.0,89.2 L431.0,90.6 L432.0,92.0 L433.0,93.6 L434.0,95.3 L435.0,97.0 L436.0,98.9 L437.0,100.8 L438.0,102.8 L439.0,104.8 L440.0,107.0 L441.0,109.2 L442.0,111.4 L443.0,113.8 L444.0,116.2 L445.0,118.6 L446.0,121.1 L447.0,123.7 L448.0,126.3 L449.0,128.9 L450.0,131.6 L451.0,134.4 L452.0,137.1 L453.0,139.9 L454.0,142.7 L455.0,145.6 L456.0,148.4 L457.0,151.3 L458.0,154.2 L459.0,157.1 L460.0,160.0 L461.0,162.9 L462.0,165.8 L463.0,168.7 L464.0,171.6 L465.0,174.4 L466.0,177.3 L467.0,180.1 L468.0,182.9 L469.0,185.6 L470.0,188.4 L471.0,191.1 L472.0,193.7 L473.0,196.3 L474.0,198.9 L475.0,201.4 L476.0,203.8 L477.0,206.2 L478.0,208.6 L479.0,210.8 L480.0,213.0 L481.0,215.2 L482.0,217.2 L483.0,219.2 L484.0,221.1 L485.0,223.0 L486.0,224.7 L487.0,226.4 L488.0,228.0 L489.0,229.4 L490.0,230.8 L491.0,232.1 L492.0,233.3 L493.0,234.5 L494.0,235.5 L495.0,236.4 L496.0,237.2 L497.0,237.9 L498.0,238.5 L499.0,239.0 L500.0,239.4 L501.0,239.7 L502.0,239.9 L503.0,240.0 L504.0,240.0 L505.0,239.9 L506.0,239.6 L507.0,239.3 L508.0,238.9 L509.0,238.3 L510.0,237.7 L511.0,236.9 L512.0,236.1 L513.0,235.1 L514.0,234.1 L515.0,233.0 L516.0,231.7 L517.0,230.4 L518.0,229.0 L519.0,227.4 L520.0,225.8 L521.0,224.1 L522.0,222.4 L523.0,220.5 L524.0,218.6 L525.0,216.6 L526.0,214.5 L527.0,212.3 L528.0,210.1 L529.0,207.8 L530.0,205.4 L531.0,203.0 L532.0,200.6 L533.0,198.0 L534.0,195.5 L535.0,192.8 L536.0,190.2 L537.0,187.5 L538.0,184.7 L539.0,181.9 L540.0,179.1 L541.0,176.3 L542.0,173.5 L543.0,170.6 L544.0,167.7 L545.0,164.8 L546.0,161.9 L547.0,159.0 L548.0,156.1 L549.0,153.2 L550.0,150.4 L551.0,147.5 L552.0,144.6 L553.0,141.8 L554.0,139.0 L555.0,136.2 L556.0,133.4 L557.0,130.7 L558.0,128.1 L559.0,125.4 L560.0,122.8 L561.0,120.3 L562.0,117.8 L563.0,115.4 L564.0,113.0 L565.0,110.7 L566.0,108.4 L567.0,106.2 L568.0,104.1 L569.0,102.1 L570.0,100.1 L571.0,98.2 L572.0,96.4 L573.0,94.7 L574.0,93.1 L575.0,91.5 L576.0,90.1 L577.0,88.7 L578.0,87.5 L579.0,86.3 L580.0,85.2 L581.0,84.2 L582.0,83.3 L583.0,82.6 L584.0,81.9 L585.0,81.3 L586.0,80.8 L587.0,80.5 L588.0,80.2 L589.0,80.1 L590.0,80.0" fill="none" stroke="#c8620a" stroke-width="3"/>
+</svg>
+          </div>
+          <div class="q-row"><span class="ql">a.</span>Ce graphique est une représentation
+            <select class="blank" id="ex3-a"><option value="">—</option><option value="temporelle">temporelle</option><option value="spatiale">spatiale</option></select></div>
+          <div class="q-row"><span class="ql">b.</span>Amplitude&nbsp;: <span class="var">A</span> = <input class="blank" id="ex3-b" type="text" autocomplete="off"> <span class="u">cm</span></div>
+          <div class="q-row"><span class="ql">c.</span>Période&nbsp;: <span class="var">T</span> = <input class="blank" id="ex3-c" type="text" autocomplete="off"> <span class="u">s</span></div>
+          <div class="q-row"><span class="ql">d.</span>Fréquence&nbsp;: <span class="var">f</span> = <input class="blank" id="ex3-d" type="text" autocomplete="off"> <span class="u">Hz</span></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(3)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr3" onclick="corriger(3)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb3"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 4. DOUBLE PÉRIODICITÉ ================= -->
+    <div class="section" id="s4">
+      <div class="section-titre"><span class="num">4</span><h2>La double périodicité</h2></div>
+
+      <p>Une onde progressive périodique est périodique à la fois <strong>dans le temps</strong> et <strong>dans l'espace</strong>.</p>
+      <div class="deux-col">
+        <div class="prop-card card-orange">
+          <p class="titre">Périodicité temporelle&nbsp;: la période T</p>
+          <p class="desc">En un point fixé du milieu, le mouvement se répète au bout d'une durée <strong><span class="var">T</span></strong> (en s). On la lit sur une <strong>représentation temporelle</strong>&nbsp;: élongation <span class="var">y</span> d'un point en fonction du temps <span class="var">t</span>.</p>
+        </div>
+        <div class="prop-card card-bleu">
+          <p class="titre">Périodicité spatiale&nbsp;: la longueur d'onde λ</p>
+          <p class="desc">À une date fixée, l'aspect du milieu se répète tous les <strong>λ</strong> mètres. On la lit sur une <strong>représentation spatiale</strong>&nbsp;: élongation <span class="var">y</span> en fonction de la position <span class="var">x</span>.</p>
+        </div>
+      </div>
+      <div class="def">
+        <p class="label">Définition — Longueur d'onde</p>
+        <p>La <strong>longueur d'onde</strong> <span class="var">λ</span> (en m) est la plus petite distance séparant deux points du milieu qui vibrent de la même façon, à un instant donné.</p>
+      </div>
+      <div class="schema">
+        <svg role="img" aria-label="Représentation spatiale (longueur d onde) et représentation temporelle (période)" viewBox="0 0 640 478" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3','Segoe UI',Arial,sans-serif">
+<defs>
+<marker id="dblr" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto"><path d="M0,0 L0,10 L13,5 z" fill="#c0392b"/></marker>
+<marker id="dblb" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#1a5fa8"/></marker>
+<marker id="dblk" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#4a4a4a"/></marker>
+<marker id="dblv" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#0e7c5b"/></marker>
+<marker id="dblo" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#c8620a"/></marker>
+</defs>
+<rect width="640" height="478" fill="#f7f6f2"/>
+<text x="24" y="28" font-size="18" font-weight="700" fill="#1a5fa8">Représentation spatiale</text>
+<text x="24" y="50" font-size="16" fill="#4a4a4a">aspect de la corde à une date t fixée&nbsp;: y en fonction de x</text>
+<line x1="60" y1="133" x2="615" y2="133" stroke="#4a4a4a" stroke-width="1.6" marker-end="url(#dblk)"/>
+<line x1="60" y1="203" x2="60" y2="63" stroke="#4a4a4a" stroke-width="1.6" marker-end="url(#dblk)"/>
+<text x="611" y="159" font-size="19" font-style="italic" font-family="Lora,Georgia,serif" fill="#1e1e1e" text-anchor="end">x</text>
+<text x="50" y="75" font-size="19" font-style="italic" font-family="Lora,Georgia,serif" fill="#1e1e1e" text-anchor="end">y</text>
+<text x="52" y="139" font-size="15" fill="#4a4a4a" text-anchor="end">0</text>
+<path d="M60.0,133.0 L61.0,131.5 L62.0,130.1 L63.0,128.6 L64.0,127.2 L65.0,125.7 L66.0,124.3 L67.0,122.8 L68.0,121.4 L69.0,120.0 L70.0,118.6 L71.0,117.3 L72.0,115.9 L73.0,114.6 L74.0,113.3 L75.0,112.0 L76.0,110.7 L77.0,109.5 L78.0,108.3 L79.0,107.1 L80.0,106.0 L81.0,104.9 L82.0,103.8 L83.0,102.8 L84.0,101.8 L85.0,100.8 L86.0,99.9 L87.0,99.0 L88.0,98.2 L89.0,97.4 L90.0,96.6 L91.0,95.9 L92.0,95.3 L93.0,94.6 L94.0,94.1 L95.0,93.5 L96.0,93.1 L97.0,92.6 L98.0,92.2 L99.0,91.9 L100.0,91.6 L101.0,91.4 L102.0,91.2 L103.0,91.1 L104.0,91.0 L105.0,91.0 L106.0,91.0 L107.0,91.1 L108.0,91.2 L109.0,91.4 L110.0,91.6 L111.0,91.9 L112.0,92.2 L113.0,92.6 L114.0,93.1 L115.0,93.5 L116.0,94.1 L117.0,94.6 L118.0,95.3 L119.0,95.9 L120.0,96.6 L121.0,97.4 L122.0,98.2 L123.0,99.0 L124.0,99.9 L125.0,100.8 L126.0,101.8 L127.0,102.8 L128.0,103.8 L129.0,104.9 L130.0,106.0 L131.0,107.1 L132.0,108.3 L133.0,109.5 L134.0,110.7 L135.0,112.0 L136.0,113.3 L137.0,114.6 L138.0,115.9 L139.0,117.3 L140.0,118.6 L141.0,120.0 L142.0,121.4 L143.0,122.8 L144.0,124.3 L145.0,125.7 L146.0,127.2 L147.0,128.6 L148.0,130.1 L149.0,131.5 L150.0,133.0 L151.0,134.5 L152.0,135.9 L153.0,137.4 L154.0,138.8 L155.0,140.3 L156.0,141.7 L157.0,143.2 L158.0,144.6 L159.0,146.0 L160.0,147.4 L161.0,148.7 L162.0,150.1 L163.0,151.4 L164.0,152.7 L165.0,154.0 L166.0,155.3 L167.0,156.5 L168.0,157.7 L169.0,158.9 L170.0,160.0 L171.0,161.1 L172.0,162.2 L173.0,163.2 L174.0,164.2 L175.0,165.2 L176.0,166.1 L177.0,167.0 L178.0,167.8 L179.0,168.6 L180.0,169.4 L181.0,170.1 L182.0,170.7 L183.0,171.4 L184.0,171.9 L185.0,172.5 L186.0,172.9 L187.0,173.4 L188.0,173.8 L189.0,174.1 L190.0,174.4 L191.0,174.6 L192.0,174.8 L193.0,174.9 L194.0,175.0 L195.0,175.0 L196.0,175.0 L197.0,174.9 L198.0,174.8 L199.0,174.6 L200.0,174.4 L201.0,174.1 L202.0,173.8 L203.0,173.4 L204.0,172.9 L205.0,172.5 L206.0,171.9 L207.0,171.4 L208.0,170.7 L209.0,170.1 L210.0,169.4 L211.0,168.6 L212.0,167.8 L213.0,167.0 L214.0,166.1 L215.0,165.2 L216.0,164.2 L217.0,163.2 L218.0,162.2 L219.0,161.1 L220.0,160.0 L221.0,158.9 L222.0,157.7 L223.0,156.5 L224.0,155.3 L225.0,154.0 L226.0,152.7 L227.0,151.4 L228.0,150.1 L229.0,148.7 L230.0,147.4 L231.0,146.0 L232.0,144.6 L233.0,143.2 L234.0,141.7 L235.0,140.3 L236.0,138.8 L237.0,137.4 L238.0,135.9 L239.0,134.5 L240.0,133.0 L241.0,131.5 L242.0,130.1 L243.0,128.6 L244.0,127.2 L245.0,125.7 L246.0,124.3 L247.0,122.8 L248.0,121.4 L249.0,120.0 L250.0,118.6 L251.0,117.3 L252.0,115.9 L253.0,114.6 L254.0,113.3 L255.0,112.0 L256.0,110.7 L257.0,109.5 L258.0,108.3 L259.0,107.1 L260.0,106.0 L261.0,104.9 L262.0,103.8 L263.0,102.8 L264.0,101.8 L265.0,100.8 L266.0,99.9 L267.0,99.0 L268.0,98.2 L269.0,97.4 L270.0,96.6 L271.0,95.9 L272.0,95.3 L273.0,94.6 L274.0,94.1 L275.0,93.5 L276.0,93.1 L277.0,92.6 L278.0,92.2 L279.0,91.9 L280.0,91.6 L281.0,91.4 L282.0,91.2 L283.0,91.1 L284.0,91.0 L285.0,91.0 L286.0,91.0 L287.0,91.1 L288.0,91.2 L289.0,91.4 L290.0,91.6 L291.0,91.9 L292.0,92.2 L293.0,92.6 L294.0,93.1 L295.0,93.5 L296.0,94.1 L297.0,94.6 L298.0,95.3 L299.0,95.9 L300.0,96.6 L301.0,97.4 L302.0,98.2 L303.0,99.0 L304.0,99.9 L305.0,100.8 L306.0,101.8 L307.0,102.8 L308.0,103.8 L309.0,104.9 L310.0,106.0 L311.0,107.1 L312.0,108.3 L313.0,109.5 L314.0,110.7 L315.0,112.0 L316.0,113.3 L317.0,114.6 L318.0,115.9 L319.0,117.3 L320.0,118.6 L321.0,120.0 L322.0,121.4 L323.0,122.8 L324.0,124.3 L325.0,125.7 L326.0,127.2 L327.0,128.6 L328.0,130.1 L329.0,131.5 L330.0,133.0 L331.0,134.5 L332.0,135.9 L333.0,137.4 L334.0,138.8 L335.0,140.3 L336.0,141.7 L337.0,143.2 L338.0,144.6 L339.0,146.0 L340.0,147.4 L341.0,148.7 L342.0,150.1 L343.0,151.4 L344.0,152.7 L345.0,154.0 L346.0,155.3 L347.0,156.5 L348.0,157.7 L349.0,158.9 L350.0,160.0 L351.0,161.1 L352.0,162.2 L353.0,163.2 L354.0,164.2 L355.0,165.2 L356.0,166.1 L357.0,167.0 L358.0,167.8 L359.0,168.6 L360.0,169.4 L361.0,170.1 L362.0,170.7 L363.0,171.4 L364.0,171.9 L365.0,172.5 L366.0,172.9 L367.0,173.4 L368.0,173.8 L369.0,174.1 L370.0,174.4 L371.0,174.6 L372.0,174.8 L373.0,174.9 L374.0,175.0 L375.0,175.0 L376.0,175.0 L377.0,174.9 L378.0,174.8 L379.0,174.6 L380.0,174.4 L381.0,174.1 L382.0,173.8 L383.0,173.4 L384.0,172.9 L385.0,172.5 L386.0,171.9 L387.0,171.4 L388.0,170.7 L389.0,170.1 L390.0,169.4 L391.0,168.6 L392.0,167.8 L393.0,167.0 L394.0,166.1 L395.0,165.2 L396.0,164.2 L397.0,163.2 L398.0,162.2 L399.0,161.1 L400.0,160.0 L401.0,158.9 L402.0,157.7 L403.0,156.5 L404.0,155.3 L405.0,154.0 L406.0,152.7 L407.0,151.4 L408.0,150.1 L409.0,148.7 L410.0,147.4 L411.0,146.0 L412.0,144.6 L413.0,143.2 L414.0,141.7 L415.0,140.3 L416.0,138.8 L417.0,137.4 L418.0,135.9 L419.0,134.5 L420.0,133.0 L421.0,131.5 L422.0,130.1 L423.0,128.6 L424.0,127.2 L425.0,125.7 L426.0,124.3 L427.0,122.8 L428.0,121.4 L429.0,120.0 L430.0,118.6 L431.0,117.3 L432.0,115.9 L433.0,114.6 L434.0,113.3 L435.0,112.0 L436.0,110.7 L437.0,109.5 L438.0,108.3 L439.0,107.1 L440.0,106.0 L441.0,104.9 L442.0,103.8 L443.0,102.8 L444.0,101.8 L445.0,100.8 L446.0,99.9 L447.0,99.0 L448.0,98.2 L449.0,97.4 L450.0,96.6 L451.0,95.9 L452.0,95.3 L453.0,94.6 L454.0,94.1 L455.0,93.5 L456.0,93.1 L457.0,92.6 L458.0,92.2 L459.0,91.9 L460.0,91.6 L461.0,91.4 L462.0,91.2 L463.0,91.1 L464.0,91.0 L465.0,91.0 L466.0,91.0 L467.0,91.1 L468.0,91.2 L469.0,91.4 L470.0,91.6 L471.0,91.9 L472.0,92.2 L473.0,92.6 L474.0,93.1 L475.0,93.5 L476.0,94.1 L477.0,94.6 L478.0,95.3 L479.0,95.9 L480.0,96.6 L481.0,97.4 L482.0,98.2 L483.0,99.0 L484.0,99.9 L485.0,100.8 L486.0,101.8 L487.0,102.8 L488.0,103.8 L489.0,104.9 L490.0,106.0 L491.0,107.1 L492.0,108.3 L493.0,109.5 L494.0,110.7 L495.0,112.0 L496.0,113.3 L497.0,114.6 L498.0,115.9 L499.0,117.3 L500.0,118.6 L501.0,120.0 L502.0,121.4 L503.0,122.8 L504.0,124.3 L505.0,125.7 L506.0,127.2 L507.0,128.6 L508.0,130.1 L509.0,131.5 L510.0,133.0 L511.0,134.5 L512.0,135.9 L513.0,137.4 L514.0,138.8 L515.0,140.3 L516.0,141.7 L517.0,143.2 L518.0,144.6 L519.0,146.0 L520.0,147.4 L521.0,148.7 L522.0,150.1 L523.0,151.4 L524.0,152.7 L525.0,154.0 L526.0,155.3 L527.0,156.5 L528.0,157.7 L529.0,158.9 L530.0,160.0 L531.0,161.1 L532.0,162.2 L533.0,163.2 L534.0,164.2 L535.0,165.2 L536.0,166.1 L537.0,167.0 L538.0,167.8 L539.0,168.6 L540.0,169.4 L541.0,170.1 L542.0,170.7 L543.0,171.4 L544.0,171.9 L545.0,172.5 L546.0,172.9 L547.0,173.4 L548.0,173.8 L549.0,174.1 L550.0,174.4 L551.0,174.6 L552.0,174.8 L553.0,174.9 L554.0,175.0 L555.0,175.0 L556.0,175.0 L557.0,174.9 L558.0,174.8 L559.0,174.6 L560.0,174.4 L561.0,174.1 L562.0,173.8 L563.0,173.4 L564.0,172.9 L565.0,172.5 L566.0,171.9 L567.0,171.4 L568.0,170.7 L569.0,170.1 L570.0,169.4 L571.0,168.6 L572.0,167.8 L573.0,167.0 L574.0,166.1 L575.0,165.2 L576.0,164.2 L577.0,163.2 L578.0,162.2 L579.0,161.1 L580.0,160.0 L581.0,158.9 L582.0,157.7 L583.0,156.5 L584.0,155.3 L585.0,154.0 L586.0,152.7 L587.0,151.4 L588.0,150.1 L589.0,148.7 L590.0,147.4 L591.0,146.0 L592.0,144.6 L593.0,143.2 L594.0,141.7 L595.0,140.3 L596.0,138.8 L597.0,137.4 L598.0,135.9 L599.0,134.5 L600.0,133.0" fill="none" stroke="#1a5fa8" stroke-width="3.2"/>
+<line x1="105.0" y1="91" x2="105.0" y2="199" stroke="#7a7a7a" stroke-dasharray="4 3"/>
+<line x1="285.0" y1="91" x2="285.0" y2="199" stroke="#7a7a7a" stroke-dasharray="4 3"/>
+<line x1="106.0" y1="193" x2="284.0" y2="193" stroke="#1a5fa8" stroke-width="2.4" marker-start="url(#dblb)" marker-end="url(#dblb)"/>
+<text x="195.0" y="219" font-size="21" text-anchor="middle" fill="#1a5fa8" font-style="italic" font-family="Lora,Georgia,serif">λ</text>
+<text x="305.0" y="199" font-size="15" fill="#4a4a4a">longueur d'onde λ (en m)</text>
+<text x="24" y="268" font-size="18" font-weight="700" fill="#c8620a">Représentation temporelle</text>
+<text x="24" y="290" font-size="16" fill="#4a4a4a">mouvement d'un point M fixé&nbsp;: y en fonction de t</text>
+<line x1="60" y1="373" x2="615" y2="373" stroke="#4a4a4a" stroke-width="1.6" marker-end="url(#dblk)"/>
+<line x1="60" y1="443" x2="60" y2="303" stroke="#4a4a4a" stroke-width="1.6" marker-end="url(#dblk)"/>
+<text x="611" y="399" font-size="19" font-style="italic" font-family="Lora,Georgia,serif" fill="#1e1e1e" text-anchor="end">t</text>
+<text x="50" y="315" font-size="19" font-style="italic" font-family="Lora,Georgia,serif" fill="#1e1e1e" text-anchor="end">y</text>
+<text x="52" y="379" font-size="15" fill="#4a4a4a" text-anchor="end">0</text>
+<path d="M60.0,373.0 L61.0,371.5 L62.0,370.1 L63.0,368.6 L64.0,367.2 L65.0,365.7 L66.0,364.3 L67.0,362.8 L68.0,361.4 L69.0,360.0 L70.0,358.6 L71.0,357.3 L72.0,355.9 L73.0,354.6 L74.0,353.3 L75.0,352.0 L76.0,350.7 L77.0,349.5 L78.0,348.3 L79.0,347.1 L80.0,346.0 L81.0,344.9 L82.0,343.8 L83.0,342.8 L84.0,341.8 L85.0,340.8 L86.0,339.9 L87.0,339.0 L88.0,338.2 L89.0,337.4 L90.0,336.6 L91.0,335.9 L92.0,335.3 L93.0,334.6 L94.0,334.1 L95.0,333.5 L96.0,333.1 L97.0,332.6 L98.0,332.2 L99.0,331.9 L100.0,331.6 L101.0,331.4 L102.0,331.2 L103.0,331.1 L104.0,331.0 L105.0,331.0 L106.0,331.0 L107.0,331.1 L108.0,331.2 L109.0,331.4 L110.0,331.6 L111.0,331.9 L112.0,332.2 L113.0,332.6 L114.0,333.1 L115.0,333.5 L116.0,334.1 L117.0,334.6 L118.0,335.3 L119.0,335.9 L120.0,336.6 L121.0,337.4 L122.0,338.2 L123.0,339.0 L124.0,339.9 L125.0,340.8 L126.0,341.8 L127.0,342.8 L128.0,343.8 L129.0,344.9 L130.0,346.0 L131.0,347.1 L132.0,348.3 L133.0,349.5 L134.0,350.7 L135.0,352.0 L136.0,353.3 L137.0,354.6 L138.0,355.9 L139.0,357.3 L140.0,358.6 L141.0,360.0 L142.0,361.4 L143.0,362.8 L144.0,364.3 L145.0,365.7 L146.0,367.2 L147.0,368.6 L148.0,370.1 L149.0,371.5 L150.0,373.0 L151.0,374.5 L152.0,375.9 L153.0,377.4 L154.0,378.8 L155.0,380.3 L156.0,381.7 L157.0,383.2 L158.0,384.6 L159.0,386.0 L160.0,387.4 L161.0,388.7 L162.0,390.1 L163.0,391.4 L164.0,392.7 L165.0,394.0 L166.0,395.3 L167.0,396.5 L168.0,397.7 L169.0,398.9 L170.0,400.0 L171.0,401.1 L172.0,402.2 L173.0,403.2 L174.0,404.2 L175.0,405.2 L176.0,406.1 L177.0,407.0 L178.0,407.8 L179.0,408.6 L180.0,409.4 L181.0,410.1 L182.0,410.7 L183.0,411.4 L184.0,411.9 L185.0,412.5 L186.0,412.9 L187.0,413.4 L188.0,413.8 L189.0,414.1 L190.0,414.4 L191.0,414.6 L192.0,414.8 L193.0,414.9 L194.0,415.0 L195.0,415.0 L196.0,415.0 L197.0,414.9 L198.0,414.8 L199.0,414.6 L200.0,414.4 L201.0,414.1 L202.0,413.8 L203.0,413.4 L204.0,412.9 L205.0,412.5 L206.0,411.9 L207.0,411.4 L208.0,410.7 L209.0,410.1 L210.0,409.4 L211.0,408.6 L212.0,407.8 L213.0,407.0 L214.0,406.1 L215.0,405.2 L216.0,404.2 L217.0,403.2 L218.0,402.2 L219.0,401.1 L220.0,400.0 L221.0,398.9 L222.0,397.7 L223.0,396.5 L224.0,395.3 L225.0,394.0 L226.0,392.7 L227.0,391.4 L228.0,390.1 L229.0,388.7 L230.0,387.4 L231.0,386.0 L232.0,384.6 L233.0,383.2 L234.0,381.7 L235.0,380.3 L236.0,378.8 L237.0,377.4 L238.0,375.9 L239.0,374.5 L240.0,373.0 L241.0,371.5 L242.0,370.1 L243.0,368.6 L244.0,367.2 L245.0,365.7 L246.0,364.3 L247.0,362.8 L248.0,361.4 L249.0,360.0 L250.0,358.6 L251.0,357.3 L252.0,355.9 L253.0,354.6 L254.0,353.3 L255.0,352.0 L256.0,350.7 L257.0,349.5 L258.0,348.3 L259.0,347.1 L260.0,346.0 L261.0,344.9 L262.0,343.8 L263.0,342.8 L264.0,341.8 L265.0,340.8 L266.0,339.9 L267.0,339.0 L268.0,338.2 L269.0,337.4 L270.0,336.6 L271.0,335.9 L272.0,335.3 L273.0,334.6 L274.0,334.1 L275.0,333.5 L276.0,333.1 L277.0,332.6 L278.0,332.2 L279.0,331.9 L280.0,331.6 L281.0,331.4 L282.0,331.2 L283.0,331.1 L284.0,331.0 L285.0,331.0 L286.0,331.0 L287.0,331.1 L288.0,331.2 L289.0,331.4 L290.0,331.6 L291.0,331.9 L292.0,332.2 L293.0,332.6 L294.0,333.1 L295.0,333.5 L296.0,334.1 L297.0,334.6 L298.0,335.3 L299.0,335.9 L300.0,336.6 L301.0,337.4 L302.0,338.2 L303.0,339.0 L304.0,339.9 L305.0,340.8 L306.0,341.8 L307.0,342.8 L308.0,343.8 L309.0,344.9 L310.0,346.0 L311.0,347.1 L312.0,348.3 L313.0,349.5 L314.0,350.7 L315.0,352.0 L316.0,353.3 L317.0,354.6 L318.0,355.9 L319.0,357.3 L320.0,358.6 L321.0,360.0 L322.0,361.4 L323.0,362.8 L324.0,364.3 L325.0,365.7 L326.0,367.2 L327.0,368.6 L328.0,370.1 L329.0,371.5 L330.0,373.0 L331.0,374.5 L332.0,375.9 L333.0,377.4 L334.0,378.8 L335.0,380.3 L336.0,381.7 L337.0,383.2 L338.0,384.6 L339.0,386.0 L340.0,387.4 L341.0,388.7 L342.0,390.1 L343.0,391.4 L344.0,392.7 L345.0,394.0 L346.0,395.3 L347.0,396.5 L348.0,397.7 L349.0,398.9 L350.0,400.0 L351.0,401.1 L352.0,402.2 L353.0,403.2 L354.0,404.2 L355.0,405.2 L356.0,406.1 L357.0,407.0 L358.0,407.8 L359.0,408.6 L360.0,409.4 L361.0,410.1 L362.0,410.7 L363.0,411.4 L364.0,411.9 L365.0,412.5 L366.0,412.9 L367.0,413.4 L368.0,413.8 L369.0,414.1 L370.0,414.4 L371.0,414.6 L372.0,414.8 L373.0,414.9 L374.0,415.0 L375.0,415.0 L376.0,415.0 L377.0,414.9 L378.0,414.8 L379.0,414.6 L380.0,414.4 L381.0,414.1 L382.0,413.8 L383.0,413.4 L384.0,412.9 L385.0,412.5 L386.0,411.9 L387.0,411.4 L388.0,410.7 L389.0,410.1 L390.0,409.4 L391.0,408.6 L392.0,407.8 L393.0,407.0 L394.0,406.1 L395.0,405.2 L396.0,404.2 L397.0,403.2 L398.0,402.2 L399.0,401.1 L400.0,400.0 L401.0,398.9 L402.0,397.7 L403.0,396.5 L404.0,395.3 L405.0,394.0 L406.0,392.7 L407.0,391.4 L408.0,390.1 L409.0,388.7 L410.0,387.4 L411.0,386.0 L412.0,384.6 L413.0,383.2 L414.0,381.7 L415.0,380.3 L416.0,378.8 L417.0,377.4 L418.0,375.9 L419.0,374.5 L420.0,373.0 L421.0,371.5 L422.0,370.1 L423.0,368.6 L424.0,367.2 L425.0,365.7 L426.0,364.3 L427.0,362.8 L428.0,361.4 L429.0,360.0 L430.0,358.6 L431.0,357.3 L432.0,355.9 L433.0,354.6 L434.0,353.3 L435.0,352.0 L436.0,350.7 L437.0,349.5 L438.0,348.3 L439.0,347.1 L440.0,346.0 L441.0,344.9 L442.0,343.8 L443.0,342.8 L444.0,341.8 L445.0,340.8 L446.0,339.9 L447.0,339.0 L448.0,338.2 L449.0,337.4 L450.0,336.6 L451.0,335.9 L452.0,335.3 L453.0,334.6 L454.0,334.1 L455.0,333.5 L456.0,333.1 L457.0,332.6 L458.0,332.2 L459.0,331.9 L460.0,331.6 L461.0,331.4 L462.0,331.2 L463.0,331.1 L464.0,331.0 L465.0,331.0 L466.0,331.0 L467.0,331.1 L468.0,331.2 L469.0,331.4 L470.0,331.6 L471.0,331.9 L472.0,332.2 L473.0,332.6 L474.0,333.1 L475.0,333.5 L476.0,334.1 L477.0,334.6 L478.0,335.3 L479.0,335.9 L480.0,336.6 L481.0,337.4 L482.0,338.2 L483.0,339.0 L484.0,339.9 L485.0,340.8 L486.0,341.8 L487.0,342.8 L488.0,343.8 L489.0,344.9 L490.0,346.0 L491.0,347.1 L492.0,348.3 L493.0,349.5 L494.0,350.7 L495.0,352.0 L496.0,353.3 L497.0,354.6 L498.0,355.9 L499.0,357.3 L500.0,358.6 L501.0,360.0 L502.0,361.4 L503.0,362.8 L504.0,364.3 L505.0,365.7 L506.0,367.2 L507.0,368.6 L508.0,370.1 L509.0,371.5 L510.0,373.0 L511.0,374.5 L512.0,375.9 L513.0,377.4 L514.0,378.8 L515.0,380.3 L516.0,381.7 L517.0,383.2 L518.0,384.6 L519.0,386.0 L520.0,387.4 L521.0,388.7 L522.0,390.1 L523.0,391.4 L524.0,392.7 L525.0,394.0 L526.0,395.3 L527.0,396.5 L528.0,397.7 L529.0,398.9 L530.0,400.0 L531.0,401.1 L532.0,402.2 L533.0,403.2 L534.0,404.2 L535.0,405.2 L536.0,406.1 L537.0,407.0 L538.0,407.8 L539.0,408.6 L540.0,409.4 L541.0,410.1 L542.0,410.7 L543.0,411.4 L544.0,411.9 L545.0,412.5 L546.0,412.9 L547.0,413.4 L548.0,413.8 L549.0,414.1 L550.0,414.4 L551.0,414.6 L552.0,414.8 L553.0,414.9 L554.0,415.0 L555.0,415.0 L556.0,415.0 L557.0,414.9 L558.0,414.8 L559.0,414.6 L560.0,414.4 L561.0,414.1 L562.0,413.8 L563.0,413.4 L564.0,412.9 L565.0,412.5 L566.0,411.9 L567.0,411.4 L568.0,410.7 L569.0,410.1 L570.0,409.4 L571.0,408.6 L572.0,407.8 L573.0,407.0 L574.0,406.1 L575.0,405.2 L576.0,404.2 L577.0,403.2 L578.0,402.2 L579.0,401.1 L580.0,400.0 L581.0,398.9 L582.0,397.7 L583.0,396.5 L584.0,395.3 L585.0,394.0 L586.0,392.7 L587.0,391.4 L588.0,390.1 L589.0,388.7 L590.0,387.4 L591.0,386.0 L592.0,384.6 L593.0,383.2 L594.0,381.7 L595.0,380.3 L596.0,378.8 L597.0,377.4 L598.0,375.9 L599.0,374.5 L600.0,373.0" fill="none" stroke="#c8620a" stroke-width="3.2"/>
+<line x1="105.0" y1="331" x2="105.0" y2="439" stroke="#7a7a7a" stroke-dasharray="4 3"/>
+<line x1="285.0" y1="331" x2="285.0" y2="439" stroke="#7a7a7a" stroke-dasharray="4 3"/>
+<line x1="106.0" y1="433" x2="284.0" y2="433" stroke="#c8620a" stroke-width="2.4" marker-start="url(#dblo)" marker-end="url(#dblo)"/>
+<text x="195.0" y="459" font-size="21" text-anchor="middle" fill="#c8620a" font-style="italic" font-family="Lora,Georgia,serif">T</text>
+<text x="305.0" y="439" font-size="15" fill="#4a4a4a">période T (en s)</text>
+</svg>
+        <p class="schema-legende">On lit λ sur une représentation spatiale, et T sur une représentation temporelle.</p>
+      </div>
+
+      <p>Pendant une période <span class="var">T</span>, la perturbation parcourt la distance <span class="var">d</span> = <span class="var">v</span> × <span class="var">T</span>. Or, pendant ce temps, la source a produit exactement un motif&nbsp;: la distance parcourue est donc égale à la longueur d'onde.</p>
+      <div class="formule">
+        <span class="var">λ</span> = <span class="var">v</span> × <span class="var">T</span> = <span class="frac"><span><span class="var">v</span></span><span><span class="var">f</span></span></span>
+        <span class="unites"><span class="var">λ</span> en m · <span class="var">v</span> en m⋅s<sup>−1</sup> · <span class="var">T</span> en s · <span class="var">f</span> en Hz</span>
+      </div>
+      <div class="exemple">
+        <p class="label">Exemple</p>
+        <p>Une onde se propage le long d'une corde à <span class="var">v</span> = 1,6 m⋅s<sup>−1</sup>. La source vibre avec une période <span class="var">T</span> = 250 ms = 250.10<sup>−3</sup> s.</p>
+        <p style="text-align:center;margin-top:.3rem;"><span class="var">λ</span> = <span class="var">v</span> × <span class="var">T</span> = 1,6 × 250.10<sup>−3</sup> = 400.10<sup>−3</sup> m = <strong>0,40 m</strong></p>
+      </div>
+      <div class="exemple attention">
+        <p class="label">Erreur fréquente</p>
+        <p>Sur une représentation <strong>temporelle</strong>, l'écart entre deux maximums successifs est la période <span class="var">T</span> (en s), pas la longueur d'onde. Pour lire <span class="var">λ</span>, il faut une représentation <strong>spatiale</strong> (axe horizontal en mètres).</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=kK4wkk6lT9U" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Ondes mécaniques périodiques&nbsp;: longueur d'onde, célérité et période</span><br><span class="vs">e-profs · 4 min 07</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex4">
+        <div class="ex-header">
+          <span class="ex-num">4</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">Voici l'aspect d'une corde à une date <span class="var">t</span>. La source vibre à la fréquence <strong><span class="var">f</span> = 5,0 Hz</strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="schema" style="margin-top:0;">
+            <svg role="img" aria-label="Aspect de la corde à une date t" viewBox="0 0 640 290" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3','Segoe UI',Arial,sans-serif">
+<defs>
+<marker id="spar" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto"><path d="M0,0 L0,10 L13,5 z" fill="#c0392b"/></marker>
+<marker id="spab" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#1a5fa8"/></marker>
+<marker id="spak" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#4a4a4a"/></marker>
+<marker id="spav" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#0e7c5b"/></marker>
+<marker id="spao" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="12" refX="11" refY="5" orient="auto-start-reverse"><path d="M0,0 L0,10 L13,5 z" fill="#c8620a"/></marker>
+</defs>
+<rect width="640" height="290" fill="#f7f6f2"/>
+<line x1="70.0" y1="50.0" x2="70.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="70.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a">0</text>
+<line x1="100.0" y1="50.0" x2="100.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="100.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="130.0" y1="50.0" x2="130.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="130.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="160.0" y1="50.0" x2="160.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="160.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a">30</text>
+<line x1="190.0" y1="50.0" x2="190.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="190.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="220.0" y1="50.0" x2="220.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="220.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="250.0" y1="50.0" x2="250.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="250.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a">60</text>
+<line x1="280.0" y1="50.0" x2="280.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="280.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="310.0" y1="50.0" x2="310.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="310.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="340.0" y1="50.0" x2="340.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="340.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a">90</text>
+<line x1="370.0" y1="50.0" x2="370.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="370.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="400.0" y1="50.0" x2="400.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="400.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="430.0" y1="50.0" x2="430.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="430.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a">120</text>
+<line x1="460.0" y1="50.0" x2="460.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="460.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="490.0" y1="50.0" x2="490.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="490.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="520.0" y1="50.0" x2="520.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="520.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a">150</text>
+<line x1="550.0" y1="50.0" x2="550.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="550.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="580.0" y1="50.0" x2="580.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="580.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a"></text>
+<line x1="610.0" y1="50.0" x2="610.0" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="610.0" y="270.0" font-size="15" text-anchor="middle" fill="#4a4a4a">180</text>
+<line x1="70" y1="50.0" x2="610" y2="50.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="55.0" font-size="15" text-anchor="end" fill="#4a4a4a">2</text>
+<line x1="70" y1="100.0" x2="610" y2="100.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="105.0" font-size="15" text-anchor="end" fill="#4a4a4a">1</text>
+<line x1="70" y1="150.0" x2="610" y2="150.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="155.0" font-size="15" text-anchor="end" fill="#4a4a4a">0</text>
+<line x1="70" y1="200.0" x2="610" y2="200.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="205.0" font-size="15" text-anchor="end" fill="#4a4a4a">−1</text>
+<line x1="70" y1="250.0" x2="610" y2="250.0" stroke="#d8d6ce" stroke-width="1"/>
+<text x="62" y="255.0" font-size="15" text-anchor="end" fill="#4a4a4a">−2</text>
+<line x1="70" y1="150" x2="628" y2="150" stroke="#4a4a4a" stroke-width="1.6" marker-end="url(#spak)"/>
+<line x1="70" y1="250.0" x2="70" y2="34.0" stroke="#4a4a4a" stroke-width="1.6" marker-end="url(#spak)"/>
+<text x="626" y="140" font-size="16" text-anchor="end" fill="#1e1e1e">x (cm)</text>
+<text x="78" y="44.0" font-size="16" fill="#1e1e1e">y (cm)</text>
+<path d="M70.0,150.0 L71.0,147.4 L72.0,144.8 L73.0,142.2 L74.0,139.6 L75.0,137.0 L76.0,134.4 L77.0,131.9 L78.0,129.3 L79.0,126.8 L80.0,124.3 L81.0,121.9 L82.0,119.5 L83.0,117.1 L84.0,114.8 L85.0,112.5 L86.0,110.3 L87.0,108.1 L88.0,105.9 L89.0,103.8 L90.0,101.8 L91.0,99.8 L92.0,97.9 L93.0,96.0 L94.0,94.3 L95.0,92.5 L96.0,90.9 L97.0,89.3 L98.0,87.8 L99.0,86.4 L100.0,85.0 L101.0,83.8 L102.0,82.6 L103.0,81.5 L104.0,80.5 L105.0,79.5 L106.0,78.7 L107.0,77.9 L108.0,77.2 L109.0,76.6 L110.0,76.1 L111.0,75.7 L112.0,75.4 L113.0,75.2 L114.0,75.0 L115.0,75.0 L116.0,75.0 L117.0,75.2 L118.0,75.4 L119.0,75.7 L120.0,76.1 L121.0,76.6 L122.0,77.2 L123.0,77.9 L124.0,78.7 L125.0,79.5 L126.0,80.5 L127.0,81.5 L128.0,82.6 L129.0,83.8 L130.0,85.0 L131.0,86.4 L132.0,87.8 L133.0,89.3 L134.0,90.9 L135.0,92.5 L136.0,94.3 L137.0,96.0 L138.0,97.9 L139.0,99.8 L140.0,101.8 L141.0,103.8 L142.0,105.9 L143.0,108.1 L144.0,110.3 L145.0,112.5 L146.0,114.8 L147.0,117.1 L148.0,119.5 L149.0,121.9 L150.0,124.3 L151.0,126.8 L152.0,129.3 L153.0,131.9 L154.0,134.4 L155.0,137.0 L156.0,139.6 L157.0,142.2 L158.0,144.8 L159.0,147.4 L160.0,150.0 L161.0,152.6 L162.0,155.2 L163.0,157.8 L164.0,160.4 L165.0,163.0 L166.0,165.6 L167.0,168.1 L168.0,170.7 L169.0,173.2 L170.0,175.7 L171.0,178.1 L172.0,180.5 L173.0,182.9 L174.0,185.2 L175.0,187.5 L176.0,189.7 L177.0,191.9 L178.0,194.1 L179.0,196.2 L180.0,198.2 L181.0,200.2 L182.0,202.1 L183.0,204.0 L184.0,205.7 L185.0,207.5 L186.0,209.1 L187.0,210.7 L188.0,212.2 L189.0,213.6 L190.0,215.0 L191.0,216.2 L192.0,217.4 L193.0,218.5 L194.0,219.5 L195.0,220.5 L196.0,221.3 L197.0,222.1 L198.0,222.8 L199.0,223.4 L200.0,223.9 L201.0,224.3 L202.0,224.6 L203.0,224.8 L204.0,225.0 L205.0,225.0 L206.0,225.0 L207.0,224.8 L208.0,224.6 L209.0,224.3 L210.0,223.9 L211.0,223.4 L212.0,222.8 L213.0,222.1 L214.0,221.3 L215.0,220.5 L216.0,219.5 L217.0,218.5 L218.0,217.4 L219.0,216.2 L220.0,215.0 L221.0,213.6 L222.0,212.2 L223.0,210.7 L224.0,209.1 L225.0,207.5 L226.0,205.7 L227.0,204.0 L228.0,202.1 L229.0,200.2 L230.0,198.2 L231.0,196.2 L232.0,194.1 L233.0,191.9 L234.0,189.7 L235.0,187.5 L236.0,185.2 L237.0,182.9 L238.0,180.5 L239.0,178.1 L240.0,175.7 L241.0,173.2 L242.0,170.7 L243.0,168.1 L244.0,165.6 L245.0,163.0 L246.0,160.4 L247.0,157.8 L248.0,155.2 L249.0,152.6 L250.0,150.0 L251.0,147.4 L252.0,144.8 L253.0,142.2 L254.0,139.6 L255.0,137.0 L256.0,134.4 L257.0,131.9 L258.0,129.3 L259.0,126.8 L260.0,124.3 L261.0,121.9 L262.0,119.5 L263.0,117.1 L264.0,114.8 L265.0,112.5 L266.0,110.3 L267.0,108.1 L268.0,105.9 L269.0,103.8 L270.0,101.8 L271.0,99.8 L272.0,97.9 L273.0,96.0 L274.0,94.3 L275.0,92.5 L276.0,90.9 L277.0,89.3 L278.0,87.8 L279.0,86.4 L280.0,85.0 L281.0,83.8 L282.0,82.6 L283.0,81.5 L284.0,80.5 L285.0,79.5 L286.0,78.7 L287.0,77.9 L288.0,77.2 L289.0,76.6 L290.0,76.1 L291.0,75.7 L292.0,75.4 L293.0,75.2 L294.0,75.0 L295.0,75.0 L296.0,75.0 L297.0,75.2 L298.0,75.4 L299.0,75.7 L300.0,76.1 L301.0,76.6 L302.0,77.2 L303.0,77.9 L304.0,78.7 L305.0,79.5 L306.0,80.5 L307.0,81.5 L308.0,82.6 L309.0,83.8 L310.0,85.0 L311.0,86.4 L312.0,87.8 L313.0,89.3 L314.0,90.9 L315.0,92.5 L316.0,94.3 L317.0,96.0 L318.0,97.9 L319.0,99.8 L320.0,101.8 L321.0,103.8 L322.0,105.9 L323.0,108.1 L324.0,110.3 L325.0,112.5 L326.0,114.8 L327.0,117.1 L328.0,119.5 L329.0,121.9 L330.0,124.3 L331.0,126.8 L332.0,129.3 L333.0,131.9 L334.0,134.4 L335.0,137.0 L336.0,139.6 L337.0,142.2 L338.0,144.8 L339.0,147.4 L340.0,150.0 L341.0,152.6 L342.0,155.2 L343.0,157.8 L344.0,160.4 L345.0,163.0 L346.0,165.6 L347.0,168.1 L348.0,170.7 L349.0,173.2 L350.0,175.7 L351.0,178.1 L352.0,180.5 L353.0,182.9 L354.0,185.2 L355.0,187.5 L356.0,189.7 L357.0,191.9 L358.0,194.1 L359.0,196.2 L360.0,198.2 L361.0,200.2 L362.0,202.1 L363.0,204.0 L364.0,205.7 L365.0,207.5 L366.0,209.1 L367.0,210.7 L368.0,212.2 L369.0,213.6 L370.0,215.0 L371.0,216.2 L372.0,217.4 L373.0,218.5 L374.0,219.5 L375.0,220.5 L376.0,221.3 L377.0,222.1 L378.0,222.8 L379.0,223.4 L380.0,223.9 L381.0,224.3 L382.0,224.6 L383.0,224.8 L384.0,225.0 L385.0,225.0 L386.0,225.0 L387.0,224.8 L388.0,224.6 L389.0,224.3 L390.0,223.9 L391.0,223.4 L392.0,222.8 L393.0,222.1 L394.0,221.3 L395.0,220.5 L396.0,219.5 L397.0,218.5 L398.0,217.4 L399.0,216.2 L400.0,215.0 L401.0,213.6 L402.0,212.2 L403.0,210.7 L404.0,209.1 L405.0,207.5 L406.0,205.7 L407.0,204.0 L408.0,202.1 L409.0,200.2 L410.0,198.2 L411.0,196.2 L412.0,194.1 L413.0,191.9 L414.0,189.7 L415.0,187.5 L416.0,185.2 L417.0,182.9 L418.0,180.5 L419.0,178.1 L420.0,175.7 L421.0,173.2 L422.0,170.7 L423.0,168.1 L424.0,165.6 L425.0,163.0 L426.0,160.4 L427.0,157.8 L428.0,155.2 L429.0,152.6 L430.0,150.0 L431.0,147.4 L432.0,144.8 L433.0,142.2 L434.0,139.6 L435.0,137.0 L436.0,134.4 L437.0,131.9 L438.0,129.3 L439.0,126.8 L440.0,124.3 L441.0,121.9 L442.0,119.5 L443.0,117.1 L444.0,114.8 L445.0,112.5 L446.0,110.3 L447.0,108.1 L448.0,105.9 L449.0,103.8 L450.0,101.8 L451.0,99.8 L452.0,97.9 L453.0,96.0 L454.0,94.3 L455.0,92.5 L456.0,90.9 L457.0,89.3 L458.0,87.8 L459.0,86.4 L460.0,85.0 L461.0,83.8 L462.0,82.6 L463.0,81.5 L464.0,80.5 L465.0,79.5 L466.0,78.7 L467.0,77.9 L468.0,77.2 L469.0,76.6 L470.0,76.1 L471.0,75.7 L472.0,75.4 L473.0,75.2 L474.0,75.0 L475.0,75.0 L476.0,75.0 L477.0,75.2 L478.0,75.4 L479.0,75.7 L480.0,76.1 L481.0,76.6 L482.0,77.2 L483.0,77.9 L484.0,78.7 L485.0,79.5 L486.0,80.5 L487.0,81.5 L488.0,82.6 L489.0,83.8 L490.0,85.0 L491.0,86.4 L492.0,87.8 L493.0,89.3 L494.0,90.9 L495.0,92.5 L496.0,94.3 L497.0,96.0 L498.0,97.9 L499.0,99.8 L500.0,101.8 L501.0,103.8 L502.0,105.9 L503.0,108.1 L504.0,110.3 L505.0,112.5 L506.0,114.8 L507.0,117.1 L508.0,119.5 L509.0,121.9 L510.0,124.3 L511.0,126.8 L512.0,129.3 L513.0,131.9 L514.0,134.4 L515.0,137.0 L516.0,139.6 L517.0,142.2 L518.0,144.8 L519.0,147.4 L520.0,150.0 L521.0,152.6 L522.0,155.2 L523.0,157.8 L524.0,160.4 L525.0,163.0 L526.0,165.6 L527.0,168.1 L528.0,170.7 L529.0,173.2 L530.0,175.7 L531.0,178.1 L532.0,180.5 L533.0,182.9 L534.0,185.2 L535.0,187.5 L536.0,189.7 L537.0,191.9 L538.0,194.1 L539.0,196.2 L540.0,198.2 L541.0,200.2 L542.0,202.1 L543.0,204.0 L544.0,205.7 L545.0,207.5 L546.0,209.1 L547.0,210.7 L548.0,212.2 L549.0,213.6 L550.0,215.0 L551.0,216.2 L552.0,217.4 L553.0,218.5 L554.0,219.5 L555.0,220.5 L556.0,221.3 L557.0,222.1 L558.0,222.8 L559.0,223.4 L560.0,223.9 L561.0,224.3 L562.0,224.6 L563.0,224.8 L564.0,225.0 L565.0,225.0 L566.0,225.0 L567.0,224.8 L568.0,224.6 L569.0,224.3 L570.0,223.9 L571.0,223.4 L572.0,222.8 L573.0,222.1 L574.0,221.3 L575.0,220.5 L576.0,219.5 L577.0,218.5 L578.0,217.4 L579.0,216.2 L580.0,215.0 L581.0,213.6 L582.0,212.2 L583.0,210.7 L584.0,209.1 L585.0,207.5 L586.0,205.7 L587.0,204.0 L588.0,202.1 L589.0,200.2 L590.0,198.2 L591.0,196.2 L592.0,194.1 L593.0,191.9 L594.0,189.7 L595.0,187.5 L596.0,185.2 L597.0,182.9 L598.0,180.5 L599.0,178.1 L600.0,175.7 L601.0,173.2 L602.0,170.7 L603.0,168.1 L604.0,165.6 L605.0,163.0 L606.0,160.4 L607.0,157.8 L608.0,155.2 L609.0,152.6 L610.0,150.0" fill="none" stroke="#1a5fa8" stroke-width="3"/>
+</svg>
+          </div>
+          <div class="q-row"><span class="ql">a.</span>Ce graphique est une représentation
+            <select class="blank" id="ex4-a"><option value="">—</option><option value="temporelle">temporelle</option><option value="spatiale">spatiale</option></select></div>
+          <div class="q-row"><span class="ql">b.</span>Longueur d'onde lue sur le graphique&nbsp;: <span class="var">λ</span> = <input class="blank" id="ex4-b" type="text" autocomplete="off"> <span class="u">cm</span></div>
+          <div class="q-row"><span class="ql">c.</span>Longueur d'onde en mètre&nbsp;: <span class="var">λ</span> = <input class="blank" id="ex4-c" type="text" autocomplete="off" placeholder="ex. : 60.10^-2"> <span class="u">m</span></div>
+          <div class="q-row"><span class="ql">d.</span>Période de la source&nbsp;: <span class="var">T</span> = <input class="blank" id="ex4-d" type="text" autocomplete="off"> <span class="u">s</span></div>
+          <div class="q-row"><span class="ql">e.</span>Célérité de l'onde&nbsp;: <span class="var">v</span> = <input class="blank" id="ex4-e" type="text" autocomplete="off"> <span class="u">m⋅s<sup>−1</sup></span></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(4)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr4" onclick="corriger(4)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb4"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 5. RÉVISER ================= -->
+    <div class="section" id="s5">
+      <div class="section-titre"><span class="num">5</span><h2>Pour réviser tout le chapitre</h2></div>
+      <div class="videos" style="margin-top:0;">
+        <p class="v-titre">Vidéo de révision</p>
+        <a class="video" href="https://www.youtube.com/watch?v=i9LcGs4rkYs" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Période, fréquence, longueur d'onde… comment calculer&nbsp;? Exercice complet</span><br><span class="vs">Paul Olivier · 7 min 06</span></span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= EXERCICE FINAL ================= -->
+<div class="page" style="margin-top:2rem;" id="evaluation">
+  <div class="eval-header">
+    <span class="tag">Évaluation</span>
+    <h2>Exercice d'application — Les ondes mécaniques</h2>
+    <p>Première spécialité &nbsp;·&nbsp; Durée conseillée&nbsp;: 20 min</p>
+  </div>
+
+  <div class="eval-consignes">
+    <span class="consigne-item"><span class="dot"></span>Répondez à toutes les questions, puis cliquez sur «&nbsp;Vérifier mes résultats&nbsp;»</span>
+    <span class="consigne-item"><span class="dot"></span>Chaque réponse est analysée et corrigée</span>
+    <span class="consigne-item"><span class="dot"></span>Barème&nbsp;: /10 points</span>
+  </div>
+
+  <div class="eval-corps">
+    <div class="eq" id="eq1">
+      <div class="eq-header">
+        <span class="eq-num">1</span>
+        <div class="eq-meta"><p class="eq-intitule">Qu'est-ce qu'une onde mécanique progressive&nbsp;? Expliquez avec vos mots.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body"><textarea class="eval-textarea" id="rep1" placeholder="Votre réponse…"></textarea></div>
+    </div>
+
+    <div class="eq" id="eq2">
+      <div class="eq-header">
+        <span class="eq-num">2</span>
+        <div class="eq-meta"><p class="eq-intitule">Une onde sonore se propage dans l'air. Quelle affirmation est exacte&nbsp;?</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <button class="eval-choice" data-q="2" data-v="A"><span class="eval-cletter">A</span> C'est une onde transversale.</button>
+        <button class="eval-choice" data-q="2" data-v="B"><span class="eval-cletter">B</span> C'est une onde longitudinale&nbsp;: des compressions et des dilatations de l'air se propagent.</button>
+        <button class="eval-choice" data-q="2" data-v="C"><span class="eval-cletter">C</span> Elle peut aussi se propager dans le vide.</button>
+        <button class="eval-choice" data-q="2" data-v="D"><span class="eval-cletter">D</span> L'air se déplace de la source jusqu'à l'oreille.</button>
+      </div>
+    </div>
+
+    <div class="eq" id="eq3">
+      <div class="eq-header">
+        <span class="eq-num">3</span>
+        <div class="eq-meta"><p class="eq-intitule">Un sonar, placé sous un bateau, émet une onde ultrasonore vers le fond de la mer. L'écho revient au sonar <strong>Δ<span class="var">t</span> = 0,80 s</strong> après l'émission. Célérité des ultrasons dans l'eau de mer&nbsp;: <strong><span class="var">v</span> = 1 500 m⋅s<sup>−1</sup></strong>. Calculez la profondeur <span class="var">h</span> de la mer à cet endroit.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:14px;color:var(--texte-2);"><span class="var">h</span> =</span>
+          <input class="eval-input" id="rep3" type="text" placeholder="ex. : 2,5.10^3" style="width:170px;">
+          <span style="font-size:14px;color:var(--texte-3);">m</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="eq" id="eq4">
+      <div class="eq-header">
+        <span class="eq-num">4</span>
+        <div class="eq-meta"><p class="eq-intitule">La source d'une onde sinusoïdale le long d'une corde vibre avec une période <strong><span class="var">T</span> = 250 ms</strong>. L'onde se propage à la célérité <strong><span class="var">v</span> = 4,0 m⋅s<sup>−1</sup></strong>. Calculez la longueur d'onde <span class="var">λ</span>.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:14px;color:var(--texte-2);"><span class="var">λ</span> =</span>
+          <input class="eval-input" id="rep4" type="text" placeholder="ex. : 2,5.10^-1" style="width:170px;">
+          <span style="font-size:14px;color:var(--texte-3);">m</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="eq" id="eq5">
+      <div class="eq-header">
+        <span class="eq-num">5</span>
+        <div class="eq-meta"><p class="eq-intitule">Justifiez la relation <span class="var">λ</span> = <span class="var">v</span> × <span class="var">T</span>.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body"><textarea class="eval-textarea" id="rep5" placeholder="Votre justification…"></textarea></div>
+    </div>
+
+    <button class="btn-remettre" id="btn-verif-eval" onclick="verifierResultats()">Vérifier mes résultats →</button>
+
+    <div class="eval-resultat" id="eval-resultat">
+      <div class="res-top" id="res-top"></div>
+      <div class="res-detail">
+        <p class="res-detail-title">Analyse et correction par question</p>
+        <div id="res-detail-content"></div>
+      </div>
+    </div>
+    <button class="btn-recommencer" id="btn-recommencer" onclick="recommencerEval()">↺ Recommencer</button>
+  </div>
+</div>
+
+<script>
+/* ---------- Outils ---------- */
+function norm(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[’']/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function num(s) {
+  // accepte 0,2 · 0.2 · 200.10^-3 · 200×10^-3 · 200*10-3 · 200e-3 · 10^5
+  const t = String(s || '').replace(/\s/g, '').replace(/,/g, '.').replace(/[−–]/g, '-');
+  let m = t.match(/^10\^\(?([-+]?\d+)\)?$/);
+  if (m) return Math.pow(10, parseInt(m[1], 10));
+  m = t.match(/^([-+]?\d+(?:\.\d+)?)(?:[.x×*]10\^?\(?([-+]?\d+)\)?)?$/i);
+  if (m) return parseFloat(m[1]) * (m[2] !== undefined ? Math.pow(10, parseInt(m[2], 10)) : 1);
+  const v = Number(t);
+  return isNaN(v) || t === '' ? null : v;
+}
+const fr = x => String(x).replace('.', ',');
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* ---------- Exercices d'application ---------- */
+const EXOS = {
+  1: {
+    champs: [
+      { id: 'ex1-a', type: 'choix', val: 'faux', sol: 'faux' },
+      { id: 'ex1-b', type: 'choix', val: 'revient', sol: 'il est revenu à sa position initiale' },
+      { id: 'ex1-c', type: 'choix', val: 'transversale', sol: 'transversale' },
+      { id: 'ex1-d', type: 'choix', val: 'longitudinale', sol: 'longitudinale' },
+      { id: 'ex1-e', type: 'choix', val: 'energie', sol: 'de l’énergie, sans matière' },
+      { id: 'ex1-f', type: 'choix', val: 'faux', sol: 'faux' }
+    ],
+    explication: 'a. <strong>Faux</strong> : une onde mécanique a besoin d’un milieu matériel (solide, liquide ou gaz) pour se propager de proche en proche.<br>b. Le bouchon monte et descend, puis <strong>revient à sa position initiale</strong> : l’onde ne transporte pas la matière.<br>c. Les points de la corde bougent verticalement, perpendiculairement à la propagation : onde <strong>transversale</strong>.<br>d. Les couches d’air sont comprimées puis dilatées dans la direction de propagation : onde <strong>longitudinale</strong>.<br>e. Une onde transporte de l’<strong>énergie, sans transport de matière</strong>.<br>f. <strong>Faux</strong> : la lumière peut se propager dans le vide, ce n’est pas une onde mécanique.'
+  },
+  2: {
+    champs: [
+      { id: 'ex2-a', type: 'num', val: 0.50, tol: 0.005, sol: '0,50 s' },
+      { id: 'ex2-b', type: 'num', val: 1.5, tol: 0.005, sol: '150.10<sup>−2</sup> m = 1,5 m' },
+      { id: 'ex2-c', type: 'num', val: 3.0, tol: 0.05, sol: '3,0 m⋅s<sup>−1</sup>' },
+      { id: 'ex2-d', type: 'choix', val: 'change pas', sol: 'ne change pas' },
+      { id: 'ex2-e', type: 'num', val: 1530, tol: 30, sol: '1,5.10<sup>3</sup> m' }
+    ],
+    explication: 'a. <span class="var">τ</span> = <span class="var">t</span><sub>2</sub> − <span class="var">t</span><sub>1</sub> = 0,70 − 0,20 = <strong>0,50 s</strong>.<br>b. AB = 150 cm = 150.10<sup>−2</sup> m = <strong>1,5 m</strong>.<br>c. <span class="var">v</span> = AB / <span class="var">τ</span> = 1,5 / 0,50 = <strong>3,0 m⋅s<sup>−1</sup></strong>.<br>d. La célérité dépend du milieu (ici la corde et sa tension), pas de l’amplitude : elle <strong>ne change pas</strong>.<br>e. <span class="var">d</span> = <span class="var">v</span> × Δ<span class="var">t</span> = 340 × 4,5 = 1 530 m, soit environ <strong>1,5.10<sup>3</sup> m</strong> (1,5 km).'
+  },
+  3: {
+    champs: [
+      { id: 'ex3-a', type: 'choix', val: 'temporelle', sol: 'temporelle' },
+      { id: 'ex3-b', type: 'num', val: 2.0, tol: 0.05, sol: '2,0 cm' },
+      { id: 'ex3-c', type: 'num', val: 0.40, tol: 0.01, sol: '0,40 s' },
+      { id: 'ex3-d', type: 'num', val: 2.5, tol: 0.05, sol: '2,5 Hz' }
+    ],
+    explication: 'a. L’axe horizontal est le temps : c’est une représentation <strong>temporelle</strong> (mouvement d’un point au cours du temps).<br>b. L’élongation maximale vaut <strong><span class="var">A</span> = 2,0 cm</strong>.<br>c. Deux maximums successifs sont à <span class="var">t</span> = 0 s et <span class="var">t</span> = 0,40 s : <strong><span class="var">T</span> = 0,40 s</strong>. Pour plus de précision, on peut mesurer 3 périodes : 3<span class="var">T</span> = 1,2 s, donc <span class="var">T</span> = 0,40 s.<br>d. <span class="var">f</span> = 1 / <span class="var">T</span> = 1 / 0,40 = <strong>2,5 Hz</strong>.'
+  },
+  4: {
+    champs: [
+      { id: 'ex4-a', type: 'choix', val: 'spatiale', sol: 'spatiale' },
+      { id: 'ex4-b', type: 'num', val: 60, tol: 0.5, sol: '60 cm' },
+      { id: 'ex4-c', type: 'num', val: 0.60, tol: 0.005, sol: '60.10<sup>−2</sup> m = 0,60 m' },
+      { id: 'ex4-d', type: 'num', val: 0.20, tol: 0.005, sol: '0,20 s' },
+      { id: 'ex4-e', type: 'num', val: 3.0, tol: 0.05, sol: '3,0 m⋅s<sup>−1</sup>' }
+    ],
+    explication: 'a. L’axe horizontal est la position <span class="var">x</span> : c’est une représentation <strong>spatiale</strong> (aspect de la corde à une date donnée).<br>b. Le motif se répète tous les <strong>60 cm</strong> (trois motifs sur 180 cm).<br>c. <span class="var">λ</span> = 60 cm = 60.10<sup>−2</sup> m = <strong>0,60 m</strong>.<br>d. <span class="var">T</span> = 1 / <span class="var">f</span> = 1 / 5,0 = <strong>0,20 s</strong>.<br>e. <span class="var">v</span> = <span class="var">λ</span> / <span class="var">T</span> = <span class="var">λ</span> × <span class="var">f</span> = 0,60 × 5,0 = <strong>3,0 m⋅s<sup>−1</sup></strong>.'
+  }
+};
+
+const reussis = new Set();
+const NB_EXOS = Object.keys(EXOS).length;
+
+function testerChamp(c) {
+  const v = document.getElementById(c.id).value;
+  if (c.type === 'num') { const x = num(v); return x !== null && Math.abs(x - c.val) <= c.tol; }
+  if (c.type === 'texte') return c.re.test(norm(v));
+  if (c.type === 'choix') return v === c.val;
+  if (c.type === 'intervalle') { const x = num(v); return x !== null && x >= c.min && x <= c.max; }
+  if (c.type === 'formule') return v.replace(/\s/g, '').replace(/₂/g, '2') === c.val;
+  return false;
+}
+
+function verifier(n) {
+  const ex = EXOS[n];
+  let nbOk = 0, vides = 0;
+  ex.champs.forEach(c => {
+    const el = document.getElementById(c.id);
+    el.classList.remove('ok', 'ko');
+    if (!el.value.trim()) { vides++; return; }
+    const ok = testerChamp(c);
+    el.classList.add(ok ? 'ok' : 'ko');
+    if (ok) nbOk++;
+  });
+  const fb = document.getElementById('fb' + n);
+  const total = ex.champs.length;
+  if (vides === total) {
+    fb.className = 'feedback show ko';
+    fb.innerHTML = 'Complète les cases avant de vérifier.';
+    return;
+  }
+  if (nbOk === total) {
+    fb.className = 'feedback show ok';
+    fb.innerHTML = '<strong>✓ Bravo, tout est juste !</strong><br>' + ex.explication;
+    document.getElementById('ex' + n).classList.add('correct');
+    document.getElementById('corr' + n).classList.remove('show');
+    if (!reussis.has(n)) { reussis.add(n); majScore(); }
+  } else {
+    fb.className = 'feedback show ko';
+    fb.innerHTML = '<strong>✗ ' + nbOk + ' réponse' + (nbOk > 1 ? 's' : '') + ' juste' + (nbOk > 1 ? 's' : '') + ' sur ' + total + '.</strong> ' +
+      (vides ? 'Il reste ' + vides + ' case' + (vides > 1 ? 's' : '') + ' vide' + (vides > 1 ? 's' : '') + '. ' : '') +
+      'Corrige les cases en rouge, puis vérifie à nouveau.';
+    document.getElementById('corr' + n).classList.add('show');
+  }
+}
+
+function corriger(n) {
+  const ex = EXOS[n];
+  const fb = document.getElementById('fb' + n);
+  fb.className = 'feedback show corr';
+  fb.innerHTML = '<strong>Correction</strong><br>' + ex.explication +
+    '<br><span style="font-size:12.5px;color:#4a6a90;">Réponses attendues : ' + ex.champs.map(c => c.sol).join(' · ') + '</span>';
+}
+
+function majScore() {
+  document.getElementById('score-display').textContent = reussis.size + ' / ' + NB_EXOS;
+  document.getElementById('score-bar').style.width = Math.round(reussis.size / NB_EXOS * 100) + '%';
+}
+
+document.querySelectorAll('.exercice input.blank').forEach(inp => {
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') verifier(parseInt(inp.id.match(/^ex(\d+)/)[1], 10));
+  });
+});
+
+/* ---------- Exercice final : analyse et correction ---------- */
+const CORRIGE = {
+  1: 'Une onde mécanique progressive est la <strong>propagation d’une perturbation</strong> (une déformation) dans un <strong>milieu matériel</strong> (solide, liquide ou gaz), de proche en proche. Elle transporte de l’<strong>énergie</strong> mais <strong>pas de matière</strong> : chaque point du milieu revient à sa position après le passage de la perturbation. Elle ne se propage pas dans le vide.',
+  2: '<strong>Réponse B.</strong> Le son est une onde mécanique longitudinale : les couches d’air sont comprimées puis dilatées parallèlement à la direction de propagation. Il ne se propage pas dans le vide et l’air ne voyage pas jusqu’à l’oreille.',
+  3: 'L’onde fait un <strong>aller-retour</strong> : pendant Δ<span class="var">t</span>, elle parcourt la distance 2<span class="var">h</span>.<br>2<span class="var">h</span> = <span class="var">v</span> × Δ<span class="var">t</span> = 1 500 × 0,80 = 1,2.10<sup>3</sup> m, donc <span class="var">h</span> = 1,2.10<sup>3</sup> / 2 = <strong>6,0.10<sup>2</sup> m</strong> (600 m).',
+  4: 'Conversion : <span class="var">T</span> = 250 ms = 250.10<sup>−3</sup> s.<br><span class="var">λ</span> = <span class="var">v</span> × <span class="var">T</span> = 4,0 × 250.10<sup>−3</sup> = 1 000.10<sup>−3</sup> m = <strong>1,0 m</strong>.',
+  5: 'Pendant une <strong>période</strong> <span class="var">T</span>, la source produit exactement un motif. Pendant cette durée, la perturbation <strong>parcourt</strong> la distance <span class="var">d</span> = <span class="var">v</span> × <span class="var">T</span> (définition de la <strong>célérité</strong>). Cette distance est la longueur du motif qui se répète dans l’espace, c’est-à-dire la <strong>longueur d’onde</strong> : <span class="var">λ</span> = <span class="var">v</span> × <span class="var">T</span>.'
+};
+
+const NEG = '\\b(sans|pas|aucun|aucune|ne|n|ni|jamais|impossible)\\b';
+const CRITERES = {
+  1: [
+    { re: /perturbation|deformation|vibration|ebranlement|onde de choc|secousse/, ok: 'tu parles de la perturbation', ko: 'il manque l’idée de <strong>perturbation</strong> (ou déformation) du milieu' },
+    { re: /propag|se deplace|avance|transmet|de proche en proche/, ok: 'tu indiques que la perturbation se propage', ko: 'précise que la perturbation se <strong>propage</strong>' },
+    { re: /milieu|materiel|solide|liquide|gaz|\bair\b|\beau\b|proche en proche/, ok: 'tu cites le milieu matériel', ko: 'il faut un <strong>milieu matériel</strong> (solide, liquide ou gaz)' },
+    { re: new RegExp('energie|' + NEG + '.{0,40}matiere'), ok: 'tu parles du transport d’énergie sans transport de matière', ko: 'il manque : l’onde transporte de l’<strong>énergie</strong>, <strong>sans transport de matière</strong>' }
+  ],
+  5: [
+    { re: /periode|\bt\b/, ok: 'tu fais intervenir la période T', ko: 'il faut raisonner sur <strong>une période T</strong>' },
+    { re: /parcour|distance/, ok: 'tu parles de la distance parcourue', ko: 'il manque la <strong>distance parcourue</strong> par l’onde' },
+    { re: /\bv\b|celerite|vitesse/, ok: 'tu utilises la célérité v (d = v × T)', ko: 'utilise la <strong>célérité</strong> : <span class="var">d</span> = <span class="var">v</span> × <span class="var">T</span>' },
+    { re: /lambda|λ|longueur d ?onde|motif|meme etat|meme facon/, ok: 'tu relies cette distance à la longueur d’onde', ko: 'il faut dire que cette distance est la <strong>longueur d’onde λ</strong>' }
+  ]
+};
+
+const QCM_Q2 = {
+  A: 'Dans une onde sonore, l’air est comprimé et dilaté <strong>dans la direction de propagation</strong> : l’onde est longitudinale, pas transversale.',
+  B: '',
+  C: 'Le son est une onde <strong>mécanique</strong> : il lui faut un milieu matériel. Il ne se propage pas dans le vide.',
+  D: 'Une onde transporte de l’énergie <strong>sans transport de matière</strong> : les molécules d’air oscillent autour de leur position, elles ne voyagent pas jusqu’à l’oreille.'
+};
+
+let evalQ2sel = null;
+document.querySelectorAll('.eval-choice[data-q="2"]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    if (this.disabled) return;
+    document.querySelectorAll('.eval-choice[data-q="2"]').forEach(b => b.classList.remove('sel'));
+    this.classList.add('sel');
+    evalQ2sel = this.dataset.v;
+  });
+});
+
+function analyserTexte(q, rep) {
+  const t = norm(rep);
+  const res = CRITERES[q].map(c => ({ ok: c.re.test(t), msg: c.re.test(t) ? c.ok : c.ko }));
+  let pts = res.filter(r => r.ok).length * 0.5;
+  const notes = res.map(r => (r.ok ? '✓ ' : '✗ ') + r.msg);
+  if (q === 1) {
+    if (/vide/.test(t) && !new RegExp(NEG + '.{0,40}vide|vide.{0,30}\\b(pas|impossible|jamais)\\b').test(t))
+      notes.push('⚠ Attention : une onde mécanique ne peut <strong>pas</strong> se propager dans le vide.');
+    if (/matiere/.test(t) && !new RegExp(NEG + '.{0,40}matiere').test(t))
+      notes.push('⚠ Attention : une onde ne transporte <strong>pas</strong> de matière, seulement de l’énergie.');
+  }
+  if (q === 5 && /v\s*(x|×|\*|fois)\s*f\b/.test(t)) {
+    pts = Math.min(pts, 0.5);
+    notes.push('⚠ Attention : λ = <span class="var">v</span> × <span class="var">T</span> = <span class="var">v</span> / <span class="var">f</span> (et non <span class="var">v</span> × <span class="var">f</span>) : note limitée à 0,5 point.');
+  }
+  return { pts, notes };
+}
+
+function analyserCalcul(q, rep) {
+  const v = num(rep);
+  const proche = (a, tolRel = 0.02) => v !== null && Math.abs(v - a) <= Math.abs(a) * tolRel;
+  if (v === null) return { pts: 0, notes: ['✗ Réponse non numérique : écris un nombre, par exemple 6,0.10^2.'] };
+  if (q === 3) {
+    if (proche(600)) return { pts: 2, notes: ['✓ Bon calcul : aller-retour pris en compte, h = v × Δt / 2.'] };
+    if (proche(1200)) return { pts: 1, notes: ['✗ 1 200 m est la distance <strong>aller-retour</strong> : l’onde descend puis remonte. Il faut diviser par 2.'] };
+    if (proche(0.6)) return { pts: 1, notes: ['✗ La méthode est bonne, mais la réponse est demandée en mètres : 0,6 km = 6,0.10<sup>2</sup> m.'] };
+    if (proche(60) || proche(6000)) return { pts: 1, notes: ['✗ La méthode est bonne mais la puissance de dix est fausse : 1 500 × 0,80 / 2 = 6,0.10<sup>2</sup> m.'] };
+    if (proche(136) || proche(272)) return { pts: 0.5, notes: ['✗ Tu as utilisé la célérité du son dans l’air : ici l’onde se propage dans l’<strong>eau</strong> (1 500 m⋅s<sup>−1</sup>).'] };
+    if (proche(1875) || proche(937.5) || proche(3750)) return { pts: 0.5, notes: ['✗ Tu as divisé <span class="var">v</span> par Δ<span class="var">t</span> : la distance vaut <span class="var">d</span> = <span class="var">v</span> <strong>×</strong> Δ<span class="var">t</span>.'] };
+    if (proche(5.333e-4) || proche(2.667e-4)) return { pts: 0, notes: ['✗ Tu as calculé Δ<span class="var">t</span> / <span class="var">v</span> : utilise <span class="var">d</span> = <span class="var">v</span> × Δ<span class="var">t</span>.'] };
+    return { pts: 0, notes: ['✗ Résultat incorrect. Utilise <span class="var">d</span> = <span class="var">v</span> × Δ<span class="var">t</span>, sans oublier l’aller-retour.'] };
+  }
+  if (q === 4) {
+    if (proche(1.0)) return { pts: 2, notes: ['✓ Bon calcul : λ = v × T avec T converti en secondes.'] };
+    if (proche(1000)) return { pts: 1, notes: ['✗ Tu n’as pas converti la période : 250 ms = 250.10<sup>−3</sup> s.'] };
+    if (proche(16) || proche(0.016)) return { pts: 0.5, notes: ['✗ Tu as calculé <span class="var">v</span> / <span class="var">T</span> : la relation est λ = <span class="var">v</span> <strong>×</strong> <span class="var">T</span>.'] };
+    if (proche(0.0625) || proche(62.5)) return { pts: 0.5, notes: ['✗ Tu as calculé <span class="var">T</span> / <span class="var">v</span> : la relation est λ = <span class="var">v</span> × <span class="var">T</span>.'] };
+    if (proche(0.1) || proche(10)) return { pts: 1, notes: ['✗ La méthode est bonne mais la puissance de dix est fausse : 4,0 × 250.10<sup>−3</sup> = 1,0 m.'] };
+    return { pts: 0, notes: ['✗ Résultat incorrect. Utilise λ = <span class="var">v</span> × <span class="var">T</span>, avec <span class="var">T</span> en secondes.'] };
+  }
+}
+
+function verifierResultats() {
+  const rep1 = document.getElementById('rep1').value.trim();
+  const rep3 = document.getElementById('rep3').value.trim();
+  const rep4 = document.getElementById('rep4').value.trim();
+  const rep5 = document.getElementById('rep5').value.trim();
+
+  if (!rep1 || !evalQ2sel || !rep3 || !rep4 || !rep5) {
+    let msg = document.getElementById('msg-manque');
+    if (!msg) {
+      msg = document.createElement('p'); msg.id = 'msg-manque';
+      msg.style.cssText = 'color:#c0392b;font-size:13px;text-align:center;margin-top:.8rem;';
+      document.getElementById('btn-verif-eval').insertAdjacentElement('afterend', msg);
+    }
+    msg.textContent = 'Répondez à toutes les questions avant de vérifier vos résultats.';
+    return;
+  }
+
+  document.getElementById('btn-verif-eval').disabled = true;
+  document.querySelectorAll('.eval-textarea,.eval-input,.eval-choice').forEach(el => el.disabled = true);
+  const m = document.getElementById('msg-manque'); if (m) m.remove();
+
+  const detail = [];
+  detail.push({ q: 1, label: 'Q1 — Définition d’une onde mécanique progressive', reponse: rep1, ...analyserTexte(1, rep1) });
+  const ok2 = evalQ2sel === 'B';
+  detail.push({ q: 2, label: 'Q2 — Nature d’une onde sonore', reponse: 'Réponse ' + evalQ2sel, pts: ok2 ? 2 : 0, notes: [ok2 ? '✓ Bonne réponse.' : '✗ ' + QCM_Q2[evalQ2sel]] });
+  detail.push({ q: 3, label: 'Q3 — Profondeur mesurée par un sonar', reponse: rep3 + ' m', ...analyserCalcul(3, rep3) });
+  detail.push({ q: 4, label: 'Q4 — Longueur d’onde', reponse: rep4 + ' m', ...analyserCalcul(4, rep4) });
+  detail.push({ q: 5, label: 'Q5 — Justification de λ = v × T', reponse: rep5, ...analyserTexte(5, rep5) });
+
+  const total = detail.reduce((s, d) => s + d.pts, 0);
+  let mention, couleurTop, couleurNote;
+  if (total >= 9)      { mention = 'Très bien !';    couleurTop = '#e8f8f0'; couleurNote = '#0e7c5b'; }
+  else if (total >= 7) { mention = 'Bien';           couleurTop = '#eef4ff'; couleurNote = '#1a5fa8'; }
+  else if (total >= 5) { mention = 'Assez bien';     couleurTop = '#fff8e8'; couleurNote = '#c8620a'; }
+  else                 { mention = 'À retravailler'; couleurTop = '#fdf0f0'; couleurNote = '#c0392b'; }
+
+  const top = document.getElementById('res-top');
+  top.style.background = couleurTop;
+  top.innerHTML = `
+    <div class="res-note" style="color:${couleurNote};">${fr(total)}<span style="font-size:1.5rem;color:var(--texte-3);"> / 10</span></div>
+    <p class="res-mention" style="color:${couleurNote};">${mention}</p>
+    <p class="res-sous">${total === 10 ? 'Score parfait : toutes les compétences sont maîtrisées.' : 'Lis l’analyse de chaque réponse et la correction ci-dessous.'}</p>
+    <p class="res-sous" style="font-size:12px;margin-top:.4rem;">Les réponses rédigées (Q1 et Q5) sont analysées automatiquement à partir des idées attendues : relis la correction pour vérifier ta formulation.</p>`;
+
+  document.getElementById('res-detail-content').innerHTML = detail.map(d => {
+    const plein = d.pts === 2, nul = d.pts === 0;
+    const coul = plein ? '#0e7c5b' : (nul ? '#c0392b' : '#c8620a');
+    return `
+    <div class="res-ligne">
+      <span class="res-icone" style="color:${coul};">${plein ? '✓' : (nul ? '✗' : '≈')}</span>
+      <div class="res-q">
+        <div style="font-weight:600;color:var(--texte);">${d.label}</div>
+        <div class="res-rep">Ta réponse : <em>${escapeHtml(d.reponse)}</em></div>
+        <ul class="res-analyse">${d.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+        <div class="res-correction"><strong>Correction :</strong> ${CORRIGE[d.q]}</div>
+      </div>
+      <span class="res-pts" style="color:${coul};">${fr(d.pts)} / 2</span>
+    </div>`;
+  }).join('');
+
+  console.group('%c📋 RÉSULTATS — ' + new Date().toLocaleTimeString('fr-FR'), 'font-size:14px;font-weight:bold;color:#2c1a4a;');
+  console.log('%cNote finale : %c' + fr(total) + ' / 10 (' + mention + ')', 'font-size:13px;color:#555;', 'font-size:16px;font-weight:bold;color:' + couleurNote);
+  detail.forEach(d => {
+    console.group(d.label + ' — ' + fr(d.pts) + '/2');
+    console.log('Réponse élève : ' + d.reponse);
+    console.log('Analyse : ' + d.notes.map(n => n.replace(/<[^>]+>/g, '')).join(' | '));
+    console.groupEnd();
+  });
+  console.groupEnd();
+
+  document.getElementById('btn-recommencer').style.display = 'block';
+  const res = document.getElementById('eval-resultat');
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function recommencerEval() {
+  document.querySelectorAll('.eval-textarea,.eval-input').forEach(el => { el.disabled = false; el.value = ''; });
+  document.querySelectorAll('.eval-choice').forEach(el => { el.disabled = false; el.classList.remove('sel'); });
+  evalQ2sel = null;
+  document.getElementById('btn-verif-eval').disabled = false;
+  document.getElementById('btn-recommencer').style.display = 'none';
+  document.getElementById('eval-resultat').classList.remove('show');
+  document.getElementById('evaluation').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+</script>
+<script>
+/* ---------- Numéro du chapitre (case à compléter) ---------- */
+(function () {
+  const champ = document.getElementById('chap-num');
+  const CLE = '1spe-ondes-mecaniques-chapitre';
+  const maj = () => {
+    const n = champ.value.trim();
+    document.title = 'Chapitre ' + (n ? n + ' ' : '') + '— Les ondes mécaniques';
+  };
+  try { champ.value = localStorage.getItem(CLE) || ''; } catch (e) {}
+  maj();
+  champ.addEventListener('input', () => {
+    maj();
+    try { localStorage.setItem(CLE, champ.value.trim()); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

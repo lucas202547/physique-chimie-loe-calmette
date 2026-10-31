@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demi-équations électroniques – Entraînement</title>
+<style>
+:root{
+  --ink:#1d2433; --muted:#5b6475; --bg:#ffffff; --paper:#f6f7fb;
+  --accent:#1f5fa8; --accent-soft:#e8f0fb; --warm:#b45309; --warm-soft:#fdf3e4;
+  --green:#15803d; --green-soft:#e9f7ee; --red:#b91c1c; --red-soft:#fdecec; --line:#d6dbe6;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{font-size:17px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;line-height:1.6}
+main{max-width:920px;margin:0 auto;padding:24px 16px 64px}
+.sheet{background:var(--bg);border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,.06),0 6px 24px rgba(20,40,80,.06);padding:32px 36px;margin-bottom:28px}
+@media (max-width:640px){.sheet{padding:20px 16px}}
+h1{font-size:1.7rem;text-align:center;margin:0 0 18px;letter-spacing:.03em;color:var(--accent)}
+p{margin:8px 0}
+strong{color:#0f2d57}
+.key{background:var(--accent-soft);border-radius:8px;padding:10px 16px;margin:12px 0}
+.key ol{margin:6px 0;padding-left:24px}
+.note{font-size:.9rem;font-style:italic;color:var(--muted)}
+
+/* Carte d'exemple */
+.exo{border:1px solid var(--line);border-radius:12px;margin:30px 0;overflow:hidden}
+.exo-h{background:var(--green-soft);color:var(--green);padding:10px 16px;font-weight:700;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.exo-h .ref{background:var(--green);color:#fff;border-radius:999px;padding:1px 12px;font-size:.85rem}
+.exo-h .lvl{margin-left:auto;font-size:.82rem;font-weight:600;border:1px solid currentColor;border-radius:999px;padding:0 10px}
+.exo-b{padding:14px 16px}
+.progress{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:4px 0 10px}
+.progress>div{height:100%;width:0;background:var(--green);transition:width .4s}
+
+/* Équations */
+.eq{display:block;text-align:center;font-family:"Cambria Math","Cambria",Georgia,serif;font-size:1.12rem;margin:10px 0;padding:8px 6px;background:#fff;border:1px dashed var(--line);border-radius:6px;line-height:2.2}
+.charges{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:center;margin:10px 0;font-size:.95rem}
+.charges label{display:flex;align-items:center;gap:6px}
+input.box{width:2.6em;height:1.9em;font:inherit;font-family:"Segoe UI",system-ui,sans-serif;font-size:1rem;text-align:center;border:2px solid #9aa5b8;border-radius:6px;background:#fffdf5;color:var(--ink);vertical-align:middle;margin:0 3px;padding:0}
+input.box.charge{width:3.4em}
+input.box:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+input.box.ok{border-color:var(--green);background:var(--green-soft)}
+input.box.ko{border-color:var(--red);background:var(--red-soft)}
+input.box.sol{border-color:var(--accent);background:var(--accent-soft)}
+input.box:disabled{color:var(--ink);opacity:1}
+
+/* Étapes */
+.step{border-left:4px solid var(--line);padding:4px 0 4px 14px;margin:18px 0}
+.step.active{border-left-color:var(--accent)}
+.step.done{border-left-color:var(--green)}
+.step.locked{opacity:.45}
+.step.locked .body{display:none}
+.step .q{font-weight:700;margin:0 0 4px;color:#0f2d57}
+.step.locked .q::after{content:"  🔒";font-weight:400}
+.step .consigne{font-size:.95rem;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:8px 0}
+button{font:inherit;font-size:.92rem;font-weight:600;border-radius:8px;padding:6px 16px;cursor:pointer;border:2px solid var(--accent)}
+button.verif{background:var(--accent);color:#fff}
+button.verif:hover{background:#174a85}
+button.solution{background:#fff;color:var(--accent)}
+button.reset{background:#fff;color:var(--muted);border-color:var(--line);font-size:.85rem;padding:3px 12px}
+.fb{border-radius:8px;padding:8px 14px;margin:8px 0;font-size:.95rem;display:none}
+.fb.ko{display:block;background:var(--red-soft);color:var(--red);border-left:4px solid var(--red)}
+.fb.ok{display:block;background:var(--green-soft);color:#14532d;border-left:4px solid var(--green)}
+.fb.ok b{color:var(--green)}
+.final{display:none;background:var(--accent-soft);border-radius:10px;padding:12px 16px;margin-top:14px}
+.final.show{display:block}
+.final h4{margin:0 0 6px;color:var(--accent)}
+.final ul{margin:6px 0;padding-left:22px}
+.foot{text-align:right;margin-top:6px}
+@media print{
+  body{background:#fff;font-size:11pt}
+  .sheet{box-shadow:none;padding:0}
+  .actions,.fb,.progress,.foot{display:none!important}
+  .step.locked{opacity:1} .step.locked .body{display:block}
+  .exo{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<main>
+<article class="sheet">
+<h1>DEMI-ÉQUATIONS ÉLECTRONIQUES<br><span style="font-size:1.05rem;color:var(--muted);letter-spacing:0">Entraînement pas à pas</span></h1>
+
+<div class="key">
+  <strong>Rappel de la méthode.</strong> On écrit l'oxydant et le réducteur de part et d'autre d'une double flèche, puis on équilibre dans cet ordre :
+  <ol>
+    <li>les éléments autres que l'oxygène et l'hydrogène ;</li>
+    <li>l'élément oxygène, à l'aide de molécules d'eau H<sub>2</sub>O ;</li>
+    <li>l'élément hydrogène, à l'aide d'ions H<sup>+</sup> (milieu acide) ;</li>
+    <li>les charges électriques, à l'aide d'électrons e<sup>−</sup>.</li>
+  </ol>
+</div>
+<p class="note">Complète les cases puis clique sur « Vérifier ma réponse ». Écris 1 quand il n'y a pas besoin de coefficient. Pour une charge, écris le signe : par exemple +7 ou −2. L'étape suivante se débloque quand ta réponse est juste.</p>
+
+<div id="exos"></div>
+</article>
+</main>
+
+<script>
+/* ---------- Formules ---------- */
+const F = {
+  MnO4:'MnO<sub>4</sub><sup>−</sup>', Mn:'Mn<sup>2+</sup>',
+  Fe2O3:'Fe<sub>2</sub>O<sub>3</sub>', Fe:'Fe',
+  BrO3:'BrO<sub>3</sub><sup>−</sup>', Br2:'Br<sub>2</sub>',
+  H2O:'H<sub>2</sub>O', H:'H<sup>+</sup>', e:'e<sup>−</sup>'
+};
+const ARROW = ' ⇌ ';
+
+/* Une case : k = identifiant, ans = réponse, type = 'coef' ou 'charge', traps = réponses fausses fréquentes */
+const box = (k, ans, traps = {}, type = 'coef') => ({k, ans, traps, type});
+
+/* ---------- Données des trois exemples ---------- */
+const EXOS = [
+{
+  titre:'Le couple MnO<sub>4</sub><sup>−</sup>/Mn<sup>2+</sup>', niveau:'Facile',
+  intro:`L'oxydant est l'ion permanganate ${F.MnO4} et le réducteur est l'ion manganèse ${F.Mn}. On écrit :`,
+  depart:`${F.MnO4}${ARROW}${F.Mn}`,
+  steps:[
+    { q:'① Que dois-je faire pour équilibrer l\'élément manganèse Mn ?',
+      consigne:'Compte les atomes de Mn de chaque côté et écris le coefficient devant chaque espèce.',
+      lines:[{cls:'eq', parts:[box('a',1,{'2':'Il n\'y a qu\'un seul atome Mn dans MnO₄⁻.'}),F.MnO4,ARROW,box('b',1,{'2':'Il n\'y a qu\'un seul atome Mn dans Mn²⁺, et autant à gauche.'}),F.Mn]}],
+      defaut:'Recompte les atomes de manganèse : combien y en a-t-il dans chaque formule ?',
+      expl:`Il y a 1 atome Mn à gauche et 1 à droite. Le manganèse est déjà équilibré : on ne modifie rien.`
+    },
+    { q:'② Que dois-je faire pour équilibrer l\'élément oxygène O ?',
+      consigne:'Compte les atomes O de chaque côté. Combien de molécules d\'eau faut-il ajouter à droite ?',
+      lines:[{cls:'eq', parts:[F.MnO4,ARROW,F.Mn,' + ',box('c',4,{'2':'Une molécule d\'eau H₂O ne contient qu\'un seul atome O.','8':'Tu as compté les atomes H, pas les atomes O.'}),F.H2O]}],
+      defaut:'Compte les atomes O dans MnO₄⁻. Chaque molécule H₂O apporte un seul atome O.',
+      expl:`Il y a 4 atomes O à gauche et aucun à droite. Chaque molécule d'eau apporte un atome O, donc on ajoute 4 H<sub>2</sub>O à droite.`
+    },
+    { q:'③ Que dois-je faire pour équilibrer l\'élément hydrogène H ?',
+      consigne:'Compte les atomes H apportés par l\'eau. Combien d\'ions H⁺ faut-il ajouter à gauche ?',
+      lines:[{cls:'eq', parts:[F.MnO4,' + ',box('d',8,{'4':'Attention : chaque molécule H₂O contient 2 atomes H.','2':'Il y a 4 molécules d\'eau, et chacune contient 2 atomes H.'}),F.H,ARROW,F.Mn,' + 4 ',F.H2O]}],
+      defaut:'Combien d\'atomes H y a-t-il dans 4 H₂O ? Chaque ion H⁺ apporte un atome H.',
+      expl:`Les 4 molécules d'eau contiennent 4 × 2 = 8 atomes H. Il n'y en a aucun à gauche, donc on ajoute 8 H<sup>+</sup> à gauche.`
+    },
+    { q:'④ Que dois-je faire pour équilibrer les charges électriques ?',
+      consigne:'Calcule la charge totale de chaque côté, puis le nombre d\'électrons à ajouter à gauche.',
+      lines:[
+        {cls:'charges', parts:['Charge totale à gauche :',box('cg',7,{'-1':'N\'oublie pas les 8 ions H⁺, qui portent chacun une charge +1.','9':'MnO₄⁻ porte une charge −1, pas +1.'},'charge'),'Charge totale à droite :',box('cd',2,{'0':'Mn²⁺ porte deux charges positives (l\'eau est neutre).'},'charge')]},
+        {cls:'eq', parts:[F.MnO4,' + 8 ',F.H,' + ',box('e',5,{'7':'On ajoute juste assez d\'électrons pour obtenir la même charge des deux côtés : +7 → +2.','9':'Les électrons doivent faire baisser la charge de gauche de +7 à +2.'}),F.e,ARROW,F.Mn,' + 4 ',F.H2O]}
+      ],
+      defaut:'La charge à gauche vaut −1 + 8 × (+1). Chaque électron apporte une charge −1.',
+      expl:`À gauche : −1 + 8 × (+1) = +7. À droite : +2. Il y a 5 charges positives de trop à gauche, donc on ajoute 5 e<sup>−</sup> à gauche, du côté de l'oxydant.`
+    }
+  ],
+  final:`${F.MnO4} + 8 ${F.H} + 5 ${F.e}${ARROW}${F.Mn} + 4 ${F.H2O}`,
+  checks:['Mn : 1 à gauche et 1 à droite','O : 4 à gauche et 4 à droite','H : 8 à gauche et 8 à droite','Charges : −1 + 8 − 5 = +2 à gauche, +2 à droite']
+},
+{
+  titre:'Le couple Fe<sub>2</sub>O<sub>3</sub>/Fe', niveau:'Intermédiaire',
+  intro:`L'oxydant est l'oxyde de fer(III) ${F.Fe2O3}, l'un des constituants de la rouille, et le réducteur est le métal fer ${F.Fe}. On écrit :`,
+  depart:`${F.Fe2O3}${ARROW}${F.Fe}`,
+  steps:[
+    { q:'① Que dois-je faire pour équilibrer l\'élément fer Fe ?',
+      consigne:'Compte les atomes de Fe de chaque côté et écris le coefficient devant chaque espèce.',
+      lines:[{cls:'eq', parts:[box('a',1,{'2':'Le 2 est déjà dans la formule Fe₂O₃ : on ne met pas de coefficient devant.'}),F.Fe2O3,ARROW,box('b',2,{'1':'Il y a 2 atomes Fe dans Fe₂O₃ (l\'indice 2) mais un seul à droite.','3':'Ne confonds pas l\'indice de Fe (2) et celui de O (3).'}),F.Fe]}],
+      defaut:'Regarde l\'indice de Fe dans Fe₂O₃. On ne modifie jamais une formule : on place un coefficient devant.',
+      expl:`Il y a 2 atomes Fe à gauche (l'indice 2 dans Fe<sub>2</sub>O<sub>3</sub>) et 1 seul à droite. On ne peut pas modifier la formule, donc on place un coefficient 2 devant Fe.`
+    },
+    { q:'② Que dois-je faire pour équilibrer l\'élément oxygène O ?',
+      consigne:'Compte les atomes O de chaque côté. Combien de molécules d\'eau faut-il ajouter à droite ?',
+      lines:[{cls:'eq', parts:[F.Fe2O3,ARROW,'2 ',F.Fe,' + ',box('c',3,{'6':'Une molécule d\'eau H₂O ne contient qu\'un seul atome O.','2':'Le coefficient 2 concerne le fer, pas l\'oxygène : compte les O dans Fe₂O₃.'}),F.H2O]}],
+      defaut:'Compte les atomes O dans Fe₂O₃. Chaque molécule H₂O apporte un seul atome O.',
+      expl:`Il y a 3 atomes O à gauche et aucun à droite. On ajoute donc 3 H<sub>2</sub>O à droite.`
+    },
+    { q:'③ Que dois-je faire pour équilibrer l\'élément hydrogène H ?',
+      consigne:'Compte les atomes H apportés par l\'eau. Combien d\'ions H⁺ faut-il ajouter à gauche ?',
+      lines:[{cls:'eq', parts:[F.Fe2O3,' + ',box('d',6,{'3':'Attention : chaque molécule H₂O contient 2 atomes H.'}),F.H,ARROW,'2 ',F.Fe,' + 3 ',F.H2O]}],
+      defaut:'Combien d\'atomes H y a-t-il dans 3 H₂O ? Chaque ion H⁺ apporte un atome H.',
+      expl:`Les 3 molécules d'eau contiennent 3 × 2 = 6 atomes H. On ajoute donc 6 H<sup>+</sup> à gauche.`
+    },
+    { q:'④ Que dois-je faire pour équilibrer les charges électriques ?',
+      consigne:'Calcule la charge totale de chaque côté, puis le nombre d\'électrons à ajouter à gauche.',
+      lines:[
+        {cls:'charges', parts:['Charge totale à gauche :',box('cg',6,{'0':'Fe₂O₃ est neutre, mais les 6 ions H⁺ portent chacun une charge +1.'},'charge'),'Charge totale à droite :',box('cd',0,{'6':'Le fer métallique Fe et l\'eau sont neutres.','2':'Le fer métallique Fe est neutre : il n\'a pas de charge.'},'charge')]},
+        {cls:'eq', parts:[F.Fe2O3,' + 6 ',F.H,' + ',box('e',6,{}),F.e,ARROW,'2 ',F.Fe,' + 3 ',F.H2O]}
+      ],
+      defaut:'Fe₂O₃, Fe et H₂O sont neutres. Seuls les ions H⁺ sont chargés. Chaque électron apporte une charge −1.',
+      expl:`À gauche : 0 + 6 × (+1) = +6. À droite : 0 (le fer et l'eau sont neutres). On ajoute donc 6 e<sup>−</sup> à gauche, du côté de l'oxydant.`
+    }
+  ],
+  final:`${F.Fe2O3} + 6 ${F.H} + 6 ${F.e}${ARROW}2 ${F.Fe} + 3 ${F.H2O}`,
+  checks:['Fe : 2 à gauche et 2 à droite','O : 3 à gauche et 3 à droite','H : 6 à gauche et 6 à droite','Charges : 0 + 6 − 6 = 0 à gauche, 0 à droite']
+},
+{
+  titre:'Le couple BrO<sub>3</sub><sup>−</sup>/Br<sub>2</sub>', niveau:'Difficile',
+  intro:`L'oxydant est l'ion bromate ${F.BrO3} et le réducteur est le dibrome ${F.Br2}. On écrit :`,
+  depart:`${F.BrO3}${ARROW}${F.Br2}`,
+  steps:[
+    { q:'① Que dois-je faire pour équilibrer l\'élément brome Br ?',
+      consigne:'Compte les atomes de Br de chaque côté et écris le coefficient devant chaque espèce.',
+      lines:[{cls:'eq', parts:[box('a',2,{'1':'Il y a 1 atome Br dans BrO₃⁻ mais 2 dans Br₂ : il faut un coefficient à gauche.','3':'Le 3 est l\'indice de l\'oxygène, pas du brome.'}),F.BrO3,ARROW,box('b',1,{'2':'Le 2 est déjà dans la formule Br₂ : on ne met pas de coefficient devant.'}),F.Br2]}],
+      defaut:'Cette fois, c\'est à droite qu\'il y a le plus d\'atomes Br. Où faut-il placer le coefficient ?',
+      expl:`Il y a 1 atome Br à gauche et 2 à droite (l'indice 2 dans Br<sub>2</sub>). On place donc un coefficient 2 devant BrO<sub>3</sub><sup>−</sup>, à gauche.`
+    },
+    { q:'② Que dois-je faire pour équilibrer l\'élément oxygène O ?',
+      consigne:'Compte les atomes O de chaque côté, sans oublier le coefficient. Combien de molécules d\'eau faut-il ajouter à droite ?',
+      lines:[{cls:'eq', parts:['2 ',F.BrO3,ARROW,F.Br2,' + ',box('c',6,{'3':'Tu as oublié le coefficient 2 devant BrO₃⁻ : il y a 2 × 3 atomes O.','12':'Une molécule d\'eau H₂O ne contient qu\'un seul atome O.'}),F.H2O]}],
+      defaut:'Le coefficient 2 multiplie tous les atomes de BrO₃⁻. Combien cela fait-il d\'atomes O ?',
+      expl:`Il y a 2 × 3 = 6 atomes O à gauche, car le coefficient 2 multiplie tous les atomes de l'ion. On ajoute donc 6 H<sub>2</sub>O à droite.`
+    },
+    { q:'③ Que dois-je faire pour équilibrer l\'élément hydrogène H ?',
+      consigne:'Compte les atomes H apportés par l\'eau. Combien d\'ions H⁺ faut-il ajouter à gauche ?',
+      lines:[{cls:'eq', parts:['2 ',F.BrO3,' + ',box('d',12,{'6':'Attention : chaque molécule H₂O contient 2 atomes H.'}),F.H,ARROW,F.Br2,' + 6 ',F.H2O]}],
+      defaut:'Combien d\'atomes H y a-t-il dans 6 H₂O ? Chaque ion H⁺ apporte un atome H.',
+      expl:`Les 6 molécules d'eau contiennent 6 × 2 = 12 atomes H. On ajoute donc 12 H<sup>+</sup> à gauche.`
+    },
+    { q:'④ Que dois-je faire pour équilibrer les charges électriques ?',
+      consigne:'Calcule la charge totale de chaque côté, puis le nombre d\'électrons à ajouter à gauche.',
+      lines:[
+        {cls:'charges', parts:['Charge totale à gauche :',box('cg',10,{'11':'Le coefficient 2 multiplie aussi la charge : 2 BrO₃⁻ apportent 2 × (−1) = −2.','12':'N\'oublie pas les charges des ions BrO₃⁻ : 2 × (−1).','14':'Les ions BrO₃⁻ portent une charge négative.'},'charge'),'Charge totale à droite :',box('cd',0,{'6':'Le dibrome Br₂ et l\'eau sont neutres.','-2':'Le dibrome Br₂ est une molécule neutre.'},'charge')]},
+        {cls:'eq', parts:['2 ',F.BrO3,' + 12 ',F.H,' + ',box('e',10,{'11':'Revois la charge de gauche : 2 × (−1) + 12 × (+1).','12':'Tiens compte de la charge des ions BrO₃⁻.'}),F.e,ARROW,F.Br2,' + 6 ',F.H2O]}
+      ],
+      defaut:'La charge à gauche vaut 2 × (−1) + 12 × (+1). Chaque électron apporte une charge −1.',
+      expl:`À gauche : 2 × (−1) + 12 × (+1) = +10. À droite : 0 (le dibrome et l'eau sont neutres). On ajoute donc 10 e<sup>−</sup> à gauche, du côté de l'oxydant.`
+    }
+  ],
+  final:`2 ${F.BrO3} + 12 ${F.H} + 10 ${F.e}${ARROW}${F.Br2} + 6 ${F.H2O}`,
+  checks:['Br : 2 à gauche et 2 à droite','O : 6 à gauche et 6 à droite','H : 12 à gauche et 12 à droite','Charges : −2 + 12 − 10 = 0 à gauche, 0 à droite']
+}
+];
+
+/* ---------- Construction de la page ---------- */
+const root = document.getElementById('exos');
+
+function renderParts(parts, exI, stI){
+  return parts.map(p => {
+    if (typeof p === 'string') return p;
+    const id = `x${exI}-s${stI}-${p.k}`;
+    const cls = p.type === 'charge' ? 'box charge' : 'box';
+    const mode = p.type === 'charge' ? 'text' : 'numeric';
+    return `<input class="${cls}" id="${id}" data-k="${p.k}" inputmode="${mode}" autocomplete="off" aria-label="case à compléter">`;
+  }).join('');
+}
+
+function renderLine(line, exI, stI){
+  if (line.cls === 'charges'){
+    // regroupe chaque libellé avec la case qui le suit
+    const out = []; let label = '';
+    line.parts.forEach(p => {
+      if (typeof p === 'string') label = p;
+      else out.push(`<label>${label} ${renderParts([p], exI, stI)}</label>`);
+    });
+    return `<div class="charges">${out.join('')}</div>`;
+  }
+  return `<span class="eq">${renderParts(line.parts, exI, stI)}</span>`;
+}
+
+function buildExo(ex, exI){
+  const sec = document.createElement('section');
+  sec.className = 'exo';
+  sec.innerHTML = `
+    <div class="exo-h"><span class="ref">Exemple ${exI + 1}</span> <span>${ex.titre}</span><span class="lvl">${ex.niveau}</span></div>
+    <div class="exo-b">
+      <div class="progress"><div></div></div>
+      <p>${ex.intro}</p>
+      <span class="eq">${ex.depart}</span>
+      ${ex.steps.map((st, stI) => `
+        <div class="step locked" data-step="${stI}">
+          <p class="q">${st.q}</p>
+          <div class="body">
+            <p class="consigne">${st.consigne}</p>
+            ${st.lines.map(l => renderLine(l, exI, stI)).join('')}
+            <div class="actions">
+              <button class="verif" type="button">Vérifier ma réponse</button>
+              <button class="solution" type="button" hidden>Voir la solution</button>
+            </div>
+            <div class="fb" role="status"></div>
+          </div>
+        </div>`).join('')}
+      <div class="final">
+        <h4>✔ Demi-équation équilibrée</h4>
+        <span class="eq">${ex.final}</span>
+        <p><strong>Vérification :</strong></p>
+        <ul>${ex.checks.map(c => `<li>${c}</li>`).join('')}</ul>
+        <p>Tout est équilibré, et les électrons sont bien du côté de l'oxydant.</p>
+      </div>
+      <div class="foot"><button class="reset" type="button">↺ Recommencer cet exemple</button></div>
+    </div>`;
+  root.appendChild(sec);
+  wireExo(sec, ex, exI);
+}
+
+function parseVal(s){
+  s = s.trim().replace(/[−–]/g, '-').replace(/\s/g, '').replace(',', '.');
+  if (s === '') return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : NaN;
+}
+
+function wireExo(sec, ex, exI){
+  const steps = [...sec.querySelectorAll('.step')];
+  const bar = sec.querySelector('.progress > div');
+  const final = sec.querySelector('.final');
+
+  function boxesOf(stI){
+    return ex.steps[stI].lines.flatMap(l => l.parts.filter(p => typeof p !== 'string'));
+  }
+
+  function unlock(stI){
+    const el = steps[stI];
+    if (!el) { final.classList.add('show'); return; }
+    el.classList.remove('locked');
+    el.classList.add('active');
+  }
+
+  function validate(stI, bySolution){
+    const el = steps[stI];
+    el.querySelectorAll('input').forEach(i => i.disabled = true);
+    el.querySelector('.actions').hidden = true;
+    el.classList.remove('active');
+    el.classList.add('done');
+    const fb = el.querySelector('.fb');
+    fb.className = 'fb ok';
+    fb.innerHTML = (bySolution ? '<b>Solution :</b> ' : '<b>Bravo !</b> ') + ex.steps[stI].expl;
+    bar.style.width = ((stI + 1) / ex.steps.length * 100) + '%';
+    unlock(stI + 1);
+    const next = steps[stI + 1];
+    if (next){ const f = next.querySelector('input'); if (f) f.focus({preventScroll:true}); }
+  }
+
+  steps.forEach((el, stI) => {
+    let tries = 0;
+    const st = ex.steps[stI];
+    const fb = el.querySelector('.fb');
+    const solBtn = el.querySelector('.solution');
+
+    function check(){
+      const defs = boxesOf(stI);
+      let empty = false, allOk = true, msg = null;
+      defs.forEach(d => {
+        const inp = document.getElementById(`x${exI}-s${stI}-${d.k}`);
+        const v = parseVal(inp.value);
+        inp.classList.remove('ok', 'ko');
+        if (v === null){ empty = true; allOk = false; return; }
+        if (v === d.ans){ inp.classList.add('ok'); }
+        else {
+          inp.classList.add('ko'); allOk = false;
+          if (!msg && d.traps[String(v)]) msg = d.traps[String(v)];
+        }
+      });
+      if (empty && allOk === false && !el.querySelector('input.ko')){
+        fb.className = 'fb ko';
+        fb.textContent = 'Complète toutes les cases (écris 1 s\'il n\'y a pas besoin de coefficient).';
+        return;
+      }
+      if (allOk){ validate(stI, false); return; }
+      tries++;
+      fb.className = 'fb ko';
+      fb.innerHTML = '<b>Pas encore.</b> ' + (msg || st.defaut);
+      if (tries >= 2) solBtn.hidden = false;
+    }
+
+    el.querySelector('.verif').addEventListener('click', check);
+    el.querySelectorAll('input').forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') check(); }));
+    solBtn.addEventListener('click', () => {
+      boxesOf(stI).forEach(d => {
+        const inp = document.getElementById(`x${exI}-s${stI}-${d.k}`);
+        inp.value = (d.type === 'charge' && d.ans > 0 ? '+' : '') + d.ans;
+        inp.classList.remove('ok', 'ko');
+        inp.classList.add('sol');
+      });
+      validate(stI, true);
+    });
+    el._resetTries = () => { tries = 0; solBtn.hidden = true; };
+  });
+
+  sec.querySelector('.reset').addEventListener('click', () => {
+    steps.forEach(el => {
+      el.className = 'step locked';
+      el.querySelectorAll('input').forEach(i => { i.value = ''; i.disabled = false; i.className = i.className.replace(/\b(ok|ko|sol)\b/g, '').trim(); });
+      el.querySelector('.actions').hidden = false;
+      const fb = el.querySelector('.fb'); fb.className = 'fb'; fb.textContent = '';
+      el._resetTries();
+    });
+    final.classList.remove('show');
+    bar.style.width = '0';
+    unlock(0);
+  });
+
+  unlock(0);
+}
+
+EXOS.forEach(buildExo);
+</script>
+</body>
+</html>

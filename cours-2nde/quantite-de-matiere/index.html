@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapitre — La quantité de matière</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --vert:#0e7c5b; --vert-clair:#d4efe6; --vert-pale:#f0faf6;
+  --bleu:#1a5fa8; --bleu-clair:#ddeaf9;
+  --orange:#c8620a; --orange-clair:#fdecd8;
+  --rouge:#c0392b;
+  --gris-bg:#f7f6f2; --gris-bord:#dddbd4;
+  --texte:#1e1e1e; --texte-2:#4a4a4a; --texte-3:#7a7a7a;
+  --blanc:#ffffff;
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--gris-bg);color:var(--texte);line-height:1.7;padding:2rem 1rem 4rem;}
+.page{max-width:780px;margin:0 auto;background:var(--blanc);border-radius:12px;box-shadow:0 2px 16px rgba(0,0,0,.07);overflow:hidden;}
+
+/* EN-TÊTE */
+.header{background:var(--vert);color:var(--blanc);padding:2.5rem 2.5rem 2rem;position:relative;overflow:hidden;}
+.header::after{content:'';position:absolute;bottom:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06);}
+.header .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;margin-bottom:.9rem;color:rgba(255,255,255,.92);}
+.header h1{font-family:var(--serif);font-size:2rem;font-weight:600;line-height:1.25;margin-bottom:.4rem;}
+.header .sous{font-size:15px;color:rgba(255,255,255,.75);font-style:italic;}
+
+/* SOMMAIRE */
+.sommaire{background:var(--vert-pale);border-bottom:1px solid var(--gris-bord);padding:1.2rem 2.5rem;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;}
+.sommaire a{font-size:13px;color:var(--vert);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;}
+.sommaire a:hover{text-decoration:underline;}
+.sommaire a .num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--vert);color:white;font-size:11px;}
+
+/* BARRE DE PROGRESSION (exercices) */
+.score-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:1rem;background:var(--vert-pale);border-bottom:1px solid var(--vert-clair);padding:.7rem 2.5rem;font-size:14px;}
+.score-val{font-weight:600;color:var(--vert);font-size:15px;white-space:nowrap;}
+.score-progress{flex:1;height:6px;background:var(--vert-clair);border-radius:3px;overflow:hidden;}
+.score-progress-inner{height:100%;background:var(--vert);border-radius:3px;transition:width .4s ease;width:0%;}
+
+/* CORPS */
+.corps{padding:0 2.5rem 2.5rem;}
+.section{padding-top:2.5rem;}
+.section-titre{display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;padding-bottom:.7rem;border-bottom:2px solid var(--vert-clair);}
+.section-titre .num{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--vert);color:white;font-size:15px;font-weight:600;flex-shrink:0;}
+.section-titre h2{font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--vert);}
+.corps > .section > p, .section > p{font-size:14.5px;margin-bottom:.8rem;}
+
+/* BLOCS */
+.def{border-left:4px solid var(--vert);background:var(--vert-pale);border-radius:0 8px 8px 0;padding:.9rem 1.2rem;margin-bottom:1rem;}
+.def .label,.retenir .label,.exemple .label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--vert);margin-bottom:.35rem;}
+.def p{font-size:14.5px;color:var(--texte);line-height:1.65;}
+.def p + p{margin-top:.4rem;}
+.retenir{background:var(--vert-clair);border-radius:8px;padding:.9rem 1.2rem;margin:1rem 0;}
+.retenir .label{color:var(--vert);}
+.retenir p,.retenir li{font-size:14px;color:#0a4a33;line-height:1.65;}
+.retenir ol,.retenir ul{padding-left:1.2rem;}
+.retenir li{margin-bottom:.2rem;}
+.exemple{background:var(--gris-bg);border:1px solid var(--gris-bord);border-radius:8px;padding:.9rem 1.2rem;margin-bottom:1rem;}
+.exemple .label{color:var(--texte-3);}
+.exemple p,.exemple li{font-size:14px;color:var(--texte-2);line-height:1.6;}
+.exemple ul{padding-left:1.2rem;}
+.exemple.attention{background:#fdf0f0;border-color:#f5c0c0;}
+.exemple.attention .label{color:var(--rouge);}
+.exemple.attention p{color:#7a1515;}
+.formule{text-align:center;font-family:var(--serif);font-size:1.3rem;color:var(--vert);background:var(--vert-pale);border:1px solid var(--vert-clair);border-radius:8px;padding:.9rem 1rem;margin:1rem 0;letter-spacing:.02em;}
+.formule .unites{display:block;font-family:var(--sans);font-size:13px;color:var(--texte-2);margin-top:.5rem;letter-spacing:0;}
+.frac{display:inline-block;text-align:center;vertical-align:middle;}
+.frac > span{display:block;padding:0 6px;}
+.frac > span:first-child{border-bottom:2px solid var(--vert);}
+.schema{border:1px solid var(--gris-bord);border-radius:10px;background:var(--gris-bg);margin:1rem 0;overflow:hidden;}
+.schema svg{display:block;width:100%;height:auto;}
+.schema-legende{font-size:12px;color:var(--texte-3);text-align:center;padding:.4rem 1rem .7rem;font-style:italic;}
+.deux-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;}
+.prop-card{border:1px solid var(--gris-bord);border-radius:8px;padding:.9rem 1rem;background:var(--blanc);}
+.prop-card .titre{font-size:13px;font-weight:600;color:var(--texte);margin-bottom:.3rem;}
+.prop-card .desc{font-size:13px;color:var(--texte-2);line-height:1.5;}
+.card-bleu{border-top:3px solid var(--bleu);background:var(--bleu-clair);}
+.card-bleu .titre{color:var(--bleu);} .card-bleu .desc{color:#1a3a60;}
+.card-orange{border-top:3px solid var(--orange);background:var(--orange-clair);}
+.card-orange .titre{color:var(--orange);} .card-orange .desc{color:#5a2d0a;}
+.sep{border:none;border-top:1px solid var(--gris-bord);margin:2rem 0 0;}
+strong{font-weight:600;} em{font-style:italic;} sub{font-size:.75em;}
+.var{font-family:var(--serif);font-style:italic;}
+
+/* VIDÉOS */
+.videos{border:1px solid var(--gris-bord);border-radius:10px;margin:1.2rem 0 0;overflow:hidden;}
+.videos .v-titre{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-3);padding:.6rem 1rem;background:var(--gris-bg);border-bottom:1px solid var(--gris-bord);}
+.video{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;text-decoration:none;color:var(--texte);border-bottom:1px solid var(--gris-bord);transition:background .15s;}
+.video:last-child{border-bottom:none;}
+.video:hover{background:var(--vert-pale);}
+.play{display:flex;align-items:center;justify-content:center;width:34px;height:24px;border-radius:6px;background:#d93025;flex-shrink:0;}
+.play::after{content:'';border-left:9px solid white;border-top:5.5px solid transparent;border-bottom:5.5px solid transparent;margin-left:2px;}
+.video .vt{font-size:14px;font-weight:600;line-height:1.35;}
+.video .vs{font-size:12px;color:var(--texte-3);}
+
+/* EXERCICES */
+.exercice{border:1px solid var(--gris-bord);border-radius:10px;margin-top:1.5rem;overflow:hidden;transition:border-color .2s;}
+.exercice.correct{border-color:var(--vert);}
+.ex-header{display:flex;align-items:flex-start;gap:12px;padding:1rem 1.2rem;background:#eef3fa;border-bottom:1px solid var(--gris-bord);}
+.ex-num{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#1a3a60;color:white;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px;}
+.exercice.correct .ex-num{background:var(--vert);}
+.ex-type{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#1a3a60;margin-bottom:3px;}
+.ex-question{font-size:14.5px;color:var(--texte);line-height:1.55;}
+.ex-body{padding:1rem 1.2rem;}
+.q-row{display:block;margin-bottom:.6rem;font-size:14px;line-height:2.5;}
+.q-row .ql{display:inline-block;font-weight:600;color:#1a3a60;min-width:1.6rem;}
+.blank{border:1.5px dashed #9fb3cc;border-radius:8px;padding:.4rem .7rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:#fbfcfe;width:130px;outline:none;margin:0 4px;line-height:1.4;transition:border-color .15s,background .15s;}
+.blank.large{width:210px;}
+.blank:focus{border-style:solid;border-color:var(--bleu);background:var(--blanc);}
+select.blank{width:auto;max-width:100%;cursor:pointer;}
+.blank.ok{border-style:solid;border-color:var(--vert);background:var(--vert-pale);}
+.blank.ko{border-style:solid;border-color:var(--rouge);background:#fdf0f0;}
+.u{color:var(--texte-3);}
+.ex-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:.4rem;}
+.btn-verif{padding:.55rem 1.3rem;border-radius:8px;border:1.5px solid #1a3a60;background:#1a3a60;color:white;font-family:var(--sans);font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s;}
+.btn-verif:hover{background:#12294a;}
+.btn-corr{padding:.55rem 1.1rem;border-radius:8px;border:1.5px solid var(--gris-bord);background:var(--blanc);color:var(--texte-2);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;display:none;}
+.btn-corr.show{display:inline-block;}
+.btn-corr:hover{border-color:var(--texte-3);}
+.feedback{margin-top:.8rem;padding:.7rem 1rem;border-radius:8px;font-size:13.5px;line-height:1.6;display:none;}
+.feedback.show{display:block;}
+.feedback.ok{background:var(--vert-pale);color:#0a4a33;border:1px solid var(--vert-clair);}
+.feedback.ko{background:#fdf0f0;color:#7a1515;border:1px solid #f5c0c0;}
+.feedback.corr{background:#eef3fa;color:#1a3a60;border:1px solid #c9d8ec;}
+
+/* ÉVALUATION */
+.eval-header{background:#2c1a4a;color:white;padding:2rem 2.5rem 1.6rem;position:relative;overflow:hidden;}
+.eval-header::after{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.eval-header .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,0.15);border-radius:20px;padding:3px 12px;margin-bottom:.8rem;color:rgba(255,255,255,0.85);}
+.eval-header h2{font-family:var(--serif);font-size:1.5rem;font-weight:600;margin-bottom:.3rem;}
+.eval-header p{font-size:14px;color:rgba(255,255,255,0.65);}
+.eval-consignes{background:#f5f0ff;border-bottom:1px solid #d8ccf0;padding:1rem 2.5rem;display:flex;gap:.5rem 2rem;flex-wrap:wrap;}
+.consigne-item{display:flex;align-items:center;gap:8px;font-size:13px;color:#3a2060;}
+.consigne-item .dot{width:8px;height:8px;border-radius:50%;background:#7c4dff;flex-shrink:0;}
+.eval-corps{padding:0 2.5rem 2rem;}
+.eq{margin-top:2rem;border:1px solid var(--gris-bord);border-radius:10px;overflow:hidden;}
+.eq-header{display:flex;align-items:flex-start;gap:12px;padding:.9rem 1.2rem;background:#faf8ff;border-bottom:1px solid var(--gris-bord);}
+.eq-num{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#2c1a4a;color:white;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px;}
+.eq-meta{flex:1;}
+.eq-intitule{font-size:14.5px;color:var(--texte);font-weight:600;line-height:1.5;}
+.eq-pts{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7c4dff;white-space:nowrap;margin-top:2px;}
+.eq-body{padding:1rem 1.2rem;}
+.eval-textarea{width:100%;border:1.5px solid var(--gris-bord);border-radius:8px;padding:.7rem 1rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:var(--blanc);resize:vertical;min-height:70px;outline:none;transition:border-color .15s;line-height:1.6;}
+.eval-textarea:focus{border-color:#7c4dff;}
+.eval-textarea:disabled{background:var(--gris-bg);color:var(--texte-2);}
+.eval-input{border:1.5px solid var(--gris-bord);border-radius:8px;padding:.5rem .9rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:var(--blanc);width:130px;outline:none;transition:border-color .15s;}
+.eval-input:focus{border-color:#7c4dff;}
+.eval-input:disabled{background:var(--gris-bg);}
+.eval-choice{display:flex;align-items:center;gap:10px;border:1.5px solid var(--gris-bord);border-radius:8px;padding:.6rem 1rem;background:var(--blanc);cursor:pointer;font-family:var(--sans);font-size:14px;color:var(--texte);text-align:left;transition:all .15s;width:100%;margin-bottom:8px;}
+.eval-choice:hover:not(:disabled){border-color:#7c4dff;background:#f5f0ff;}
+.eval-choice:disabled{cursor:default;}
+.eval-choice.sel{border-color:#7c4dff;background:#f5f0ff;}
+.eval-cletter{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--gris-bord);font-size:12px;font-weight:600;flex-shrink:0;color:var(--texte-2);}
+.btn-remettre{display:block;margin:2rem auto 0;padding:.8rem 2.5rem;border-radius:10px;border:none;background:#2c1a4a;color:white;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;transition:background .15s;letter-spacing:.02em;}
+.btn-remettre:hover{background:#1e1035;}
+.btn-remettre:disabled{opacity:.45;cursor:default;}
+.eval-resultat{display:none;margin:2rem 0 0;border-radius:12px;overflow:hidden;border:1px solid var(--gris-bord);}
+.eval-resultat.show{display:block;}
+.res-top{padding:2rem 2.5rem;text-align:center;}
+.res-note{font-family:var(--serif);font-size:3.5rem;font-weight:600;line-height:1;margin-bottom:.5rem;}
+.res-mention{font-size:16px;font-weight:600;margin-bottom:.3rem;}
+.res-sous{font-size:14px;color:var(--texte-2);}
+.res-detail{border-top:1px solid var(--gris-bord);padding:1.2rem 2rem;background:var(--gris-bg);}
+.res-detail-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-3);margin-bottom:.8rem;}
+.res-ligne{display:flex;align-items:flex-start;gap:10px;padding:.6rem 0;border-bottom:1px solid var(--gris-bord);font-size:13.5px;}
+.res-ligne:last-child{border-bottom:none;}
+.res-icone{font-size:14px;flex-shrink:0;margin-top:2px;}
+.res-q{flex:1;color:var(--texte-2);line-height:1.5;}
+.res-pts{font-weight:600;white-space:nowrap;}
+.res-correction{font-size:12.5px;color:#0a4a33;background:var(--vert-pale);border-radius:6px;padding:4px 10px;margin-top:4px;display:inline-block;border:1px solid var(--vert-clair);}
+.res-correction.ko{color:#7a1515;background:#fdf0f0;border-color:#f5c0c0;}
+.res-correction{display:block;font-size:13px;line-height:1.6;padding:.5rem .8rem;margin-top:.5rem;}
+.res-rep{font-size:13px;color:var(--texte-2);margin-top:.2rem;word-break:break-word;}
+.res-analyse{list-style:none;margin:.35rem 0 0;font-size:13px;line-height:1.55;}
+.res-analyse li{margin-bottom:.15rem;}
+.btn-recommencer{display:none;margin:1rem auto 0;padding:.6rem 1.6rem;border-radius:10px;border:1.5px solid #2c1a4a;background:white;color:#2c1a4a;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;}
+.btn-recommencer:hover{background:#f5f0ff;}
+
+@media(max-width:540px){
+  body{padding:1rem .5rem 3rem;}
+  .corps,.eval-corps{padding:0 1.2rem 2rem;}
+  .header{padding:1.8rem 1.2rem 1.5rem;}
+  .sommaire,.score-bar,.eval-consignes{padding-left:1.2rem;padding-right:1.2rem;}
+  .eval-header{padding:1.6rem 1.2rem 1.4rem;}
+  .deux-col{grid-template-columns:1fr;}
+  .formule{font-size:1.1rem;}
+}
+
+/* ---- Ajouts chapitre 4 ---- */
+.iso{display:inline-flex;align-items:center;font-family:var(--serif);white-space:nowrap;font-size:1.2em;}
+.iso .az{display:inline-flex;flex-direction:column;align-items:flex-end;font-size:.62em;line-height:1.05;margin-right:1px;}
+.frise{list-style:none;position:relative;margin:1rem 0 1rem .4rem;padding-left:1.4rem;border-left:3px solid var(--vert-clair);}
+.frise li{position:relative;margin-bottom:.75rem;font-size:14px;line-height:1.5;display:grid;grid-template-columns:7rem 1fr;column-gap:.8rem;align-items:start;}
+.frise li::before{content:'';position:absolute;left:-1.4rem;top:.35rem;width:13px;height:13px;border-radius:50%;background:var(--vert);transform:translateX(-8px);border:2px solid white;box-shadow:0 0 0 1px var(--vert);}
+.frise .date{font-weight:700;color:var(--vert);}
+@media(max-width:540px){.frise li{grid-template-columns:1fr;}}
+.legende-frise{background:var(--gris-bg);border:1px solid var(--gris-bord);border-radius:8px;padding:.6rem 1rem;margin:-.2rem 0 1rem;}
+.legende-frise p{display:flex;align-items:flex-start;gap:.6rem;font-size:13px;color:var(--texte-2);line-height:1.5;margin:.15rem 0;}
+.legende-frise .pt{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:.25rem;}
+.pt-orange{background:var(--orange);} .pt-vert{background:var(--vert);}
+.frise li.cle::before{background:var(--orange);box-shadow:0 0 0 1px var(--orange);}
+.frise li.cle .date{color:var(--orange);}
+.tab{width:100%;border-collapse:collapse;font-size:14px;margin:.6rem 0 1rem;}
+.tab th,.tab td{border:1px solid var(--gris-bord);padding:7px 10px;text-align:center;}
+.tab th{background:var(--vert-pale);color:var(--vert);font-weight:600;}
+.tab td:first-child{text-align:left;font-weight:600;background:var(--gris-bg);}
+.tab-wrap{overflow-x:auto;}
+.tab .blank{width:70px;}
+.ion{font-family:var(--serif);}
+/* Numéro du chapitre à compléter (comme Les solutions aqueuses) */
+.chap-num{width:2.6ch;font:inherit;color:inherit;text-align:center;background:rgba(255,255,255,.12);border:2px dashed rgba(255,255,255,.6);border-radius:8px;padding:0 .2rem;margin:0 .1rem;outline:none;vertical-align:baseline;line-height:1.1;}
+.chap-num:focus{border-style:solid;border-color:#fff;background:rgba(255,255,255,.2);}
+@media print{.chap-num{border:none;background:none;}}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header">
+    <span class="tag">Physique-chimie · Classe de seconde</span>
+    <h1>Chapitre <input class="chap-num" id="chap-num" type="text" inputmode="numeric" maxlength="3" autocomplete="off" aria-label="Numéro du chapitre"> — La quantité de matière</h1>
+    <p class="sous">Constitution et transformations de la matière : compter les entités dans un échantillon de matière</p>
+  </div>
+
+  <nav class="sommaire">
+    <a href="#s1"><span class="num">1</span>Masse d'une entité</a>
+    <a href="#s2"><span class="num">2</span>Compter les entités</a>
+    <a href="#s3"><span class="num">3</span>La mole</a>
+    <a href="#s4"><span class="num">4</span>Méthode complète</a>
+    <a href="#s5"><span class="num">5</span>Réviser</a>
+    <a href="#evaluation"><span class="num">★</span>Exercice final</a>
+  </nav>
+
+  <div class="score-bar">
+    <span style="color:var(--texte-3);">Exercices réussis :</span>
+    <span class="score-val" id="score-display">0 / 4</span>
+    <div class="score-progress"><div class="score-progress-inner" id="score-bar"></div></div>
+  </div>
+
+  <div class="corps">
+
+    <!-- ================= 1. MASSE D'UNE ENTITÉ ================= -->
+    <div class="section" id="s1">
+      <div class="section-titre"><span class="num">1</span><h2>La masse d'une entité chimique</h2></div>
+
+      <p>Une <strong>entité chimique</strong> est un atome, une molécule ou un ion. Un échantillon de matière en contient un très grand nombre, toutes identiques s'il s'agit d'une espèce chimique pure.</p>
+
+      <div class="def">
+        <p class="label">À savoir — Masse d'une molécule</p>
+        <p>La masse d'une molécule est égale à la <strong>somme des masses des atomes</strong> qui la composent. On la calcule à partir de sa <strong>formule brute</strong>.</p>
+      </div>
+
+      <div class="schema">
+        <svg viewBox="0 0 400 172" style="max-width:520px;margin:0 auto;" role="img" aria-label="Molécule d'eau : un atome d'oxygène lié à deux atomes d'hydrogène">
+          <line x1="96" y1="78" x2="52" y2="128" stroke="#7a7a7a" stroke-width="6"/>
+          <line x1="124" y1="78" x2="168" y2="128" stroke="#7a7a7a" stroke-width="6"/>
+          <circle cx="110" cy="70" r="36" fill="#e9837a" stroke="#c0392b" stroke-width="2"/>
+          <text x="110" y="77" text-anchor="middle" font-family="Source Sans 3, sans-serif" font-size="20" font-weight="700" fill="#5a1410">O</text>
+          <circle cx="48" cy="134" r="22" fill="#ffffff" stroke="#7a7a7a" stroke-width="2"/>
+          <text x="48" y="140" text-anchor="middle" font-family="Source Sans 3, sans-serif" font-size="17" font-weight="700" fill="#4a4a4a">H</text>
+          <circle cx="172" cy="134" r="22" fill="#ffffff" stroke="#7a7a7a" stroke-width="2"/>
+          <text x="172" y="140" text-anchor="middle" font-family="Source Sans 3, sans-serif" font-size="17" font-weight="700" fill="#4a4a4a">H</text>
+          <g font-family="Source Sans 3, sans-serif" font-size="15" fill="#1e1e1e">
+            <text x="200" y="56" font-weight="700" fill="#0e7c5b">Molécule H<tspan dy="4" font-size="11">2</tspan><tspan dy="-4">O</tspan></text>
+            <text x="200" y="88">1 atome d'oxygène O</text>
+            <text x="200" y="116">2 atomes d'hydrogène H</text>
+          </g>
+        </svg>
+        <p class="schema-legende">Modèle de la molécule d'eau (l'échelle n'est pas respectée).</p>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemple — Masse d'une molécule d'eau</p>
+        <p>La molécule d'eau H<sub>2</sub>O contient 2 atomes d'hydrogène et 1 atome d'oxygène. Données : <span class="var">m</span>(H) = 1,67.10<sup>−27</sup> kg et <span class="var">m</span>(O) = 2,66.10<sup>−26</sup> kg.</p>
+        <p><span class="var">m</span>(H<sub>2</sub>O) = 2 × <span class="var">m</span>(H) + <span class="var">m</span>(O) = 2 × 1,67.10<sup>−27</sup> + 2,66.10<sup>−26</sup> = 0,334.10<sup>−26</sup> + 2,66.10<sup>−26</sup> = <strong>2,99.10<sup>−26</sup> kg</strong>.</p>
+      </div>
+
+      <div class="retenir">
+        <p class="label">Méthode</p>
+        <ol>
+          <li>Lire la formule brute : l'indice indique le nombre d'atomes de chaque sorte (pas d'indice = 1 atome).</li>
+          <li>Multiplier la masse de chaque atome par son nombre.</li>
+          <li>Additionner, en écrivant les puissances de dix avec le même exposant.</li>
+        </ol>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=uaRIgBxSnmM" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Comment calculer la masse d'une molécule ?</span><br><span class="vs">Paul Olivier · 2 min 51</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex1">
+        <div class="ex-header">
+          <span class="ex-num">1</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">Données : <strong><span class="var">m</span>(H) = 1,67.10<sup>−27</sup> kg</strong> ; <strong><span class="var">m</span>(C) = 2,00.10<sup>−26</sup> kg</strong> ; <strong><span class="var">m</span>(O) = 2,66.10<sup>−26</sup> kg</strong>.</p>
+            <p class="ex-question" style="font-size:13px;color:var(--texte-2);margin-top:.3rem;">Pour saisir une puissance de dix au clavier, utilise le symbole ^ : par exemple, 2,0.10<sup>−26</sup> se tape <strong>2,0.10^-26</strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Masse d'une molécule de dioxyde de carbone CO<sub>2</sub> : <input class="blank" id="ex1-a" type="text" autocomplete="off" placeholder="ex. : 2,0.10^-26"> <span class="u">kg</span></div>
+          <div class="q-row"><span class="ql">b.</span>Masse d'une molécule de méthane CH<sub>4</sub> : <input class="blank" id="ex1-b" type="text" autocomplete="off" placeholder="ex. : 2,0.10^-26"> <span class="u">kg</span></div>
+          <div class="q-row"><span class="ql">c.</span>Nombre total d'atomes dans une molécule de glucose C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> : <input class="blank" id="ex1-c" type="text" inputmode="decimal" autocomplete="off" style="width:70px;"></div>
+          <div class="q-row"><span class="ql">d.</span>Masse d'une molécule de glucose : <input class="blank" id="ex1-d" type="text" autocomplete="off" placeholder="ex. : 2,0.10^-26"> <span class="u">kg</span></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(1)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr1" onclick="corriger(1)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb1"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 2. COMPTER LES ENTITÉS ================= -->
+    <div class="section" id="s2">
+      <div class="section-titre"><span class="num">2</span><h2>Compter les entités dans un échantillon</h2></div>
+
+      <p>On ne peut pas compter les entités une par une : elles sont beaucoup trop petites. En revanche, on peut <strong>peser</strong> l'échantillon avec une balance.</p>
+      <p>Si l'on connaît la masse <span class="var">m</span><sub>e</sub> d'une entité, on peut en déduire le nombre <span class="var">N</span> d'entités contenues dans un échantillon de masse <span class="var">m</span>. En effet, la masse de l'échantillon est proportionnelle au nombre d'entités :</p>
+
+      <div class="tab-wrap">
+        <table class="tab" style="max-width:360px;margin-left:auto;margin-right:auto;">
+          <tr><th>Nombre d'entités</th><th>Masse</th></tr>
+          <tr><td>1 entité</td><td><span class="var">m</span><sub>e</sub></td></tr>
+          <tr><td><span class="var">N</span> entités</td><td><span class="var">m</span></td></tr>
+        </table>
+      </div>
+
+      <div class="formule">
+        <span class="var">N</span>&nbsp;=&nbsp;<span class="frac"><span><span class="var">m</span></span><span><span class="var">m</span><sub>e</sub></span></span>
+        <span class="unites"><span class="var">N</span> : nombre d'entités (sans unité) &nbsp;·&nbsp; <span class="var">m</span> et <span class="var">m</span><sub>e</sub> : masses dans la <strong>même unité</strong> (kg)</span>
+      </div>
+
+      <div class="exemple attention">
+        <p class="label">Erreur fréquente</p>
+        <p>La masse d'une entité est donnée en <strong>kilogrammes</strong>, alors que l'échantillon est souvent pesé en <strong>grammes</strong>. Il faut d'abord convertir <span class="var">m</span> en kg : 200 g = 200.10<sup>−3</sup> kg. Sinon, le résultat est 1 000 fois trop grand.</p>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemple — Un verre d'eau</p>
+        <p>Un verre contient <span class="var">m</span> = 200 g d'eau, soit <span class="var">m</span> = 200.10<sup>−3</sup> kg. Une molécule d'eau a pour masse <span class="var">m</span><sub>e</sub> = 2,99.10<sup>−26</sup> kg.</p>
+        <p><span class="var">N</span> = <span class="var">m</span> / <span class="var">m</span><sub>e</sub> = 200.10<sup>−3</sup> / 2,99.10<sup>−26</sup> = <strong>6,69.10<sup>24</sup> molécules</strong>, soit près de sept millions de milliards de milliards de molécules !</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=vq9iucxxsig" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Comment calculer le nombre de molécules dans un échantillon ?</span><br><span class="vs">Paul Olivier · 5 min 07</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex2">
+        <div class="ex-header">
+          <span class="ex-num">2</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">Une pépite d'or a une masse <strong><span class="var">m</span> = 2,0 g</strong>. Masse d'un atome d'or : <strong><span class="var">m</span>(Au) = 3,27.10<sup>−25</sup> kg</strong>. Un clou en fer a une masse <strong>5,6 g</strong> ; masse d'un atome de fer : <strong><span class="var">m</span>(Fe) = 9,27.10<sup>−26</sup> kg</strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Masse de la pépite en kilogrammes : <span class="var">m</span> = <input class="blank" id="ex2-a" type="text" autocomplete="off" placeholder="ex. : 250.10^-3"> <span class="u">kg</span></div>
+          <div class="q-row"><span class="ql">b.</span>Nombre d'atomes d'or dans la pépite : <span class="var">N</span> = <input class="blank" id="ex2-b" type="text" autocomplete="off" placeholder="ex. : 2,0.10^21"></div>
+          <div class="q-row"><span class="ql">c.</span>Nombre d'atomes de fer dans le clou : <span class="var">N</span> = <input class="blank" id="ex2-c" type="text" autocomplete="off" placeholder="ex. : 2,0.10^21"></div>
+          <div class="q-row"><span class="ql">d.</span>Si l'on oublie de convertir la masse en kg, le résultat est 1 000 fois trop
+            <select class="blank" id="ex2-d"><option value="">—</option><option value="grand">grand</option><option value="petit">petit</option></select></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(2)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr2" onclick="corriger(2)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb2"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 3. LA MOLE ================= -->
+    <div class="section" id="s3">
+      <div class="section-titre"><span class="num">3</span><h2>La mole et la constante d'Avogadro</h2></div>
+
+      <p>Le nombre d'entités dans un échantillon est gigantesque. Plutôt que de dénombrer les entités une par une, les chimistes ont choisi de les compter <strong>par paquets</strong>, comme on compte les œufs par douzaines. Un paquet d'entités s'appelle une <strong>mole</strong>.</p>
+
+      <div class="def">
+        <p class="label">Définition — Mole et quantité de matière</p>
+        <p>La <strong>quantité de matière</strong>, notée <span class="var">n</span>, est le nombre de paquets d'entités. Son unité est la <strong>mole</strong> (symbole <strong>mol</strong>).</p>
+        <p>Une mole est la quantité de matière d'un échantillon qui contient exactement <strong>6,022 140 76.10<sup>23</sup> entités</strong>.</p>
+      </div>
+
+      <div class="retenir">
+        <p class="label">À retenir — Constante d'Avogadro</p>
+        <p>Le nombre d'entités par mole est la <strong>constante d'Avogadro</strong> :</p>
+        <p style="text-align:center;font-family:var(--serif);font-size:1.15rem;margin:.3rem 0;"><span class="var">N</span><sub>A</sub> = 6,02.10<sup>23</sup> mol<sup>−1</sup></p>
+        <p>Son unité, mol<sup>−1</sup>, se lit « par mole » : il y a 6,02.10<sup>23</sup> entités <em>par</em> mole.</p>
+      </div>
+
+      <p style="font-size:13px;color:var(--texte-3);">Elle porte le nom du savant italien Amedeo Avogadro (1776-1856), qui ne l'a jamais mesurée : c'est le Français Jean Perrin qui lui a donné ce nom en 1909.</p>
+
+      <p>La quantité de matière est proportionnelle au nombre d'entités :</p>
+      <div class="tab-wrap">
+        <table class="tab" style="max-width:360px;margin-left:auto;margin-right:auto;">
+          <tr><th>Nombre d'entités</th><th>Quantité de matière</th></tr>
+          <tr><td><span class="var">N</span><sub>A</sub> entités</td><td>1 mol</td></tr>
+          <tr><td><span class="var">N</span> entités</td><td><span class="var">n</span></td></tr>
+        </table>
+      </div>
+
+      <div class="formule">
+        <span class="var">n</span>&nbsp;=&nbsp;<span class="frac"><span><span class="var">N</span></span><span><span class="var">N</span><sub>A</sub></span></span>
+        <span class="unites"><span class="var">n</span> en mol &nbsp;·&nbsp; <span class="var">N</span> sans unité &nbsp;·&nbsp; <span class="var">N</span><sub>A</sub> en mol<sup>−1</sup></span>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemple — Le verre d'eau</p>
+        <p>Le verre d'eau contient <span class="var">N</span> = 6,69.10<sup>24</sup> molécules.</p>
+        <p><span class="var">n</span> = <span class="var">N</span> / <span class="var">N</span><sub>A</sub> = 6,69.10<sup>24</sup> / 6,02.10<sup>23</sup> = <strong>11,1 mol</strong>. Ce nombre est bien plus simple à manipuler !</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=RkQ-Q5jL110" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Nombre d'Avogadro et quantité de matière (mol)</span><br><span class="vs">Paul Olivier · 3 min 05</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex3">
+        <div class="ex-header">
+          <span class="ex-num">3</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">Donnée : <strong><span class="var">N</span><sub>A</sub> = 6,02.10<sup>23</sup> mol<sup>−1</sup></strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Un échantillon contient <strong>3,01.10<sup>23</sup> molécules</strong> d'eau. Quantité de matière : <span class="var">n</span> = <input class="blank" id="ex3-a" type="text" autocomplete="off"> <span class="u">mol</span></div>
+          <div class="q-row"><span class="ql">b.</span>Un morceau de fer contient <strong>2,0 mol</strong> d'atomes. Nombre d'atomes : <span class="var">N</span> = <input class="blank" id="ex3-b" type="text" autocomplete="off" placeholder="ex. : 2,0.10^21"></div>
+          <div class="q-row"><span class="ql">c.</span>L'unité de la constante d'Avogadro est
+            <select class="blank" id="ex3-c"><option value="">—</option><option value="mol">mol</option><option value="mol-1">mol⁻¹</option><option value="kg">kg</option><option value="sans">sans unité</option></select></div>
+          <div class="q-row"><span class="ql">d.</span>La mole est l'unité de la <input class="blank large" id="ex3-d" type="text" autocomplete="off"></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(3)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr3" onclick="corriger(3)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb3"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 4. MÉTHODE COMPLÈTE ================= -->
+    <div class="section" id="s4">
+      <div class="section-titre"><span class="num">4</span><h2>De la masse à la quantité de matière</h2></div>
+
+      <p>En pratique, on pèse un échantillon et on veut connaître sa quantité de matière. On enchaîne les deux calculs précédents.</p>
+
+      <div class="schema">
+        <svg viewBox="0 0 380 170" style="max-width:520px;margin:0 auto;" role="img" aria-label="Masse m, divisée par la masse d'une entité, donne N ; N divisé par la constante d'Avogadro donne n">
+          <defs>
+            <marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0e7c5b"/></marker>
+            <marker id="fl2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c8620a"/></marker>
+          </defs>
+          <g font-family="Source Sans 3, sans-serif" text-anchor="middle">
+            <rect x="2" y="50" width="96" height="62" rx="9" fill="#f0faf6" stroke="#0e7c5b" stroke-width="2"/>
+            <text x="50" y="77" font-size="15" font-weight="700" fill="#0e7c5b">Masse m</text>
+            <text x="50" y="98" font-size="15" fill="#4a4a4a">en kg</text>
+            <rect x="142" y="50" width="96" height="62" rx="9" fill="#f0faf6" stroke="#0e7c5b" stroke-width="2"/>
+            <text x="190" y="77" font-size="15" font-weight="700" fill="#0e7c5b">Nombre N</text>
+            <text x="190" y="98" font-size="15" fill="#4a4a4a">d'entités</text>
+            <rect x="282" y="50" width="96" height="62" rx="9" fill="#f0faf6" stroke="#0e7c5b" stroke-width="2"/>
+            <text x="330" y="77" font-size="15" font-weight="700" fill="#0e7c5b">Quantité n</text>
+            <text x="330" y="98" font-size="15" fill="#4a4a4a">en mol</text>
+
+            <line x1="100" y1="68" x2="139" y2="68" stroke="#0e7c5b" stroke-width="2.5" marker-end="url(#fl)"/>
+            <text x="120" y="38" font-size="16" font-weight="700" fill="#0e7c5b">÷ m<tspan dy="4" font-size="12">e</tspan></text>
+            <line x1="240" y1="68" x2="279" y2="68" stroke="#0e7c5b" stroke-width="2.5" marker-end="url(#fl)"/>
+            <text x="260" y="38" font-size="16" font-weight="700" fill="#0e7c5b">÷ N<tspan dy="4" font-size="12">A</tspan></text>
+
+            <line x1="140" y1="96" x2="101" y2="96" stroke="#c8620a" stroke-width="2.5" marker-end="url(#fl2)"/>
+            <text x="120" y="140" font-size="16" font-weight="700" fill="#c8620a">× m<tspan dy="4" font-size="12">e</tspan></text>
+            <line x1="280" y1="96" x2="241" y2="96" stroke="#c8620a" stroke-width="2.5" marker-end="url(#fl2)"/>
+            <text x="260" y="140" font-size="16" font-weight="700" fill="#c8620a">× N<tspan dy="4" font-size="12">A</tspan></text>
+          </g>
+        </svg>
+        <p class="schema-legende">Pour aller de la masse à la quantité de matière (vert), on divise ; pour revenir en arrière (orange), on multiplie.</p>
+      </div>
+
+      <div class="retenir">
+        <p class="label">Méthode — Calculer n à partir de m</p>
+        <ol>
+          <li>Calculer la masse <span class="var">m</span><sub>e</sub> d'une entité à partir de sa formule brute.</li>
+          <li>Convertir <span class="var">m</span> dans la même unité que <span class="var">m</span><sub>e</sub> (en kg).</li>
+          <li>Calculer le nombre d'entités : <span style="white-space:nowrap;"><span class="var">N</span> = <span class="var">m</span> / <span class="var">m</span><sub>e</sub></span>.</li>
+          <li>Calculer la quantité de matière : <span style="white-space:nowrap;"><span class="var">n</span> = <span class="var">N</span> / <span class="var">N</span><sub>A</sub></span>.</li>
+        </ol>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemple — 18 g d'eau</p>
+        <ul>
+          <li><span class="var">m</span><sub>e</sub> = <span class="var">m</span>(H<sub>2</sub>O) = 2,99.10<sup>−26</sup> kg</li>
+          <li><span class="var">m</span> = 18 g = 18.10<sup>−3</sup> kg</li>
+          <li><span class="var">N</span> = 18.10<sup>−3</sup> / 2,99.10<sup>−26</sup> = 6,02.10<sup>23</sup> molécules</li>
+          <li><span class="var">n</span> = 6,02.10<sup>23</sup> / 6,02.10<sup>23</sup> = <strong>1,00 mol</strong></li>
+        </ul>
+        <p>Une mole de molécules d'eau a donc une masse d'environ 18 g : c'est à peu près le contenu d'une cuillère à soupe.</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=5VAWH5Y51wU" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Calculer le nombre de molécules ? Et de moles ?</span><br><span class="vs">Paul Olivier · 3 min 53</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex4">
+        <div class="ex-header">
+          <span class="ex-num">4</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">Un ballon contient <strong>16 g de dioxygène O<sub>2</sub></strong>. Données : <strong><span class="var">m</span>(O) = 2,66.10<sup>−26</sup> kg</strong> ; <strong><span class="var">N</span><sub>A</sub> = 6,02.10<sup>23</sup> mol<sup>−1</sup></strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Masse d'une molécule de dioxygène : <span class="var">m</span><sub>e</sub> = <input class="blank" id="ex4-a" type="text" autocomplete="off" placeholder="ex. : 2,0.10^-26"> <span class="u">kg</span></div>
+          <div class="q-row"><span class="ql">b.</span>Masse de dioxygène en kilogrammes : <span class="var">m</span> = <input class="blank" id="ex4-b" type="text" autocomplete="off" placeholder="ex. : 250.10^-3"> <span class="u">kg</span></div>
+          <div class="q-row"><span class="ql">c.</span>Nombre de molécules : <span class="var">N</span> = <input class="blank" id="ex4-c" type="text" autocomplete="off" placeholder="ex. : 2,0.10^21"></div>
+          <div class="q-row"><span class="ql">d.</span>Quantité de matière : <span class="var">n</span> = <input class="blank" id="ex4-d" type="text" autocomplete="off"> <span class="u">mol</span></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(4)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr4" onclick="corriger(4)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb4"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 5. RÉVISER ================= -->
+    <div class="section" id="s5">
+      <div class="section-titre"><span class="num">5</span><h2>Pour réviser tout le chapitre</h2></div>
+      <div class="videos" style="margin-top:0;">
+        <p class="v-titre">Vidéo de révision</p>
+        <a class="video" href="https://www.youtube.com/watch?v=IN0W3lE0DaU" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Calculer une quantité de matière (mol) : masse d'une molécule, nombre de molécules, nombre de moles</span><br><span class="vs">Paul Olivier · 4 min 15</span></span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= EXERCICE FINAL ================= -->
+<div class="page" style="margin-top:2rem;" id="evaluation">
+  <div class="eval-header">
+    <span class="tag">Évaluation</span>
+    <h2>Exercice d'application — La quantité de matière</h2>
+    <p>Classe de seconde &nbsp;·&nbsp; Durée conseillée : 20 min</p>
+  </div>
+
+  <div class="eval-consignes">
+    <span class="consigne-item"><span class="dot"></span>Répondez à toutes les questions, puis cliquez sur « Vérifier mes résultats »</span>
+    <span class="consigne-item"><span class="dot"></span>Chaque réponse est analysée et corrigée</span>
+    <span class="consigne-item"><span class="dot"></span>Barème : /10 points</span>
+  </div>
+
+  <div class="eval-corps">
+    <div class="eq" id="eq1">
+      <div class="eq-header">
+        <span class="eq-num">1</span>
+        <div class="eq-meta"><p class="eq-intitule">Qu'est-ce qu'une mole ? Expliquez avec vos mots.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body"><textarea class="eval-textarea" id="rep1" placeholder="Votre réponse…"></textarea></div>
+    </div>
+
+    <div class="eq" id="eq2">
+      <div class="eq-header">
+        <span class="eq-num">2</span>
+        <div class="eq-meta"><p class="eq-intitule">La constante d'Avogadro vaut :</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <button class="eval-choice" data-q="2" data-v="A"><span class="eval-cletter">A</span> <span><span class="var">N</span><sub>A</sub> = 6,02.10<sup>23</sup> kg</span></button>
+        <button class="eval-choice" data-q="2" data-v="B"><span class="eval-cletter">B</span> <span><span class="var">N</span><sub>A</sub> = 6,02.10<sup>23</sup> mol<sup>−1</sup></span></button>
+        <button class="eval-choice" data-q="2" data-v="C"><span class="eval-cletter">C</span> <span><span class="var">N</span><sub>A</sub> = 6,02.10<sup>−23</sup> mol<sup>−1</sup></span></button>
+        <button class="eval-choice" data-q="2" data-v="D"><span class="eval-cletter">D</span> <span><span class="var">N</span><sub>A</sub> = 6,02.10<sup>23</sup> mol</span></button>
+      </div>
+    </div>
+
+    <div class="eq" id="eq3">
+      <div class="eq-header">
+        <span class="eq-num">3</span>
+        <div class="eq-meta"><p class="eq-intitule">Une bague en argent a une masse <strong><span class="var">m</span> = 5,4 g</strong>. La masse d'un atome d'argent est <strong><span class="var">m</span>(Ag) = 1,79.10<sup>−25</sup> kg</strong>. Calculez le nombre <span class="var">N</span> d'atomes d'argent contenus dans la bague.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:14px;color:var(--texte-2);"><span class="var">N</span> =</span>
+          <input class="eval-input" id="rep3" type="text" placeholder="ex. : 2,0.10^21" style="width:170px;">
+          <span style="font-size:14px;color:var(--texte-3);">atomes</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="eq" id="eq4">
+      <div class="eq-header">
+        <span class="eq-num">4</span>
+        <div class="eq-meta"><p class="eq-intitule">Calculez la quantité de matière <span class="var">n</span> d'argent contenue dans la bague. Donnée : <span class="var">N</span><sub>A</sub> = 6,02.10<sup>23</sup> mol<sup>−1</sup>.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:14px;color:var(--texte-2);"><span class="var">n</span> =</span>
+          <input class="eval-input" id="rep4" type="text" placeholder="ex. : 2,0.10^-3" style="width:170px;">
+          <span style="font-size:14px;color:var(--texte-3);">mol</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="eq" id="eq5">
+      <div class="eq-header">
+        <span class="eq-num">5</span>
+        <div class="eq-meta"><p class="eq-intitule">Expliquez pourquoi les chimistes comptent les entités en moles plutôt qu'une par une.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body"><textarea class="eval-textarea" id="rep5" placeholder="Votre explication…"></textarea></div>
+    </div>
+
+    <button class="btn-remettre" id="btn-verif-eval" onclick="verifierResultats()">Vérifier mes résultats →</button>
+
+    <div class="eval-resultat" id="eval-resultat">
+      <div class="res-top" id="res-top"></div>
+      <div class="res-detail">
+        <p class="res-detail-title">Analyse et correction par question</p>
+        <div id="res-detail-content"></div>
+      </div>
+    </div>
+    <button class="btn-recommencer" id="btn-recommencer" onclick="recommencerEval()">↺ Recommencer</button>
+  </div>
+</div>
+
+<script>
+/* ---------- Numéro du chapitre (case à compléter) ---------- */
+(function () {
+  const champ = document.getElementById('chap-num');
+  const CLE = 'quantite-de-matiere-chapitre';
+  const maj = () => {
+    const n = champ.value.trim();
+    document.title = 'Chapitre ' + (n ? n + ' ' : '') + '— La quantité de matière';
+  };
+  try { champ.value = localStorage.getItem(CLE) || ''; } catch (e) {}
+  maj();
+  champ.addEventListener('input', () => {
+    maj();
+    try { localStorage.setItem(CLE, champ.value.trim()); } catch (e) {}
+  });
+})();
+/* ---------- Outils ---------- */
+function norm(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[’']/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function num(s) {
+  // accepte 0,2 · 0.2 · 200.10^-3 · 200×10^-3 · 200*10-3 · 200e-3 · 10^5
+  const t = String(s || '').replace(/\s/g, '').replace(/,/g, '.').replace(/[−–]/g, '-');
+  let m = t.match(/^10\^\(?([-+]?\d+)\)?$/);
+  if (m) return Math.pow(10, parseInt(m[1], 10));
+  m = t.match(/^([-+]?\d+(?:\.\d+)?)(?:[.x×*]10\^?\(?([-+]?\d+)\)?)?$/i);
+  if (m) return parseFloat(m[1]) * (m[2] !== undefined ? Math.pow(10, parseInt(m[2], 10)) : 1);
+  const v = Number(t);
+  return isNaN(v) || t === '' ? null : v;
+}
+const fr = x => String(x).replace('.', ',');
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* ---------- Exercices d'application ---------- */
+const EXOS = {
+  1: {
+    champs: [
+      { id: 'ex1-a', type: 'num', val: 7.32e-26, tol: 0.03e-26, sol: '7,32.10<sup>−26</sup> kg' },
+      { id: 'ex1-b', type: 'num', val: 2.67e-26, tol: 0.04e-26, sol: '2,67.10<sup>−26</sup> kg' },
+      { id: 'ex1-c', type: 'num', val: 24, tol: 0.01, sol: '24' },
+      { id: 'ex1-d', type: 'num', val: 3.00e-25, tol: 0.03e-25, sol: '3,00.10<sup>−25</sup> kg' }
+    ],
+    explication: 'a. CO<sub>2</sub> : 1 atome C et 2 atomes O. <span class="var">m</span> = 2,00.10<sup>−26</sup> + 2 × 2,66.10<sup>−26</sup> = 2,00.10<sup>−26</sup> + 5,32.10<sup>−26</sup> = <strong>7,32.10<sup>−26</sup> kg</strong>.<br>b. CH<sub>4</sub> : 1 atome C et 4 atomes H. <span class="var">m</span> = 2,00.10<sup>−26</sup> + 4 × 1,67.10<sup>−27</sup> = 2,00.10<sup>−26</sup> + 0,668.10<sup>−26</sup> = <strong>2,67.10<sup>−26</sup> kg</strong>.<br>c. C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> : 6 + 12 + 6 = <strong>24 atomes</strong>.<br>d. <span class="var">m</span> = 6 × 2,00.10<sup>−26</sup> + 12 × 1,67.10<sup>−27</sup> + 6 × 2,66.10<sup>−26</sup> = 12,0.10<sup>−26</sup> + 2,00.10<sup>−26</sup> + 15,96.10<sup>−26</sup> = 29,96.10<sup>−26</sup> = <strong>3,00.10<sup>−25</sup> kg</strong>.'
+  },
+  2: {
+    champs: [
+      { id: 'ex2-a', type: 'num', val: 2.0e-3, tol: 0.001e-3, sol: '2,0.10<sup>−3</sup> kg' },
+      { id: 'ex2-b', type: 'num', val: 6.1e21, tol: 0.05e21, sol: '6,1.10<sup>21</sup>' },
+      { id: 'ex2-c', type: 'num', val: 6.04e22, tol: 0.06e22, sol: '6,0.10<sup>22</sup>' },
+      { id: 'ex2-d', type: 'choix', val: 'grand', sol: 'grand' }
+    ],
+    explication: 'a. 2,0 g = <strong>2,0.10<sup>−3</sup> kg</strong>.<br>b. <span class="var">N</span> = <span class="var">m</span> / <span class="var">m</span>(Au) = 2,0.10<sup>−3</sup> / 3,27.10<sup>−25</sup> = <strong>6,1.10<sup>21</sup> atomes</strong>.<br>c. 5,6 g = 5,6.10<sup>−3</sup> kg, donc <span class="var">N</span> = 5,6.10<sup>−3</sup> / 9,27.10<sup>−26</sup> = <strong>6,0.10<sup>22</sup> atomes</strong>.<br>d. Avec 2,0 au lieu de 2,0.10<sup>−3</sup>, on divise un nombre 1 000 fois trop grand : le résultat est 1 000 fois trop <strong>grand</strong>.'
+  },
+  3: {
+    champs: [
+      { id: 'ex3-a', type: 'num', val: 0.500, tol: 0.005, sol: '0,500 mol' },
+      { id: 'ex3-b', type: 'num', val: 1.2e24, tol: 0.01e24, sol: '1,2.10<sup>24</sup>' },
+      { id: 'ex3-c', type: 'choix', val: 'mol-1', sol: 'mol<sup>−1</sup>' },
+      { id: 'ex3-d', type: 'texte', re: /quantite de matiere/, sol: 'quantité de matière' }
+    ],
+    explication: 'a. <span class="var">n</span> = <span class="var">N</span> / <span class="var">N</span><sub>A</sub> = 3,01.10<sup>23</sup> / 6,02.10<sup>23</sup> = <strong>0,500 mol</strong>.<br>b. Chaque mole contient <span class="var">N</span><sub>A</sub> entités : <span class="var">N</span> = <span class="var">n</span> × <span class="var">N</span><sub>A</sub> = 2,0 × 6,02.10<sup>23</sup> = 12.10<sup>23</sup> = <strong>1,2.10<sup>24</sup> atomes</strong>.<br>c. <span class="var">N</span><sub>A</sub> est un nombre d’entités <em>par</em> mole : son unité est <strong>mol<sup>−1</sup></strong>.<br>d. La mole est l’unité de la <strong>quantité de matière</strong>.'
+  },
+  4: {
+    champs: [
+      { id: 'ex4-a', type: 'num', val: 5.32e-26, tol: 0.01e-26, sol: '5,32.10<sup>−26</sup> kg' },
+      { id: 'ex4-b', type: 'num', val: 16e-3, tol: 0.01e-3, sol: '16.10<sup>−3</sup> kg' },
+      { id: 'ex4-c', type: 'num', val: 3.01e23, tol: 0.02e23, sol: '3,01.10<sup>23</sup>' },
+      { id: 'ex4-d', type: 'num', val: 0.500, tol: 0.005, sol: '0,500 mol' }
+    ],
+    explication: 'a. O<sub>2</sub> contient 2 atomes O : <span class="var">m</span><sub>e</sub> = 2 × 2,66.10<sup>−26</sup> = <strong>5,32.10<sup>−26</sup> kg</strong>.<br>b. 16 g = <strong>16.10<sup>−3</sup> kg</strong>.<br>c. <span class="var">N</span> = <span class="var">m</span> / <span class="var">m</span><sub>e</sub> = 16.10<sup>−3</sup> / 5,32.10<sup>−26</sup> = <strong>3,01.10<sup>23</sup> molécules</strong>.<br>d. <span class="var">n</span> = <span class="var">N</span> / <span class="var">N</span><sub>A</sub> = 3,01.10<sup>23</sup> / 6,02.10<sup>23</sup> = <strong>0,500 mol</strong>.'
+  }
+};
+
+const reussis = new Set();
+const NB_EXOS = Object.keys(EXOS).length;
+
+function testerChamp(c) {
+  const v = document.getElementById(c.id).value;
+  if (c.type === 'num') { const x = num(v); return x !== null && Math.abs(x - c.val) <= c.tol; }
+  if (c.type === 'texte') return c.re.test(norm(v));
+  if (c.type === 'choix') return v === c.val;
+  if (c.type === 'formule') return v.replace(/\s/g, '').replace(/₂/g, '2') === c.val;
+  return false;
+}
+
+function verifier(n) {
+  const ex = EXOS[n];
+  let nbOk = 0, vides = 0;
+  ex.champs.forEach(c => {
+    const el = document.getElementById(c.id);
+    el.classList.remove('ok', 'ko');
+    if (!el.value.trim()) { vides++; return; }
+    const ok = testerChamp(c);
+    el.classList.add(ok ? 'ok' : 'ko');
+    if (ok) nbOk++;
+  });
+  const fb = document.getElementById('fb' + n);
+  const total = ex.champs.length;
+  if (vides === total) {
+    fb.className = 'feedback show ko';
+    fb.innerHTML = 'Complète les cases avant de vérifier.';
+    return;
+  }
+  if (nbOk === total) {
+    fb.className = 'feedback show ok';
+    fb.innerHTML = '<strong>✓ Bravo, tout est juste !</strong><br>' + ex.explication;
+    document.getElementById('ex' + n).classList.add('correct');
+    document.getElementById('corr' + n).classList.remove('show');
+    if (!reussis.has(n)) { reussis.add(n); majScore(); }
+  } else {
+    fb.className = 'feedback show ko';
+    fb.innerHTML = '<strong>✗ ' + nbOk + ' réponse' + (nbOk > 1 ? 's' : '') + ' juste' + (nbOk > 1 ? 's' : '') + ' sur ' + total + '.</strong> ' +
+      (vides ? 'Il reste ' + vides + ' case' + (vides > 1 ? 's' : '') + ' vide' + (vides > 1 ? 's' : '') + '. ' : '') +
+      'Corrige les cases en rouge, puis vérifie à nouveau.';
+    document.getElementById('corr' + n).classList.add('show');
+  }
+}
+
+function corriger(n) {
+  const ex = EXOS[n];
+  const fb = document.getElementById('fb' + n);
+  fb.className = 'feedback show corr';
+  fb.innerHTML = '<strong>Correction</strong><br>' + ex.explication +
+    '<br><span style="font-size:12.5px;color:#4a6a90;">Réponses attendues : ' + ex.champs.map(c => c.sol).join(' · ') + '</span>';
+}
+
+function majScore() {
+  document.getElementById('score-display').textContent = reussis.size + ' / ' + NB_EXOS;
+  document.getElementById('score-bar').style.width = Math.round(reussis.size / NB_EXOS * 100) + '%';
+}
+
+document.querySelectorAll('.exercice input.blank').forEach(inp => {
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') verifier(parseInt(inp.id.match(/^ex(\d+)/)[1], 10));
+  });
+});
+
+/* ---------- Exercice final : analyse et correction ---------- */
+const NA = 6.02e23;
+const N_ARGENT = 5.4e-3 / 1.79e-25;   // 3,02.10^22
+const N_ARGENT_MOL = N_ARGENT / NA;   // 5,0.10^-2 mol
+
+const CORRIGE = {
+  1: 'La mole est l’<strong>unité de la quantité de matière</strong>. Une mole est un « <strong>paquet</strong> » qui contient <strong>6,02.10<sup>23</sup> entités</strong> (atomes, molécules ou ions) : ce nombre d’entités par mole est la constante d’Avogadro <span class="var">N</span><sub>A</sub>.',
+  2: '<strong>Réponse B.</strong> <span class="var">N</span><sub>A</sub> = 6,02.10<sup>23</sup> mol<sup>−1</sup> : il y a 6,02.10<sup>23</sup> entités <em>par</em> mole.',
+  3: '<span class="var">m</span> = 5,4 g = 5,4.10<sup>−3</sup> kg (même unité que <span class="var">m</span>(Ag)).<br><span class="var">N</span> = <span class="var">m</span> / <span class="var">m</span>(Ag) = 5,4.10<sup>−3</sup> / 1,79.10<sup>−25</sup> = <strong>3,0.10<sup>22</sup> atomes</strong>.',
+  4: '<span class="var">n</span> = <span class="var">N</span> / <span class="var">N</span><sub>A</sub> = 3,0.10<sup>22</sup> / 6,02.10<sup>23</sup> = <strong>5,0.10<sup>−2</sup> mol</strong> (soit 0,050 mol).',
+  5: 'Les entités sont <strong>minuscules</strong> (une molécule d’eau pèse environ 3.10<sup>−26</sup> kg) : le moindre échantillon en contient un nombre <strong>gigantesque</strong> (6,69.10<sup>24</sup> molécules dans un verre d’eau). Les chimistes les <strong>regroupent par paquets</strong> de 6,02.10<sup>23</sup> entités, les moles : les quantités s’expriment alors avec des nombres <strong>simples à manipuler</strong> (11,1 mol au lieu de 6,69.10<sup>24</sup> molécules).'
+};
+
+const CRITERES = {
+  1: [
+    { re: /quantite de matiere|unite/, ok: 'tu indiques que la mole est une unité (de quantité de matière)', ko: 'précise que la mole est l’<strong>unité de la quantité de matière</strong>' },
+    { re: /6[.,]02|avogadro|10\s*\^?\s*\(?23/, ok: 'tu cites le nombre d’entités par mole (6,02.10<sup>23</sup>)', ko: 'il manque le nombre d’entités dans une mole : <strong>6,02.10<sup>23</sup></strong> (constante d’Avogadro)' },
+    { re: /entite|atome|molecule|\bions?\b|particule/, ok: 'tu précises ce que l’on compte (des entités)', ko: 'précise ce que contient une mole : des <strong>entités</strong> (atomes, molécules, ions)' },
+    { re: /paquet|groupe|ensemble|contient|regroup|\blot/, ok: 'tu présentes la mole comme un paquet d’entités', ko: 'explique que la mole est un <strong>paquet</strong> qui contient un nombre précis d’entités' }
+  ],
+  5: [
+    { re: /grand|enorme|gigantesque|immense|beaucoup|milliard|10\s*\^?\s*2\d/, ok: 'tu indiques que le nombre d’entités est gigantesque', ko: 'il manque l’idée que le nombre d’entités dans un échantillon est <strong>gigantesque</strong>' },
+    { re: /minuscule|leger|microscopique|infime|petites|tres petit|trop petit/, ok: 'tu indiques que les entités sont minuscules', ko: 'précise que les entités sont <strong>minuscules</strong> : on ne peut pas les compter une par une' },
+    { re: /paquet|groupe|regroup|ensemble|\blot/, ok: 'tu parles du regroupement par paquets', ko: 'explique que les chimistes <strong>regroupent</strong> les entités <strong>par paquets</strong> (les moles)' },
+    { re: /simple|facile|pratique|manipul|petits nombres|lisible|raisonnable|commode/, ok: 'tu montres l’intérêt : des nombres plus simples', ko: 'donne l’intérêt : les quantités s’écrivent avec des nombres <strong>simples à manipuler</strong>' }
+  ]
+};
+
+const QCM_Q2 = {
+  A: 'N<sub>A</sub> n’est pas une masse : c’est un nombre d’entités par mole. Son unité est mol<sup>−1</sup>, pas kg.',
+  B: '',
+  C: 'Une mole contient un nombre gigantesque d’entités : l’exposant est +23, pas −23. 6,02.10<sup>−23</sup> serait un nombre minuscule.',
+  D: 'L’unité est mol<sup>−1</sup> (« par mole »), pas mol. Vérifie avec <span class="var">n</span> = <span class="var">N</span> / <span class="var">N</span><sub>A</sub> : <span class="var">N</span> est sans unité, donc <span class="var">N</span><sub>A</sub> doit être en mol<sup>−1</sup> pour que <span class="var">n</span> soit en mol.'
+};
+
+let evalQ2sel = null;
+document.querySelectorAll('.eval-choice[data-q="2"]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    if (this.disabled) return;
+    document.querySelectorAll('.eval-choice[data-q="2"]').forEach(b => b.classList.remove('sel'));
+    this.classList.add('sel');
+    evalQ2sel = this.dataset.v;
+  });
+});
+
+function analyserTexte(q, rep) {
+  const t = norm(rep);
+  const res = CRITERES[q].map(c => ({ ok: c.re.test(t), msg: c.re.test(t) ? c.ok : c.ko }));
+  const pts = res.filter(r => r.ok).length * 0.5;
+  const notes = res.map(r => (r.ok ? '✓ ' : '✗ ') + r.msg);
+  if (/(mole|elle|c) (est|c est) une masse|unite de masse|gramme|\bkg\b/.test(t))
+    notes.push('⚠ Attention : la mole n’est pas une masse. C’est une <strong>quantité de matière</strong>, c’est-à-dire un nombre de paquets d’entités.');
+  return { pts, notes };
+}
+
+// rapport v / ref égal à une puissance de dix (autre que 1) ?
+function puissanceDix(v, ref) {
+  if (v === null || v <= 0) return false;
+  const k = Math.log10(v / ref);
+  return Math.abs(k - Math.round(k)) < 0.01 && Math.round(k) !== 0;
+}
+
+function analyserCalcul(q, rep, rep3) {
+  const v = num(rep);
+  const proche = (a, tolRel = 0.02) => v !== null && Math.abs(v - a) <= Math.abs(a) * tolRel;
+  if (v === null) return { pts: 0, notes: ['✗ Réponse non numérique : écris un nombre, par exemple 3,0.10^22.'] };
+  if (q === 3) {
+    if (proche(N_ARGENT)) return { pts: 2, notes: ['✓ Bonne conversion (5,4 g = 5,4.10<sup>−3</sup> kg) et bon calcul : N = m / m(Ag).'] };
+    if (proche(N_ARGENT * 1e3)) return { pts: 1, notes: ['✗ La méthode est bonne, mais la masse n’a pas été convertie en kg : 5,4 g = 5,4.10<sup>−3</sup> kg. Ton résultat est 1 000 fois trop grand.'] };
+    if (proche(N_ARGENT_MOL, 0.03)) return { pts: 1, notes: ['✗ Tu as calculé la quantité de matière n (en mol). La question demande le <strong>nombre d’atomes N</strong> : N = m / m(Ag).'] };
+    if (proche(1.79e-25 / 5.4e-3) || proche(1.79e-25 / 5.4)) return { pts: 0.5, notes: ['✗ Calcul inversé : il faut diviser la masse de l’échantillon par la masse d’un atome, N = m / m(Ag), et non l’inverse.'] };
+    if (proche(5.4e-3 * 1.79e-25) || proche(5.4 * 1.79e-25)) return { pts: 0.5, notes: ['✗ Mauvaise opération : on <strong>divise</strong> m par m(Ag), on ne multiplie pas.'] };
+    if (proche(5.4e-3 / NA) || proche(5.4 / NA)) return { pts: 0, notes: ['✗ Tu as divisé la masse par N<sub>A</sub> : ce calcul n’a pas de sens. Il faut diviser par la masse d’<strong>un</strong> atome d’argent.'] };
+    if (puissanceDix(v, N_ARGENT)) return { pts: 1, notes: ['✗ La méthode est bonne mais la puissance de dix est fausse : 5,4.10<sup>−3</sup> / 1,79.10<sup>−25</sup> = 3,0.10<sup>22</sup>.'] };
+    return { pts: 0, notes: ['✗ Résultat incorrect. Convertis m en kg, puis utilise N = m / m(Ag).'] };
+  }
+  if (q === 4) {
+    if (proche(N_ARGENT_MOL, 0.03)) return { pts: 2, notes: ['✓ Bon calcul : n = N / N<sub>A</sub>.'] };
+    const v3 = num(rep3);
+    if (v3 !== null && v3 > 0 && Math.abs(v - v3 / NA) <= v3 / NA * 0.03)
+      return { pts: 1.5, notes: ['✓ La méthode est juste : tu as bien calculé n = N / N<sub>A</sub>.', '✗ Mais la valeur de N trouvée à la question 3 est fausse, donc le résultat aussi.'] };
+    if (proche(N_ARGENT * NA, 0.03)) return { pts: 0.5, notes: ['✗ Tu as multiplié N par N<sub>A</sub> : pour passer d’un nombre d’entités à une quantité de matière, on <strong>divise</strong> par N<sub>A</sub>.'] };
+    if (proche(NA / N_ARGENT, 0.03)) return { pts: 0.5, notes: ['✗ Calcul inversé : n = N / N<sub>A</sub>, et non N<sub>A</sub> / N.'] };
+    if (puissanceDix(v, N_ARGENT_MOL)) return { pts: 1, notes: ['✗ La méthode est bonne mais la puissance de dix est fausse : 3,0.10<sup>22</sup> / 6,02.10<sup>23</sup> = 0,050 = 5,0.10<sup>−2</sup> mol.'] };
+    return { pts: 0, notes: ['✗ Résultat incorrect. Utilise n = N / N<sub>A</sub> avec le nombre d’atomes N de la question 3.'] };
+  }
+}
+
+function verifierResultats() {
+  const rep1 = document.getElementById('rep1').value.trim();
+  const rep3 = document.getElementById('rep3').value.trim();
+  const rep4 = document.getElementById('rep4').value.trim();
+  const rep5 = document.getElementById('rep5').value.trim();
+
+  if (!rep1 || !evalQ2sel || !rep3 || !rep4 || !rep5) {
+    let msg = document.getElementById('msg-manque');
+    if (!msg) {
+      msg = document.createElement('p'); msg.id = 'msg-manque';
+      msg.style.cssText = 'color:#c0392b;font-size:13px;text-align:center;margin-top:.8rem;';
+      document.getElementById('btn-verif-eval').insertAdjacentElement('afterend', msg);
+    }
+    msg.textContent = 'Répondez à toutes les questions avant de vérifier vos résultats.';
+    return;
+  }
+
+  document.getElementById('btn-verif-eval').disabled = true;
+  document.querySelectorAll('.eval-textarea,.eval-input,.eval-choice').forEach(el => el.disabled = true);
+  const m = document.getElementById('msg-manque'); if (m) m.remove();
+
+  const detail = [];
+  detail.push({ q: 1, label: 'Q1 — Définition de la mole', reponse: rep1, ...analyserTexte(1, rep1) });
+  const ok2 = evalQ2sel === 'B';
+  detail.push({ q: 2, label: 'Q2 — Valeur et unité de la constante d’Avogadro', reponse: 'Réponse ' + evalQ2sel, pts: ok2 ? 2 : 0, notes: [ok2 ? '✓ Bonne réponse.' : '✗ ' + QCM_Q2[evalQ2sel]] });
+  detail.push({ q: 3, label: 'Q3 — Nombre d’atomes dans la bague', reponse: 'N = ' + rep3 + ' atomes', ...analyserCalcul(3, rep3) });
+  detail.push({ q: 4, label: 'Q4 — Quantité de matière d’argent', reponse: 'n = ' + rep4 + ' mol', ...analyserCalcul(4, rep4, rep3) });
+  detail.push({ q: 5, label: 'Q5 — Intérêt de la mole', reponse: rep5, ...analyserTexte(5, rep5) });
+
+  const total = detail.reduce((s, d) => s + d.pts, 0);
+  let mention, couleurTop, couleurNote;
+  if (total >= 9)      { mention = 'Très bien !';    couleurTop = '#e8f8f0'; couleurNote = '#0e7c5b'; }
+  else if (total >= 7) { mention = 'Bien';           couleurTop = '#eef4ff'; couleurNote = '#1a5fa8'; }
+  else if (total >= 5) { mention = 'Assez bien';     couleurTop = '#fff8e8'; couleurNote = '#c8620a'; }
+  else                 { mention = 'À retravailler'; couleurTop = '#fdf0f0'; couleurNote = '#c0392b'; }
+
+  const top = document.getElementById('res-top');
+  top.style.background = couleurTop;
+  top.innerHTML = `
+    <div class="res-note" style="color:${couleurNote};">${fr(total)}<span style="font-size:1.5rem;color:var(--texte-3);"> / 10</span></div>
+    <p class="res-mention" style="color:${couleurNote};">${mention}</p>
+    <p class="res-sous">${total === 10 ? 'Score parfait : toutes les compétences sont maîtrisées.' : 'Lis l’analyse de chaque réponse et la correction ci-dessous.'}</p>
+    <p class="res-sous" style="font-size:12px;margin-top:.4rem;">Les réponses rédigées (Q1 et Q5) sont analysées automatiquement à partir des idées attendues : relis la correction pour vérifier ta formulation.</p>`;
+
+  document.getElementById('res-detail-content').innerHTML = detail.map(d => {
+    const plein = d.pts === 2, nul = d.pts === 0;
+    const coul = plein ? '#0e7c5b' : (nul ? '#c0392b' : '#c8620a');
+    return `
+    <div class="res-ligne">
+      <span class="res-icone" style="color:${coul};">${plein ? '✓' : (nul ? '✗' : '≈')}</span>
+      <div class="res-q">
+        <div style="font-weight:600;color:var(--texte);">${d.label}</div>
+        <div class="res-rep">Ta réponse : <em>${escapeHtml(d.reponse)}</em></div>
+        <ul class="res-analyse">${d.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+        <div class="res-correction"><strong>Correction :</strong> ${CORRIGE[d.q]}</div>
+      </div>
+      <span class="res-pts" style="color:${coul};">${fr(d.pts)} / 2</span>
+    </div>`;
+  }).join('');
+
+  console.group('%c📋 RÉSULTATS — ' + new Date().toLocaleTimeString('fr-FR'), 'font-size:14px;font-weight:bold;color:#2c1a4a;');
+  console.log('%cNote finale : %c' + fr(total) + ' / 10 (' + mention + ')', 'font-size:13px;color:#555;', 'font-size:16px;font-weight:bold;color:' + couleurNote);
+  detail.forEach(d => {
+    console.group(d.label + ' — ' + fr(d.pts) + '/2');
+    console.log('Réponse élève : ' + d.reponse);
+    console.log('Analyse : ' + d.notes.map(n => n.replace(/<[^>]+>/g, '')).join(' | '));
+    console.groupEnd();
+  });
+  console.groupEnd();
+
+  document.getElementById('btn-recommencer').style.display = 'block';
+  const res = document.getElementById('eval-resultat');
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function recommencerEval() {
+  document.querySelectorAll('.eval-textarea,.eval-input').forEach(el => { el.disabled = false; el.value = ''; });
+  document.querySelectorAll('.eval-choice').forEach(el => { el.disabled = false; el.classList.remove('sel'); });
+  evalQ2sel = null;
+  document.getElementById('btn-verif-eval').disabled = false;
+  document.getElementById('btn-recommencer').style.display = 'none';
+  document.getElementById('eval-resultat').classList.remove('show');
+  document.getElementById('evaluation').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>

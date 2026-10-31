@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapitre — Détermination d'une quantité de matière</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --vert:#0e7c5b; --vert-clair:#d4efe6; --vert-pale:#f0faf6;
+  --bleu:#1a5fa8; --bleu-clair:#ddeaf9;
+  --orange:#c8620a; --orange-clair:#fdecd8;
+  --rouge:#c0392b;
+  --gris-bg:#f7f6f2; --gris-bord:#dddbd4;
+  --texte:#1e1e1e; --texte-2:#4a4a4a; --texte-3:#7a7a7a;
+  --blanc:#ffffff;
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--gris-bg);color:var(--texte);line-height:1.7;padding:2rem 1rem 4rem;}
+.page{max-width:780px;margin:0 auto;background:var(--blanc);border-radius:12px;box-shadow:0 2px 16px rgba(0,0,0,.07);overflow:hidden;}
+
+/* EN-TÊTE */
+.header{background:var(--vert);color:var(--blanc);padding:2.5rem 2.5rem 2rem;position:relative;overflow:hidden;}
+.header::after{content:'';position:absolute;bottom:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06);}
+.header .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;margin-bottom:.9rem;color:rgba(255,255,255,.92);}
+.header h1{font-family:var(--serif);font-size:2rem;font-weight:600;line-height:1.25;margin-bottom:.4rem;}
+.header .sous{font-size:15px;color:rgba(255,255,255,.75);font-style:italic;}
+
+/* SOMMAIRE */
+.sommaire{background:var(--vert-pale);border-bottom:1px solid var(--gris-bord);padding:1.2rem 2.5rem;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;}
+.sommaire a{font-size:13px;color:var(--vert);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;}
+.sommaire a:hover{text-decoration:underline;}
+.sommaire a .num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--vert);color:white;font-size:11px;}
+
+/* BARRE DE PROGRESSION (exercices) */
+.score-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:1rem;background:var(--vert-pale);border-bottom:1px solid var(--vert-clair);padding:.7rem 2.5rem;font-size:14px;}
+.score-val{font-weight:600;color:var(--vert);font-size:15px;white-space:nowrap;}
+.score-progress{flex:1;height:6px;background:var(--vert-clair);border-radius:3px;overflow:hidden;}
+.score-progress-inner{height:100%;background:var(--vert);border-radius:3px;transition:width .4s ease;width:0%;}
+
+/* CORPS */
+.corps{padding:0 2.5rem 2.5rem;}
+.section{padding-top:2.5rem;}
+.section-titre{display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;padding-bottom:.7rem;border-bottom:2px solid var(--vert-clair);}
+.section-titre .num{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--vert);color:white;font-size:15px;font-weight:600;flex-shrink:0;}
+.section-titre h2{font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--vert);}
+.corps > .section > p, .section > p{font-size:14.5px;margin-bottom:.8rem;}
+
+/* BLOCS */
+.def{border-left:4px solid var(--vert);background:var(--vert-pale);border-radius:0 8px 8px 0;padding:.9rem 1.2rem;margin-bottom:1rem;}
+.def .label,.retenir .label,.exemple .label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--vert);margin-bottom:.35rem;}
+.def p{font-size:14.5px;color:var(--texte);line-height:1.65;}
+.def p + p{margin-top:.4rem;}
+.retenir{background:var(--vert-clair);border-radius:8px;padding:.9rem 1.2rem;margin:1rem 0;}
+.retenir .label{color:var(--vert);}
+.retenir p,.retenir li{font-size:14px;color:#0a4a33;line-height:1.65;}
+.retenir ol,.retenir ul{padding-left:1.2rem;}
+.retenir li{margin-bottom:.2rem;}
+.exemple{background:var(--gris-bg);border:1px solid var(--gris-bord);border-radius:8px;padding:.9rem 1.2rem;margin-bottom:1rem;}
+.exemple .label{color:var(--texte-3);}
+.exemple p,.exemple li{font-size:14px;color:var(--texte-2);line-height:1.6;}
+.exemple ul{padding-left:1.2rem;}
+.exemple.attention{background:#fdf0f0;border-color:#f5c0c0;}
+.exemple.attention .label{color:var(--rouge);}
+.exemple.attention p{color:#7a1515;}
+.formule{text-align:center;font-family:var(--serif);font-size:1.3rem;color:var(--vert);background:var(--vert-pale);border:1px solid var(--vert-clair);border-radius:8px;padding:.9rem 1rem;margin:1rem 0;letter-spacing:.02em;}
+.formule .unites{display:block;font-family:var(--sans);font-size:13px;color:var(--texte-2);margin-top:.5rem;letter-spacing:0;}
+.frac{display:inline-block;text-align:center;vertical-align:middle;}
+.frac > span{display:block;padding:0 6px;}
+.frac > span:first-child{border-bottom:2px solid var(--vert);}
+.schema{border:1px solid var(--gris-bord);border-radius:10px;background:var(--gris-bg);margin:1rem 0;overflow:hidden;}
+.schema svg{display:block;width:100%;height:auto;}
+.schema-legende{font-size:12px;color:var(--texte-3);text-align:center;padding:.4rem 1rem .7rem;font-style:italic;}
+.deux-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem;}
+.prop-card{border:1px solid var(--gris-bord);border-radius:8px;padding:.9rem 1rem;background:var(--blanc);}
+.prop-card .titre{font-size:13px;font-weight:600;color:var(--texte);margin-bottom:.3rem;}
+.prop-card .desc{font-size:13px;color:var(--texte-2);line-height:1.5;}
+.card-bleu{border-top:3px solid var(--bleu);background:var(--bleu-clair);}
+.card-bleu .titre{color:var(--bleu);} .card-bleu .desc{color:#1a3a60;}
+.card-orange{border-top:3px solid var(--orange);background:var(--orange-clair);}
+.card-orange .titre{color:var(--orange);} .card-orange .desc{color:#5a2d0a;}
+.sep{border:none;border-top:1px solid var(--gris-bord);margin:2rem 0 0;}
+strong{font-weight:600;} em{font-style:italic;} sub{font-size:.75em;}
+.var{font-family:var(--serif);font-style:italic;}
+
+/* VIDÉOS */
+.videos{border:1px solid var(--gris-bord);border-radius:10px;margin:1.2rem 0 0;overflow:hidden;}
+.videos .v-titre{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-3);padding:.6rem 1rem;background:var(--gris-bg);border-bottom:1px solid var(--gris-bord);}
+.video{display:flex;align-items:center;gap:12px;padding:.6rem 1rem;text-decoration:none;color:var(--texte);border-bottom:1px solid var(--gris-bord);transition:background .15s;}
+.video:last-child{border-bottom:none;}
+.video:hover{background:var(--vert-pale);}
+.play{display:flex;align-items:center;justify-content:center;width:34px;height:24px;border-radius:6px;background:#d93025;flex-shrink:0;}
+.play::after{content:'';border-left:9px solid white;border-top:5.5px solid transparent;border-bottom:5.5px solid transparent;margin-left:2px;}
+.video .vt{font-size:14px;font-weight:600;line-height:1.35;}
+.video .vs{font-size:12px;color:var(--texte-3);}
+
+/* EXERCICES */
+.exercice{border:1px solid var(--gris-bord);border-radius:10px;margin-top:1.5rem;overflow:hidden;transition:border-color .2s;}
+.exercice.correct{border-color:var(--vert);}
+.ex-header{display:flex;align-items:flex-start;gap:12px;padding:1rem 1.2rem;background:#eef3fa;border-bottom:1px solid var(--gris-bord);}
+.ex-num{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#1a3a60;color:white;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px;}
+.exercice.correct .ex-num{background:var(--vert);}
+.ex-type{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#1a3a60;margin-bottom:3px;}
+.ex-question{font-size:14.5px;color:var(--texte);line-height:1.55;}
+.ex-body{padding:1rem 1.2rem;}
+.q-row{display:block;margin-bottom:.6rem;font-size:14px;line-height:2.5;}
+.q-row .ql{display:inline-block;font-weight:600;color:#1a3a60;min-width:1.6rem;}
+.blank{border:1.5px dashed #9fb3cc;border-radius:8px;padding:.4rem .7rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:#fbfcfe;width:130px;outline:none;margin:0 4px;line-height:1.4;transition:border-color .15s,background .15s;}
+.blank.large{width:210px;}
+.blank:focus{border-style:solid;border-color:var(--bleu);background:var(--blanc);}
+select.blank{width:auto;max-width:100%;cursor:pointer;}
+.blank.ok{border-style:solid;border-color:var(--vert);background:var(--vert-pale);}
+.blank.ko{border-style:solid;border-color:var(--rouge);background:#fdf0f0;}
+.u{color:var(--texte-3);}
+.ex-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:.4rem;}
+.btn-verif{padding:.55rem 1.3rem;border-radius:8px;border:1.5px solid #1a3a60;background:#1a3a60;color:white;font-family:var(--sans);font-size:13.5px;font-weight:600;cursor:pointer;transition:background .15s;}
+.btn-verif:hover{background:#12294a;}
+.btn-corr{padding:.55rem 1.1rem;border-radius:8px;border:1.5px solid var(--gris-bord);background:var(--blanc);color:var(--texte-2);font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;display:none;}
+.btn-corr.show{display:inline-block;}
+.btn-corr:hover{border-color:var(--texte-3);}
+.feedback{margin-top:.8rem;padding:.7rem 1rem;border-radius:8px;font-size:13.5px;line-height:1.6;display:none;}
+.feedback.show{display:block;}
+.feedback.ok{background:var(--vert-pale);color:#0a4a33;border:1px solid var(--vert-clair);}
+.feedback.ko{background:#fdf0f0;color:#7a1515;border:1px solid #f5c0c0;}
+.feedback.corr{background:#eef3fa;color:#1a3a60;border:1px solid #c9d8ec;}
+
+/* ÉVALUATION */
+.eval-header{background:#2c1a4a;color:white;padding:2rem 2.5rem 1.6rem;position:relative;overflow:hidden;}
+.eval-header::after{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.eval-header .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,0.15);border-radius:20px;padding:3px 12px;margin-bottom:.8rem;color:rgba(255,255,255,0.85);}
+.eval-header h2{font-family:var(--serif);font-size:1.5rem;font-weight:600;margin-bottom:.3rem;}
+.eval-header p{font-size:14px;color:rgba(255,255,255,0.65);}
+.eval-consignes{background:#f5f0ff;border-bottom:1px solid #d8ccf0;padding:1rem 2.5rem;display:flex;gap:.5rem 2rem;flex-wrap:wrap;}
+.consigne-item{display:flex;align-items:center;gap:8px;font-size:13px;color:#3a2060;}
+.consigne-item .dot{width:8px;height:8px;border-radius:50%;background:#7c4dff;flex-shrink:0;}
+.eval-corps{padding:0 2.5rem 2rem;}
+.eq{margin-top:2rem;border:1px solid var(--gris-bord);border-radius:10px;overflow:hidden;}
+.eq-header{display:flex;align-items:flex-start;gap:12px;padding:.9rem 1.2rem;background:#faf8ff;border-bottom:1px solid var(--gris-bord);}
+.eq-num{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#2c1a4a;color:white;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px;}
+.eq-meta{flex:1;}
+.eq-intitule{font-size:14.5px;color:var(--texte);font-weight:600;line-height:1.5;}
+.eq-pts{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#7c4dff;white-space:nowrap;margin-top:2px;}
+.eq-body{padding:1rem 1.2rem;}
+.eval-textarea{width:100%;border:1.5px solid var(--gris-bord);border-radius:8px;padding:.7rem 1rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:var(--blanc);resize:vertical;min-height:70px;outline:none;transition:border-color .15s;line-height:1.6;}
+.eval-textarea:focus{border-color:#7c4dff;}
+.eval-textarea:disabled{background:var(--gris-bg);color:var(--texte-2);}
+.eval-input{border:1.5px solid var(--gris-bord);border-radius:8px;padding:.5rem .9rem;font-family:var(--sans);font-size:14px;color:var(--texte);background:var(--blanc);width:130px;outline:none;transition:border-color .15s;}
+.eval-input:focus{border-color:#7c4dff;}
+.eval-input:disabled{background:var(--gris-bg);}
+.eval-choice{display:flex;align-items:center;gap:10px;border:1.5px solid var(--gris-bord);border-radius:8px;padding:.6rem 1rem;background:var(--blanc);cursor:pointer;font-family:var(--sans);font-size:14px;color:var(--texte);text-align:left;transition:all .15s;width:100%;margin-bottom:8px;}
+.eval-choice:hover:not(:disabled){border-color:#7c4dff;background:#f5f0ff;}
+.eval-choice:disabled{cursor:default;}
+.eval-choice.sel{border-color:#7c4dff;background:#f5f0ff;}
+.eval-cletter{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--gris-bord);font-size:12px;font-weight:600;flex-shrink:0;color:var(--texte-2);}
+.btn-remettre{display:block;margin:2rem auto 0;padding:.8rem 2.5rem;border-radius:10px;border:none;background:#2c1a4a;color:white;font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;transition:background .15s;letter-spacing:.02em;}
+.btn-remettre:hover{background:#1e1035;}
+.btn-remettre:disabled{opacity:.45;cursor:default;}
+.eval-resultat{display:none;margin:2rem 0 0;border-radius:12px;overflow:hidden;border:1px solid var(--gris-bord);}
+.eval-resultat.show{display:block;}
+.res-top{padding:2rem 2.5rem;text-align:center;}
+.res-note{font-family:var(--serif);font-size:3.5rem;font-weight:600;line-height:1;margin-bottom:.5rem;}
+.res-mention{font-size:16px;font-weight:600;margin-bottom:.3rem;}
+.res-sous{font-size:14px;color:var(--texte-2);}
+.res-detail{border-top:1px solid var(--gris-bord);padding:1.2rem 2rem;background:var(--gris-bg);}
+.res-detail-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-3);margin-bottom:.8rem;}
+.res-ligne{display:flex;align-items:flex-start;gap:10px;padding:.6rem 0;border-bottom:1px solid var(--gris-bord);font-size:13.5px;}
+.res-ligne:last-child{border-bottom:none;}
+.res-icone{font-size:14px;flex-shrink:0;margin-top:2px;}
+.res-q{flex:1;color:var(--texte-2);line-height:1.5;}
+.res-pts{font-weight:600;white-space:nowrap;}
+.res-correction{font-size:12.5px;color:#0a4a33;background:var(--vert-pale);border-radius:6px;padding:4px 10px;margin-top:4px;display:inline-block;border:1px solid var(--vert-clair);}
+.res-correction.ko{color:#7a1515;background:#fdf0f0;border-color:#f5c0c0;}
+.res-correction{display:block;font-size:13px;line-height:1.6;padding:.5rem .8rem;margin-top:.5rem;}
+.res-rep{font-size:13px;color:var(--texte-2);margin-top:.2rem;word-break:break-word;}
+.res-analyse{list-style:none;margin:.35rem 0 0;font-size:13px;line-height:1.55;}
+.res-analyse li{margin-bottom:.15rem;}
+.btn-recommencer{display:none;margin:1rem auto 0;padding:.6rem 1.6rem;border-radius:10px;border:1.5px solid #2c1a4a;background:white;color:#2c1a4a;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;}
+.btn-recommencer:hover{background:#f5f0ff;}
+
+@media(max-width:540px){
+  body{padding:1rem .5rem 3rem;}
+  .corps,.eval-corps{padding:0 1.2rem 2rem;}
+  .header{padding:1.8rem 1.2rem 1.5rem;}
+  .sommaire,.score-bar,.eval-consignes{padding-left:1.2rem;padding-right:1.2rem;}
+  .eval-header{padding:1.6rem 1.2rem 1.4rem;}
+  .deux-col{grid-template-columns:1fr;}
+  .formule{font-size:1.1rem;}
+}
+
+/* ---- Ajouts chapitre 4 ---- */
+.iso{display:inline-flex;align-items:center;font-family:var(--serif);white-space:nowrap;font-size:1.2em;}
+.iso .az{display:inline-flex;flex-direction:column;align-items:flex-end;font-size:.62em;line-height:1.05;margin-right:1px;}
+.frise{list-style:none;position:relative;margin:1rem 0 1rem .4rem;padding-left:1.4rem;border-left:3px solid var(--vert-clair);}
+.frise li{position:relative;margin-bottom:.75rem;font-size:14px;line-height:1.5;display:grid;grid-template-columns:7rem 1fr;column-gap:.8rem;align-items:start;}
+.frise li::before{content:'';position:absolute;left:-1.4rem;top:.35rem;width:13px;height:13px;border-radius:50%;background:var(--vert);transform:translateX(-8px);border:2px solid white;box-shadow:0 0 0 1px var(--vert);}
+.frise .date{font-weight:700;color:var(--vert);}
+@media(max-width:540px){.frise li{grid-template-columns:1fr;}}
+.legende-frise{background:var(--gris-bg);border:1px solid var(--gris-bord);border-radius:8px;padding:.6rem 1rem;margin:-.2rem 0 1rem;}
+.legende-frise p{display:flex;align-items:flex-start;gap:.6rem;font-size:13px;color:var(--texte-2);line-height:1.5;margin:.15rem 0;}
+.legende-frise .pt{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:.25rem;}
+.pt-orange{background:var(--orange);} .pt-vert{background:var(--vert);}
+.frise li.cle::before{background:var(--orange);box-shadow:0 0 0 1px var(--orange);}
+.frise li.cle .date{color:var(--orange);}
+.tab{width:100%;border-collapse:collapse;font-size:14px;margin:.6rem 0 1rem;}
+.tab th,.tab td{border:1px solid var(--gris-bord);padding:7px 10px;text-align:center;}
+.tab th{background:var(--vert-pale);color:var(--vert);font-weight:600;}
+.tab td:first-child{text-align:left;font-weight:600;background:var(--gris-bg);}
+.tab-wrap{overflow-x:auto;}
+.tab .blank{width:70px;}
+.ion{font-family:var(--serif);}
+/* ---- Ajouts chapitre 5 ---- */
+.schema svg.etroit{max-width:520px;margin:0 auto;}
+.eval-choice .ch{flex:1;font-family:var(--serif);}
+.eval-choice .frac{font-size:15px;line-height:1.3;}
+.eval-choice .frac > span:first-child{border-bottom-color:var(--texte-2);border-bottom-width:1.5px;}
+.retenir ul,.retenir ol{margin-top:.2rem;}
+/* Numéro du chapitre à compléter */
+.chap-num{width:2.6ch;font:inherit;color:inherit;text-align:center;background:rgba(255,255,255,.12);border:2px dashed rgba(255,255,255,.6);border-radius:8px;padding:0 .2rem;margin:0 .1rem;outline:none;vertical-align:baseline;line-height:1.1;}
+.chap-num:focus{border-style:solid;border-color:#fff;background:rgba(255,255,255,.2);}
+@media print{.chap-num{border:none;background:none;}}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header">
+    <span class="tag">Physique-chimie · Classe de première (spécialité)</span>
+    <h1>Chapitre <input class="chap-num" id="chap-num" type="text" inputmode="numeric" maxlength="3" autocomplete="off" aria-label="Numéro du chapitre"> — Détermination d'une quantité de matière</h1>
+    <p class="sous">Constitution et transformations de la matière : suivi de l'évolution d'un système, siège d'une transformation</p>
+  </div>
+
+  <nav class="sommaire">
+    <a href="#s1"><span class="num">1</span>Doser une espèce</a>
+    <a href="#s2"><span class="num">2</span>Réaction support</a>
+    <a href="#s3"><span class="num">3</span>L'équivalence</a>
+    <a href="#s4"><span class="num">4</span>Relation à l'équivalence</a>
+    <a href="#s5"><span class="num">5</span>Changement de couleur</a>
+    <a href="#s6"><span class="num">6</span>Réviser</a>
+    <a href="#evaluation"><span class="num">★</span>Exercice final</a>
+  </nav>
+
+  <div class="score-bar">
+    <span style="color:var(--texte-3);">Exercices réussis :</span>
+    <span class="score-val" id="score-display">0 / 5</span>
+    <div class="score-progress"><div class="score-progress-inner" id="score-bar"></div></div>
+  </div>
+
+  <div class="corps">
+
+    <p style="font-size:14.5px;margin-top:2rem;font-style:italic;color:var(--texte-2);">Les équations de réaction permettent de modéliser une transformation chimique et de prévoir la composition finale du système. À l'inverse, en observant l'état final d'une transformation bien choisie, on peut déterminer une quantité de matière initiale : c'est le principe du titrage.</p>
+
+    <!-- ================= 1. DOSER ================= -->
+    <div class="section" id="s1" style="padding-top:1.2rem;">
+      <div class="section-titre"><span class="num">1</span><h2>Doser une espèce chimique : étalonnage ou titrage</h2></div>
+
+      <div class="def">
+        <p class="label">Définition — Doser</p>
+        <p><strong>Doser</strong> une espèce chimique en solution, c'est déterminer sa <strong>concentration</strong> ou sa <strong>quantité de matière</strong> dans un échantillon. On réalise pour cela un <strong>dosage</strong>.</p>
+      </div>
+
+      <p>Il existe deux grandes familles de dosages.</p>
+
+      <div class="deux-col" id="doc1">
+        <div class="prop-card card-bleu">
+          <p class="titre">Dosage par étalonnage</p>
+          <p class="desc">Pas de réaction chimique : on compare l'échantillon à des <strong>solutions étalons</strong>.<br><strong>Non destructif</strong> : l'espèce dosée reste intacte.</p>
+        </div>
+        <div class="prop-card card-orange">
+          <p class="titre">Dosage par titrage</p>
+          <p class="desc">Une <strong>réaction chimique</strong>, la réaction support, a lieu entre l'espèce dosée et un réactif de concentration connue.<br><strong>Destructif</strong> : l'espèce dosée est consommée.</p>
+        </div>
+      </div>
+
+      <p>Ce chapitre est consacré au <strong>dosage par titrage</strong>, que l'on appelle plus simplement <strong>titrage</strong>.</p>
+
+      <div class="def">
+        <p class="label">Définition — Le titrage</p>
+        <p>Lors d'un titrage, on prélève à la pipette jaugée un volume précis, appelé <strong>prise d'essai</strong>, de la <strong>solution titrée</strong>. Cette solution contient l'espèce à doser, appelée <strong>espèce titrée</strong>. On la place dans un bécher ou un erlenmeyer.</p>
+        <p>On ajoute ensuite progressivement, à l'aide d'une burette graduée, la <strong>solution titrante</strong>, de <strong>concentration connue</strong>. Elle contient l'<strong>espèce titrante</strong>, qui réagit avec l'espèce titrée.</p>
+      </div>
+
+      <div class="schema" id="svg-montage">
+        <svg class="etroit" role="img" aria-label="Schéma du montage d'un titrage" viewBox="0 0 480 512" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3',sans-serif">
+  <defs>
+    <marker id="fl2" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#4a4a4a"/></marker>
+  </defs>
+  <rect x="0" y="462" width="104" height="14" rx="3" fill="#7a7a7a"/>
+  <rect x="26" y="22" width="8" height="442" fill="#9a9a9a"/>
+  <rect x="22" y="102" width="16" height="16" rx="2" fill="#4a4a4a"/>
+  <rect x="38" y="107" width="138" height="6" fill="#4a4a4a"/>
+  <rect x="172" y="101" width="36" height="18" rx="3" fill="none" stroke="#4a4a4a" stroke-width="4"/>
+  <rect x="178" y="56" width="24" height="234" fill="#ddeaf9"/>
+  <rect x="178" y="56" width="24" height="234" fill="#1a5fa8" fill-opacity="0.28"/>
+  <rect x="178" y="22" width="24" height="268" fill="none" stroke="#1e1e1e" stroke-width="2"/>
+  <g stroke="#1e1e1e" stroke-width="1.2">
+    <line x1="178" y1="70" x2="190" y2="70"/><line x1="178" y1="95" x2="186" y2="95"/><line x1="178" y1="120" x2="190" y2="120"/><line x1="178" y1="145" x2="186" y2="145"/><line x1="178" y1="170" x2="190" y2="170"/><line x1="178" y1="195" x2="186" y2="195"/><line x1="178" y1="220" x2="190" y2="220"/><line x1="178" y1="245" x2="186" y2="245"/><line x1="178" y1="270" x2="190" y2="270"/>
+  </g>
+  <rect x="184" y="290" width="12" height="22" fill="#1e1e1e"/>
+  <rect x="168" y="296" width="44" height="9" rx="3" fill="#c0392b"/>
+  <path d="M184,312 L196,312 L192,340 L188,340 Z" fill="#ddeaf9" stroke="#1e1e1e" stroke-width="1.5"/>
+  <path d="M190,348 q-5,8 0,12 q5,-4 0,-12 z" fill="#1a5fa8" fill-opacity="0.6"/>
+  <path d="M138,384 L242,384 L242,440 L138,440 Z" fill="#fdecd8"/>
+  <path d="M134,352 L138,356 L138,440 L242,440 L242,356 L246,352" fill="none" stroke="#1e1e1e" stroke-width="2.2"/>
+  <line x1="138" y1="384" x2="242" y2="384" stroke="#c8620a" stroke-width="1.5"/>
+  <rect x="176" y="429" width="28" height="7" rx="3.5" fill="#4a4a4a"/>
+  <rect x="110" y="442" width="160" height="36" rx="6" fill="#4a4a4a"/>
+  <circle cx="142" cy="460" r="8" fill="#dddbd4"/><circle cx="238" cy="460" r="8" fill="#dddbd4"/>
+  <rect x="168" y="452" width="44" height="16" rx="3" fill="#2c2c2c"/>
+  <g font-size="19" fill="#1e1e1e">
+    <text x="288" y="51">Burette graduée</text>
+    <text x="288" y="118">Pince à burette</text>
+    <text x="288" y="181" font-weight="700" fill="#1a5fa8">Solution titrante</text>
+    <text x="288" y="202" font-size="17" fill="#1a5fa8">(concentration</text>
+    <text x="288" y="221" font-size="17" fill="#1a5fa8">connue)</text>
+    <text x="288" y="306">Robinet</text>
+    <text x="288" y="366">Bécher</text>
+    <text x="288" y="406" font-weight="700" fill="#c8620a">Solution titrée</text>
+    <text x="288" y="426" font-size="17" fill="#c8620a">(prise d'essai)</text>
+    <text x="288" y="456">Barreau aimanté</text>
+    <text x="288" y="482">Agitateur</text>
+    <text x="288" y="500" font-size="17">magnétique</text>
+    <text x="58" y="256">Potence</text>
+  </g>
+  <g stroke="#4a4a4a" stroke-width="1.3" fill="none">
+    <line x1="282" y1="45" x2="206" y2="45" marker-end="url(#fl2)"/>
+    <line x1="282" y1="112" x2="212" y2="112" marker-end="url(#fl2)"/>
+    <line x1="282" y1="175" x2="206" y2="175" marker-end="url(#fl2)"/>
+    <line x1="282" y1="300" x2="216" y2="300" marker-end="url(#fl2)"/>
+    <line x1="282" y1="360" x2="248" y2="360" marker-end="url(#fl2)"/>
+    <line x1="282" y1="401" x2="244" y2="410" marker-end="url(#fl2)"/>
+    <line x1="282" y1="450" x2="208" y2="433" marker-end="url(#fl2)"/>
+    <line x1="282" y1="476" x2="274" y2="470" marker-end="url(#fl2)"/>
+    <line x1="54" y1="250" x2="38" y2="250" marker-end="url(#fl2)"/>
+  </g>
+</svg>
+        <p class="schema-legende">Montage d'un titrage (l'échelle n'est pas respectée)</p>
+      </div>
+
+      <div class="retenir">
+        <p class="label">À retenir</p>
+        <ul>
+          <li>Un dosage par étalonnage est <strong>non destructif</strong> ; un titrage est <strong>destructif</strong> : l'espèce titrée est consommée par la réaction.</li>
+          <li>La solution titrante, de concentration connue, est dans la <strong>burette</strong> ; la solution titrée, de concentration inconnue, est dans le <strong>bécher</strong>.</li>
+        </ul>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=-k0KXSSD3IE" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Titrage colorimétrique (dosage) — 1<sup>re</sup> spé</span><br><span class="vs">Paul Olivier · 5 min 56</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex1">
+        <div class="ex-header">
+          <span class="ex-num">1</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">Complète chaque phrase avec le bon mot.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Déterminer la concentration d'une espèce en solution, c'est réaliser un
+            <select class="blank" id="ex1-a"><option value="">—</option><option value="dilution">dilution</option><option value="dosage">dosage</option><option value="dissolution">dissolution</option></select></div>
+          <div class="q-row"><span class="ql">b.</span>Un dosage qui met en jeu une réaction chimique est un dosage par
+            <select class="blank" id="ex1-b"><option value="">—</option><option value="etalonnage">étalonnage</option><option value="titrage">titrage</option></select></div>
+          <div class="q-row"><span class="ql">c.</span>Ce type de dosage est
+            <select class="blank" id="ex1-c"><option value="">—</option><option value="destructif">destructif</option><option value="non">non destructif</option></select></div>
+          <div class="q-row"><span class="ql">d.</span>La solution de concentration connue, placée dans la burette, est la solution
+            <select class="blank" id="ex1-d"><option value="">—</option><option value="titree">titrée</option><option value="titrante">titrante</option></select></div>
+          <div class="q-row"><span class="ql">e.</span>Le volume précis de solution titrée, prélevé à la pipette jaugée, s'appelle
+            <select class="blank" id="ex1-e"><option value="">—</option><option value="essai">la prise d'essai</option><option value="equivalent">le volume équivalent</option><option value="burette">le volume de la burette</option></select></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(1)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr1" onclick="corriger(1)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb1"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 2. RÉACTION SUPPORT ================= -->
+    <div class="section" id="s2">
+      <div class="section-titre"><span class="num">2</span><h2>La réaction support du titrage</h2></div>
+
+      <div class="def">
+        <p class="label">Définition — Réaction support</p>
+        <p>La <strong>réaction support</strong> du titrage est la réaction chimique qui se produit entre l'espèce titrée et l'espèce titrante. En première, c'est une <strong>réaction d'oxydoréduction</strong>.</p>
+      </div>
+
+      <p>Pour qu'une réaction puisse servir de support à un titrage, elle doit avoir trois qualités.</p>
+      <div class="tab-wrap">
+        <table class="tab">
+          <tr><th>La réaction doit être…</th><th>Ce que cela signifie</th></tr>
+          <tr><td>totale</td><td style="text-align:left;">Le réactif limitant est entièrement consommé.</td></tr>
+          <tr><td>rapide</td><td style="text-align:left;">L'état final est atteint dès que l'on verse la solution titrante.</td></tr>
+          <tr><td>unique</td><td style="text-align:left;">L'espèce titrée et l'espèce titrante ne participent à aucune autre réaction.</td></tr>
+        </table>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemple</p>
+        <p>Les ions fer(II) Fe<sup>2+</sup> sont titrés par les ions permanganate MnO<sub>4</sub><sup>−</sup>. L'équation de la réaction support est :</p>
+        <p style="text-align:center;font-family:var(--serif);margin:.4rem 0;">MnO<sub>4</sub><sup>−</sup>(aq) + 5&nbsp;Fe<sup>2+</sup>(aq) + 8&nbsp;H<sup>+</sup>(aq) → Mn<sup>2+</sup>(aq) + 5&nbsp;Fe<sup>3+</sup>(aq) + 4&nbsp;H<sub>2</sub>O(ℓ)</p>
+      </div>
+
+      <div class="retenir">
+        <p class="label">Rappel — Concentration en soluté apporté</p>
+        <p>La <strong>concentration en soluté apporté</strong> <span class="var">C</span> est la quantité de soluté dissous par litre de solution, comme si le soluté ne s'était pas dissocié en ions. Elle permet de calculer la concentration de chaque ion.</p>
+        <p>Exemple : le thiosulfate de sodium se dissout selon Na<sub>2</sub>S<sub>2</sub>O<sub>3</sub>(s) → 2&nbsp;Na<sup>+</sup>(aq) + S<sub>2</sub>O<sub>3</sub><sup>2−</sup>(aq). Pour une concentration en soluté apporté <span class="var">C</span>, on a [S<sub>2</sub>O<sub>3</sub><sup>2−</sup>] = <span class="var">C</span> et [Na<sup>+</sup>] = 2 <span class="var">C</span>.</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=T24OI52bgdw" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Oxydoréduction et titrage — exercice corrigé</span><br><span class="vs">Paul Olivier · 3 min 10</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex2">
+        <div class="ex-header">
+          <span class="ex-num">2</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">Une solution de thiosulfate de sodium a une concentration en soluté apporté <strong><span class="var">C</span> = 5,00.10<sup>−2</sup> mol·L<sup>−1</sup></strong>. Équation de dissolution : Na<sub>2</sub>S<sub>2</sub>O<sub>3</sub>(s) → 2&nbsp;Na<sup>+</sup>(aq) + S<sub>2</sub>O<sub>3</sub><sup>2−</sup>(aq).</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>[S<sub>2</sub>O<sub>3</sub><sup>2−</sup>] = <input class="blank" id="ex2-a" type="text" autocomplete="off" placeholder="ex. : 2,0.10^-26"> <span class="u">mol·L<sup>−1</sup></span></div>
+          <div class="q-row"><span class="ql">b.</span>[Na<sup>+</sup>] = <input class="blank" id="ex2-b" type="text" autocomplete="off" placeholder="ex. : 2,0.10^-26"> <span class="u">mol·L<sup>−1</sup></span></div>
+          <div class="q-row"><span class="ql">c.</span>Une réaction support doit être
+            <select class="blank" id="ex2-c"><option value="">—</option><option value="lente">lente</option><option value="rapide">rapide</option></select></div>
+          <div class="q-row"><span class="ql">d.</span>Elle doit être totale : à l'état final, le réactif limitant a
+            <select class="blank" id="ex2-d"><option value="">—</option><option value="partiel">en partie disparu</option><option value="entier">entièrement disparu</option></select></div>
+          <div class="q-row"><span class="ql">e.</span>En première, la réaction support d'un titrage est une réaction
+            <select class="blank" id="ex2-e"><option value="">—</option><option value="combustion">de combustion</option><option value="redox">d'oxydoréduction</option><option value="dissolution">de dissolution</option></select></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(2)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr2" onclick="corriger(2)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb2"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 3. ÉQUIVALENCE ================= -->
+    <div class="section" id="s3">
+      <div class="section-titre"><span class="num">3</span><h2>L'équivalence et le changement de réactif limitant</h2></div>
+
+      <div class="def">
+        <p class="label">Définition — Équivalence</p>
+        <p>L'<strong>équivalence</strong> d'un titrage est l'état du système pour lequel l'espèce titrée et l'espèce titrante ont été introduites dans les <strong>proportions stœchiométriques</strong> : elles sont alors <strong>entièrement consommées</strong> toutes les deux.</p>
+        <p>Le volume de solution titrante versé pour atteindre l'équivalence est le <strong>volume équivalent</strong> <span class="var">V</span><sub>E</sub>.</p>
+      </div>
+
+      <p>Chaque fois que l'on verse un peu de solution titrante, la réaction support a lieu et atteint son état final. Selon le volume <span class="var">V</span> versé, ce n'est pas le même réactif qui est limitant.</p>
+
+      <div class="deux-col">
+        <div class="prop-card card-bleu">
+          <p class="titre">Avant l'équivalence (<span class="var">V</span> &lt; <span class="var">V</span><sub>E</sub>)</p>
+          <p class="desc">L'espèce titrante versée est entièrement consommée : c'est le <strong>réactif limitant</strong>. Il reste de l'espèce titrée : elle est en excès.</p>
+        </div>
+        <div class="prop-card card-orange">
+          <p class="titre">Après l'équivalence (<span class="var">V</span> &gt; <span class="var">V</span><sub>E</sub>)</p>
+          <p class="desc">L'espèce titrée a été entièrement consommée : c'est maintenant elle le <strong>réactif limitant</strong>. L'espèce titrante versée en plus s'accumule : elle est en excès.</p>
+        </div>
+      </div>
+
+      <div class="retenir">
+        <p class="label">À retenir</p>
+        <p>L'équivalence correspond au <strong>changement de réactif limitant</strong>.</p>
+      </div>
+
+      <div class="schema" id="svg-courbes">
+        <svg class="etroit" role="img" aria-label="Évolution des quantités de matière en fonction du volume de solution titrante versé" viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3',sans-serif">
+  <defs>
+    <marker id="fl3" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4 z" fill="#1e1e1e"/></marker>
+  </defs>
+  <rect x="50" y="40" width="200" height="250" fill="#ddeaf9" fill-opacity="0.55"/>
+  <rect x="250" y="40" width="200" height="250" fill="#fdecd8" fill-opacity="0.6"/>
+  <text x="150" y="64" text-anchor="middle" font-size="18" font-weight="700" fill="#1a5fa8">titrant limitant</text>
+  <text x="350" y="64" text-anchor="middle" font-size="18" font-weight="700" fill="#c8620a">titré limitant</text>
+  <line x1="50" y1="290" x2="470" y2="290" stroke="#1e1e1e" stroke-width="2" marker-end="url(#fl3)"/>
+  <line x1="50" y1="290" x2="50" y2="20" stroke="#1e1e1e" stroke-width="2" marker-end="url(#fl3)"/>
+  <text x="470" y="318" text-anchor="end" font-size="18" fill="#1e1e1e"><tspan font-style="italic" font-family="Lora,Georgia,serif">V</tspan> versé (mL)</text>
+  <text x="62" y="22" font-size="18" fill="#1e1e1e">quantité de matière (mol)</text>
+  <line x1="250" y1="40" x2="250" y2="290" stroke="#4a4a4a" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="250" y="316" text-anchor="middle" font-size="20" font-weight="700" fill="#1e1e1e"><tspan font-style="italic" font-family="Lora,Georgia,serif">V</tspan><tspan font-size="16" dy="5">E</tspan></text>
+  <polyline points="50,100 250,290 450,290" fill="none" stroke="#c8620a" stroke-width="4"/>
+  <polyline points="50,288 250,288 450,130" fill="none" stroke="#1a5fa8" stroke-width="4" stroke-dasharray="10 6"/>
+  <polyline points="50,290 250,150 450,150" fill="none" stroke="#0e7c5b" stroke-width="4"/>
+  <g font-size="18" fill="#1e1e1e">
+    <line x1="50" y1="352" x2="82" y2="352" stroke="#c8620a" stroke-width="4"/><text x="90" y="358">espèce titrée</text>
+    <line x1="250" y1="352" x2="282" y2="352" stroke="#1a5fa8" stroke-width="4" stroke-dasharray="10 6"/><text x="290" y="358">espèce titrante</text>
+    <line x1="50" y1="384" x2="82" y2="384" stroke="#0e7c5b" stroke-width="4"/><text x="90" y="390">un produit</text>
+  </g>
+</svg>
+        <p class="schema-legende">Quantités de matière à l'état final, en fonction du volume de solution titrante versé (allure)</p>
+      </div>
+
+      <div class="tab-wrap">
+        <table class="tab">
+          <tr><th></th><th><span class="var">V</span> &lt; <span class="var">V</span><sub>E</sub></th><th><span class="var">V</span> = <span class="var">V</span><sub>E</sub></th><th><span class="var">V</span> &gt; <span class="var">V</span><sub>E</sub></th></tr>
+          <tr><td>Espèce titrée</td><td>diminue quand <span class="var">V</span> augmente</td><td>nulle</td><td>nulle</td></tr>
+          <tr><td>Espèce titrante</td><td>nulle</td><td>nulle</td><td>augmente quand <span class="var">V</span> augmente</td></tr>
+          <tr><td>Produits</td><td>augmentent</td><td>maximales</td><td>ne varient plus</td></tr>
+        </table>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=Ppe4DziOn-4" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Titrage colorimétrique : l'équivalence — exercice (1<sup>re</sup> spé)</span><br><span class="vs">Paul Olivier · 4 min 15</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex3">
+        <div class="ex-header">
+          <span class="ex-num">3</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">On titre des ions fer(II) Fe<sup>2+</sup> (<strong>espèce titrée</strong>) par des ions permanganate MnO<sub>4</sub><sup>−</sup> (<strong>espèce titrante</strong>). Le volume équivalent vaut <strong><span class="var">V</span><sub>E</sub> = 12,0 mL</strong>.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Pour <span class="var">V</span> = 6,0 mL versés, le réactif limitant est
+            <select class="blank" id="ex3-a"><option value="">—</option><option value="titrant">l'espèce titrante MnO₄⁻</option><option value="titre">l'espèce titrée Fe²⁺</option></select></div>
+          <div class="q-row"><span class="ql">b.</span>Pour <span class="var">V</span> = 6,0 mL versés, l'espèce en excès est
+            <select class="blank" id="ex3-b"><option value="">—</option><option value="titrant">l'espèce titrante MnO₄⁻</option><option value="titre">l'espèce titrée Fe²⁺</option></select></div>
+          <div class="q-row"><span class="ql">c.</span>Pour <span class="var">V</span> = 15,0 mL versés, le réactif limitant est
+            <select class="blank" id="ex3-c"><option value="">—</option><option value="titrant">l'espèce titrante MnO₄⁻</option><option value="titre">l'espèce titrée Fe²⁺</option></select></div>
+          <div class="q-row"><span class="ql">d.</span>Pour <span class="var">V</span> = 12,0 mL, les réactifs ont été introduits en proportions
+            <select class="blank" id="ex3-d"><option value="">—</option><option value="egales">égales</option><option value="stoechio">stœchiométriques</option><option value="quelconques">quelconques</option></select></div>
+          <div class="q-row"><span class="ql">e.</span>Entre 0 et 12,0 mL versés, la quantité d'ions Fe<sup>2+</sup> restants
+            <select class="blank" id="ex3-e"><option value="">—</option><option value="augmente">augmente</option><option value="diminue">diminue</option><option value="constante">ne varie pas</option></select></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(3)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr3" onclick="corriger(3)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb3"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 4. RELATION ================= -->
+    <div class="section" id="s4">
+      <div class="section-titre"><span class="num">4</span><h2>La relation à l'équivalence</h2></div>
+
+      <p>On note A l'espèce titrée et B l'espèce titrante. La réaction support a pour équation :</p>
+      <p style="text-align:center;font-family:var(--serif);font-size:1.1rem;margin:.2rem 0 .8rem;"><span class="var">a</span> A + <span class="var">b</span> B → <span class="var">c</span> C + <span class="var">d</span> D</p>
+      <p>À l'équivalence, A et B ont été introduits dans les proportions stœchiométriques, c'est-à-dire dans les proportions des nombres stœchiométriques <span class="var">a</span> et <span class="var">b</span>.</p>
+
+      <div class="formule">
+        <span class="frac"><span><span class="var">n</span><sub>0</sub>(A)</span><span><span class="var">a</span></span></span>
+        &nbsp;=&nbsp;
+        <span class="frac"><span><span class="var">n</span><sub>E</sub>(B)</span><span><span class="var">b</span></span></span>
+        <span class="unites"><span class="var">n</span><sub>0</sub>(A) : quantité initiale d'espèce titrée (mol) &nbsp;·&nbsp; <span class="var">n</span><sub>E</sub>(B) : quantité d'espèce titrante versée à l'équivalence (mol)</span>
+      </div>
+
+      <div class="retenir">
+        <p class="label">Méthode — Trouver la concentration de l'espèce titrée</p>
+        <ol>
+          <li>Convertir les volumes en litres, avec des puissances de dix.</li>
+          <li>Calculer la quantité d'espèce titrante versée à l'équivalence : <span class="var">n</span><sub>E</sub>(B) = <span class="var">C</span><sub>B</sub> × <span class="var">V</span><sub>E</sub>.</li>
+          <li>Écrire la relation à l'équivalence et en déduire <span class="var">n</span><sub>0</sub>(A) = <span class="var">a</span> × <span class="var">n</span><sub>E</sub>(B) / <span class="var">b</span>.</li>
+          <li>Calculer la concentration : <span class="var">C</span><sub>A</sub> = <span class="var">n</span><sub>0</sub>(A) / <span class="var">V</span><sub>A</sub>, où <span class="var">V</span><sub>A</sub> est la prise d'essai.</li>
+        </ol>
+      </div>
+
+      <div class="exemple">
+        <p class="label">Exemple</p>
+        <p>On titre <span class="var">V</span><sub>A</sub> = 20,0 mL d'une solution d'ions Fe<sup>2+</sup> par une solution d'ions MnO<sub>4</sub><sup>−</sup> de concentration <span class="var">C</span><sub>B</sub> = 2,00.10<sup>−2</sup> mol·L<sup>−1</sup>. On trouve <span class="var">V</span><sub>E</sub> = 12,0 mL.</p>
+        <ul>
+          <li>Conversions : <span class="var">V</span><sub>A</sub> = 20,0 mL = 20,0.10<sup>−3</sup> L et <span class="var">V</span><sub>E</sub> = 12,0 mL = 12,0.10<sup>−3</sup> L.</li>
+          <li><span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>) = 2,00.10<sup>−2</sup> × 12,0.10<sup>−3</sup> = 2,40.10<sup>−4</sup> mol.</li>
+          <li>D'après l'équation (1&nbsp;MnO<sub>4</sub><sup>−</sup> pour 5&nbsp;Fe<sup>2+</sup>) : <span class="var">n</span><sub>0</sub>(Fe<sup>2+</sup>) / 5 = <span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>) / 1, donc <span class="var">n</span><sub>0</sub>(Fe<sup>2+</sup>) = 5 × 2,40.10<sup>−4</sup> = 1,20.10<sup>−3</sup> mol.</li>
+          <li><span class="var">C</span><sub>A</sub> = 1,20.10<sup>−3</sup> / 20,0.10<sup>−3</sup> = <strong>6,00.10<sup>−2</sup> mol·L<sup>−1</sup></strong>.</li>
+        </ul>
+      </div>
+
+      <div class="exemple attention">
+        <p class="label">Erreur fréquente</p>
+        <p>À l'équivalence, les quantités de matière ne sont pas égales ! Elles sont dans les proportions des nombres stœchiométriques. Ici, il faut 5 fois plus d'ions Fe<sup>2+</sup> que d'ions MnO<sub>4</sub><sup>−</sup>.</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=aP3kETYTPOk&amp;t=326s" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Titrage colorimétrique : relation entre les quantités de matière à l'équivalence</span><br><span class="vs">Paul Olivier · à partir de 5 min 26</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex4">
+        <div class="ex-header">
+          <span class="ex-num">4</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">On titre <strong><span class="var">V</span><sub>1</sub> = 10,0 mL</strong> d'une solution de diiode I<sub>2</sub> par une solution de concentration <strong><span class="var">C</span><sub>2</sub> = 2,00.10<sup>−2</sup> mol·L<sup>−1</sup></strong> en ions thiosulfate S<sub>2</sub>O<sub>3</sub><sup>2−</sup>. Le volume équivalent vaut <strong><span class="var">V</span><sub>E</sub> = 15,0 mL</strong>.<br>Équation : I<sub>2</sub>(aq) + 2&nbsp;S<sub>2</sub>O<sub>3</sub><sup>2−</sup>(aq) → 2&nbsp;I<sup>−</sup>(aq) + S<sub>4</sub>O<sub>6</sub><sup>2−</sup>(aq)</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span><span class="var">V</span><sub>E</sub> = 15,0 mL = <input class="blank" id="ex4-a" type="text" autocomplete="off" placeholder="ex. : 250.10^-3"> <span class="u">L</span></div>
+          <div class="q-row"><span class="ql">b.</span>Relation à l'équivalence :
+            <select class="blank" id="ex4-b"><option value="">—</option><option value="egal">n₀(I₂) = nE(S₂O₃²⁻)</option><option value="fois2">n₀(I₂) = 2 × nE(S₂O₃²⁻)</option><option value="sur2">n₀(I₂) = nE(S₂O₃²⁻) / 2</option></select></div>
+          <div class="q-row"><span class="ql">c.</span><span class="var">n</span><sub>E</sub>(S<sub>2</sub>O<sub>3</sub><sup>2−</sup>) = <input class="blank" id="ex4-c" type="text" autocomplete="off" placeholder="ex. : 2,0.10^-26"> <span class="u">mol</span></div>
+          <div class="q-row"><span class="ql">d.</span><span class="var">n</span><sub>0</sub>(I<sub>2</sub>) = <input class="blank" id="ex4-d" type="text" autocomplete="off" placeholder="ex. : 2,0.10^-26"> <span class="u">mol</span></div>
+          <div class="q-row"><span class="ql">e.</span><span class="var">C</span><sub>1</sub> = <input class="blank" id="ex4-e" type="text" autocomplete="off" placeholder="ex. : 2,0.10^-26"> <span class="u">mol·L<sup>−1</sup></span></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(4)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr4" onclick="corriger(4)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb4"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 5. COULEUR ================= -->
+    <div class="section" id="s5">
+      <div class="section-titre"><span class="num">5</span><h2>Repérer l'équivalence par un changement de couleur</h2></div>
+
+      <p>Quand l'une des espèces de la réaction support est colorée, on repère l'équivalence par un changement de couleur du mélange : on parle de <strong>titrage colorimétrique</strong>.</p>
+
+      <div class="deux-col">
+        <div class="prop-card card-orange">
+          <p class="titre">L'espèce titrée est colorée</p>
+          <p class="desc">Avant l'équivalence, il en reste dans le bécher : le mélange est coloré. À l'équivalence, elle est entièrement consommée : la couleur <strong>disparaît</strong>.</p>
+        </div>
+        <div class="prop-card card-bleu">
+          <p class="titre">L'espèce titrante est colorée</p>
+          <p class="desc">Avant l'équivalence, elle est consommée dès qu'elle tombe dans le bécher : la couleur ne reste pas. Après l'équivalence, elle n'est plus consommée : la couleur <strong>apparaît et persiste</strong>.</p>
+        </div>
+      </div>
+
+      <div class="schema" id="svg-couleur">
+        <svg class="etroit" role="img" aria-label="Changement de couleur lors d'un titrage par les ions permanganate" viewBox="0 0 480 300" xmlns="http://www.w3.org/2000/svg" font-family="'Source Sans 3',sans-serif">
+  <path d="M35,150 L125,150 L125,240 L35,240 Z" fill="#f4f4f1"/>
+  <path d="M31,110 L35,114 L35,240 L125,240 L125,114 L129,110" fill="none" stroke="#1e1e1e" stroke-width="2.2"/>
+  <path d="M80,86 q-6,10 0,15 q6,-5 0,-15 z" fill="#8e44ad"/>
+  <circle cx="80" cy="162" r="9" fill="#8e44ad" fill-opacity="0.35"/>
+  <path d="M195,150 L285,150 L285,240 L195,240 Z" fill="#f7dcef"/>
+  <path d="M191,110 L195,114 L195,240 L285,240 L285,114 L289,110" fill="none" stroke="#1e1e1e" stroke-width="2.2"/>
+  <path d="M240,86 q-6,10 0,15 q6,-5 0,-15 z" fill="#8e44ad"/>
+  <path d="M355,150 L445,150 L445,240 L355,240 Z" fill="#d9a6d8"/>
+  <path d="M351,110 L355,114 L355,240 L445,240 L445,114 L449,110" fill="none" stroke="#1e1e1e" stroke-width="2.2"/>
+  <g font-size="19" text-anchor="middle" fill="#1e1e1e" font-weight="700">
+    <text x="80" y="34">Avant</text><text x="80" y="56">l'équivalence</text>
+    <text x="240" y="34">À</text><text x="240" y="56">l'équivalence</text>
+    <text x="400" y="34">Après</text><text x="400" y="56">l'équivalence</text>
+  </g>
+  <g font-size="18" text-anchor="middle" fill="#1e1e1e">
+    <text x="80" y="272">incolore</text>
+    <text x="240" y="272">rose pâle</text><text x="240" y="294">persistant</text>
+    <text x="400" y="272">rose-violet</text>
+  </g>
+</svg>
+        <p class="schema-legende">Titrage d'ions Fe<sup>2+</sup> par des ions permanganate MnO<sub>4</sub><sup>−</sup>, seuls colorés (violets). Avant l'équivalence, chaque goutte violette se décolore aussitôt ; à l'équivalence, la première goutte en excès donne une teinte rose qui persiste ; ensuite, la teinte fonce.</p>
+      </div>
+
+      <div class="def">
+        <p class="label">Définition — Indicateur coloré</p>
+        <p>Si les espèces sont incolores ou trop peu colorées, on ajoute un <strong>indicateur coloré</strong> : une espèce qui change nettement de couleur à l'équivalence. Exemple : l'<strong>empois d'amidon</strong> (ou le thiodène) donne une couleur <strong>bleu foncé</strong> en présence de diiode I<sub>2</sub>.</p>
+      </div>
+
+      <div class="videos">
+        <p class="v-titre">Vidéo</p>
+        <a class="video" href="https://www.youtube.com/watch?v=aP3kETYTPOk&amp;t=201s" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Titrage colorimétrique : repérer l'équivalence</span><br><span class="vs">Paul Olivier · à partir de 3 min 21</span></span>
+        </a>
+      </div>
+
+      <div class="exercice" id="ex5">
+        <div class="ex-header">
+          <span class="ex-num">5</span>
+          <div>
+            <p class="ex-type">Exercice d'application</p>
+            <p class="ex-question">Dans le titrage de l'exercice 4, le <strong>diiode I<sub>2</sub></strong> (espèce titrée) est la <strong>seule espèce colorée</strong> : il donne une teinte jaune-brun.</p>
+          </div>
+        </div>
+        <div class="ex-body">
+          <div class="q-row"><span class="ql">a.</span>Avant l'équivalence, le mélange est
+            <select class="blank" id="ex5-a"><option value="">—</option><option value="incolore">incolore</option><option value="jaune">jaune-brun</option><option value="bleu">bleu foncé</option></select></div>
+          <div class="q-row"><span class="ql">b.</span>À l'équivalence, la teinte jaune-brun
+            <select class="blank" id="ex5-b"><option value="">—</option><option value="apparait">apparaît</option><option value="disparait">disparaît</option><option value="persiste">ne change pas</option></select></div>
+          <div class="q-row"><span class="ql">c.</span>Avec de l'empois d'amidon, le mélange avant l'équivalence est
+            <select class="blank" id="ex5-c"><option value="">—</option><option value="incolore">incolore</option><option value="rose">rose</option><option value="bleu">bleu foncé</option></select></div>
+          <div class="q-row"><span class="ql">d.</span>Avec des ions permanganate (violets) comme espèce titrante, on repère l'équivalence par
+            <select class="blank" id="ex5-d"><option value="">—</option><option value="persistance">la persistance d'une teinte rose</option><option value="disparition">la disparition d'une teinte rose</option></select></div>
+          <div class="ex-actions">
+            <button class="btn-verif" onclick="verifier(5)">Vérifier ma réponse</button>
+            <button class="btn-corr" id="corr5" onclick="corriger(5)">Voir la correction</button>
+          </div>
+          <div class="feedback" id="fb5"></div>
+        </div>
+      </div>
+    </div>
+    <hr class="sep">
+
+    <!-- ================= 6. RÉVISER ================= -->
+    <div class="section" id="s6">
+      <div class="section-titre"><span class="num">6</span><h2>Pour réviser tout le chapitre</h2></div>
+      <div class="videos" style="margin-top:0;">
+        <p class="v-titre">Vidéo de révision</p>
+        <a class="video" href="https://www.youtube.com/watch?v=d1VUkIws6-k" target="_blank" rel="noopener">
+          <span class="play"></span><span><span class="vt">Titrage colorimétrique — quiz de révision (1<sup>re</sup> spé)</span><br><span class="vs">Paul Olivier · 3 min 58</span></span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= EXERCICE FINAL ================= -->
+<div class="page" style="margin-top:2rem;" id="evaluation">
+  <div class="eval-header">
+    <span class="tag">Évaluation</span>
+    <h2>Exercice d'application — Détermination d'une quantité de matière</h2>
+    <p>Classe de première (spécialité) &nbsp;·&nbsp; Durée conseillée : 20 min</p>
+  </div>
+
+  <div class="eval-consignes">
+    <span class="consigne-item"><span class="dot"></span>Répondez à toutes les questions, puis cliquez sur « Vérifier mes résultats »</span>
+    <span class="consigne-item"><span class="dot"></span>Chaque réponse est analysée et corrigée</span>
+    <span class="consigne-item"><span class="dot"></span>Barème : /10 points</span>
+  </div>
+
+  <div class="eval-corps">
+    <div class="exemple" style="margin-top:1.5rem;">
+      <p class="label">Situation — Titrage d'une eau oxygénée</p>
+      <p>On titre <strong><span class="var">V</span><sub>1</sub> = 10,0 mL</strong> d'une eau oxygénée diluée (peroxyde d'hydrogène H<sub>2</sub>O<sub>2</sub>, incolore) par une solution de permanganate de potassium de concentration <strong><span class="var">C</span><sub>2</sub> = 2,00.10<sup>−2</sup> mol·L<sup>−1</sup></strong> en ions MnO<sub>4</sub><sup>−</sup> (violets). Le volume équivalent vaut <strong><span class="var">V</span><sub>E</sub> = 14,0 mL</strong>. Toutes les autres espèces sont incolores.</p>
+      <p style="text-align:center;font-family:var(--serif);margin-top:.4rem;">2&nbsp;MnO<sub>4</sub><sup>−</sup>(aq) + 5&nbsp;H<sub>2</sub>O<sub>2</sub>(aq) + 6&nbsp;H<sup>+</sup>(aq) → 2&nbsp;Mn<sup>2+</sup>(aq) + 5&nbsp;O<sub>2</sub>(g) + 8&nbsp;H<sub>2</sub>O(ℓ)</p>
+    </div>
+
+    <div class="eq" id="eq1">
+      <div class="eq-header">
+        <span class="eq-num">1</span>
+        <div class="eq-meta"><p class="eq-intitule">Définissez l'équivalence d'un titrage. Expliquez avec vos mots.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body"><textarea class="eval-textarea" id="rep1" placeholder="Votre réponse…"></textarea></div>
+    </div>
+
+    <div class="eq" id="eq2">
+      <div class="eq-header">
+        <span class="eq-num">2</span>
+        <div class="eq-meta"><p class="eq-intitule">Quelle relation est vérifiée à l'équivalence de ce titrage ?</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <button class="eval-choice" data-q="2" data-v="A"><span class="eval-cletter">A</span> <span class="ch"><span class="frac"><span><span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>)</span><span>2</span></span> = <span class="frac"><span><span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>)</span><span>5</span></span></span></button>
+        <button class="eval-choice" data-q="2" data-v="B"><span class="eval-cletter">B</span> <span class="ch"><span class="frac"><span><span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>)</span><span>5</span></span> = <span class="frac"><span><span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>)</span><span>2</span></span></span></button>
+        <button class="eval-choice" data-q="2" data-v="C"><span class="eval-cletter">C</span> <span class="ch"><span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) = <span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>)</span></button>
+        <button class="eval-choice" data-q="2" data-v="D"><span class="eval-cletter">D</span> <span class="ch"><span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) = 5 × <span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>)</span></button>
+      </div>
+    </div>
+
+    <div class="eq" id="eq3">
+      <div class="eq-header">
+        <span class="eq-num">3</span>
+        <div class="eq-meta"><p class="eq-intitule">Calculez la quantité d'ions permanganate versée à l'équivalence, <span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>).</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:14px;color:var(--texte-2);"><span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>) =</span>
+          <input class="eval-input" id="rep3" type="text" placeholder="ex. : 2,0.10^-26" style="width:170px;">
+          <span style="font-size:14px;color:var(--texte-3);">mol</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="eq" id="eq4">
+      <div class="eq-header">
+        <span class="eq-num">4</span>
+        <div class="eq-meta"><p class="eq-intitule">Déduisez-en la concentration <span class="var">C</span><sub>1</sub> en peroxyde d'hydrogène de l'eau oxygénée titrée.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span style="font-size:14px;color:var(--texte-2);"><span class="var">C</span><sub>1</sub> =</span>
+          <input class="eval-input" id="rep4" type="text" placeholder="ex. : 2,0.10^-26" style="width:170px;">
+          <span style="font-size:14px;color:var(--texte-3);">mol·L<sup>−1</sup></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="eq" id="eq5">
+      <div class="eq-header">
+        <span class="eq-num">5</span>
+        <div class="eq-meta"><p class="eq-intitule">Expliquez comment on repère l'équivalence lors de ce titrage.</p></div>
+        <span class="eq-pts">2 pts</span>
+      </div>
+      <div class="eq-body"><textarea class="eval-textarea" id="rep5" placeholder="Votre explication…"></textarea></div>
+    </div>
+
+    <button class="btn-remettre" id="btn-verif-eval" onclick="verifierResultats()">Vérifier mes résultats →</button>
+
+    <div class="eval-resultat" id="eval-resultat">
+      <div class="res-top" id="res-top"></div>
+      <div class="res-detail">
+        <p class="res-detail-title">Analyse et correction par question</p>
+        <div id="res-detail-content"></div>
+      </div>
+    </div>
+    <button class="btn-recommencer" id="btn-recommencer" onclick="recommencerEval()">↺ Recommencer</button>
+  </div>
+</div>
+
+<script>
+/* ---------- Outils ---------- */
+function norm(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[’']/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function num(s) {
+  // accepte 0,2 · 0.2 · 200.10^-3 · 200×10^-3 · 200*10-3 · 200e-3 · 10^5
+  const t = String(s || '').replace(/\s/g, '').replace(/,/g, '.').replace(/[−–]/g, '-');
+  let m = t.match(/^10\^\(?([-+]?\d+)\)?$/);
+  if (m) return Math.pow(10, parseInt(m[1], 10));
+  m = t.match(/^([-+]?\d+(?:\.\d+)?)(?:[.x×*]10\^?\(?([-+]?\d+)\)?)?$/i);
+  if (m) return parseFloat(m[1]) * (m[2] !== undefined ? Math.pow(10, parseInt(m[2], 10)) : 1);
+  const v = Number(t);
+  return isNaN(v) || t === '' ? null : v;
+}
+const fr = x => String(x).replace('.', ',');
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* ---------- Exercices d'application ---------- */
+const EXOS = {
+  1: {
+    champs: [
+      { id: 'ex1-a', type: 'choix', val: 'dosage', sol: 'dosage' },
+      { id: 'ex1-b', type: 'choix', val: 'titrage', sol: 'titrage' },
+      { id: 'ex1-c', type: 'choix', val: 'destructif', sol: 'destructif' },
+      { id: 'ex1-d', type: 'choix', val: 'titrante', sol: 'titrante' },
+      { id: 'ex1-e', type: 'choix', val: 'essai', sol: 'la prise d’essai' }
+    ],
+    explication: 'a. Déterminer une concentration ou une quantité de matière, c’est réaliser un <strong>dosage</strong>.<br>b. Un dosage qui utilise une réaction chimique (la réaction support) est un dosage par <strong>titrage</strong>.<br>c. La réaction consomme l’espèce titrée : le titrage est <strong>destructif</strong>. Le dosage par étalonnage, lui, n’utilise pas de réaction : il est non destructif.<br>d. La solution de concentration connue, dans la burette, est la solution <strong>titrante</strong>.<br>e. Le volume précis de solution titrée prélevé à la pipette jaugée est la <strong>prise d’essai</strong>.'
+  },
+  2: {
+    champs: [
+      { id: 'ex2-a', type: 'num', val: 5.00e-2, tol: 0.005e-2, sol: '5,00.10<sup>−2</sup>' },
+      { id: 'ex2-b', type: 'num', val: 1.00e-1, tol: 0.005e-1, sol: '1,00.10<sup>−1</sup>' },
+      { id: 'ex2-c', type: 'choix', val: 'rapide', sol: 'rapide' },
+      { id: 'ex2-d', type: 'choix', val: 'entier', sol: 'entièrement disparu' },
+      { id: 'ex2-e', type: 'choix', val: 'redox', sol: 'd’oxydoréduction' }
+    ],
+    explication: 'a. Une entité Na<sub>2</sub>S<sub>2</sub>O<sub>3</sub> libère <strong>1</strong> ion S<sub>2</sub>O<sub>3</sub><sup>2−</sup> : [S<sub>2</sub>O<sub>3</sub><sup>2−</sup>] = <span class="var">C</span> = <strong>5,00.10<sup>−2</sup> mol·L<sup>−1</sup></strong>.<br>b. Elle libère <strong>2</strong> ions Na<sup>+</sup> : [Na<sup>+</sup>] = 2 × <span class="var">C</span> = 2 × 5,00.10<sup>−2</sup> = 10,0.10<sup>−2</sup> = <strong>1,00.10<sup>−1</sup> mol·L<sup>−1</sup></strong>.<br>c. La réaction support doit être <strong>rapide</strong>.<br>d. Elle doit être <strong>totale</strong> : le réactif limitant a entièrement disparu à l’état final.<br>e. En première, la réaction support est une réaction <strong>d’oxydoréduction</strong>.'
+  },
+  3: {
+    champs: [
+      { id: 'ex3-a', type: 'choix', val: 'titrant', sol: 'l’espèce titrante MnO<sub>4</sub><sup>−</sup>' },
+      { id: 'ex3-b', type: 'choix', val: 'titre', sol: 'l’espèce titrée Fe<sup>2+</sup>' },
+      { id: 'ex3-c', type: 'choix', val: 'titre', sol: 'l’espèce titrée Fe<sup>2+</sup>' },
+      { id: 'ex3-d', type: 'choix', val: 'stoechio', sol: 'stœchiométriques' },
+      { id: 'ex3-e', type: 'choix', val: 'diminue', sol: 'diminue' }
+    ],
+    explication: 'a. et b. Avant l’équivalence (6,0 mL &lt; 12,0 mL), les ions MnO<sub>4</sub><sup>−</sup> versés sont entièrement consommés : ils sont <strong>limitants</strong>, et il reste des ions Fe<sup>2+</sup>, en <strong>excès</strong>.<br>c. Après l’équivalence (15,0 mL &gt; 12,0 mL), tous les ions Fe<sup>2+</sup> ont été consommés : ce sont eux qui sont <strong>limitants</strong>.<br>d. À l’équivalence, les réactifs ont été introduits dans les proportions <strong>stœchiométriques</strong> (pas forcément égales !).<br>e. Avant l’équivalence, chaque ajout consomme des ions Fe<sup>2+</sup> : leur quantité <strong>diminue</strong> jusqu’à devenir nulle à l’équivalence.'
+  },
+  4: {
+    champs: [
+      { id: 'ex4-a', type: 'num', val: 15.0e-3, tol: 0.01e-3, sol: '15,0.10<sup>−3</sup>' },
+      { id: 'ex4-b', type: 'choix', val: 'sur2', sol: '<span class="var">n</span><sub>0</sub>(I<sub>2</sub>) = <span class="var">n</span><sub>E</sub>(S<sub>2</sub>O<sub>3</sub><sup>2−</sup>) / 2' },
+      { id: 'ex4-c', type: 'num', val: 3.00e-4, tol: 0.02e-4, sol: '3,00.10<sup>−4</sup>' },
+      { id: 'ex4-d', type: 'num', val: 1.50e-4, tol: 0.01e-4, sol: '1,50.10<sup>−4</sup>' },
+      { id: 'ex4-e', type: 'num', val: 1.50e-2, tol: 0.01e-2, sol: '1,50.10<sup>−2</sup>' }
+    ],
+    explication: 'a. <span class="var">V</span><sub>E</sub> = 15,0 mL = <strong>15,0.10<sup>−3</sup> L</strong>.<br>b. L’équation indique 1 I<sub>2</sub> pour 2 S<sub>2</sub>O<sub>3</sub><sup>2−</sup> : <span class="var">n</span><sub>0</sub>(I<sub>2</sub>) / 1 = <span class="var">n</span><sub>E</sub>(S<sub>2</sub>O<sub>3</sub><sup>2−</sup>) / 2, soit <strong><span class="var">n</span><sub>0</sub>(I<sub>2</sub>) = <span class="var">n</span><sub>E</sub>(S<sub>2</sub>O<sub>3</sub><sup>2−</sup>) / 2</strong>.<br>c. <span class="var">n</span><sub>E</sub>(S<sub>2</sub>O<sub>3</sub><sup>2−</sup>) = <span class="var">C</span><sub>2</sub> × <span class="var">V</span><sub>E</sub> = 2,00.10<sup>−2</sup> × 15,0.10<sup>−3</sup> = <strong>3,00.10<sup>−4</sup> mol</strong>.<br>d. <span class="var">n</span><sub>0</sub>(I<sub>2</sub>) = 3,00.10<sup>−4</sup> / 2 = <strong>1,50.10<sup>−4</sup> mol</strong>.<br>e. <span class="var">V</span><sub>1</sub> = 10,0 mL = 10,0.10<sup>−3</sup> L, donc <span class="var">C</span><sub>1</sub> = <span class="var">n</span><sub>0</sub>(I<sub>2</sub>) / <span class="var">V</span><sub>1</sub> = 1,50.10<sup>−4</sup> / 10,0.10<sup>−3</sup> = <strong>1,50.10<sup>−2</sup> mol·L<sup>−1</sup></strong>.'
+  },
+  5: {
+    champs: [
+      { id: 'ex5-a', type: 'choix', val: 'jaune', sol: 'jaune-brun' },
+      { id: 'ex5-b', type: 'choix', val: 'disparait', sol: 'disparaît' },
+      { id: 'ex5-c', type: 'choix', val: 'bleu', sol: 'bleu foncé' },
+      { id: 'ex5-d', type: 'choix', val: 'persistance', sol: 'la persistance d’une teinte rose' }
+    ],
+    explication: 'a. Avant l’équivalence, il reste du diiode dans le bécher : le mélange est <strong>jaune-brun</strong>.<br>b. À l’équivalence, tout le diiode a été consommé : la teinte jaune-brun <strong>disparaît</strong>.<br>c. L’empois d’amidon colore le diiode en <strong>bleu foncé</strong> : le passage du bleu foncé à l’incolore est plus facile à voir.<br>d. Les ions permanganate sont l’espèce titrante : ils sont consommés tant qu’il reste de l’espèce titrée, puis s’accumulent. L’équivalence est repérée par la <strong>persistance d’une teinte rose</strong>.'
+  }
+};
+
+/* ---------- Exercice final : données propres au chapitre ---------- */
+const CORRIGE = {
+  1: 'L’<strong>équivalence</strong> est l’état du système pour lequel l’espèce titrée et l’espèce titrante ont été introduites dans les <strong>proportions stœchiométriques</strong> : les <strong>deux réactifs</strong> sont alors <strong>entièrement consommés</strong>. Elle correspond au <strong>changement de réactif limitant</strong> : avant, c’est l’espèce titrante qui est limitante ; après, c’est l’espèce titrée.',
+  2: '<strong>Réponse B.</strong> On divise chaque quantité par son nombre stœchiométrique : 5 pour H<sub>2</sub>O<sub>2</sub> et 2 pour MnO<sub>4</sub><sup>−</sup>, soit <span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) / 5 = <span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>) / 2.',
+  3: '<span class="var">V</span><sub>E</sub> = 14,0 mL = 14,0.10<sup>−3</sup> L.<br><span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>) = <span class="var">C</span><sub>2</sub> × <span class="var">V</span><sub>E</sub> = 2,00.10<sup>−2</sup> × 14,0.10<sup>−3</sup> = 28,0.10<sup>−5</sup> = <strong>2,80.10<sup>−4</sup> mol</strong>.',
+  4: 'D’après la relation B : <span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) = 5 × <span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>) / 2 = 5 × 2,80.10<sup>−4</sup> / 2 = 7,00.10<sup>−4</sup> mol.<br><span class="var">V</span><sub>1</sub> = 10,0 mL = 10,0.10<sup>−3</sup> L, donc <span class="var">C</span><sub>1</sub> = <span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) / <span class="var">V</span><sub>1</sub> = 7,00.10<sup>−4</sup> / 10,0.10<sup>−3</sup> = <strong>7,00.10<sup>−2</sup> mol·L<sup>−1</sup></strong>.',
+  5: 'Les ions <strong>permanganate</strong> MnO<sub>4</sub><sup>−</sup> sont la seule espèce colorée (violette). <strong>Avant l’équivalence</strong>, ils sont <strong>consommés</strong> dès qu’ils tombent dans le bécher : le mélange reste <strong>incolore</strong>. À l’équivalence, tout le peroxyde d’hydrogène a été consommé : la goutte suivante d’ions permanganate n’est plus consommée, ils sont en <strong>excès</strong>. L’équivalence est atteinte quand une <strong>teinte rose persiste</strong>.'
+};
+
+const CRITERES = {
+  1: [
+    { re: /st(oe|œ)chiom|proportion/, ok: 'tu parles des proportions stœchiométriques', ko: 'il manque l’idée clé : les réactifs sont introduits dans les <strong>proportions stœchiométriques</strong>' },
+    { re: /consomm|disparu|epuise|il ne reste|totalement reagi|entierement reagi/, ok: 'tu indiques que les réactifs sont entièrement consommés', ko: 'précise que les réactifs sont <strong>entièrement consommés</strong>' },
+    { re: /\btitre\b|\btitree\b|titrant|reactifs|les deux/, ok: 'tu cites les deux réactifs (titré et titrant)', ko: 'précise que cela concerne les <strong>deux réactifs</strong> : l’espèce titrée et l’espèce titrante' },
+    { re: /limitant/, ok: 'tu parles du changement de réactif limitant', ko: 'il manque le <strong>changement de réactif limitant</strong>' }
+  ],
+  5: [
+    { re: /permanganate|mno4|violet/, ok: 'tu identifies l’espèce colorée (les ions permanganate)', ko: 'il faut dire que les ions <strong>permanganate</strong> (violets) sont la seule espèce colorée' },
+    { re: /consomm|reagi|decolor|incolore|disparai/, ok: 'tu expliques qu’avant l’équivalence le permanganate est consommé', ko: 'explique qu’avant l’équivalence, le permanganate versé est <strong>consommé</strong> : le mélange reste incolore' },
+    { re: /exces|plus consomm|limitant|plus de (h2o2|peroxyde|eau oxygenee)|tout le (h2o2|peroxyde)/, ok: 'tu expliques qu’après l’équivalence le permanganate est en excès', ko: 'il manque l’idée qu’à l’équivalence, le permanganate n’est plus consommé : il est en <strong>excès</strong>' },
+    { re: /persist|reste (rose|violet|colore)|apparai|devient (rose|violet)|teinte rose|couleur rose|coloration rose/, ok: 'tu indiques la persistance d’une teinte rose', ko: 'précise le signe observé : une <strong>teinte rose persistante</strong>' }
+  ]
+};
+
+const QCM_Q2 = {
+  A: 'Tu as inversé les nombres stœchiométriques : H<sub>2</sub>O<sub>2</sub> a le coefficient 5 et MnO<sub>4</sub><sup>−</sup> le coefficient 2. Chaque quantité se divise par <strong>son propre</strong> coefficient.',
+  B: '',
+  C: 'À l’équivalence, les quantités ne sont pas égales : elles sont dans les proportions des nombres stœchiométriques (5 pour H<sub>2</sub>O<sub>2</sub>, 2 pour MnO<sub>4</sub><sup>−</sup>).',
+  D: 'Tu as oublié le coefficient 2 des ions MnO<sub>4</sub><sup>−</sup> : la bonne relation donne <span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) = 5 × <span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>) / 2.'
+};
+
+function analyserCalcul(q, rep) {
+  const v = num(rep);
+  const proche = (a, tolRel = 0.02) => v !== null && Math.abs(v - a) <= Math.abs(a) * tolRel;
+  if (v === null) return { pts: 0, notes: ['✗ Réponse non numérique : écris un nombre, par exemple 2,80.10^-4.'] };
+  if (q === 3) {
+    if (proche(2.80e-4)) return { pts: 2, notes: ['✓ Bon calcul : <span class="var">n</span> = <span class="var">C</span> × <span class="var">V</span>, avec le volume en litres.'] };
+    if (proche(0.28)) return { pts: 1, notes: ['✗ La méthode est bonne, mais le volume n’a pas été converti : <span class="var">V</span><sub>E</sub> = 14,0 mL = 14,0.10<sup>−3</sup> L.'] };
+    if (proche(2.80e-3) || proche(2.80e-5) || proche(2.80e-6) || proche(2.80e-2)) return { pts: 1, notes: ['✗ La méthode est bonne mais la puissance de dix est fausse : 2,00.10<sup>−2</sup> × 14,0.10<sup>−3</sup> = 28,0.10<sup>−5</sup> = 2,80.10<sup>−4</sup> mol.'] };
+    if (proche(2.00e-4) || proche(0.2)) return { pts: 0.5, notes: ['✗ Tu as utilisé la prise d’essai <span class="var">V</span><sub>1</sub> : la quantité d’ions permanganate versée se calcule avec le volume <strong>versé à l’équivalence</strong> <span class="var">V</span><sub>E</sub>.'] };
+    if (proche(1.43) || proche(1.43e-3) || proche(0.7) || proche(700)) return { pts: 0.5, notes: ['✗ Calcul inversé : il faut <strong>multiplier</strong> la concentration par le volume, <span class="var">n</span> = <span class="var">C</span> × <span class="var">V</span>.'] };
+    if (proche(7.00e-4)) return { pts: 0, notes: ['✗ Tu as calculé <span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) : la question demande la quantité d’ions <strong>permanganate</strong> versée, <span class="var">C</span><sub>2</sub> × <span class="var">V</span><sub>E</sub>.'] };
+    return { pts: 0, notes: ['✗ Résultat incorrect. Utilise <span class="var">n</span><sub>E</sub> = <span class="var">C</span><sub>2</sub> × <span class="var">V</span><sub>E</sub>, avec <span class="var">V</span><sub>E</sub> en litres.'] };
+  }
+  if (q === 4) {
+    if (proche(7.00e-2)) return { pts: 2, notes: ['✓ Bonne réponse : relation à l’équivalence puis division par <span class="var">V</span><sub>1</sub> en litres.'] };
+    if (proche(1.12e-2)) return { pts: 1, notes: ['✗ Tu as inversé les nombres stœchiométriques : <span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) = <strong>5</strong> × <span class="var">n</span><sub>E</sub> / <strong>2</strong>, et non 2 × <span class="var">n</span><sub>E</sub> / 5.'] };
+    if (proche(2.80e-2)) return { pts: 0.5, notes: ['✗ Tu as oublié les nombres stœchiométriques : à l’équivalence, <span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) = 5 × <span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>) / 2.'] };
+    if (proche(1.40e-1)) return { pts: 0.5, notes: ['✗ Tu as oublié de diviser par 2 : <span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) = 5 × <span class="var">n</span><sub>E</sub>(MnO<sub>4</sub><sup>−</sup>) / 2.'] };
+    if (proche(5.00e-2)) return { pts: 1, notes: ['✗ Tu as divisé par <span class="var">V</span><sub>E</sub> : la concentration de l’espèce titrée se calcule avec la <strong>prise d’essai</strong> <span class="var">V</span><sub>1</sub> = 10,0.10<sup>−3</sup> L.'] };
+    if (proche(7.00e-5)) return { pts: 1, notes: ['✗ Le volume n’a pas été converti : <span class="var">V</span><sub>1</sub> = 10,0 mL = 10,0.10<sup>−3</sup> L.'] };
+    if (proche(7.00e-4)) return { pts: 1, notes: ['✗ C’est la quantité de matière <span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) : il reste à la diviser par <span class="var">V</span><sub>1</sub> pour obtenir une concentration.'] };
+    if (proche(7.00e-1) || proche(7.00e-3) || proche(7.00)) return { pts: 1, notes: ['✗ La méthode est bonne mais la puissance de dix est fausse : 7,00.10<sup>−4</sup> / 10,0.10<sup>−3</sup> = 0,700.10<sup>−1</sup> = 7,00.10<sup>−2</sup> mol·L<sup>−1</sup>.'] };
+    return { pts: 0, notes: ['✗ Résultat incorrect. Utilise la relation à l’équivalence, puis <span class="var">C</span><sub>1</sub> = <span class="var">n</span><sub>0</sub>(H<sub>2</sub>O<sub>2</sub>) / <span class="var">V</span><sub>1</sub>.'] };
+  }
+}
+
+const reussis = new Set();
+const NB_EXOS = Object.keys(EXOS).length;
+
+function testerChamp(c) {
+  const v = document.getElementById(c.id).value;
+  if (c.type === 'num') { const x = num(v); return x !== null && Math.abs(x - c.val) <= c.tol; }
+  if (c.type === 'texte') return c.re.test(norm(v));
+  if (c.type === 'choix') return v === c.val;
+  if (c.type === 'formule') return v.replace(/\s/g, '').replace(/₂/g, '2') === c.val;
+  return false;
+}
+
+function verifier(n) {
+  const ex = EXOS[n];
+  let nbOk = 0, vides = 0;
+  ex.champs.forEach(c => {
+    const el = document.getElementById(c.id);
+    el.classList.remove('ok', 'ko');
+    if (!el.value.trim()) { vides++; return; }
+    const ok = testerChamp(c);
+    el.classList.add(ok ? 'ok' : 'ko');
+    if (ok) nbOk++;
+  });
+  const fb = document.getElementById('fb' + n);
+  const total = ex.champs.length;
+  if (vides === total) {
+    fb.className = 'feedback show ko';
+    fb.innerHTML = 'Complète les cases avant de vérifier.';
+    return;
+  }
+  if (nbOk === total) {
+    fb.className = 'feedback show ok';
+    fb.innerHTML = '<strong>✓ Bravo, tout est juste !</strong><br>' + ex.explication;
+    document.getElementById('ex' + n).classList.add('correct');
+    document.getElementById('corr' + n).classList.remove('show');
+    if (!reussis.has(n)) { reussis.add(n); majScore(); }
+  } else {
+    fb.className = 'feedback show ko';
+    fb.innerHTML = '<strong>✗ ' + nbOk + ' réponse' + (nbOk > 1 ? 's' : '') + ' juste' + (nbOk > 1 ? 's' : '') + ' sur ' + total + '.</strong> ' +
+      (vides ? 'Il reste ' + vides + ' case' + (vides > 1 ? 's' : '') + ' vide' + (vides > 1 ? 's' : '') + '. ' : '') +
+      'Corrige les cases en rouge, puis vérifie à nouveau.';
+    document.getElementById('corr' + n).classList.add('show');
+  }
+}
+
+function corriger(n) {
+  const ex = EXOS[n];
+  const fb = document.getElementById('fb' + n);
+  fb.className = 'feedback show corr';
+  fb.innerHTML = '<strong>Correction</strong><br>' + ex.explication +
+    '<br><span style="font-size:12.5px;color:#4a6a90;">Réponses attendues : ' + ex.champs.map(c => c.sol).join(' · ') + '</span>';
+}
+
+function majScore() {
+  document.getElementById('score-display').textContent = reussis.size + ' / ' + NB_EXOS;
+  document.getElementById('score-bar').style.width = Math.round(reussis.size / NB_EXOS * 100) + '%';
+}
+
+document.querySelectorAll('.exercice input.blank').forEach(inp => {
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') verifier(parseInt(inp.id.match(/^ex(\d+)/)[1], 10));
+  });
+});
+
+/* ---------- Exercice final : analyse et correction ---------- */
+let evalQ2sel = null;
+document.querySelectorAll('.eval-choice[data-q="2"]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    if (this.disabled) return;
+    document.querySelectorAll('.eval-choice[data-q="2"]').forEach(b => b.classList.remove('sel'));
+    this.classList.add('sel');
+    evalQ2sel = this.dataset.v;
+  });
+});
+
+function analyserTexte(q, rep) {
+  const t = norm(rep);
+  const res = CRITERES[q].map(c => ({ ok: c.re.test(t), msg: c.re.test(t) ? c.ok : c.ko }));
+  const pts = res.filter(r => r.ok).length * 0.5;
+  const notes = res.map(r => (r.ok ? '✓ ' : '✗ ') + r.msg);
+  if (q === 1 && /(memes?|egales?|identiques?) quantites|quantites (de matiere )?(sont )?(egales|identiques)|autant de|meme nombre de moles?/.test(t))
+    notes.push('⚠ Attention : à l’équivalence, les quantités de matière ne sont pas forcément <strong>égales</strong>. Elles sont dans les proportions des <strong>nombres stœchiométriques</strong>.');
+  return { pts, notes };
+}
+
+function verifierResultats() {
+  const rep1 = document.getElementById('rep1').value.trim();
+  const rep3 = document.getElementById('rep3').value.trim();
+  const rep4 = document.getElementById('rep4').value.trim();
+  const rep5 = document.getElementById('rep5').value.trim();
+
+  if (!rep1 || !evalQ2sel || !rep3 || !rep4 || !rep5) {
+    let msg = document.getElementById('msg-manque');
+    if (!msg) {
+      msg = document.createElement('p'); msg.id = 'msg-manque';
+      msg.style.cssText = 'color:#c0392b;font-size:13px;text-align:center;margin-top:.8rem;';
+      document.getElementById('btn-verif-eval').insertAdjacentElement('afterend', msg);
+    }
+    msg.textContent = 'Répondez à toutes les questions avant de vérifier vos résultats.';
+    return;
+  }
+
+  document.getElementById('btn-verif-eval').disabled = true;
+  document.querySelectorAll('.eval-textarea,.eval-input,.eval-choice').forEach(el => el.disabled = true);
+  const m = document.getElementById('msg-manque'); if (m) m.remove();
+
+  const detail = [];
+  detail.push({ q: 1, label: 'Q1 — Définition de l’équivalence', reponse: rep1, ...analyserTexte(1, rep1) });
+  const ok2 = evalQ2sel === 'B';
+  detail.push({ q: 2, label: 'Q2 — Relation à l’équivalence', reponse: 'Réponse ' + evalQ2sel, pts: ok2 ? 2 : 0, notes: [ok2 ? '✓ Bonne réponse.' : '✗ ' + QCM_Q2[evalQ2sel]] });
+  detail.push({ q: 3, label: 'Q3 — Quantité d’ions permanganate versée', reponse: rep3 + ' mol', ...analyserCalcul(3, rep3) });
+  detail.push({ q: 4, label: 'Q4 — Concentration de l’eau oxygénée', reponse: rep4 + ' mol/L', ...analyserCalcul(4, rep4) });
+  detail.push({ q: 5, label: 'Q5 — Repérage de l’équivalence', reponse: rep5, ...analyserTexte(5, rep5) });
+
+  const total = detail.reduce((s, d) => s + d.pts, 0);
+  let mention, couleurTop, couleurNote;
+  if (total >= 9)      { mention = 'Très bien !';    couleurTop = '#e8f8f0'; couleurNote = '#0e7c5b'; }
+  else if (total >= 7) { mention = 'Bien';           couleurTop = '#eef4ff'; couleurNote = '#1a5fa8'; }
+  else if (total >= 5) { mention = 'Assez bien';     couleurTop = '#fff8e8'; couleurNote = '#c8620a'; }
+  else                 { mention = 'À retravailler'; couleurTop = '#fdf0f0'; couleurNote = '#c0392b'; }
+
+  const top = document.getElementById('res-top');
+  top.style.background = couleurTop;
+  top.innerHTML = `
+    <div class="res-note" style="color:${couleurNote};">${fr(total)}<span style="font-size:1.5rem;color:var(--texte-3);"> / 10</span></div>
+    <p class="res-mention" style="color:${couleurNote};">${mention}</p>
+    <p class="res-sous">${total === 10 ? 'Score parfait : toutes les compétences sont maîtrisées.' : 'Lis l’analyse de chaque réponse et la correction ci-dessous.'}</p>
+    <p class="res-sous" style="font-size:12px;margin-top:.4rem;">Les réponses rédigées (Q1 et Q5) sont analysées automatiquement à partir des idées attendues : relis la correction pour vérifier ta formulation.</p>`;
+
+  document.getElementById('res-detail-content').innerHTML = detail.map(d => {
+    const plein = d.pts === 2, nul = d.pts === 0;
+    const coul = plein ? '#0e7c5b' : (nul ? '#c0392b' : '#c8620a');
+    return `
+    <div class="res-ligne">
+      <span class="res-icone" style="color:${coul};">${plein ? '✓' : (nul ? '✗' : '≈')}</span>
+      <div class="res-q">
+        <div style="font-weight:600;color:var(--texte);">${d.label}</div>
+        <div class="res-rep">Ta réponse : <em>${escapeHtml(d.reponse)}</em></div>
+        <ul class="res-analyse">${d.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+        <div class="res-correction"><strong>Correction :</strong> ${CORRIGE[d.q]}</div>
+      </div>
+      <span class="res-pts" style="color:${coul};">${fr(d.pts)} / 2</span>
+    </div>`;
+  }).join('');
+
+  console.group('%c📋 RÉSULTATS — ' + new Date().toLocaleTimeString('fr-FR'), 'font-size:14px;font-weight:bold;color:#2c1a4a;');
+  console.log('%cNote finale : %c' + fr(total) + ' / 10 (' + mention + ')', 'font-size:13px;color:#555;', 'font-size:16px;font-weight:bold;color:' + couleurNote);
+  detail.forEach(d => {
+    console.group(d.label + ' — ' + fr(d.pts) + '/2');
+    console.log('Réponse élève : ' + d.reponse);
+    console.log('Analyse : ' + d.notes.map(n => n.replace(/<[^>]+>/g, '')).join(' | '));
+    console.groupEnd();
+  });
+  console.groupEnd();
+
+  document.getElementById('btn-recommencer').style.display = 'block';
+  const res = document.getElementById('eval-resultat');
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function recommencerEval() {
+  document.querySelectorAll('.eval-textarea,.eval-input').forEach(el => { el.disabled = false; el.value = ''; });
+  document.querySelectorAll('.eval-choice').forEach(el => { el.disabled = false; el.classList.remove('sel'); });
+  evalQ2sel = null;
+  document.getElementById('btn-verif-eval').disabled = false;
+  document.getElementById('btn-recommencer').style.display = 'none';
+  document.getElementById('eval-resultat').classList.remove('show');
+  document.getElementById('evaluation').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+<script>
+/* ---------- Numéro du chapitre (case à compléter) ---------- */
+(function () {
+  const champ = document.getElementById('chap-num');
+  const CLE = '1spe-determination-quantite-de-matiere-chapitre';
+  const maj = () => {
+    const n = champ.value.trim();
+    document.title = 'Chapitre ' + (n ? n + ' ' : '') + '— Détermination d\'une quantité de matière';
+  };
+  try { champ.value = localStorage.getItem(CLE) || ''; } catch (e) {}
+  maj();
+  champ.addEventListener('input', () => {
+    maj();
+    try { localStorage.setItem(CLE, champ.value.trim()); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>
