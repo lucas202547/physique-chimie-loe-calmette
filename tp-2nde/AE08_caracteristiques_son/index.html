@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Caractéristiques d'un son – Simulation AE08</title>
+<title>Caractéristiques d'un son – Simulation</title>
 <style>
 :root{
   --bg:#eef1f6;--panel:#ffffff;--ink:#1b2333;--muted:#5d677a;--line:#d6dce6;
@@ -111,11 +111,12 @@ table.notes tr:hover td{background:var(--okbg)}
 #saveState{font-size:12px;color:var(--muted)}
 @media print{#instrTip,nav,.savebar button,.tools,button,#saveState{display:none!important}.page{display:block!important}section{break-inside:avoid}}
 header .savebar{margin-top:10px}
+.num-act{box-sizing:border-box;width:2.3em;height:1.7em;vertical-align:middle;font:inherit;font-weight:700;color:var(--ink);text-align:center;background:transparent;border:2px dashed var(--muted);border-radius:7px;padding:0 .2em;margin:0 .2em;outline:none;}.num-act:focus{border-style:solid;border-color:var(--ink);}@media print{.num-act{border:none;}}
 </style>
 </head>
 <body>
 <header>
-  <div class="t"><h1>Caractéristiques d'un son</h1><span>Activité expérimentale n°08 · simulation LatisPro</span></div>
+  <div class="t"><h1>Caractéristiques d'un son</h1><span>Activité expérimentale n°<input class="num-act" id="num-act" type="text" inputmode="numeric" maxlength="2" autocomplete="off" aria-label="Numéro de l'activité"> · simulation LatisPro</span></div>
   <div class="savebar">
     <label for="eleve">N° de poste, Groupe, Nom(s) :</label><input id="eleve" placeholder="Ex : 1A Durand Martin" autocomplete="off">
     <button id="saveFile" title="Télécharger un fichier contenant toutes les valeurs saisies">💾 Enregistrer</button>
@@ -789,6 +790,9 @@ window.addEventListener('resize', redrawAll);
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redrawAll);
 redrawAll();
 })();
+</script>
+<script>/* Case du numéro d'activité : remplie par l'élève, mémorisée dans le navigateur */
+(function(){var c=document.getElementById('num-act'),K='tp2-AE08_caracteristiques_son-numero';try{c.value=localStorage.getItem(K)||'';}catch(e){}c.addEventListener('input',function(){try{localStorage.setItem(K,c.value.trim());}catch(e){}});})();
 </script>
 </body>
 </html>

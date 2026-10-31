@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ondes électromagnétiques — Ch. 03</title>
+<title>Ondes électromagnétiques</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1d2330; --muted:#5d6577; --line:#d9dbe1;
@@ -75,11 +75,12 @@ svg text{font-family:inherit}
 table.mini{border-collapse:collapse;font-size:14px;width:100%}
 table.mini td,table.mini th{border:1px solid var(--line);padding:4px 8px;text-align:center}
 sub,sup{line-height:0}
+.chap-num{box-sizing:border-box;width:2.3em;height:1.8em;vertical-align:middle;font:inherit;font-weight:700;letter-spacing:0;color:inherit;text-align:center;background:transparent;border:2px dashed currentColor;border-radius:7px;padding:0 .2em;margin:0 .2em;outline:none;}.chap-num:focus{border-style:solid;}@media print{.chap-num{border:none;}}
 </style>
 </head>
 <body>
 <header>
-  <div class="kicker">C.03 · Ondes et signaux · 1<sup>re</sup> spécialité</div>
+  <div class="kicker">C.<input class="chap-num" id="chap-num" type="text" inputmode="numeric" maxlength="2" autocomplete="off" aria-label="Numéro du chapitre"> · Ondes et signaux · 1<sup>re</sup> spécialité</div>
   <h1>Les ondes électromagnétiques</h1>
   <p>Modèle ondulatoire et modèle particulaire de la lumière : explore le spectre, calcule l'énergie des photons et fais sauter l'électron d'un niveau d'énergie à l'autre.</p>
 </header>
@@ -619,6 +620,9 @@ function redrawAll(){drawBar();drawWave();drawDiag();drawLineSpec();drawVega()}
 window.addEventListener('resize',redrawAll);
 matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',redrawAll);
 updT1(); buildQuiz(); resetAtom(); updAbsLabel();
+</script>
+<script>/* Case du numéro de chapitre : remplie par l'élève, mémorisée dans le navigateur */
+(function(){var c=document.getElementById('chap-num'),K='1spe-C03-ondes-em-chapitre';var maj=function(){var n=c.value.trim();document.title='Ondes électromagnétiques'+(n?' — Ch. '+n:'');};try{c.value=localStorage.getItem(K)||'';}catch(e){}maj();c.addEventListener('input',function(){maj();try{localStorage.setItem(K,c.value.trim());}catch(e){}});})();
 </script>
 </body>
 </html>

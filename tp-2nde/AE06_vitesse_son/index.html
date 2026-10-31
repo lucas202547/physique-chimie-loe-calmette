@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Vitesse du son – Simulation AE06</title>
+<title>Vitesse du son – Simulation</title>
 <style>
 :root{
   --bg:#eef1f6;--panel:#ffffff;--ink:#1b2333;--muted:#5d677a;--line:#d6dce6;
@@ -75,12 +75,13 @@ input[type=range]{width:180px}
 .savebar button{padding:5px 10px;font-size:14px}
 #saveState{font-size:12px;color:var(--muted)}
 @media print{nav,.savebar button,.tools,button,#saveState{display:none!important}.page{display:block!important}section{break-inside:avoid}}
+.num-act{box-sizing:border-box;width:2.3em;height:1.7em;vertical-align:middle;font:inherit;font-weight:700;color:var(--ink);text-align:center;background:transparent;border:2px dashed var(--muted);border-radius:7px;padding:0 .2em;margin:0 .2em;outline:none;}.num-act:focus{border-style:solid;border-color:var(--ink);}@media print{.num-act{border:none;}}
 </style>
 </head>
 <body>
 <header>
   <h1>Mesure de la vitesse d'un signal sonore</h1>
-  <span>Activité expérimentale n°06 · simulation du montage émetteur / récepteur d'ultrasons</span>
+  <span>Activité expérimentale n°<input class="num-act" id="num-act" type="text" inputmode="numeric" maxlength="2" autocomplete="off" aria-label="Numéro de l'activité"> · simulation du montage émetteur / récepteur d'ultrasons</span>
   <span class="spacer"></span>
   <div class="savebar">
     <label for="eleve">Nom(s) :</label><input id="eleve" placeholder="Noms, prénoms, classe" autocomplete="off">
@@ -707,6 +708,9 @@ saver = setupSave('ae06-vitesse-son', 'AE06', () => ({
 });
 drawScope(); drawFit(); updateReadout();
 })();
+</script>
+<script>/* Case du numéro d'activité : remplie par l'élève, mémorisée dans le navigateur */
+(function(){var c=document.getElementById('num-act'),K='tp2-AE06_vitesse_son-numero';try{c.value=localStorage.getItem(K)||'';}catch(e){}c.addEventListener('input',function(){try{localStorage.setItem(K,c.value.trim());}catch(e){}});})();
 </script>
 </body>
 </html>
