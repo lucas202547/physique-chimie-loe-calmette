@@ -5,71 +5,91 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Travaux pratiques de physique-chimie pour la classe de seconde : activités expérimentales et acquisitions simulées.">
 <title>Travaux pratiques — Classe de seconde</title>
+<meta name="theme-color" content="#0f1729">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --vert:#0e7c5b; --vert-clair:#d4efe6; --vert-pale:#f0faf6;
-  --bleu:#1a5fa8; --bleu-clair:#ddeaf9;
-  --gris-bg:#f7f6f2; --gris-bord:#dddbd4;
-  --texte:#1e1e1e; --texte-2:#4a4a4a; --texte-3:#7a7a7a;
-  --blanc:#ffffff;
-  --serif:'Lora',Georgia,serif;
-  --sans:'Source Sans 3',sans-serif;
+/* Style « tableau périodique » — commun à l'accueil et aux 5 menus */
+:root{
+  --fond:#0f1729; --carte:#17223a; --carte-2:#1d2a46; --bord:#2c3a57; --bord-survol:#4a5f8a;
+  --texte:#e8edf7; --texte-2:#c3cee2; --texte-3:#9fb0cc; --blanc:#ffffff;
+  --cours:#2bb3a3; --tp:#f2a541; --simu:#a99bfa; --accent:var(--cours);
+  --sans:'Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
 }
+body.type-tp{--accent:var(--tp);}
+body.type-simu{--accent:var(--simu);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--sans);background:var(--gris-bg);color:var(--texte);line-height:1.6;padding:2rem 1rem 4rem;}
-.page{max-width:780px;margin:0 auto;background:var(--blanc);border-radius:12px;box-shadow:0 2px 16px rgba(0,0,0,.07);overflow:hidden;}
+body{background:var(--fond);color:var(--texte);font-family:var(--sans);line-height:1.5;padding:40px 20px 64px;}
+.page{max-width:900px;margin:0 auto;}
 
-/* EN-TÊTE (identique aux menus des cours) */
-.header{background:var(--vert);color:var(--blanc);padding:2.5rem 2.5rem 2rem;position:relative;overflow:hidden;}
-.header::after{content:'';position:absolute;bottom:-30px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06);}
-.header .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;margin-bottom:.9rem;color:rgba(255,255,255,.92);}
-.header h1{font-family:var(--serif);font-size:2rem;font-weight:600;line-height:1.25;margin-bottom:.4rem;}
-.header .sous{font-size:15px;color:rgba(255,255,255,.75);font-style:italic;}
+/* EN-TÊTE */
+.entete{padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid var(--bord);}
+.retour{display:inline-block;margin-bottom:28px;font-family:var(--mono);font-size:14px;color:var(--texte-2);text-decoration:none;}
+.retour:hover{color:var(--blanc);text-decoration:underline;}
+.retour:focus-visible{outline:2px solid var(--blanc);outline-offset:3px;border-radius:4px;}
+.titre-bloc{display:flex;flex-wrap:wrap;align-items:center;gap:24px;}
+.grande-case{flex:0 0 112px;height:112px;border-radius:10px;background:var(--accent);color:var(--fond);padding:10px 12px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;}
+.grande-case .sym{font-size:48px;font-weight:700;line-height:1;}
+.grande-case .unite{font-family:var(--mono);font-size:11px;}
+.titre-bloc .textes{flex:1 1 300px;display:flex;flex-direction:column;gap:6px;}
+.surtitre{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-3);}
+h1{font-size:44px;font-weight:700;line-height:1.08;letter-spacing:-.02em;}
+.sous{font-size:17px;color:var(--texte-2);}
 
-/* LISTE DES TRAVAUX PRATIQUES */
-.contenu{padding:2rem 2.5rem 2.5rem;}
-.intro{color:var(--texte-2);margin-bottom:1.5rem;}
-.cours{list-style:none;display:grid;gap:1rem;}
-.carte{border:1px solid var(--gris-bord);border-radius:10px;padding:1.25rem 1.4rem;transition:border-color .2s,box-shadow .2s;}
-.carte:hover{border-color:var(--vert);box-shadow:0 2px 12px rgba(14,124,91,.12);}
-.carte .theme{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--vert);margin-bottom:.25rem;}
-.carte h2{font-family:var(--serif);font-size:1.3rem;font-weight:600;line-height:1.3;margin-bottom:.6rem;}
-.carte h2 a{color:var(--texte);text-decoration:none;}
-.carte h2 a::after{content:' →';color:var(--vert);}
-.carte h2 a:hover{color:var(--vert);}
-.carte h2 a:focus-visible{outline:2px solid var(--vert);outline-offset:3px;border-radius:4px;}
-.carte .desc{color:var(--texte-2);font-size:15px;}
-.parties{list-style:none;display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.2rem;}
-.parties li{font-size:13px;color:var(--texte-2);background:var(--vert-pale);border:1px solid var(--vert-clair);border-radius:20px;padding:1px 10px;}
-.telecharger{display:inline-block;margin-top:.7rem;font-size:14px;font-weight:600;color:var(--bleu);text-decoration:none;}
+/* CONTENU */
+.intro{color:var(--texte-2);max-width:660px;margin-bottom:24px;}
+.groupe + .groupe{margin-top:36px;}
+.groupe > h2{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-3);margin-bottom:14px;}
+ul.cours{list-style:none;display:grid;gap:14px;counter-reset:n;}
+
+/* CARTES : la case colorée et son numéro sont produits par le CSS (pas de balise à ajouter) */
+.carte{display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:18px;align-items:start;background:var(--carte);border:1px solid var(--bord);border-radius:14px;padding:16px;transition:border-color .2s,transform .2s;}
+.carte:hover{border-color:var(--bord-survol);transform:translateY(-2px);}
+.carte::before{counter-increment:n;content:counter(n,decimal-leading-zero);grid-column:1;grid-row:1 / span 8;align-self:start;width:56px;height:56px;border-radius:8px;background:var(--accent);color:var(--fond);font-family:var(--mono);font-size:15px;font-weight:600;padding:6px 8px;}
+.carte > *{grid-column:2;}
+.carte .theme{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:2px;}
+.carte h2,.carte h3{font-size:21px;font-weight:700;line-height:1.3;margin-bottom:8px;}
+.carte h2 a,.carte h3 a{color:var(--blanc);text-decoration:none;}
+.carte h2 a::after,.carte h3 a::after{content:' →';color:var(--accent);}
+.carte h2 a:hover,.carte h3 a:hover{text-decoration:underline;}
+.carte h2 a:focus-visible,.carte h3 a:focus-visible{outline:2px solid var(--blanc);outline-offset:3px;border-radius:4px;}
+.parties{list-style:none;display:flex;flex-wrap:wrap;gap:6px;}
+.parties li{font-size:13px;color:var(--texte-2);background:var(--carte-2);border:1px solid var(--bord);border-radius:20px;padding:1px 10px;}
+.carte .desc{font-size:15px;color:var(--texte-2);}
+.telecharger{justify-self:start;margin-top:10px;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;}
 .telecharger:hover{text-decoration:underline;}
-.telecharger:focus-visible{outline:2px solid var(--bleu);outline-offset:3px;border-radius:4px;}
-.retour{display:block;width:fit-content;margin-bottom:.9rem;font-size:14px;font-weight:600;color:rgba(255,255,255,.9);text-decoration:none;}
-.retour:hover{text-decoration:underline;}
-.retour:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:4px;}
-.pied{margin-top:2rem;font-size:13px;color:var(--texte-3);text-align:center;}
+.telecharger:focus-visible{outline:2px solid var(--blanc);outline-offset:3px;border-radius:4px;}
+.pied{margin-top:36px;padding-top:18px;border-top:1px solid var(--bord);font-family:var(--mono);font-size:13px;color:var(--texte-3);}
 
 @media (max-width:560px){
-  body{padding:0 0 3rem;}
-  .page{border-radius:0;box-shadow:none;}
-  .header{padding:2rem 1.25rem 1.6rem;}
-  .header h1{font-size:1.6rem;}
-  .contenu{padding:1.5rem 1rem 2rem;}
-  .carte{padding:1rem 1.1rem;}
+  body{padding:28px 16px 48px;}
+  .retour{margin-bottom:22px;}
+  .titre-bloc{gap:16px;}
+  .grande-case{flex-basis:80px;height:80px;padding:8px;}
+  .grande-case .sym{font-size:34px;}
+  .grande-case .unite{font-size:9px;}
+  h1{font-size:32px;}
+  .carte{grid-template-columns:44px minmax(0,1fr);column-gap:14px;padding:14px;}
+  .carte::before{width:44px;height:44px;font-size:13px;padding:5px 6px;}
+  .carte h2,.carte h3{font-size:19px;}
 }
 </style>
 </head>
-<body>
+<body class="type-tp">
 
 <div class="page">
-  <header class="header">
+  <header class="entete">
     <a class="retour" href="../">← Accueil</a>
-    <span class="tag">Physique-chimie · Classe de seconde</span>
-    <h1>Travaux pratiques</h1>
-    <p class="sous">Activités expérimentales et acquisitions simulées</p>
+    <div class="titre-bloc">
+      <span class="grande-case" aria-hidden="true"><span class="sym">Tp</span><span class="unite">travaux pratiques</span></span>
+      <div class="textes">
+        <p class="surtitre">Physique-chimie · Classe de seconde</p>
+        <h1>Les TP de seconde</h1>
+        <p class="sous">Activités expérimentales et acquisitions simulées</p>
+      </div>
+    </div>
   </header>
 
   <main class="contenu">
