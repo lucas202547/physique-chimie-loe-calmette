@@ -360,27 +360,16 @@ footer{font-size:.85rem;color:var(--muted);text-align:center;padding:30px 0}
 <section class="part" id="partie4">
   <h2><span class="n">Partie 4</span>Identifier les transitions</h2>
 
-  <div class="q" id="q7">
-    <div class="q-head"><span class="q-num">7</span><div class="q-text">
-      On représente l’énergie de chaque photon par un rectangle dont la hauteur <i>L</i> respecte l’échelle du diagramme&nbsp;: <b>1 cm pour 0,5 eV</b>. Calculer les hauteurs <i>L</i>, <i>L′</i> et <i>L″</i> des rectangles représentant <i>E</i>, <i>E′</i> et <i>E″</i>.
-    </div></div>
-    <div class="trans-row"><span class="lab"><span class="swatch" style="background:var(--violet)"></span>Raie violette</span><i>L</i> =<input class="num" id="L0" inputmode="decimal" aria-label="L pour la raie violette" /> cm</div>
-    <div class="trans-row"><span class="lab"><span class="swatch" style="background:var(--vert)"></span>Raie verte</span><i>L′</i> =<input class="num" id="L1" inputmode="decimal" aria-label="L prime pour la raie verte" /> cm</div>
-    <div class="trans-row"><span class="lab"><span class="swatch" style="background:var(--jaune)"></span>Raie à 577 nm</span><i>L″</i> =<input class="num" id="L2" inputmode="decimal" aria-label="L seconde pour la raie à 577 nm" /> cm</div>
-    <div class="actions"><button class="btn" data-check="7">Vérifier la question 7</button></div>
-    <div class="fb" id="fb7"></div>
-  </div>
-
   <div class="q" id="q8">
-    <div class="q-head"><span class="q-num">8</span><div class="q-text">
-      La hauteur de chaque rectangle correspond à l’écart entre deux niveaux d’énergie. Faire glisser chaque rectangle le long du diagramme pour trouver ces deux niveaux, puis compléter la dernière ligne du tableau («&nbsp;Transition E<sub>n</sub> → E<sub>m</sub>&nbsp;»). Il s’agit ici d’une <b>émission</b>.
+    <div class="q-head"><span class="q-num">7</span><div class="q-text">
+      On représente l’énergie de chaque photon par un rectangle dont la hauteur respecte l’échelle du diagramme. La hauteur de chaque rectangle correspond à l’écart entre deux niveaux d’énergie. Faire glisser chaque rectangle le long du diagramme pour trouver ces deux niveaux, puis compléter la dernière ligne du tableau («&nbsp;Transition E<sub>n</sub> → E<sub>m</sub>&nbsp;»). Il s’agit ici d’une <b>émission</b>.
     </div></div>
     <div class="diagram-wrap">
       <svg class="diagram" id="diag2" viewBox="0 0 420 660" aria-label="Diagramme d’énergie avec rectangles déplaçables"></svg>
       <div>
-        <p class="howto">Les rectangles apparaissent quand la question 7 est validée. Les faire glisser verticalement (souris ou doigt) ; ils ont la hauteur que vous avez calculée.</p>
+        <p class="howto">Les rectangles apparaissent quand la question 6 est validée. Les faire glisser verticalement (souris ou doigt) ; leur hauteur correspond à l’énergie en eV calculée à la question 6.</p>
         <div id="trans-rows"></div>
-        <div class="actions"><button class="btn" data-check="8">Vérifier la question 8</button></div>
+        <div class="actions"><button class="btn" data-check="8">Vérifier la question 7</button></div>
         <div class="fb" id="fb8"></div>
       </div>
     </div>
@@ -416,10 +405,10 @@ document.addEventListener('DOMContentLoaded', () => {
     { lambda: 546.1, color: 'vert',   n: 5, m: 3 },
     { lambda: 577.0, color: 'jaune',  n: 9, m: 4 },
   ];
-  const QIDS = ['q1','q2','q3','q4','q5','q6','q7','q8','q9a','q9b','q10'];
-  const NEEDS = { q5: ['q4', 'la question 4'], q6: ['q5', 'la question 5'], q7: ['q6', 'la question 6'], q8: ['q7', 'la question 7'] };
+  const QIDS = ['q1','q2','q3','q4','q5','q6','q8','q9a','q9b','q10']; // q7 (hauteurs des rectangles) supprimée
+  const NEEDS = { q5: ['q4', 'la question 4'], q6: ['q5', 'la question 5'], q8: ['q6', 'la question 6'] };
   const restoreQcm = [];
-  const TOTAL = 12; // q4 compte double (mesures + couleur) -> voir score()
+  const TOTAL = 11; // q4 compte double (mesures + couleur) -> voir score()
 
   const num = (s) => { if (s == null) return NaN; const t = String(s).trim().replace(',', '.').replace(/\s/g, ''); return t === '' ? NaN : Number(t); };
   const fmt = (x, d = 2) => x.toFixed(d).replace('.', ',');
@@ -463,8 +452,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const k = CHAIN.indexOf(qid), next = CHAIN[k + 1];
     if (ok && k >= 0 && next && S.recheck[next]) { delete S.recheck[next]; save(); CHECK[next.slice(1)](); }
   }
-  const CHAIN = ['q4', 'q5', 'q6', 'q7', 'q8'];
-  const Q_OF = { lam: 'q4', col: 'q4', nu: 'q5', ej: 'q6', eev: 'q6', L: 'q7', tn: 'q8', tm: 'q8' };
+  const CHAIN = ['q4', 'q5', 'q6', 'q8'];
+  const Q_OF = { lam: 'q4', col: 'q4', nu: 'q5', ej: 'q6', eev: 'q6', tn: 'q8', tm: 'q8' };
   // Une valeur modifiée annule la validation de sa question et des questions suivantes (qui en dépendent)
   function invalidateFrom(inputId) {
     const q = Q_OF[inputId.replace(/\d+$/, '')]; if (!q) return;
@@ -477,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
       else { S.recheck[x] = true; feedback('fb' + x.slice(1), 'warn', 'Une réponse précédente a été modifiée : cette question sera revérifiée automatiquement.'); }
     });
     save(); refreshLocks(); score();
-    if (S.ok.q7 === false) render2();
+    render2();
   }
 
   /* ============ Diagrammes SVG ============ */
@@ -590,24 +579,24 @@ document.addEventListener('DOMContentLoaded', () => {
       ['Polychromatique : son spectre d’émission est un spectre continu, comme celui de la lumière blanche.', false],
       ['Monochromatique : la lampe ne contient qu’un seul élément chimique.', false]],
       ok: 'Oui : chaque raie correspond à une radiation monochromatique ; la lumière émise en contient plusieurs.', ko: 'Une source monochromatique n’émet qu’une seule radiation (une seule raie). Combien de raies voit-on pour Hg ?' },
-    q9a: { n: 9, mount: 'qcm-9a', text: 'Que vaut l’énergie <i>E</i> d’un photon émis ou absorbé lors d’une transition entre un niveau d’énergie E<sub>n</sub> et un niveau d’énergie E<sub>m</sub> ?', opts: [
+    q9a: { n: 8, mount: 'qcm-9a', text: 'Que vaut l’énergie <i>E</i> d’un photon émis ou absorbé lors d’une transition entre un niveau d’énergie E<sub>n</sub> et un niveau d’énergie E<sub>m</sub> ?', opts: [
       ['<i>E</i> = |E<sub>n</sub> − E<sub>m</sub>| : la différence entre l’énergie du niveau le plus haut et celle du niveau le plus bas.', true],
       ['<i>E</i> = E<sub>n</sub> + E<sub>m</sub>', false],
       ['<i>E</i> = E<sub>n</sub> × E<sub>m</sub>', false],
       ['<i>E</i> = E<sub>n</sub> : l’énergie du niveau de départ.', false]],
-      ok: 'Oui : c’est exactement ce que montrent les rectangles de la question 8.', ko: 'Repenser aux rectangles de la question 8 : à quoi correspond leur hauteur ?' },
-    q9b: { n: '9 bis', mount: 'qcm-9b', text: 'Pourquoi cette énergie est-elle généralement notée ΔE<sub>n→m</sub> (ou ΔE<sub>m→n</sub>) ?', opts: [
+      ok: 'Oui : c’est exactement ce que montrent les rectangles de la question 7.', ko: 'Repenser aux rectangles de la question 7 : à quoi correspond leur hauteur ?' },
+    q9b: { n: '8 bis', mount: 'qcm-9b', text: 'Pourquoi cette énergie est-elle généralement notée ΔE<sub>n→m</sub> (ou ΔE<sub>m→n</sub>) ?', opts: [
       ['Parce qu’elle est égale à la variation d’énergie de l’atome au cours de la transition (Δ désigne une variation).', true],
       ['Parce qu’elle est égale à l’énergie de l’état fondamental.', false],
       ['Parce que c’est une différence entre deux longueurs d’onde.', false],
       ['Parce que le photon perd de l’énergie en se déplaçant.', false]],
       ok: 'Oui : l’atome perd (émission) ou gagne (absorption) exactement l’énergie du photon.', ko: 'Que signifie la lettre grecque Δ en physique ?' },
-    q10: { n: 10, mount: 'qcm-10', text: 'Répondre à la problématique : pourquoi le spectre d’émission d’une lampe à vapeur de mercure présente-t-il des raies ?', opts: [
+    q10: { n: 9, mount: 'qcm-10', text: 'Répondre à la problématique : pourquoi le spectre d’émission d’une lampe à vapeur de mercure présente-t-il des raies ?', opts: [
       ['Les niveaux d’énergie de l’atome sont quantifiés : seules certaines transitions sont possibles, donc seuls des photons d’énergies (et de longueurs d’onde) bien précises sont émis.', true],
       ['Le verre de la lampe absorbe certaines couleurs de la lumière blanche émise par le mercure.', false],
       ['Les atomes de mercure émettent toutes les longueurs d’onde, mais l’œil n’en voit que quelques-unes.', false],
       ['Chaque raie correspond à un élément chimique différent présent dans la lampe.', false]],
-      ok: 'Exactement : le spectre de raies est la « signature » des niveaux d’énergie quantifiés de l’atome.', ko: 'Faire le lien entre quantification des niveaux (Q1-Q2), énergie des photons (Q6) et transitions (Q8).' },
+      ok: 'Exactement : le spectre de raies est la « signature » des niveaux d’énergie quantifiés de l’atome.', ko: 'Faire le lien entre quantification des niveaux (Q1-Q2), énergie des photons (Q6) et transitions (Q7).' },
   };
   // Mélange stable (même ordre pour toute la classe)
   const ORDER = { q2: [2, 0, 3, 1], q3: [1, 3, 0, 2], q9a: [1, 0, 3, 2], q9b: [2, 3, 0, 1], q10: [3, 1, 0, 2] };
@@ -708,17 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!ge) { ok = false; msgs.push(isNaN(ve) ? `${r.label} : énergie en eV manquante.` : `${r.label} : énergie en eV incorrecte – diviser l’énergie en joule par 1,60.10<sup>-19</sup>.`); }
       });
       if (ok) { feedback('fb6', 'ok', 'Énergies correctes.'); } else feedback('fb6', 'ko', msgs.join('<br>'));
-      setDone('q6', ok);
-    },
-    7() {
-      const msgs = []; let ok = true;
-      RAIES.forEach((r, j) => {
-        const inp = $('L' + j), v = num(inp.value), ref = num(S.inputs['eev' + j]) / 0.5;
-        const g = near(v, ref, 0.02); mark(inp, g);
-        if (!g) { ok = false; msgs.push(isNaN(v) ? `${r.label} : valeur manquante.` : `${r.label} : incorrect – 1 cm représente 0,5 eV.`); }
-      });
-      if (ok) { feedback('fb7', 'ok', 'Hauteurs correctes. Les rectangles sont disponibles pour la question 8.'); } else feedback('fb7', 'ko', msgs.join('<br>'));
-      setDone('q7', ok); render2();
+      setDone('q6', ok); render2();
     },
     8() {
       const msgs = []; let ok = true;
@@ -748,7 +727,7 @@ document.addEventListener('DOMContentLoaded', () => {
       el('line', { x1: AX + 6, y1: y, x2: AX + 150, y2: y, stroke: '#24345c', 'stroke-width': 2.2 }, svg2);
       levelLabel(svg2, i, AX + 150, y, labs[i], '#24345c');
     });
-    if (!S.ok.q7) return;
+    if (!S.ok.q6) return;
     RAIES.forEach((r, j) => {
       const hE = num(S.inputs['eev' + j]); if (isNaN(hE)) return;
       if (S.rect[j] == null) S.rect[j] = -9.5 + j * 0.4; // énergie du bas du rectangle
@@ -757,7 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
       el('rect', { x: RX[j], y: yb - ht, width: 30, height: ht, fill: r.hex, 'fill-opacity': 0.35, stroke: r.hex, 'stroke-width': 2, rx: 2 }, g);
       el('line', { x1: AX + 6, x2: RX[j] + 30, y1: yb, y2: yb, stroke: r.hex, 'stroke-dasharray': '3 3', 'stroke-width': 1 }, g);
       el('line', { x1: AX + 6, x2: RX[j] + 30, y1: yb - ht, y2: yb - ht, stroke: r.hex, 'stroke-dasharray': '3 3', 'stroke-width': 1 }, g);
-      const t = el('text', { x: RX[j] + 15, y: yb - ht / 2 + 4, 'font-size': 12, 'text-anchor': 'middle', 'font-weight': 700, fill: '#1d2433' }, g); t.textContent = 'L' + r.p;
+      const t = el('text', { x: RX[j] + 15, y: yb - ht / 2 + 4, 'font-size': 12, 'text-anchor': 'middle', 'font-weight': 700, fill: '#1d2433' }, g); t.textContent = 'E' + r.p;
     });
   }
   svg2.addEventListener('touchstart', (e) => { if (!S.ok.q8 && e.target.closest('g[data-r]')) e.preventDefault(); }, { passive: false });
@@ -796,7 +775,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!locked && note) note.remove();
       box.querySelectorAll('button').forEach(b => b.disabled = locked);
     });
-    const lockMap = { nu: 'q4', ej: 'q5', eev: 'q5', L: 'q6', tn: 'q7', tm: 'q7' };
+    const lockMap = { nu: 'q4', ej: 'q5', eev: 'q5', tn: 'q6', tm: 'q6' };
     Object.entries(lockMap).forEach(([p, need]) => RAIES.forEach((_, j) => { $(p + j).disabled = !S.ok[need]; }));
     // ligne active du tableau
     const cur = !S.ok.q4 ? 4 : !S.ok.q5 ? 5 : !S.ok.q6 ? 6 : !S.ok.q8 ? 8 : 0;
@@ -831,9 +810,8 @@ document.addEventListener('DOMContentLoaded', () => {
         q4: { validee: !!S.ok.q4, lambda_nm: { violette: val('lam0'), verte: val('lam1'), raie_577nm: '577,0' }, couleur_577nm: val('col2') },
         q5: { validee: !!S.ok.q5, frequence_1e14Hz: trio('nu') },
         q6: { validee: !!S.ok.q6, energie_1e_19J: trio('ej'), energie_eV: trio('eev') },
-        q7: { validee: !!S.ok.q7, hauteur_cm: trio('L') },
-        q8: { validee: !!S.ok.q8, transitions: Object.fromEntries(RAIES.map((r, j) => [['violette', 'verte', 'raie_577nm'][j], (val('tn' + j) !== '' && val('tm' + j) !== '') ? `E${val('tn' + j)} -> E${val('tm' + j)}` : ''])) },
-        q9: qcm('q9a'), q9bis: qcm('q9b'), q10: qcm('q10'),
+        q7: { validee: !!S.ok.q8, transitions: Object.fromEntries(RAIES.map((r, j) => [['violette', 'verte', 'raie_577nm'][j], (val('tn' + j) !== '' && val('tm' + j) !== '') ? `E${val('tn' + j)} -> E${val('tm' + j)}` : ''])) },
+        q8: qcm('q9a'), q8bis: qcm('q9b'), q9: qcm('q10'),
       },
     };
   }
@@ -863,7 +841,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ============ Initialisation ============ */
   if (Object.keys(S.placed).length === 0) selected = 0;
   render1(); renderChips(); if (S.ok.q1) { $('q1').classList.add('done'); renderChips(true); }
-  ['q4', 'q5', 'q6', 'q7', 'q8'].forEach(q => { if (S.ok[q]) $(q).classList.add('done'); });
+  ['q4', 'q5', 'q6', 'q8'].forEach(q => { if (S.ok[q]) $(q).classList.add('done'); });
   render2(); fillTransitions(); refreshLocks(); restoreQcm.forEach(id => checkQcm(id)); score();
 });
 </script>
