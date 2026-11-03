@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="TP de 1re spécialité : spectre d’émission de la lampe à vapeur de mercure et diagramme de niveaux d’énergie (modèle de Bohr)." />
+<title>TP – Spectre d’absorption et d’émission d’un atome</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+img,svg{max-width:100%;display:block}
+:root{
+  --bg:#f6f4ef; --paper:#ffffff; --ink:#1d2433; --muted:#5d6577; --line:#d9d4c7;
+  --primary:#24345c; --primary-soft:#e7ebf5; --accent:#c2410c;
+  --ok:#15803d; --ok-soft:#e5f4ea; --ko:#b91c1c; --ko-soft:#fbe9e9; --warn:#a16207; --warn-soft:#fdf4dc;
+  --violet:#6d3fd6; --vert:#1f9d3a; --jaune:#d4a400;
+  --radius:12px; --shadow:0 1px 2px rgba(20,25,40,.06),0 6px 20px rgba(20,25,40,.06);
+  --font:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-title:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.55}
+.container{max-width:980px;margin-inline:auto;padding-inline:16px}
+a{color:var(--primary)}
+h1,h2,h3{font-family:var(--font-title);line-height:1.2;color:var(--primary)}
+sub,sup{font-size:.72em;line-height:0}
+.it{font-style:italic}
+i{font-family:Cambria,Georgia,"Times New Roman",serif;font-size:1.05em}
+/* ---------- en-tête ---------- */
+.top{background:var(--primary);color:#fff;padding:28px 0 22px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:2px 10px}
+.top h1{color:#fff;font-size:clamp(1.5rem,4vw,2.2rem)}
+.top p{opacity:.92;margin-top:10px;max-width:70ch}
+.probleme{margin-top:16px;background:rgba(255,255,255,.1);border-left:4px solid #fbbf24;padding:10px 14px;border-radius:6px;font-style:italic}
+.meta{display:grid;gap:10px;margin-top:16px;font-size:.95rem}
+@media(min-width:768px){.meta{grid-template-columns:2fr 1fr}}
+.meta div{background:rgba(255,255,255,.08);padding:10px 14px;border-radius:8px}
+.meta b{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;opacity:.8}
+/* ---------- navigation / progression ---------- */
+.bar{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--line)}
+.bar .container{display:flex;align-items:center;gap:14px;padding-block:8px}
+.bar nav{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:thin}
+.bar nav a{white-space:nowrap;text-decoration:none;font-size:.9rem;padding:4px 10px;border-radius:6px;color:var(--muted)}
+.bar nav a:hover{background:var(--primary-soft);color:var(--primary)}
+.progress{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);white-space:nowrap}
+.progress .track{width:70px;height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.progress .fill{height:100%;background:var(--ok);width:0;transition:width .3s}
+/* ---------- sections ---------- */
+main{padding:24px 0 60px}
+section.part{margin-top:34px}
+section.part>h2{font-size:1.45rem;margin-bottom:6px;display:flex;align-items:baseline;gap:10px}
+section.part>h2 .n{font-size:.85rem;background:var(--primary);color:#fff;border-radius:6px;padding:2px 8px}
+.intro{color:var(--muted);margin-bottom:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 18px;margin-top:14px}
+.card h3{font-size:1.1rem;margin-bottom:10px}
+.doc-label{display:inline-block;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin-bottom:4px}
+.histoire{display:grid;gap:8px;text-align:justify}
+.histoire .date{font-family:var(--font-title);color:var(--accent)}
+.corps-noir{margin:6px auto;max-width:640px;width:100%}
+.corps-noir svg{border:1px solid var(--line);border-radius:8px}
+.corps-noir figcaption{font-size:.86rem;color:var(--muted);margin-top:6px;line-height:1.4;text-align:center}
+.corps-noir .links{justify-content:center;margin-top:8px}
+.bohr{margin:6px auto;max-width:560px;width:100%}
+.bohr svg{border:1px solid var(--line);border-radius:8px}
+.bohr figcaption{font-size:.86rem;color:var(--muted);margin-top:6px;line-height:1.4;text-align:center}
+.photon-ico{display:inline-block;vertical-align:middle;height:1em;width:auto;margin-left:2px}
+.formula{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;font-size:1.25rem;margin:14px 0;padding:12px;background:var(--primary-soft);border-radius:10px;font-family:"Cambria Math",Cambria,Georgia,serif}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle}
+.frac>span:first-child{border-bottom:1.5px solid currentColor;padding:0 4px}
+.consts{font-size:.95rem;color:var(--muted)}
+.two{display:grid;gap:16px}
+@media(min-width:768px){.two{grid-template-columns:1.3fr 1fr;align-items:start}.two.two-fig{grid-template-columns:1fr 1.35fr;align-items:center}}
+.anim-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.anim-wrap figure{background:#fbfaf7;border:1px solid var(--line);border-radius:10px;padding:8px}
+.anim-wrap figcaption{font-size:.85rem;text-align:center;font-weight:600}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn,.links a{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:.95rem;border:1px solid var(--primary);background:var(--primary);color:#fff;border-radius:8px;padding:6px 14px;cursor:pointer;text-decoration:none}
+.btn.ghost,.links a.ghost{background:transparent;color:var(--primary)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #fbbf24;outline-offset:2px}
+.sim-shot{border-radius:8px;border:1px solid var(--line)}
+table.data{border-collapse:collapse;width:100%;font-size:.95rem}
+table.data th,table.data td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+table.data th{background:var(--primary-soft);color:var(--primary);font-weight:600}
+.scroll{overflow-x:auto}
+/* ---------- questions ---------- */
+.q{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--primary);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px;margin-top:16px}
+.q.done{border-left-color:var(--ok)}
+.q-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.q-num{flex:none;font-family:var(--font-title);font-weight:700;background:var(--primary);color:#fff;border-radius:8px;min-width:34px;text-align:center;padding:2px 6px}
+.q.done .q-num{background:var(--ok)}
+.q-text{flex:1}
+.hint{font-size:.9rem;color:var(--muted);margin-top:6px}
+.options{display:grid;gap:8px}
+.options label{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer;background:#fdfcf9}
+.options label:hover{border-color:var(--primary)}
+.options input{margin-top:5px}
+.options label.good{border-color:var(--ok);background:var(--ok-soft)}
+.options label.bad{border-color:var(--ko);background:var(--ko-soft)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.fb{margin-top:10px;padding:8px 12px;border-radius:8px;font-size:.95rem;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--ok-soft);color:var(--ok)}
+.fb.ko{background:var(--ko-soft);color:var(--ko)}
+.fb.warn{background:var(--warn-soft);color:var(--warn)}
+.locked{font-size:.9rem;color:var(--warn);background:var(--warn-soft);padding:6px 10px;border-radius:8px;margin-bottom:8px}
+input.num,select.sel{font:inherit;font-size:.95rem;border:1px solid #b9b3a4;border-radius:6px;padding:4px 6px;width:100%;max-width:120px;background:#fff;text-align:center}
+input.num.good,select.sel.good{border-color:var(--ok);background:var(--ok-soft)}
+input.num.bad,select.sel.bad{border-color:var(--ko);background:var(--ko-soft)}
+input.num:disabled,select.sel:disabled{background:#f1efe9;color:var(--muted)}
+.res{min-width:620px}
+.res td:first-child{text-align:left;background:#faf8f3;font-weight:600}
+.res .cell{display:flex;align-items:center;justify-content:center;gap:4px}
+.res .cell span{font-size:.85rem;color:var(--muted)}
+.swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-right:4px}
+tr.active td{background:#fffbea}
+tr.active td:first-child{background:#fff4c7}
+/* ---------- diagrammes ---------- */
+.diagram-wrap{display:grid;gap:16px}
+@media(min-width:820px){.diagram-wrap{grid-template-columns:minmax(0,440px) 1fr;align-items:start}}
+.diagram{background:#fff;border:1px solid var(--line);border-radius:10px;touch-action:none;user-select:none;width:min(100%,440px)}
+.lvl-chips{display:flex;flex-wrap:wrap;gap:6px}
+.lvl-chip{font:inherit;font-size:.9rem;border:1px solid var(--primary);background:#fff;color:var(--primary);border-radius:8px;padding:4px 10px;cursor:pointer;min-width:118px;text-align:left}
+.lvl-chip.sel{background:var(--primary);color:#fff}
+.lvl-chip.placed{border-style:dashed}
+.lvl-chip.good{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.lvl-chip.bad{border-color:var(--ko);background:var(--ko-soft);color:var(--ko)}
+.howto{font-size:.92rem;color:var(--muted);margin:10px 0}
+.howto li{margin-left:18px}
+.trans-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.trans-row:last-child{border-bottom:0}
+.trans-row .lab{min-width:150px;font-weight:600}
+.trans-row select.sel{max-width:80px}
+.save{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px}
+.top .save .btn{background:#fbbf24;border-color:#fbbf24;color:#1d2433;font-weight:600}
+.top .save .hint{color:#dfe5f2;margin:0}
+.top .fb{max-width:70ch}
+footer{font-size:.85rem;color:var(--muted);text-align:center;padding:30px 0}
+@media print{.bar,.actions,.save{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:16px}
+.top .save .btn{background:#fbbf24;border-color:#fbbf24;color:#1d2433;font-weight:600}
+.top .save .hint{color:#dfe5f2;margin:0}
+.top .fb{max-width:70ch}
+footer{display:none}.q,.card{box-shadow:none;break-inside:avoid}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* animations doc 1 */
+/* Animation du document 1 : une seule fois, 5 s.
+   0 → 2,1 s : un électron de la décharge traverse l’atome (et ralentit) ; l’atome passe de E1 à E2 ;
+   2,5 → 3,2 s : seulement ensuite, désexcitation E2 → E1, puis départ du photon émis. */
+@keyframes hit{0%{transform:translateX(80px);opacity:0}5%{opacity:1}30%{transform:translateX(0)}56%{transform:translateX(-40px);opacity:1}66%,100%{transform:translateX(-56px);opacity:0}}
+@keyframes upHit{0%,30%{transform:translateY(0)}42%,100%{transform:translateY(-62px)}}
+@keyframes down{0%,50%{transform:translateY(0)}64%,100%{transform:translateY(62px)}}
+@keyframes waveOut{0%,63%{transform:translateX(0);opacity:0}66%{transform:translateX(0);opacity:1}95%,100%{transform:translateX(34px);opacity:1}}
+.e-hit{transform:translateX(60px)}
+.w-out{opacity:0}
+.anim-wrap.playing .e-hit{animation:hit 5s linear 1 both}
+.anim-wrap.playing .e-up{animation:upHit 5s ease-in-out 1 both}
+.anim-wrap.playing .e-down{animation:down 5s ease-in-out 1 both}
+.anim-wrap.playing .w-out{animation:waveOut 5s linear 1 both}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="container">
+    <div class="chips"><span class="chip">1<sup>re</sup> spécialité</span><span class="chip">Ondes et signaux</span><span class="chip">TP</span></div>
+    <h1>Spectre d’absorption et d’émission d’un atome</h1>
+    <p>La lumière : images et couleurs, modèles ondulatoire et particulaire</p>
+    <p class="probleme">Pourquoi le spectre d’émission d’une lampe à vapeur de mercure présente-t-il des raies&nbsp;? Le modèle proposé par le physicien Niels Bohr permet de le comprendre.</p>
+    <div class="meta">
+      <div><b>Capacité exigible</b>Obtenir le spectre d’une source spectrale et l’interpréter à partir du diagramme de niveaux d’énergie des entités qui la constituent.</div>
+      <div><b>Matériel</b>Une lampe à vapeur de mercure ; un ordinateur.</div>
+    </div>
+    <div class="save">
+      <label for="poste"><b>Numéro de poste</b></label>
+      <input id="poste" class="num" inputmode="numeric" autocomplete="off" />
+      <button class="btn" id="save">Enregistrer</button>
+      <span class="hint" id="save-hint">Le navigateur demande où enregistrer le fichier.</span>
+    </div>
+    <div class="fb" id="fb-save"></div>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="container">
+    <nav aria-label="Parties du TP">
+      <a href="#documents">Documents</a>
+      <a href="#partie1">1. Diagramme</a>
+      <a href="#partie2">2. Modèle de Bohr</a>
+      <a href="#partie3">3. Mesures et calculs</a>
+      <a href="#partie4">4. Transitions</a>
+      <a href="#partie5">5. Conclusion</a>
+    </nav>
+    <div class="progress" aria-live="polite"><div class="track"><div class="fill" id="pfill"></div></div><span id="ptxt">0 / 12</span></div>
+  </div>
+</div>
+
+<main class="container">
+
+<!-- ===================== DOCUMENTS ===================== -->
+<section class="part" id="documents">
+  <h2>Documents</h2>
+  <p class="intro">Lire attentivement les documents : ils servent tout au long du TP.</p>
+
+  <article class="card">
+    <span class="doc-label">Document 1</span>
+    <h3>De la lumière au photon</h3>
+    <div class="histoire">
+      <p>Au début du XX<sup>e</sup> siècle, les physiciens ne parviennent pas à expliquer certaines observations sur la lumière émise par la matière, notamment la couleur de la lumière émise par un corps chauffé, qui change avec sa température.</p>
+      <figure class="corps-noir">
+        <svg class="corps-noir-svg" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 362" role="img" aria-label="Graphique : intensité mesurée de la lumière émise par un corps chauffé à 6000 K et prévision de la physique classique en pointillés, qui tend vers l’infini quand la longueur d’onde diminue" font-family="'Source Sans 3','Segoe UI',Arial,'Liberation Sans','DejaVu Sans',sans-serif"><defs><linearGradient id="cnb-vis" x1="0" x2="1" y1="0" y2="0"><stop offset="0.000" stop-color="#7d00db"/><stop offset="0.100" stop-color="#5000ff"/><stop offset="0.225" stop-color="#0080ff"/><stop offset="0.300" stop-color="#00d5ff"/><stop offset="0.375" stop-color="#00ff3c"/><stop offset="0.487" stop-color="#e6ff00"/><stop offset="0.550" stop-color="#ffb000"/><stop offset="0.650" stop-color="#ff3000"/><stop offset="0.800" stop-color="#e00000"/><stop offset="1.000" stop-color="#800000"/></linearGradient><clipPath id="cnb-clip"><rect x="62" y="46" width="536" height="226"/></clipPath><marker id="cnb-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d2433"/></marker><marker id="cnb-arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5bd3"/></marker></defs><rect width="620" height="362" rx="10" fill="#ffffff"/><rect x="163.8" y="46" width="107.2" height="226" fill="url(#cnb-vis)" opacity=".13"/><rect x="163.8" y="265" width="107.2" height="7" fill="url(#cnb-vis)"/><line x1="163.8" y1="22" x2="163.8" y2="272" stroke="#5d6577" stroke-dasharray="2 3" stroke-width="1"/><line x1="271.0" y1="22" x2="271.0" y2="272" stroke="#5d6577" stroke-dasharray="2 3" stroke-width="1"/><text x="112.9" y="36" font-size="16.9" font-weight="700" fill="#5d6577" text-anchor="middle">UV</text><text x="217.4" y="36" font-size="16.9" font-weight="700" fill="#5d6577" text-anchor="middle">visible</text><text x="437.2" y="36" font-size="16.9" font-weight="700" fill="#5d6577" text-anchor="middle">infrarouge (IR)</text><g clip-path="url(#cnb-clip)" fill="none" stroke-linejoin="round"><path d="M78.1,272.0 L79.2,272.0 L80.2,272.0 L81.3,272.0 L82.4,272.0 L83.4,272.0 L84.5,272.0 L85.6,272.0 L86.7,272.0 L87.7,272.0 L88.8,272.0 L89.9,272.0 L90.9,272.0 L92.0,272.0 L93.1,272.0 L94.2,272.0 L95.2,272.0 L96.3,271.9 L97.4,271.9 L98.4,271.8 L99.5,271.8 L100.6,271.7 L101.7,271.6 L102.7,271.4 L103.8,271.3 L104.9,271.0 L106.0,270.8 L107.0,270.5 L108.1,270.1 L109.2,269.7 L110.2,269.2 L111.3,268.6 L112.4,268.0 L113.5,267.3 L114.5,266.5 L115.6,265.7 L116.7,264.8 L117.7,263.8 L118.8,262.7 L119.9,261.6 L121.0,260.3 L122.0,259.1 L123.1,257.7 L124.2,256.3 L125.2,254.8 L126.3,253.3 L127.4,251.7 L128.5,250.1 L129.5,248.4 L130.6,246.7 L131.7,245.0 L132.8,243.2 L133.8,241.4 L134.9,239.6 L136.0,237.8 L137.0,235.9 L138.1,234.1 L139.2,232.2 L140.3,230.4 L141.3,228.6 L142.4,226.8 L143.5,225.0 L144.5,223.2 L145.6,221.4 L146.7,219.7 L147.8,218.0 L148.8,216.3 L149.9,214.7 L151.0,213.1 L152.0,211.6 L153.1,210.0 L154.2,208.6 L155.3,207.1 L156.3,205.7 L157.4,204.4 L158.5,203.1 L159.6,201.8 L160.6,200.6 L161.7,199.5 L162.8,198.3 L163.8,197.3 L164.9,196.3 L166.0,195.3 L167.1,194.4 L168.1,193.5 L169.2,192.7 L170.3,191.9 L171.3,191.2 L172.4,190.5 L173.5,189.9 L174.6,189.3 L175.6,188.7 L176.7,188.2 L177.8,187.7 L178.8,187.3 L179.9,186.9 L181.0,186.6 L182.1,186.3 L183.1,186.0 L184.2,185.8 L185.3,185.6 L186.4,185.4 L187.4,185.3 L188.5,185.2 L189.6,185.1 L190.6,185.1 L191.7,185.1 L192.8,185.1 L193.9,185.2 L194.9,185.2 L196.0,185.3 L197.1,185.5 L198.1,185.6 L199.2,185.8 L200.3,186.0 L201.4,186.2 L202.4,186.4 L203.5,186.7 L204.6,187.0 L205.6,187.3 L206.7,187.6 L207.8,187.9 L208.9,188.2 L209.9,188.6 L211.0,189.0 L212.1,189.3 L213.2,189.7 L214.2,190.1 L215.3,190.6 L216.4,191.0 L217.4,191.4 L218.5,191.9 L219.6,192.3 L220.7,192.8 L221.7,193.3 L222.8,193.8 L223.9,194.2 L224.9,194.7 L226.0,195.2 L227.1,195.7 L228.2,196.3 L229.2,196.8 L230.3,197.3 L231.4,197.8 L232.4,198.3 L233.5,198.9 L234.6,199.4 L235.7,199.9 L236.7,200.5 L237.8,201.0 L238.9,201.6 L240.0,202.1 L241.0,202.6 L242.1,203.2 L243.2,203.7 L244.2,204.3 L245.3,204.8 L246.4,205.4 L247.5,205.9 L248.5,206.5 L249.6,207.0 L250.7,207.5 L251.7,208.1 L252.8,208.6 L253.9,209.2 L255.0,209.7 L256.0,210.2 L257.1,210.8 L258.2,211.3 L259.2,211.8 L260.3,212.3 L261.4,212.9 L262.5,213.4 L263.5,213.9 L264.6,214.4 L265.7,214.9 L266.8,215.4 L267.8,216.0 L268.9,216.5 L270.0,217.0 L271.0,217.5 L272.1,218.0 L273.2,218.4 L274.3,218.9 L275.3,219.4 L276.4,219.9 L277.5,220.4 L278.5,220.9 L279.6,221.3 L280.7,221.8 L281.8,222.3 L282.8,222.7 L283.9,223.2 L285.0,223.6 L286.0,224.1 L287.1,224.5 L288.2,225.0 L289.3,225.4 L290.3,225.9 L291.4,226.3 L292.5,226.7 L293.6,227.1 L294.6,227.6 L295.7,228.0 L296.8,228.4 L297.8,228.8 L298.9,229.2 L300.0,229.6 L301.1,230.0 L302.1,230.4 L303.2,230.8 L304.3,231.2 L305.3,231.6 L306.4,232.0 L307.5,232.3 L308.6,232.7 L309.6,233.1 L310.7,233.5 L311.8,233.8 L312.8,234.2 L313.9,234.5 L315.0,234.9 L316.1,235.3 L317.1,235.6 L318.2,235.9 L319.3,236.3 L320.4,236.6 L321.4,237.0 L322.5,237.3 L323.6,237.6 L324.6,237.9 L325.7,238.3 L326.8,238.6 L327.9,238.9 L328.9,239.2 L330.0,239.5 L331.1,239.8 L332.1,240.1 L333.2,240.4 L334.3,240.7 L335.4,241.0 L336.4,241.3 L337.5,241.6 L338.6,241.9 L339.6,242.2 L340.7,242.4 L341.8,242.7 L342.9,243.0 L343.9,243.3 L345.0,243.5 L346.1,243.8 L347.2,244.0 L348.2,244.3 L349.3,244.6 L350.4,244.8 L351.4,245.1 L352.5,245.3 L353.6,245.6 L354.7,245.8 L355.7,246.1 L356.8,246.3 L357.9,246.5 L358.9,246.8 L360.0,247.0 L361.1,247.2 L362.2,247.4 L363.2,247.7 L364.3,247.9 L365.4,248.1 L366.4,248.3 L367.5,248.5 L368.6,248.8 L369.7,249.0 L370.7,249.2 L371.8,249.4 L372.9,249.6 L374.0,249.8 L375.0,250.0 L376.1,250.2 L377.2,250.4 L378.2,250.6 L379.3,250.8 L380.4,251.0 L381.5,251.2 L382.5,251.3 L383.6,251.5 L384.7,251.7 L385.7,251.9 L386.8,252.1 L387.9,252.2 L389.0,252.4 L390.0,252.6 L391.1,252.8 L392.2,252.9 L393.2,253.1 L394.3,253.3 L395.4,253.4 L396.5,253.6 L397.5,253.8 L398.6,253.9 L399.7,254.1 L400.8,254.2 L401.8,254.4 L402.9,254.5 L404.0,254.7 L405.0,254.8 L406.1,255.0 L407.2,255.1 L408.3,255.3 L409.3,255.4 L410.4,255.6 L411.5,255.7 L412.5,255.9 L413.6,256.0 L414.7,256.1 L415.8,256.3 L416.8,256.4 L417.9,256.5 L419.0,256.7 L420.0,256.8 L421.1,256.9 L422.2,257.0 L423.3,257.2 L424.3,257.3 L425.4,257.4 L426.5,257.5 L427.6,257.7 L428.6,257.8 L429.7,257.9 L430.8,258.0 L431.8,258.1 L432.9,258.3 L434.0,258.4 L435.1,258.5 L436.1,258.6 L437.2,258.7 L438.3,258.8 L439.3,258.9 L440.4,259.0 L441.5,259.1 L442.6,259.2 L443.6,259.4 L444.7,259.5 L445.8,259.6 L446.8,259.7 L447.9,259.8 L449.0,259.9 L450.1,260.0 L451.1,260.1 L452.2,260.2 L453.3,260.3 L454.4,260.3 L455.4,260.4 L456.5,260.5 L457.6,260.6 L458.6,260.7 L459.7,260.8 L460.8,260.9 L461.9,261.0 L462.9,261.1 L464.0,261.2 L465.1,261.2 L466.1,261.3 L467.2,261.4 L468.3,261.5 L469.4,261.6 L470.4,261.7 L471.5,261.7 L472.6,261.8 L473.6,261.9 L474.7,262.0 L475.8,262.1 L476.9,262.1 L477.9,262.2 L479.0,262.3 L480.1,262.4 L481.2,262.4 L482.2,262.5 L483.3,262.6 L484.4,262.7 L485.4,262.7 L486.5,262.8 L487.6,262.9 L488.7,262.9 L489.7,263.0 L490.8,263.1 L491.9,263.2 L492.9,263.2 L494.0,263.3 L495.1,263.4 L496.2,263.4 L497.2,263.5 L498.3,263.6 L499.4,263.6 L500.4,263.7 L501.5,263.7 L502.6,263.8 L503.7,263.9 L504.7,263.9 L505.8,264.0 L506.9,264.0 L508.0,264.1 L509.0,264.2 L510.1,264.2 L511.2,264.3 L512.2,264.3 L513.3,264.4 L514.4,264.5 L515.5,264.5 L516.5,264.6 L517.6,264.6 L518.7,264.7 L519.7,264.7 L520.8,264.8 L521.9,264.8 L523.0,264.9 L524.0,264.9 L525.1,265.0 L526.2,265.0 L527.2,265.1 L528.3,265.1 L529.4,265.2 L530.5,265.2 L531.5,265.3 L532.6,265.3 L533.7,265.4 L534.8,265.4 L535.8,265.5 L536.9,265.5 L538.0,265.6 L539.0,265.6 L540.1,265.7 L541.2,265.7 L542.3,265.7 L543.3,265.8 L544.4,265.8 L545.5,265.9 L546.5,265.9 L547.6,266.0 L548.7,266.0 L549.8,266.1 L550.8,266.1 L551.9,266.1 L553.0,266.2 L554.0,266.2 L555.1,266.3 L556.2,266.3 L557.3,266.3 L558.3,266.4 L559.4,266.4 L560.5,266.5 L561.6,266.5 L562.6,266.5 L563.7,266.6 L564.8,266.6 L565.8,266.6 L566.9,266.7 L568.0,266.7 L569.1,266.7 L570.1,266.8 L571.2,266.8 L572.3,266.9 L573.3,266.9 L574.4,266.9 L575.5,267.0 L576.6,267.0 L577.6,267.0 L578.7,267.1 L579.8,267.1 L580.8,267.1 L581.9,267.2 L583.0,267.2 L584.1,267.2 L585.1,267.3 L586.2,267.3 L587.3,267.3 L588.4,267.3 L589.4,267.4 L590.5,267.4 L591.6,267.4 L592.6,267.5 L593.7,267.5 L594.8,267.5 L595.9,267.6 L596.9,267.6 L598.0,267.6 L598.0,272 L78.1,272 Z" fill="#2f5bd3" fill-opacity=".14" stroke="none"/><path d="M78.1,-21.8 L79.2,-21.8 L80.2,-21.8 L81.3,-21.8 L82.4,-21.8 L83.4,-21.8 L84.5,-21.8 L85.6,-21.8 L86.7,-21.8 L87.7,-21.8 L88.8,-21.8 L89.9,-21.8 L90.9,-21.8 L92.0,-21.8 L93.1,-21.8 L94.2,-21.8 L95.2,-21.8 L96.3,-21.8 L97.4,-21.8 L98.4,-21.8 L99.5,-21.8 L100.6,-21.8 L101.7,-21.8 L102.7,-21.8 L103.8,-21.8 L104.9,-21.8 L106.0,-21.8 L107.0,-21.8 L108.1,-21.8 L109.2,-21.8 L110.2,-21.8 L111.3,-21.8 L112.4,-21.8 L113.5,-21.8 L114.5,-21.8 L115.6,-21.8 L116.7,-21.8 L117.7,-21.8 L118.8,-21.8 L119.9,-21.8 L121.0,-21.8 L122.0,-21.8 L123.1,-21.8 L124.2,-21.8 L125.2,-21.8 L126.3,-21.8 L127.4,-21.8 L128.5,-21.8 L129.5,-21.8 L130.6,-21.8 L131.7,-21.8 L132.8,-21.8 L133.8,-21.8 L134.9,-21.8 L136.0,-21.8 L137.0,-21.8 L138.1,-21.8 L139.2,-21.8 L140.3,-21.8 L141.3,-21.8 L142.4,-21.8 L143.5,-21.8 L144.5,-21.8 L145.6,-21.8 L146.7,-21.8 L147.8,-21.8 L148.8,-21.8 L149.9,-21.8 L151.0,-21.8 L152.0,-21.8 L153.1,-21.8 L154.2,-21.8 L155.3,-21.8 L156.3,-21.8 L157.4,-21.8 L158.5,-21.8 L159.6,-21.8 L160.6,-21.8 L161.7,-21.8 L162.8,-21.8 L163.8,-21.8 L164.9,-21.8 L166.0,-21.8 L167.1,-21.8 L168.1,-21.8 L169.2,-21.8 L170.3,-21.8 L171.3,-21.8 L172.4,-21.8 L173.5,-21.8 L174.6,-21.8 L175.6,-21.8 L176.7,-21.8 L177.8,-21.8 L178.8,-21.8 L179.9,-21.8 L181.0,-21.8 L182.1,-21.8 L183.1,-21.8 L184.2,-21.8 L185.3,-21.8 L186.4,-21.8 L187.4,-21.8 L188.5,-21.8 L189.6,-21.8 L190.6,-21.8 L191.7,-21.8 L192.8,-21.8 L193.9,-21.8 L194.9,-21.8 L196.0,-21.8 L197.1,-21.8 L198.1,-21.8 L199.2,-21.8 L200.3,-21.8 L201.4,-21.8 L202.4,-21.8 L203.5,-21.8 L204.6,-21.8 L205.6,-21.8 L206.7,-21.8 L207.8,-21.8 L208.9,-21.8 L209.9,-21.8 L211.0,-21.8 L212.1,-21.8 L213.2,-21.8 L214.2,-21.8 L215.3,-21.8 L216.4,-21.8 L217.4,-21.8 L218.5,-21.8 L219.6,-21.8 L220.7,-21.8 L221.7,-21.8 L222.8,-21.8 L223.9,-21.8 L224.9,-21.8 L226.0,-21.8 L227.1,-21.8 L228.2,-21.8 L229.2,-21.8 L230.3,-21.8 L231.4,-21.8 L232.4,-21.8 L233.5,-21.8 L234.6,-21.8 L235.7,-21.8 L236.7,-21.8 L237.8,-21.8 L238.9,-21.8 L240.0,-21.8 L241.0,-21.8 L242.1,-21.8 L243.2,-21.8 L244.2,-21.8 L245.3,-21.8 L246.4,-21.8 L247.5,-21.8 L248.5,-21.8 L249.6,-21.8 L250.7,-21.8 L251.7,-21.8 L252.8,-21.8 L253.9,-21.8 L255.0,-21.8 L256.0,-21.8 L257.1,-21.8 L258.2,-21.8 L259.2,-21.8 L260.3,-21.8 L261.4,-21.8 L262.5,-21.8 L263.5,-21.8 L264.6,-21.8 L265.7,-21.8 L266.8,-21.8 L267.8,-21.8 L268.9,-21.8 L270.0,-21.8 L271.0,-21.8 L272.1,-21.8 L273.2,-21.8 L274.3,-21.8 L275.3,-21.8 L276.4,-21.8 L277.5,-21.8 L278.5,-21.8 L279.6,-21.8 L280.7,-21.8 L281.8,-21.8 L282.8,-21.8 L283.9,-16.1 L285.0,-10.6 L286.0,-5.3 L287.1,-0.0 L288.2,5.1 L289.3,10.1 L290.3,15.0 L291.4,19.8 L292.5,24.4 L293.6,29.0 L294.6,33.4 L295.7,37.8 L296.8,42.0 L297.8,46.2 L298.9,50.2 L300.0,54.2 L301.1,58.1 L302.1,61.9 L303.2,65.6 L304.3,69.2 L305.3,72.8 L306.4,76.2 L307.5,79.6 L308.6,83.0 L309.6,86.2 L310.7,89.4 L311.8,92.5 L312.8,95.6 L313.9,98.5 L315.0,101.5 L316.1,104.3 L317.1,107.1 L318.2,109.9 L319.3,112.5 L320.4,115.2 L321.4,117.8 L322.5,120.3 L323.6,122.7 L324.6,125.2 L325.7,127.5 L326.8,129.9 L327.9,132.1 L328.9,134.4 L330.0,136.6 L331.1,138.7 L332.1,140.8 L333.2,142.9 L334.3,144.9 L335.4,146.9 L336.4,148.8 L337.5,150.7 L338.6,152.6 L339.6,154.4 L340.7,156.2 L341.8,158.0 L342.9,159.7 L343.9,161.4 L345.0,163.1 L346.1,164.7 L347.2,166.3 L348.2,167.9 L349.3,169.4 L350.4,171.0 L351.4,172.5 L352.5,173.9 L353.6,175.3 L354.7,176.8 L355.7,178.1 L356.8,179.5 L357.9,180.8 L358.9,182.1 L360.0,183.4 L361.1,184.7 L362.2,185.9 L363.2,187.1 L364.3,188.3 L365.4,189.5 L366.4,190.7 L367.5,191.8 L368.6,192.9 L369.7,194.0 L370.7,195.1 L371.8,196.2 L372.9,197.2 L374.0,198.2 L375.0,199.2 L376.1,200.2 L377.2,201.2 L378.2,202.1 L379.3,203.1 L380.4,204.0 L381.5,204.9 L382.5,205.8 L383.6,206.7 L384.7,207.6 L385.7,208.4 L386.8,209.2 L387.9,210.1 L389.0,210.9 L390.0,211.7 L391.1,212.4 L392.2,213.2 L393.2,214.0 L394.3,214.7 L395.4,215.4 L396.5,216.2 L397.5,216.9 L398.6,217.6 L399.7,218.3 L400.8,218.9 L401.8,219.6 L402.9,220.3 L404.0,220.9 L405.0,221.5 L406.1,222.2 L407.2,222.8 L408.3,223.4 L409.3,224.0 L410.4,224.6 L411.5,225.2 L412.5,225.7 L413.6,226.3 L414.7,226.8 L415.8,227.4 L416.8,227.9 L417.9,228.5 L419.0,229.0 L420.0,229.5 L421.1,230.0 L422.2,230.5 L423.3,231.0 L424.3,231.5 L425.4,231.9 L426.5,232.4 L427.6,232.9 L428.6,233.3 L429.7,233.8 L430.8,234.2 L431.8,234.7 L432.9,235.1 L434.0,235.5 L435.1,235.9 L436.1,236.3 L437.2,236.7 L438.3,237.1 L439.3,237.5 L440.4,237.9 L441.5,238.3 L442.6,238.7 L443.6,239.1 L444.7,239.4 L445.8,239.8 L446.8,240.2 L447.9,240.5 L449.0,240.9 L450.1,241.2 L451.1,241.5 L452.2,241.9 L453.3,242.2 L454.4,242.5 L455.4,242.8 L456.5,243.2 L457.6,243.5 L458.6,243.8 L459.7,244.1 L460.8,244.4 L461.9,244.7 L462.9,245.0 L464.0,245.2 L465.1,245.5 L466.1,245.8 L467.2,246.1 L468.3,246.4 L469.4,246.6 L470.4,246.9 L471.5,247.2 L472.6,247.4 L473.6,247.7 L474.7,247.9 L475.8,248.2 L476.9,248.4 L477.9,248.7 L479.0,248.9 L480.1,249.1 L481.2,249.4 L482.2,249.6 L483.3,249.8 L484.4,250.0 L485.4,250.3 L486.5,250.5 L487.6,250.7 L488.7,250.9 L489.7,251.1 L490.8,251.3 L491.9,251.5 L492.9,251.7 L494.0,251.9 L495.1,252.1 L496.2,252.3 L497.2,252.5 L498.3,252.7 L499.4,252.9 L500.4,253.1 L501.5,253.3 L502.6,253.5 L503.7,253.6 L504.7,253.8 L505.8,254.0 L506.9,254.2 L508.0,254.3 L509.0,254.5 L510.1,254.7 L511.2,254.8 L512.2,255.0 L513.3,255.2 L514.4,255.3 L515.5,255.5 L516.5,255.6 L517.6,255.8 L518.7,255.9 L519.7,256.1 L520.8,256.2 L521.9,256.4 L523.0,256.5 L524.0,256.7 L525.1,256.8 L526.2,257.0 L527.2,257.1 L528.3,257.2 L529.4,257.4 L530.5,257.5 L531.5,257.6 L532.6,257.8 L533.7,257.9 L534.8,258.0 L535.8,258.1 L536.9,258.3 L538.0,258.4 L539.0,258.5 L540.1,258.6 L541.2,258.7 L542.3,258.9 L543.3,259.0 L544.4,259.1 L545.5,259.2 L546.5,259.3 L547.6,259.4 L548.7,259.5 L549.8,259.7 L550.8,259.8 L551.9,259.9 L553.0,260.0 L554.0,260.1 L555.1,260.2 L556.2,260.3 L557.3,260.4 L558.3,260.5 L559.4,260.6 L560.5,260.7 L561.6,260.8 L562.6,260.9 L563.7,261.0 L564.8,261.1 L565.8,261.2 L566.9,261.3 L568.0,261.3 L569.1,261.4 L570.1,261.5 L571.2,261.6 L572.3,261.7 L573.3,261.8 L574.4,261.9 L575.5,262.0 L576.6,262.0 L577.6,262.1 L578.7,262.2 L579.8,262.3 L580.8,262.4 L581.9,262.4 L583.0,262.5 L584.1,262.6 L585.1,262.7 L586.2,262.7 L587.3,262.8 L588.4,262.9 L589.4,263.0 L590.5,263.0 L591.6,263.1 L592.6,263.2 L593.7,263.3 L594.8,263.3 L595.9,263.4 L596.9,263.5 L598.0,263.5" stroke="#2f5bd3" stroke-width="2.4" stroke-dasharray="8 5"/><path d="M78.1,272.0 L79.2,272.0 L80.2,272.0 L81.3,272.0 L82.4,272.0 L83.4,272.0 L84.5,272.0 L85.6,272.0 L86.7,272.0 L87.7,272.0 L88.8,272.0 L89.9,272.0 L90.9,272.0 L92.0,272.0 L93.1,272.0 L94.2,272.0 L95.2,272.0 L96.3,271.9 L97.4,271.9 L98.4,271.8 L99.5,271.8 L100.6,271.7 L101.7,271.6 L102.7,271.4 L103.8,271.3 L104.9,271.0 L106.0,270.8 L107.0,270.5 L108.1,270.1 L109.2,269.7 L110.2,269.2 L111.3,268.6 L112.4,268.0 L113.5,267.3 L114.5,266.5 L115.6,265.7 L116.7,264.8 L117.7,263.8 L118.8,262.7 L119.9,261.6 L121.0,260.3 L122.0,259.1 L123.1,257.7 L124.2,256.3 L125.2,254.8 L126.3,253.3 L127.4,251.7 L128.5,250.1 L129.5,248.4 L130.6,246.7 L131.7,245.0 L132.8,243.2 L133.8,241.4 L134.9,239.6 L136.0,237.8 L137.0,235.9 L138.1,234.1 L139.2,232.2 L140.3,230.4 L141.3,228.6 L142.4,226.8 L143.5,225.0 L144.5,223.2 L145.6,221.4 L146.7,219.7 L147.8,218.0 L148.8,216.3 L149.9,214.7 L151.0,213.1 L152.0,211.6 L153.1,210.0 L154.2,208.6 L155.3,207.1 L156.3,205.7 L157.4,204.4 L158.5,203.1 L159.6,201.8 L160.6,200.6 L161.7,199.5 L162.8,198.3 L163.8,197.3 L164.9,196.3 L166.0,195.3 L167.1,194.4 L168.1,193.5 L169.2,192.7 L170.3,191.9 L171.3,191.2 L172.4,190.5 L173.5,189.9 L174.6,189.3 L175.6,188.7 L176.7,188.2 L177.8,187.7 L178.8,187.3 L179.9,186.9 L181.0,186.6 L182.1,186.3 L183.1,186.0 L184.2,185.8 L185.3,185.6 L186.4,185.4 L187.4,185.3 L188.5,185.2 L189.6,185.1 L190.6,185.1 L191.7,185.1 L192.8,185.1 L193.9,185.2 L194.9,185.2 L196.0,185.3 L197.1,185.5 L198.1,185.6 L199.2,185.8 L200.3,186.0 L201.4,186.2 L202.4,186.4 L203.5,186.7 L204.6,187.0 L205.6,187.3 L206.7,187.6 L207.8,187.9 L208.9,188.2 L209.9,188.6 L211.0,189.0 L212.1,189.3 L213.2,189.7 L214.2,190.1 L215.3,190.6 L216.4,191.0 L217.4,191.4 L218.5,191.9 L219.6,192.3 L220.7,192.8 L221.7,193.3 L222.8,193.8 L223.9,194.2 L224.9,194.7 L226.0,195.2 L227.1,195.7 L228.2,196.3 L229.2,196.8 L230.3,197.3 L231.4,197.8 L232.4,198.3 L233.5,198.9 L234.6,199.4 L235.7,199.9 L236.7,200.5 L237.8,201.0 L238.9,201.6 L240.0,202.1 L241.0,202.6 L242.1,203.2 L243.2,203.7 L244.2,204.3 L245.3,204.8 L246.4,205.4 L247.5,205.9 L248.5,206.5 L249.6,207.0 L250.7,207.5 L251.7,208.1 L252.8,208.6 L253.9,209.2 L255.0,209.7 L256.0,210.2 L257.1,210.8 L258.2,211.3 L259.2,211.8 L260.3,212.3 L261.4,212.9 L262.5,213.4 L263.5,213.9 L264.6,214.4 L265.7,214.9 L266.8,215.4 L267.8,216.0 L268.9,216.5 L270.0,217.0 L271.0,217.5 L272.1,218.0 L273.2,218.4 L274.3,218.9 L275.3,219.4 L276.4,219.9 L277.5,220.4 L278.5,220.9 L279.6,221.3 L280.7,221.8 L281.8,222.3 L282.8,222.7 L283.9,223.2 L285.0,223.6 L286.0,224.1 L287.1,224.5 L288.2,225.0 L289.3,225.4 L290.3,225.9 L291.4,226.3 L292.5,226.7 L293.6,227.1 L294.6,227.6 L295.7,228.0 L296.8,228.4 L297.8,228.8 L298.9,229.2 L300.0,229.6 L301.1,230.0 L302.1,230.4 L303.2,230.8 L304.3,231.2 L305.3,231.6 L306.4,232.0 L307.5,232.3 L308.6,232.7 L309.6,233.1 L310.7,233.5 L311.8,233.8 L312.8,234.2 L313.9,234.5 L315.0,234.9 L316.1,235.3 L317.1,235.6 L318.2,235.9 L319.3,236.3 L320.4,236.6 L321.4,237.0 L322.5,237.3 L323.6,237.6 L324.6,237.9 L325.7,238.3 L326.8,238.6 L327.9,238.9 L328.9,239.2 L330.0,239.5 L331.1,239.8 L332.1,240.1 L333.2,240.4 L334.3,240.7 L335.4,241.0 L336.4,241.3 L337.5,241.6 L338.6,241.9 L339.6,242.2 L340.7,242.4 L341.8,242.7 L342.9,243.0 L343.9,243.3 L345.0,243.5 L346.1,243.8 L347.2,244.0 L348.2,244.3 L349.3,244.6 L350.4,244.8 L351.4,245.1 L352.5,245.3 L353.6,245.6 L354.7,245.8 L355.7,246.1 L356.8,246.3 L357.9,246.5 L358.9,246.8 L360.0,247.0 L361.1,247.2 L362.2,247.4 L363.2,247.7 L364.3,247.9 L365.4,248.1 L366.4,248.3 L367.5,248.5 L368.6,248.8 L369.7,249.0 L370.7,249.2 L371.8,249.4 L372.9,249.6 L374.0,249.8 L375.0,250.0 L376.1,250.2 L377.2,250.4 L378.2,250.6 L379.3,250.8 L380.4,251.0 L381.5,251.2 L382.5,251.3 L383.6,251.5 L384.7,251.7 L385.7,251.9 L386.8,252.1 L387.9,252.2 L389.0,252.4 L390.0,252.6 L391.1,252.8 L392.2,252.9 L393.2,253.1 L394.3,253.3 L395.4,253.4 L396.5,253.6 L397.5,253.8 L398.6,253.9 L399.7,254.1 L400.8,254.2 L401.8,254.4 L402.9,254.5 L404.0,254.7 L405.0,254.8 L406.1,255.0 L407.2,255.1 L408.3,255.3 L409.3,255.4 L410.4,255.6 L411.5,255.7 L412.5,255.9 L413.6,256.0 L414.7,256.1 L415.8,256.3 L416.8,256.4 L417.9,256.5 L419.0,256.7 L420.0,256.8 L421.1,256.9 L422.2,257.0 L423.3,257.2 L424.3,257.3 L425.4,257.4 L426.5,257.5 L427.6,257.7 L428.6,257.8 L429.7,257.9 L430.8,258.0 L431.8,258.1 L432.9,258.3 L434.0,258.4 L435.1,258.5 L436.1,258.6 L437.2,258.7 L438.3,258.8 L439.3,258.9 L440.4,259.0 L441.5,259.1 L442.6,259.2 L443.6,259.4 L444.7,259.5 L445.8,259.6 L446.8,259.7 L447.9,259.8 L449.0,259.9 L450.1,260.0 L451.1,260.1 L452.2,260.2 L453.3,260.3 L454.4,260.3 L455.4,260.4 L456.5,260.5 L457.6,260.6 L458.6,260.7 L459.7,260.8 L460.8,260.9 L461.9,261.0 L462.9,261.1 L464.0,261.2 L465.1,261.2 L466.1,261.3 L467.2,261.4 L468.3,261.5 L469.4,261.6 L470.4,261.7 L471.5,261.7 L472.6,261.8 L473.6,261.9 L474.7,262.0 L475.8,262.1 L476.9,262.1 L477.9,262.2 L479.0,262.3 L480.1,262.4 L481.2,262.4 L482.2,262.5 L483.3,262.6 L484.4,262.7 L485.4,262.7 L486.5,262.8 L487.6,262.9 L488.7,262.9 L489.7,263.0 L490.8,263.1 L491.9,263.2 L492.9,263.2 L494.0,263.3 L495.1,263.4 L496.2,263.4 L497.2,263.5 L498.3,263.6 L499.4,263.6 L500.4,263.7 L501.5,263.7 L502.6,263.8 L503.7,263.9 L504.7,263.9 L505.8,264.0 L506.9,264.0 L508.0,264.1 L509.0,264.2 L510.1,264.2 L511.2,264.3 L512.2,264.3 L513.3,264.4 L514.4,264.5 L515.5,264.5 L516.5,264.6 L517.6,264.6 L518.7,264.7 L519.7,264.7 L520.8,264.8 L521.9,264.8 L523.0,264.9 L524.0,264.9 L525.1,265.0 L526.2,265.0 L527.2,265.1 L528.3,265.1 L529.4,265.2 L530.5,265.2 L531.5,265.3 L532.6,265.3 L533.7,265.4 L534.8,265.4 L535.8,265.5 L536.9,265.5 L538.0,265.6 L539.0,265.6 L540.1,265.7 L541.2,265.7 L542.3,265.7 L543.3,265.8 L544.4,265.8 L545.5,265.9 L546.5,265.9 L547.6,266.0 L548.7,266.0 L549.8,266.1 L550.8,266.1 L551.9,266.1 L553.0,266.2 L554.0,266.2 L555.1,266.3 L556.2,266.3 L557.3,266.3 L558.3,266.4 L559.4,266.4 L560.5,266.5 L561.6,266.5 L562.6,266.5 L563.7,266.6 L564.8,266.6 L565.8,266.6 L566.9,266.7 L568.0,266.7 L569.1,266.7 L570.1,266.8 L571.2,266.8 L572.3,266.9 L573.3,266.9 L574.4,266.9 L575.5,267.0 L576.6,267.0 L577.6,267.0 L578.7,267.1 L579.8,267.1 L580.8,267.1 L581.9,267.2 L583.0,267.2 L584.1,267.2 L585.1,267.3 L586.2,267.3 L587.3,267.3 L588.4,267.3 L589.4,267.4 L590.5,267.4 L591.6,267.4 L592.6,267.5 L593.7,267.5 L594.8,267.5 L595.9,267.6 L596.9,267.6 L598.0,267.6" stroke="#2f5bd3" stroke-width="3"/></g><text x="191.4" y="175.1" font-size="16.9" font-weight="700" text-anchor="middle" fill="#2f5bd3">mesures (6 000 K)</text><path d="M301.8,54 L287.8,32" stroke="#2f5bd3" stroke-width="2" stroke-dasharray="4 3" fill="none" marker-end="url(#cnb-arr2)"/><text x="598" y="80" font-size="15.6" font-weight="700" text-anchor="end" fill="#2f5bd3">« catastrophe ultraviolette »</text><text x="598" y="100.0" font-size="15.6" text-anchor="end" fill="#2f5bd3">prévision classique (6 000 K)</text><line x1="72" y1="322" x2="100" y2="322" stroke="#1d2433" stroke-width="2.8" /><text x="106" y="326" font-size="15.6" fill="#1d2433">mesures (expliquées par Planck)</text><line x1="72" y1="346" x2="100" y2="346" stroke="#1d2433" stroke-width="2.2" stroke-dasharray="8 5"/><text x="106" y="350" font-size="15.6" fill="#1d2433">prévision de la physique classique</text><line x1="62" y1="272" x2="610" y2="272" stroke="#1d2433" stroke-width="1.3" marker-end="url(#cnb-arr)"/><line x1="62" y1="272" x2="62" y2="16" stroke="#1d2433" stroke-width="1.3" marker-end="url(#cnb-arr)"/><line x1="62.0" y1="272" x2="62.0" y2="277" stroke="#1d2433"/><text x="62.0" y="291" font-size="15.6" text-anchor="middle" fill="#1d2433">0</text><line x1="129.0" y1="272" x2="129.0" y2="277" stroke="#1d2433"/><line x1="196.0" y1="272" x2="196.0" y2="277" stroke="#1d2433"/><text x="196.0" y="291" font-size="15.6" text-anchor="middle" fill="#1d2433">500</text><line x1="263.0" y1="272" x2="263.0" y2="277" stroke="#1d2433"/><line x1="330.0" y1="272" x2="330.0" y2="277" stroke="#1d2433"/><text x="330.0" y="291" font-size="15.6" text-anchor="middle" fill="#1d2433">1 000</text><line x1="397.0" y1="272" x2="397.0" y2="277" stroke="#1d2433"/><line x1="464.0" y1="272" x2="464.0" y2="277" stroke="#1d2433"/><text x="464.0" y="291" font-size="15.6" text-anchor="middle" fill="#1d2433">1 000</text><line x1="531.0" y1="272" x2="531.0" y2="277" stroke="#1d2433"/><line x1="598.0" y1="272" x2="598.0" y2="277" stroke="#1d2433"/><text x="598.0" y="291" font-size="15.6" text-anchor="middle" fill="#1d2433">2 000</text><text x="598" y="306" font-size="16.9" text-anchor="end" fill="#1d2433">Longueur d’onde <tspan font-style="italic" font-family="Cambria,Georgia,serif">λ</tspan> (nm)</text><text transform="translate(46,159.0) rotate(-90)" font-size="16.9" text-anchor="middle" fill="#1d2433">Intensité lumineuse émise</text></svg>
+        <figcaption>Lumière émise par un corps chauffé («&nbsp;corps noir&nbsp;») à 6&nbsp;000&nbsp;K. La prévision de la physique classique (pointillés) rejoint les mesures aux grandes longueurs d’onde, mais devient infinie quand <i>λ</i> diminue&nbsp;: c’est la «&nbsp;catastrophe ultraviolette&nbsp;».</figcaption>
+        <div class="links"><a class="ghost" href="https://phet.colorado.edu/sims/html/blackbody-spectrum/latest/blackbody-spectrum_all.html?locale=fr" target="_blank" rel="noopener">▶ Simulation PhET «&nbsp;Spectre du corps noir&nbsp;»</a></div>
+      </figure>
+      <p>En <b class="date">1900</b>, Max Planck (1858-1947) propose une hypothèse audacieuse&nbsp;: les échanges d’énergie entre la lumière et la matière ne se font pas de façon continue, mais par «&nbsp;paquets&nbsp;» d’énergie bien déterminée, qu’il appelle des <b>quanta</b>.</p>
+      <p>En <b class="date">1905</b>, Albert Einstein (1879-1955) va plus loin&nbsp;: la lumière elle-même serait constituée de ces quanta d’énergie, des particules sans masse se déplaçant à la vitesse de la lumière, que l’on nommera plus tard <b>photons</b> (symbole <i>γ</i>). Sur les schémas, un photon est représenté par une flèche ondulée&nbsp;: <svg class="photon-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 14" width="46" height="14" role="img" aria-label="flèche ondulée représentant un photon"><polyline points="0.0,7.0 0.5,6.3 1.0,5.6 1.5,4.9 2.0,4.3 2.5,3.8 3.0,3.4 3.5,3.2 4.0,3.0 4.5,3.0 5.0,3.2 5.5,3.4 6.0,3.8 6.5,4.3 7.0,4.9 7.5,5.6 8.0,6.3 8.5,7.0 9.0,7.7 9.5,8.4 10.0,9.1 10.5,9.7 11.0,10.2 11.5,10.6 12.0,10.8 12.5,11.0 13.0,11.0 13.5,10.8 14.0,10.6 14.5,10.2 15.0,9.7 15.5,9.1 16.0,8.4 16.5,7.7 17.0,7.0 17.5,6.3 18.0,5.6 18.5,4.9 19.0,4.3 19.5,3.8 20.0,3.4 20.5,3.2 21.0,3.0 21.5,3.0 22.0,3.2 22.5,3.4 23.0,3.8 23.5,4.3 24.0,4.9 24.5,5.6 25.0,6.3 25.5,7.0 26.0,7.7 26.5,8.4 27.0,9.1 27.5,9.7 28.0,10.2 28.5,10.6 29.0,10.8 29.5,11.0 30.0,11.0 30.5,10.8 31.0,10.6 31.5,10.2 32.0,9.7 32.5,9.1 33.0,8.4 33.5,7.7 34.0,7.0" fill="none" stroke="#c2410c" stroke-width="1.8" stroke-linecap="round"/><path d="M34,2 L45,7 L34,12 z" fill="#c2410c"/></svg></p>
+      <p>En <b class="date">1913</b>, Niels Bohr (1885-1962) applique cette idée à l’atome. Dans son modèle, les électrons ne peuvent occuper que certaines orbites, situées à des distances bien précises du noyau. L’énergie de l’atome ne peut donc prendre que certaines valeurs&nbsp;: elle est <b>quantifiée</b>.</p>
+      <figure class="bohr">
+        <svg class="bohr-svg" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 250" role="img" aria-label="Schéma du modèle de Bohr : trois orbites autour du noyau ; à chaque orbite correspond un niveau d’énergie de l’atome, E1, E2 et E3" font-family="'Source Sans 3','Segoe UI',Arial,'Liberation Sans','DejaVu Sans',sans-serif"><defs><marker id="bh-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d2433"/></marker></defs><rect width="560" height="250" rx="10" fill="#ffffff"/><circle cx="130" cy="125" r="34" fill="none" stroke="#24345c" stroke-width="2"/><text x="130" y="153" font-size="11.5" text-anchor="middle" fill="#24345c" font-weight="600">orbite 1</text><circle cx="130" cy="125" r="70" fill="none" stroke="#0f766e" stroke-width="2"/><text x="130" y="189" font-size="11.5" text-anchor="middle" fill="#0f766e" font-weight="600">orbite 2</text><circle cx="130" cy="125" r="106" fill="none" stroke="#a16207" stroke-width="2"/><text x="130" y="225" font-size="11.5" text-anchor="middle" fill="#a16207" font-weight="600">orbite 3</text><circle cx="130" cy="125" r="10" fill="#c2410c"/><text x="130" y="130" font-size="15" font-weight="700" text-anchor="middle" fill="#fff">+</text><circle cx="106.0" cy="101.0" r="6" fill="#2f5bd3"/><text x="97.0" y="93.0" font-size="13.0" text-anchor="end" fill="#2f5bd3">e⁻</text><text x="130" y="244" font-size="12.0" text-anchor="middle" fill="#5d6577">atome (noyau + électron)</text><line x1="300" y1="224" x2="300" y2="28" stroke="#1d2433" stroke-width="1.3" marker-end="url(#bh-arr)"/><text x="308" y="34" font-size="13.0" fill="#1d2433">Énergie de l’atome</text><line x1="316" y1="208.0" x2="410" y2="208.0" stroke="#24345c" stroke-width="2.8"/><text x="418" y="213.0" font-size="15.0" fill="#24345c">E<tspan baseline-shift="sub" font-size="11.0">1</tspan><tspan font-size="12.0" dx="6">orbite 1</tspan></text><line x1="316" y1="81.4" x2="410" y2="81.4" stroke="#0f766e" stroke-width="2.8"/><text x="418" y="90.4" font-size="15.0" fill="#0f766e">E<tspan baseline-shift="sub" font-size="11.0">2</tspan><tspan font-size="12.0" dx="6">orbite 2</tspan></text><line x1="316" y1="58.0" x2="410" y2="58.0" stroke="#a16207" stroke-width="2.8"/><text x="418" y="59.0" font-size="15.0" fill="#a16207">E<tspan baseline-shift="sub" font-size="11.0">3</tspan><tspan font-size="12.0" dx="6">orbite 3</tspan></text><text x="316" y="232.0" font-size="12.0" text-anchor="start" fill="#5d6577">état fondamental</text></svg>
+        <figcaption>Modèle de Bohr (schéma simplifié, sans échelle)&nbsp;: l’électron ne peut occuper que certaines orbites&nbsp;; à chaque orbite correspond un niveau d’énergie de l’atome.</figcaption>
+      </figure>
+    </div>
+    <p style="margin-top:12px">Chaque photon possède une énergie <i>E</i> en joule (J), qui dépend de la fréquence <i>ν</i> en hertz (Hz) – ou de la longueur d’onde <i>λ</i> en mètre (m) – de l’onde électromagnétique associée&nbsp;:</p>
+    <div class="formula" aria-label="E égale h fois nu égale h fois c sur lambda"><span><i>E</i> = <i>h</i> × <i>ν</i> =</span><span class="frac"><span><i>h</i> × <i>c</i></span><span><i>λ</i></span></span></div>
+    <p class="consts">avec <i>h</i> = 6,626.10<sup>-34</sup> J.s (constante de Planck) et <i>c</i> = 2,998.10<sup>8</sup> m.s<sup>-1</sup> (célérité des ondes électromagnétiques dans le vide).</p>
+
+    <h3 style="margin-top:18px">Fonctionnement d’une lampe à gaz</h3>
+    <div class="two">
+      <div>
+        <p>Dans ces lampes, comme celle posée sur le bureau du professeur ou les tubes fluorescents du plafond, des électrons traversent la lampe et entrent en collision avec les atomes du gaz qu’elle contient. Ces atomes reçoivent ainsi de l’énergie&nbsp;: on parle d’<b>absorption</b> d’énergie, ou l’on dit que les atomes sont «&nbsp;<b>excités</b>&nbsp;». Leurs électrons passent alors sur des niveaux d’énergie supérieurs.</p>
+        <p style="margin-top:8px">Ce phénomène n’est pas permanent&nbsp;: chaque électron revient ensuite spontanément vers un état de plus basse énergie (<b>désexcitation</b>). C’est à ce moment qu’un <b>photon est émis</b>, donc une onde électromagnétique associée. Si sa longueur d’onde appartient au domaine du visible, de la lumière est ainsi créée.</p>
+        <div class="links">
+          <a class="ghost" href="https://urlr.me/npV9HB" target="_blank" rel="noopener">▶ Vidéo «&nbsp;Histoire de la lumière : le spectre lumineux&nbsp;»</a>
+          <a class="ghost" href="https://urlr.me/tAKucf" target="_blank" rel="noopener">▶ Vidéo «&nbsp;L’électron dans tous ses états&nbsp;»</a>
+        </div>
+      </div>
+      <div class="anim-wrap">
+        <figure>
+          <svg viewBox="0 0 150 130" role="img" aria-label="Excitation : un électron de la décharge heurte l’atome, qui passe du niveau E1 au niveau E2">
+            <line x1="20" y1="30" x2="90" y2="30" stroke="#1d2433" stroke-width="3"/><text x="4" y="35" font-size="13">E₂</text>
+            <line x1="20" y1="92" x2="90" y2="92" stroke="#1d2433" stroke-width="3"/><text x="4" y="97" font-size="13">E₁</text>
+            <g class="e-up"><circle cx="55" cy="92" r="7" fill="#6b7280"/></g>
+            <g class="e-hit"><circle cx="68" cy="92" r="4.5" fill="#2563eb"/><text x="62" y="112" font-size="11" fill="#2563eb">e⁻</text></g>
+          </svg>
+          <figcaption>Excitation par collision<br><span style="font-weight:400">(électron de la décharge)</span></figcaption>
+        </figure>
+        <figure>
+          <svg viewBox="0 0 150 130" role="img" aria-label="Émission : l’atome passe du niveau E2 au niveau E1 et émet un photon">
+            <line x1="20" y1="30" x2="90" y2="30" stroke="#1d2433" stroke-width="3"/><text x="4" y="35" font-size="13">E₂</text>
+            <line x1="20" y1="92" x2="90" y2="92" stroke="#1d2433" stroke-width="3"/><text x="4" y="97" font-size="13">E₁</text>
+            <g class="e-down"><circle cx="55" cy="30" r="7" fill="#6b7280"/></g>
+            <g class="w-out"><path d="M60 62 q5 -8 10 0 t10 0 t10 0 t10 0 l3 0" fill="none" stroke="#c2410c" stroke-width="2.5"/><path d="M102 56.5 L112 62 L102 67.5 Z" fill="#c2410c"/><text x="78" y="82" font-size="12" fill="#c2410c">hν</text></g>
+          </svg>
+          <figcaption>Désexcitation<br><span style="font-weight:400">(émission d’un photon)</span></figcaption>
+        </figure>
+        <p class="hint" style="grid-column:1/-1;text-align:center">e⁻ : électron de la décharge électrique – hν : photon émis</p>
+        <div style="grid-column:1/-1;display:flex;justify-content:center"><button class="btn" type="button" id="anim-btn">▶ Lancer l’animation</button></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="doc-label">Document 2</span>
+    <h3>Logiciel de simulation</h3>
+    <div class="two two-fig">
+      <div>
+        <div class="links" style="margin:0 0 10px"><a href="http://physique.ostralo.net/spectre_em_abs/" target="_blank" rel="noopener">Ouvrir la simulation ↗</a></div>
+        <p>En choisissant un élément, on observe&nbsp;:</p>
+        <ul style="margin:6px 0 8px 20px">
+          <li>en haut&nbsp;: son <b>spectre d’émission</b> (lumière émise par les atomes excités)&nbsp;;</li>
+          <li>en bas&nbsp;: son <b>spectre d’absorption</b> (lumière absorbée par les atomes éclairés en lumière blanche), non utilisé ici.</li>
+        </ul>
+        <p>En <b>zoomant</b> sur chaque raie colorée, on peut mesurer la longueur d’onde <i>λ</i> de la radiation correspondante à 0,1&nbsp;nm près.</p>
+      </div>
+      <figure><svg class="sim-shot" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 222" role="img" aria-label="Exemple de spectres de l’hydrogène : spectre d’émission (raies colorées sur fond noir) et spectre d’absorption (raies noires sur le spectre de la lumière blanche)" font-family="'Source Sans 3','Segoe UI',Arial,'Liberation Sans','DejaVu Sans',sans-serif"><rect width="640" height="222" rx="10" fill="#ffffff"/><text x="40" y="22" font-size="14" font-weight="700" fill="#24345c">Spectre d’émission</text><text x="580" y="22" font-size="13" fill="#5d6577" text-anchor="end">exemple : hydrogène (H)</text><rect x="40" y="30" width="540" height="60" fill="#0b0d14"/><rect x="82.6" y="30" width="3" height="60" fill="#7d00db"/><rect x="117.3" y="30" width="3" height="60" fill="#2800ff"/><rect x="193.3" y="30" width="3" height="60" fill="#00efff"/><rect x="441.7" y="30" width="3" height="60" fill="#ff0000"/><line x1="40" y1="104" x2="580" y2="104" stroke="#1d2433" stroke-width="1"/><line x1="69.2" y1="100" x2="69.2" y2="108" stroke="#1d2433"/><text x="69.2" y="122" font-size="12" text-anchor="middle" fill="#1d2433">400</text><line x1="142.2" y1="100" x2="142.2" y2="108" stroke="#1d2433"/><text x="142.2" y="122" font-size="12" text-anchor="middle" fill="#1d2433">450</text><line x1="215.1" y1="100" x2="215.1" y2="108" stroke="#1d2433"/><text x="215.1" y="122" font-size="12" text-anchor="middle" fill="#1d2433">500</text><line x1="288.1" y1="100" x2="288.1" y2="108" stroke="#1d2433"/><text x="288.1" y="122" font-size="12" text-anchor="middle" fill="#1d2433">550</text><line x1="361.1" y1="100" x2="361.1" y2="108" stroke="#1d2433"/><text x="361.1" y="122" font-size="12" text-anchor="middle" fill="#1d2433">600</text><line x1="434.1" y1="100" x2="434.1" y2="108" stroke="#1d2433"/><text x="434.1" y="122" font-size="12" text-anchor="middle" fill="#1d2433">650</text><line x1="507.0" y1="100" x2="507.0" y2="108" stroke="#1d2433"/><text x="507.0" y="122" font-size="12" text-anchor="middle" fill="#1d2433">700</text><line x1="580.0" y1="100" x2="580.0" y2="108" stroke="#1d2433"/><text x="580.0" y="122" font-size="12" text-anchor="middle" fill="#1d2433">750</text><text x="588" y="108" font-size="12" fill="#1d2433">λ (nm)</text><line x1="84.1" y1="90" x2="84.1" y2="134" stroke="#9aa3b5" stroke-dasharray="2 3"/><line x1="118.8" y1="90" x2="118.8" y2="134" stroke="#9aa3b5" stroke-dasharray="2 3"/><line x1="194.8" y1="90" x2="194.8" y2="134" stroke="#9aa3b5" stroke-dasharray="2 3"/><line x1="443.2" y1="90" x2="443.2" y2="134" stroke="#9aa3b5" stroke-dasharray="2 3"/><rect x="40.00" y="134" width="1.13" height="60" fill="#610061"/><rect x="40.73" y="134" width="1.13" height="60" fill="#630064"/><rect x="41.46" y="134" width="1.13" height="60" fill="#640066"/><rect x="42.19" y="134" width="1.13" height="60" fill="#660068"/><rect x="42.92" y="134" width="1.13" height="60" fill="#67006a"/><rect x="43.65" y="134" width="1.13" height="60" fill="#69006d"/><rect x="44.38" y="134" width="1.13" height="60" fill="#6a006f"/><rect x="45.11" y="134" width="1.13" height="60" fill="#6c0071"/><rect x="45.84" y="134" width="1.13" height="60" fill="#6d0073"/><rect x="46.57" y="134" width="1.13" height="60" fill="#6e0075"/><rect x="47.30" y="134" width="1.13" height="60" fill="#6f0077"/><rect x="48.03" y="134" width="1.13" height="60" fill="#71007a"/><rect x="48.76" y="134" width="1.13" height="60" fill="#72007c"/><rect x="49.49" y="134" width="1.13" height="60" fill="#73007e"/><rect x="50.22" y="134" width="1.13" height="60" fill="#740080"/><rect x="50.95" y="134" width="1.13" height="60" fill="#750082"/><rect x="51.68" y="134" width="1.13" height="60" fill="#760084"/><rect x="52.41" y="134" width="1.13" height="60" fill="#770086"/><rect x="53.14" y="134" width="1.13" height="60" fill="#780088"/><rect x="53.86" y="134" width="1.13" height="60" fill="#79008a"/><rect x="54.59" y="134" width="1.13" height="60" fill="#79008d"/><rect x="55.32" y="134" width="1.13" height="60" fill="#7a008f"/><rect x="56.05" y="134" width="1.13" height="60" fill="#7b0091"/><rect x="56.78" y="134" width="1.13" height="60" fill="#7c0093"/><rect x="57.51" y="134" width="1.13" height="60" fill="#7c0095"/><rect x="58.24" y="134" width="1.13" height="60" fill="#7d0097"/><rect x="58.97" y="134" width="1.13" height="60" fill="#7e0099"/><rect x="59.70" y="134" width="1.13" height="60" fill="#7e009b"/><rect x="60.43" y="134" width="1.13" height="60" fill="#7f009d"/><rect x="61.16" y="134" width="1.13" height="60" fill="#7f009f"/><rect x="61.89" y="134" width="1.13" height="60" fill="#8000a1"/><rect x="62.62" y="134" width="1.13" height="60" fill="#8000a3"/><rect x="63.35" y="134" width="1.13" height="60" fill="#8100a5"/><rect x="64.08" y="134" width="1.13" height="60" fill="#8100a7"/><rect x="64.81" y="134" width="1.13" height="60" fill="#8100a9"/><rect x="65.54" y="134" width="1.13" height="60" fill="#8200ab"/><rect x="66.27" y="134" width="1.13" height="60" fill="#8200ad"/><rect x="67.00" y="134" width="1.13" height="60" fill="#8200af"/><rect x="67.73" y="134" width="1.13" height="60" fill="#8200b1"/><rect x="68.46" y="134" width="1.13" height="60" fill="#8200b3"/><rect x="69.19" y="134" width="1.13" height="60" fill="#8300b5"/><rect x="69.92" y="134" width="1.13" height="60" fill="#8300b7"/><rect x="70.65" y="134" width="1.13" height="60" fill="#8300b9"/><rect x="71.38" y="134" width="1.13" height="60" fill="#8300ba"/><rect x="72.11" y="134" width="1.13" height="60" fill="#8300bc"/><rect x="72.84" y="134" width="1.13" height="60" fill="#8300be"/><rect x="73.57" y="134" width="1.13" height="60" fill="#8300c0"/><rect x="74.30" y="134" width="1.13" height="60" fill="#8200c2"/><rect x="75.03" y="134" width="1.13" height="60" fill="#8200c4"/><rect x="75.76" y="134" width="1.13" height="60" fill="#8200c6"/><rect x="76.49" y="134" width="1.13" height="60" fill="#8200c8"/><rect x="77.22" y="134" width="1.13" height="60" fill="#8200ca"/><rect x="77.95" y="134" width="1.13" height="60" fill="#8100cc"/><rect x="78.68" y="134" width="1.13" height="60" fill="#8100ce"/><rect x="79.41" y="134" width="1.13" height="60" fill="#8100cf"/><rect x="80.14" y="134" width="1.13" height="60" fill="#8000d1"/><rect x="80.86" y="134" width="1.13" height="60" fill="#8000d3"/><rect x="81.59" y="134" width="1.13" height="60" fill="#7f00d5"/><rect x="82.32" y="134" width="1.13" height="60" fill="#7f00d7"/><rect x="83.05" y="134" width="1.13" height="60" fill="#7e00d9"/><rect x="83.78" y="134" width="1.13" height="60" fill="#7e00db"/><rect x="84.51" y="134" width="1.13" height="60" fill="#7d00dc"/><rect x="85.24" y="134" width="1.13" height="60" fill="#7c00de"/><rect x="85.97" y="134" width="1.13" height="60" fill="#7c00e0"/><rect x="86.70" y="134" width="1.13" height="60" fill="#7b00e2"/><rect x="87.43" y="134" width="1.13" height="60" fill="#7a00e4"/><rect x="88.16" y="134" width="1.13" height="60" fill="#7900e6"/><rect x="88.89" y="134" width="1.13" height="60" fill="#7800e8"/><rect x="89.62" y="134" width="1.13" height="60" fill="#7800e9"/><rect x="90.35" y="134" width="1.13" height="60" fill="#7700eb"/><rect x="91.08" y="134" width="1.13" height="60" fill="#7600ed"/><rect x="91.81" y="134" width="1.13" height="60" fill="#7500ef"/><rect x="92.54" y="134" width="1.13" height="60" fill="#7400f1"/><rect x="93.27" y="134" width="1.13" height="60" fill="#7300f2"/><rect x="94.00" y="134" width="1.13" height="60" fill="#7100f4"/><rect x="94.73" y="134" width="1.13" height="60" fill="#7000f6"/><rect x="95.46" y="134" width="1.13" height="60" fill="#6f00f8"/><rect x="96.19" y="134" width="1.13" height="60" fill="#6e00fa"/><rect x="96.92" y="134" width="1.13" height="60" fill="#6d00fb"/><rect x="97.65" y="134" width="1.13" height="60" fill="#6b00fd"/><rect x="98.38" y="134" width="1.13" height="60" fill="#6a00ff"/><rect x="99.11" y="134" width="1.13" height="60" fill="#6800ff"/><rect x="99.84" y="134" width="1.13" height="60" fill="#6600ff"/><rect x="100.57" y="134" width="1.13" height="60" fill="#6300ff"/><rect x="101.30" y="134" width="1.13" height="60" fill="#6100ff"/><rect x="102.03" y="134" width="1.13" height="60" fill="#5f00ff"/><rect x="102.76" y="134" width="1.13" height="60" fill="#5d00ff"/><rect x="103.49" y="134" width="1.13" height="60" fill="#5b00ff"/><rect x="104.22" y="134" width="1.13" height="60" fill="#5900ff"/><rect x="104.95" y="134" width="1.13" height="60" fill="#5600ff"/><rect x="105.68" y="134" width="1.13" height="60" fill="#5400ff"/><rect x="106.41" y="134" width="1.13" height="60" fill="#5200ff"/><rect x="107.14" y="134" width="1.13" height="60" fill="#5000ff"/><rect x="107.86" y="134" width="1.13" height="60" fill="#4d00ff"/><rect x="108.59" y="134" width="1.13" height="60" fill="#4b00ff"/><rect x="109.32" y="134" width="1.13" height="60" fill="#4900ff"/><rect x="110.05" y="134" width="1.13" height="60" fill="#4600ff"/><rect x="110.78" y="134" width="1.13" height="60" fill="#4400ff"/><rect x="111.51" y="134" width="1.13" height="60" fill="#4200ff"/><rect x="112.24" y="134" width="1.13" height="60" fill="#3f00ff"/><rect x="112.97" y="134" width="1.13" height="60" fill="#3d00ff"/><rect x="113.70" y="134" width="1.13" height="60" fill="#3a00ff"/><rect x="114.43" y="134" width="1.13" height="60" fill="#3800ff"/><rect x="115.16" y="134" width="1.13" height="60" fill="#3500ff"/><rect x="115.89" y="134" width="1.13" height="60" fill="#3300ff"/><rect x="116.62" y="134" width="1.13" height="60" fill="#3000ff"/><rect x="117.35" y="134" width="1.13" height="60" fill="#2e00ff"/><rect x="118.08" y="134" width="1.13" height="60" fill="#2b00ff"/><rect x="118.81" y="134" width="1.13" height="60" fill="#2800ff"/><rect x="119.54" y="134" width="1.13" height="60" fill="#2600ff"/><rect x="120.27" y="134" width="1.13" height="60" fill="#2300ff"/><rect x="121.00" y="134" width="1.13" height="60" fill="#2000ff"/><rect x="121.73" y="134" width="1.13" height="60" fill="#1d00ff"/><rect x="122.46" y="134" width="1.13" height="60" fill="#1a00ff"/><rect x="123.19" y="134" width="1.13" height="60" fill="#1700ff"/><rect x="123.92" y="134" width="1.13" height="60" fill="#1400ff"/><rect x="124.65" y="134" width="1.13" height="60" fill="#1100ff"/><rect x="125.38" y="134" width="1.13" height="60" fill="#0d00ff"/><rect x="126.11" y="134" width="1.13" height="60" fill="#0a00ff"/><rect x="126.84" y="134" width="1.13" height="60" fill="#0600ff"/><rect x="127.57" y="134" width="1.13" height="60" fill="#0000ff"/><rect x="128.30" y="134" width="1.13" height="60" fill="#0006ff"/><rect x="129.03" y="134" width="1.13" height="60" fill="#000bff"/><rect x="129.76" y="134" width="1.13" height="60" fill="#000fff"/><rect x="130.49" y="134" width="1.13" height="60" fill="#0013ff"/><rect x="131.22" y="134" width="1.13" height="60" fill="#0017ff"/><rect x="131.95" y="134" width="1.13" height="60" fill="#001bff"/><rect x="132.68" y="134" width="1.13" height="60" fill="#001eff"/><rect x="133.41" y="134" width="1.13" height="60" fill="#0022ff"/><rect x="134.14" y="134" width="1.13" height="60" fill="#0025ff"/><rect x="134.86" y="134" width="1.13" height="60" fill="#0028ff"/><rect x="135.59" y="134" width="1.13" height="60" fill="#002cff"/><rect x="136.32" y="134" width="1.13" height="60" fill="#002fff"/><rect x="137.05" y="134" width="1.13" height="60" fill="#0032ff"/><rect x="137.78" y="134" width="1.13" height="60" fill="#0035ff"/><rect x="138.51" y="134" width="1.13" height="60" fill="#0038ff"/><rect x="139.24" y="134" width="1.13" height="60" fill="#003bff"/><rect x="139.97" y="134" width="1.13" height="60" fill="#003eff"/><rect x="140.70" y="134" width="1.13" height="60" fill="#0041ff"/><rect x="141.43" y="134" width="1.13" height="60" fill="#0044ff"/><rect x="142.16" y="134" width="1.13" height="60" fill="#0046ff"/><rect x="142.89" y="134" width="1.13" height="60" fill="#0049ff"/><rect x="143.62" y="134" width="1.13" height="60" fill="#004cff"/><rect x="144.35" y="134" width="1.13" height="60" fill="#004fff"/><rect x="145.08" y="134" width="1.13" height="60" fill="#0051ff"/><rect x="145.81" y="134" width="1.13" height="60" fill="#0054ff"/><rect x="146.54" y="134" width="1.13" height="60" fill="#0057ff"/><rect x="147.27" y="134" width="1.13" height="60" fill="#0059ff"/><rect x="148.00" y="134" width="1.13" height="60" fill="#005cff"/><rect x="148.73" y="134" width="1.13" height="60" fill="#005fff"/><rect x="149.46" y="134" width="1.13" height="60" fill="#0061ff"/><rect x="150.19" y="134" width="1.13" height="60" fill="#0064ff"/><rect x="150.92" y="134" width="1.13" height="60" fill="#0066ff"/><rect x="151.65" y="134" width="1.13" height="60" fill="#0069ff"/><rect x="152.38" y="134" width="1.13" height="60" fill="#006cff"/><rect x="153.11" y="134" width="1.13" height="60" fill="#006eff"/><rect x="153.84" y="134" width="1.13" height="60" fill="#0071ff"/><rect x="154.57" y="134" width="1.13" height="60" fill="#0073ff"/><rect x="155.30" y="134" width="1.13" height="60" fill="#0076ff"/><rect x="156.03" y="134" width="1.13" height="60" fill="#0078ff"/><rect x="156.76" y="134" width="1.13" height="60" fill="#007bff"/><rect x="157.49" y="134" width="1.13" height="60" fill="#007dff"/><rect x="158.22" y="134" width="1.13" height="60" fill="#007fff"/><rect x="158.95" y="134" width="1.13" height="60" fill="#0082ff"/><rect x="159.68" y="134" width="1.13" height="60" fill="#0084ff"/><rect x="160.41" y="134" width="1.13" height="60" fill="#0087ff"/><rect x="161.14" y="134" width="1.13" height="60" fill="#0089ff"/><rect x="161.86" y="134" width="1.13" height="60" fill="#008bff"/><rect x="162.59" y="134" width="1.13" height="60" fill="#008eff"/><rect x="163.32" y="134" width="1.13" height="60" fill="#0090ff"/><rect x="164.05" y="134" width="1.13" height="60" fill="#0092ff"/><rect x="164.78" y="134" width="1.13" height="60" fill="#0095ff"/><rect x="165.51" y="134" width="1.13" height="60" fill="#0097ff"/><rect x="166.24" y="134" width="1.13" height="60" fill="#0099ff"/><rect x="166.97" y="134" width="1.13" height="60" fill="#009cff"/><rect x="167.70" y="134" width="1.13" height="60" fill="#009eff"/><rect x="168.43" y="134" width="1.13" height="60" fill="#00a0ff"/><rect x="169.16" y="134" width="1.13" height="60" fill="#00a3ff"/><rect x="169.89" y="134" width="1.13" height="60" fill="#00a5ff"/><rect x="170.62" y="134" width="1.13" height="60" fill="#00a7ff"/><rect x="171.35" y="134" width="1.13" height="60" fill="#00a9ff"/><rect x="172.08" y="134" width="1.13" height="60" fill="#00acff"/><rect x="172.81" y="134" width="1.13" height="60" fill="#00aeff"/><rect x="173.54" y="134" width="1.13" height="60" fill="#00b0ff"/><rect x="174.27" y="134" width="1.13" height="60" fill="#00b2ff"/><rect x="175.00" y="134" width="1.13" height="60" fill="#00b5ff"/><rect x="175.73" y="134" width="1.13" height="60" fill="#00b7ff"/><rect x="176.46" y="134" width="1.13" height="60" fill="#00b9ff"/><rect x="177.19" y="134" width="1.13" height="60" fill="#00bbff"/><rect x="177.92" y="134" width="1.13" height="60" fill="#00beff"/><rect x="178.65" y="134" width="1.13" height="60" fill="#00c0ff"/><rect x="179.38" y="134" width="1.13" height="60" fill="#00c2ff"/><rect x="180.11" y="134" width="1.13" height="60" fill="#00c4ff"/><rect x="180.84" y="134" width="1.13" height="60" fill="#00c6ff"/><rect x="181.57" y="134" width="1.13" height="60" fill="#00c8ff"/><rect x="182.30" y="134" width="1.13" height="60" fill="#00cbff"/><rect x="183.03" y="134" width="1.13" height="60" fill="#00cdff"/><rect x="183.76" y="134" width="1.13" height="60" fill="#00cfff"/><rect x="184.49" y="134" width="1.13" height="60" fill="#00d1ff"/><rect x="185.22" y="134" width="1.13" height="60" fill="#00d3ff"/><rect x="185.95" y="134" width="1.13" height="60" fill="#00d5ff"/><rect x="186.68" y="134" width="1.13" height="60" fill="#00d7ff"/><rect x="187.41" y="134" width="1.13" height="60" fill="#00daff"/><rect x="188.14" y="134" width="1.13" height="60" fill="#00dcff"/><rect x="188.86" y="134" width="1.13" height="60" fill="#00deff"/><rect x="189.59" y="134" width="1.13" height="60" fill="#00e0ff"/><rect x="190.32" y="134" width="1.13" height="60" fill="#00e2ff"/><rect x="191.05" y="134" width="1.13" height="60" fill="#00e4ff"/><rect x="191.78" y="134" width="1.13" height="60" fill="#00e6ff"/><rect x="192.51" y="134" width="1.13" height="60" fill="#00e8ff"/><rect x="193.24" y="134" width="1.13" height="60" fill="#00eaff"/><rect x="193.97" y="134" width="1.13" height="60" fill="#00ecff"/><rect x="194.70" y="134" width="1.13" height="60" fill="#00efff"/><rect x="195.43" y="134" width="1.13" height="60" fill="#00f1ff"/><rect x="196.16" y="134" width="1.13" height="60" fill="#00f3ff"/><rect x="196.89" y="134" width="1.13" height="60" fill="#00f5ff"/><rect x="197.62" y="134" width="1.13" height="60" fill="#00f7ff"/><rect x="198.35" y="134" width="1.13" height="60" fill="#00f9ff"/><rect x="199.08" y="134" width="1.13" height="60" fill="#00fbff"/><rect x="199.81" y="134" width="1.13" height="60" fill="#00fdff"/><rect x="200.54" y="134" width="1.13" height="60" fill="#00ffff"/><rect x="201.27" y="134" width="1.13" height="60" fill="#00fffa"/><rect x="202.00" y="134" width="1.13" height="60" fill="#00fff5"/><rect x="202.73" y="134" width="1.13" height="60" fill="#00fff0"/><rect x="203.46" y="134" width="1.13" height="60" fill="#00ffea"/><rect x="204.19" y="134" width="1.13" height="60" fill="#00ffe5"/><rect x="204.92" y="134" width="1.13" height="60" fill="#00ffe0"/><rect x="205.65" y="134" width="1.13" height="60" fill="#00ffdb"/><rect x="206.38" y="134" width="1.13" height="60" fill="#00ffd5"/><rect x="207.11" y="134" width="1.13" height="60" fill="#00ffd0"/><rect x="207.84" y="134" width="1.13" height="60" fill="#00ffcb"/><rect x="208.57" y="134" width="1.13" height="60" fill="#00ffc5"/><rect x="209.30" y="134" width="1.13" height="60" fill="#00ffc0"/><rect x="210.03" y="134" width="1.13" height="60" fill="#00ffba"/><rect x="210.76" y="134" width="1.13" height="60" fill="#00ffb5"/><rect x="211.49" y="134" width="1.13" height="60" fill="#00ffaf"/><rect x="212.22" y="134" width="1.13" height="60" fill="#00ffa9"/><rect x="212.95" y="134" width="1.13" height="60" fill="#00ffa4"/><rect x="213.68" y="134" width="1.13" height="60" fill="#00ff9e"/><rect x="214.41" y="134" width="1.13" height="60" fill="#00ff98"/><rect x="215.14" y="134" width="1.13" height="60" fill="#00ff92"/><rect x="215.86" y="134" width="1.13" height="60" fill="#00ff8d"/><rect x="216.59" y="134" width="1.13" height="60" fill="#00ff87"/><rect x="217.32" y="134" width="1.13" height="60" fill="#00ff81"/><rect x="218.05" y="134" width="1.13" height="60" fill="#00ff7b"/><rect x="218.78" y="134" width="1.13" height="60" fill="#00ff74"/><rect x="219.51" y="134" width="1.13" height="60" fill="#00ff6e"/><rect x="220.24" y="134" width="1.13" height="60" fill="#00ff68"/><rect x="220.97" y="134" width="1.13" height="60" fill="#00ff61"/><rect x="221.70" y="134" width="1.13" height="60" fill="#00ff5b"/><rect x="222.43" y="134" width="1.13" height="60" fill="#00ff54"/><rect x="223.16" y="134" width="1.13" height="60" fill="#00ff4d"/><rect x="223.89" y="134" width="1.13" height="60" fill="#00ff46"/><rect x="224.62" y="134" width="1.13" height="60" fill="#00ff3f"/><rect x="225.35" y="134" width="1.13" height="60" fill="#00ff38"/><rect x="226.08" y="134" width="1.13" height="60" fill="#00ff30"/><rect x="226.81" y="134" width="1.13" height="60" fill="#00ff28"/><rect x="227.54" y="134" width="1.13" height="60" fill="#00ff20"/><rect x="228.27" y="134" width="1.13" height="60" fill="#00ff17"/><rect x="229.00" y="134" width="1.13" height="60" fill="#00ff0d"/><rect x="229.73" y="134" width="1.13" height="60" fill="#00ff00"/><rect x="230.46" y="134" width="1.13" height="60" fill="#05ff00"/><rect x="231.19" y="134" width="1.13" height="60" fill="#09ff00"/><rect x="231.92" y="134" width="1.13" height="60" fill="#0cff00"/><rect x="232.65" y="134" width="1.13" height="60" fill="#0fff00"/><rect x="233.38" y="134" width="1.13" height="60" fill="#12ff00"/><rect x="234.11" y="134" width="1.13" height="60" fill="#15ff00"/><rect x="234.84" y="134" width="1.13" height="60" fill="#17ff00"/><rect x="235.57" y="134" width="1.13" height="60" fill="#1aff00"/><rect x="236.30" y="134" width="1.13" height="60" fill="#1cff00"/><rect x="237.03" y="134" width="1.13" height="60" fill="#1fff00"/><rect x="237.76" y="134" width="1.13" height="60" fill="#21ff00"/><rect x="238.49" y="134" width="1.13" height="60" fill="#24ff00"/><rect x="239.22" y="134" width="1.13" height="60" fill="#26ff00"/><rect x="239.95" y="134" width="1.13" height="60" fill="#28ff00"/><rect x="240.68" y="134" width="1.13" height="60" fill="#2bff00"/><rect x="241.41" y="134" width="1.13" height="60" fill="#2dff00"/><rect x="242.14" y="134" width="1.13" height="60" fill="#2fff00"/><rect x="242.86" y="134" width="1.13" height="60" fill="#31ff00"/><rect x="243.59" y="134" width="1.13" height="60" fill="#34ff00"/><rect x="244.32" y="134" width="1.13" height="60" fill="#36ff00"/><rect x="245.05" y="134" width="1.13" height="60" fill="#38ff00"/><rect x="245.78" y="134" width="1.13" height="60" fill="#3aff00"/><rect x="246.51" y="134" width="1.13" height="60" fill="#3cff00"/><rect x="247.24" y="134" width="1.13" height="60" fill="#3eff00"/><rect x="247.97" y="134" width="1.13" height="60" fill="#40ff00"/><rect x="248.70" y="134" width="1.13" height="60" fill="#42ff00"/><rect x="249.43" y="134" width="1.13" height="60" fill="#44ff00"/><rect x="250.16" y="134" width="1.13" height="60" fill="#46ff00"/><rect x="250.89" y="134" width="1.13" height="60" fill="#48ff00"/><rect x="251.62" y="134" width="1.13" height="60" fill="#4aff00"/><rect x="252.35" y="134" width="1.13" height="60" fill="#4cff00"/><rect x="253.08" y="134" width="1.13" height="60" fill="#4eff00"/><rect x="253.81" y="134" width="1.13" height="60" fill="#50ff00"/><rect x="254.54" y="134" width="1.13" height="60" fill="#52ff00"/><rect x="255.27" y="134" width="1.13" height="60" fill="#54ff00"/><rect x="256.00" y="134" width="1.13" height="60" fill="#56ff00"/><rect x="256.73" y="134" width="1.13" height="60" fill="#58ff00"/><rect x="257.46" y="134" width="1.13" height="60" fill="#5aff00"/><rect x="258.19" y="134" width="1.13" height="60" fill="#5cff00"/><rect x="258.92" y="134" width="1.13" height="60" fill="#5eff00"/><rect x="259.65" y="134" width="1.13" height="60" fill="#5fff00"/><rect x="260.38" y="134" width="1.13" height="60" fill="#61ff00"/><rect x="261.11" y="134" width="1.13" height="60" fill="#63ff00"/><rect x="261.84" y="134" width="1.13" height="60" fill="#65ff00"/><rect x="262.57" y="134" width="1.13" height="60" fill="#67ff00"/><rect x="263.30" y="134" width="1.13" height="60" fill="#69ff00"/><rect x="264.03" y="134" width="1.13" height="60" fill="#6aff00"/><rect x="264.76" y="134" width="1.13" height="60" fill="#6cff00"/><rect x="265.49" y="134" width="1.13" height="60" fill="#6eff00"/><rect x="266.22" y="134" width="1.13" height="60" fill="#70ff00"/><rect x="266.95" y="134" width="1.13" height="60" fill="#72ff00"/><rect x="267.68" y="134" width="1.13" height="60" fill="#73ff00"/><rect x="268.41" y="134" width="1.13" height="60" fill="#75ff00"/><rect x="269.14" y="134" width="1.13" height="60" fill="#77ff00"/><rect x="269.86" y="134" width="1.13" height="60" fill="#79ff00"/><rect x="270.59" y="134" width="1.13" height="60" fill="#7bff00"/><rect x="271.32" y="134" width="1.13" height="60" fill="#7cff00"/><rect x="272.05" y="134" width="1.13" height="60" fill="#7eff00"/><rect x="272.78" y="134" width="1.13" height="60" fill="#80ff00"/><rect x="273.51" y="134" width="1.13" height="60" fill="#81ff00"/><rect x="274.24" y="134" width="1.13" height="60" fill="#83ff00"/><rect x="274.97" y="134" width="1.13" height="60" fill="#85ff00"/><rect x="275.70" y="134" width="1.13" height="60" fill="#87ff00"/><rect x="276.43" y="134" width="1.13" height="60" fill="#88ff00"/><rect x="277.16" y="134" width="1.13" height="60" fill="#8aff00"/><rect x="277.89" y="134" width="1.13" height="60" fill="#8cff00"/><rect x="278.62" y="134" width="1.13" height="60" fill="#8dff00"/><rect x="279.35" y="134" width="1.13" height="60" fill="#8fff00"/><rect x="280.08" y="134" width="1.13" height="60" fill="#91ff00"/><rect x="280.81" y="134" width="1.13" height="60" fill="#92ff00"/><rect x="281.54" y="134" width="1.13" height="60" fill="#94ff00"/><rect x="282.27" y="134" width="1.13" height="60" fill="#96ff00"/><rect x="283.00" y="134" width="1.13" height="60" fill="#97ff00"/><rect x="283.73" y="134" width="1.13" height="60" fill="#99ff00"/><rect x="284.46" y="134" width="1.13" height="60" fill="#9bff00"/><rect x="285.19" y="134" width="1.13" height="60" fill="#9cff00"/><rect x="285.92" y="134" width="1.13" height="60" fill="#9eff00"/><rect x="286.65" y="134" width="1.13" height="60" fill="#a0ff00"/><rect x="287.38" y="134" width="1.13" height="60" fill="#a1ff00"/><rect x="288.11" y="134" width="1.13" height="60" fill="#a3ff00"/><rect x="288.84" y="134" width="1.13" height="60" fill="#a5ff00"/><rect x="289.57" y="134" width="1.13" height="60" fill="#a6ff00"/><rect x="290.30" y="134" width="1.13" height="60" fill="#a8ff00"/><rect x="291.03" y="134" width="1.13" height="60" fill="#a9ff00"/><rect x="291.76" y="134" width="1.13" height="60" fill="#abff00"/><rect x="292.49" y="134" width="1.13" height="60" fill="#adff00"/><rect x="293.22" y="134" width="1.13" height="60" fill="#aeff00"/><rect x="293.95" y="134" width="1.13" height="60" fill="#b0ff00"/><rect x="294.68" y="134" width="1.13" height="60" fill="#b1ff00"/><rect x="295.41" y="134" width="1.13" height="60" fill="#b3ff00"/><rect x="296.14" y="134" width="1.13" height="60" fill="#b5ff00"/><rect x="296.86" y="134" width="1.13" height="60" fill="#b6ff00"/><rect x="297.59" y="134" width="1.13" height="60" fill="#b8ff00"/><rect x="298.32" y="134" width="1.13" height="60" fill="#b9ff00"/><rect x="299.05" y="134" width="1.13" height="60" fill="#bbff00"/><rect x="299.78" y="134" width="1.13" height="60" fill="#bdff00"/><rect x="300.51" y="134" width="1.13" height="60" fill="#beff00"/><rect x="301.24" y="134" width="1.13" height="60" fill="#c0ff00"/><rect x="301.97" y="134" width="1.13" height="60" fill="#c1ff00"/><rect x="302.70" y="134" width="1.13" height="60" fill="#c3ff00"/><rect x="303.43" y="134" width="1.13" height="60" fill="#c4ff00"/><rect x="304.16" y="134" width="1.13" height="60" fill="#c6ff00"/><rect x="304.89" y="134" width="1.13" height="60" fill="#c7ff00"/><rect x="305.62" y="134" width="1.13" height="60" fill="#c9ff00"/><rect x="306.35" y="134" width="1.13" height="60" fill="#cbff00"/><rect x="307.08" y="134" width="1.13" height="60" fill="#ccff00"/><rect x="307.81" y="134" width="1.13" height="60" fill="#ceff00"/><rect x="308.54" y="134" width="1.13" height="60" fill="#cfff00"/><rect x="309.27" y="134" width="1.13" height="60" fill="#d1ff00"/><rect x="310.00" y="134" width="1.13" height="60" fill="#d2ff00"/><rect x="310.73" y="134" width="1.13" height="60" fill="#d4ff00"/><rect x="311.46" y="134" width="1.13" height="60" fill="#d5ff00"/><rect x="312.19" y="134" width="1.13" height="60" fill="#d7ff00"/><rect x="312.92" y="134" width="1.13" height="60" fill="#d8ff00"/><rect x="313.65" y="134" width="1.13" height="60" fill="#daff00"/><rect x="314.38" y="134" width="1.13" height="60" fill="#dbff00"/><rect x="315.11" y="134" width="1.13" height="60" fill="#ddff00"/><rect x="315.84" y="134" width="1.13" height="60" fill="#deff00"/><rect x="316.57" y="134" width="1.13" height="60" fill="#e0ff00"/><rect x="317.30" y="134" width="1.13" height="60" fill="#e1ff00"/><rect x="318.03" y="134" width="1.13" height="60" fill="#e3ff00"/><rect x="318.76" y="134" width="1.13" height="60" fill="#e4ff00"/><rect x="319.49" y="134" width="1.13" height="60" fill="#e6ff00"/><rect x="320.22" y="134" width="1.13" height="60" fill="#e7ff00"/><rect x="320.95" y="134" width="1.13" height="60" fill="#e9ff00"/><rect x="321.68" y="134" width="1.13" height="60" fill="#eaff00"/><rect x="322.41" y="134" width="1.13" height="60" fill="#ecff00"/><rect x="323.14" y="134" width="1.13" height="60" fill="#edff00"/><rect x="323.86" y="134" width="1.13" height="60" fill="#efff00"/><rect x="324.59" y="134" width="1.13" height="60" fill="#f0ff00"/><rect x="325.32" y="134" width="1.13" height="60" fill="#f2ff00"/><rect x="326.05" y="134" width="1.13" height="60" fill="#f3ff00"/><rect x="326.78" y="134" width="1.13" height="60" fill="#f5ff00"/><rect x="327.51" y="134" width="1.13" height="60" fill="#f6ff00"/><rect x="328.24" y="134" width="1.13" height="60" fill="#f8ff00"/><rect x="328.97" y="134" width="1.13" height="60" fill="#f9ff00"/><rect x="329.70" y="134" width="1.13" height="60" fill="#fbff00"/><rect x="330.43" y="134" width="1.13" height="60" fill="#fcff00"/><rect x="331.16" y="134" width="1.13" height="60" fill="#feff00"/><rect x="331.89" y="134" width="1.13" height="60" fill="#ffff00"/><rect x="332.62" y="134" width="1.13" height="60" fill="#fffd00"/><rect x="333.35" y="134" width="1.13" height="60" fill="#fffc00"/><rect x="334.08" y="134" width="1.13" height="60" fill="#fffa00"/><rect x="334.81" y="134" width="1.13" height="60" fill="#fff900"/><rect x="335.54" y="134" width="1.13" height="60" fill="#fff700"/><rect x="336.27" y="134" width="1.13" height="60" fill="#fff600"/><rect x="337.00" y="134" width="1.13" height="60" fill="#fff400"/><rect x="337.73" y="134" width="1.13" height="60" fill="#fff200"/><rect x="338.46" y="134" width="1.13" height="60" fill="#fff100"/><rect x="339.19" y="134" width="1.13" height="60" fill="#ffef00"/><rect x="339.92" y="134" width="1.13" height="60" fill="#ffee00"/><rect x="340.65" y="134" width="1.13" height="60" fill="#ffec00"/><rect x="341.38" y="134" width="1.13" height="60" fill="#ffea00"/><rect x="342.11" y="134" width="1.13" height="60" fill="#ffe900"/><rect x="342.84" y="134" width="1.13" height="60" fill="#ffe700"/><rect x="343.57" y="134" width="1.13" height="60" fill="#ffe600"/><rect x="344.30" y="134" width="1.13" height="60" fill="#ffe400"/><rect x="345.03" y="134" width="1.13" height="60" fill="#ffe200"/><rect x="345.76" y="134" width="1.13" height="60" fill="#ffe100"/><rect x="346.49" y="134" width="1.13" height="60" fill="#ffdf00"/><rect x="347.22" y="134" width="1.13" height="60" fill="#ffdd00"/><rect x="347.95" y="134" width="1.13" height="60" fill="#ffdc00"/><rect x="348.68" y="134" width="1.13" height="60" fill="#ffda00"/><rect x="349.41" y="134" width="1.13" height="60" fill="#ffd900"/><rect x="350.14" y="134" width="1.13" height="60" fill="#ffd700"/><rect x="350.86" y="134" width="1.13" height="60" fill="#ffd500"/><rect x="351.59" y="134" width="1.13" height="60" fill="#ffd400"/><rect x="352.32" y="134" width="1.13" height="60" fill="#ffd200"/><rect x="353.05" y="134" width="1.13" height="60" fill="#ffd000"/><rect x="353.78" y="134" width="1.13" height="60" fill="#ffcf00"/><rect x="354.51" y="134" width="1.13" height="60" fill="#ffcd00"/><rect x="355.24" y="134" width="1.13" height="60" fill="#ffcb00"/><rect x="355.97" y="134" width="1.13" height="60" fill="#ffca00"/><rect x="356.70" y="134" width="1.13" height="60" fill="#ffc800"/><rect x="357.43" y="134" width="1.13" height="60" fill="#ffc600"/><rect x="358.16" y="134" width="1.13" height="60" fill="#ffc500"/><rect x="358.89" y="134" width="1.13" height="60" fill="#ffc300"/><rect x="359.62" y="134" width="1.13" height="60" fill="#ffc100"/><rect x="360.35" y="134" width="1.13" height="60" fill="#ffc000"/><rect x="361.08" y="134" width="1.13" height="60" fill="#ffbe00"/><rect x="361.81" y="134" width="1.13" height="60" fill="#ffbc00"/><rect x="362.54" y="134" width="1.13" height="60" fill="#ffbb00"/><rect x="363.27" y="134" width="1.13" height="60" fill="#ffb900"/><rect x="364.00" y="134" width="1.13" height="60" fill="#ffb700"/><rect x="364.73" y="134" width="1.13" height="60" fill="#ffb600"/><rect x="365.46" y="134" width="1.13" height="60" fill="#ffb400"/><rect x="366.19" y="134" width="1.13" height="60" fill="#ffb200"/><rect x="366.92" y="134" width="1.13" height="60" fill="#ffb000"/><rect x="367.65" y="134" width="1.13" height="60" fill="#ffaf00"/><rect x="368.38" y="134" width="1.13" height="60" fill="#ffad00"/><rect x="369.11" y="134" width="1.13" height="60" fill="#ffab00"/><rect x="369.84" y="134" width="1.13" height="60" fill="#ffa900"/><rect x="370.57" y="134" width="1.13" height="60" fill="#ffa800"/><rect x="371.30" y="134" width="1.13" height="60" fill="#ffa600"/><rect x="372.03" y="134" width="1.13" height="60" fill="#ffa400"/><rect x="372.76" y="134" width="1.13" height="60" fill="#ffa200"/><rect x="373.49" y="134" width="1.13" height="60" fill="#ffa100"/><rect x="374.22" y="134" width="1.13" height="60" fill="#ff9f00"/><rect x="374.95" y="134" width="1.13" height="60" fill="#ff9d00"/><rect x="375.68" y="134" width="1.13" height="60" fill="#ff9b00"/><rect x="376.41" y="134" width="1.13" height="60" fill="#ff9a00"/><rect x="377.14" y="134" width="1.13" height="60" fill="#ff9800"/><rect x="377.86" y="134" width="1.13" height="60" fill="#ff9600"/><rect x="378.59" y="134" width="1.13" height="60" fill="#ff9400"/><rect x="379.32" y="134" width="1.13" height="60" fill="#ff9200"/><rect x="380.05" y="134" width="1.13" height="60" fill="#ff9100"/><rect x="380.78" y="134" width="1.13" height="60" fill="#ff8f00"/><rect x="381.51" y="134" width="1.13" height="60" fill="#ff8d00"/><rect x="382.24" y="134" width="1.13" height="60" fill="#ff8b00"/><rect x="382.97" y="134" width="1.13" height="60" fill="#ff8900"/><rect x="383.70" y="134" width="1.13" height="60" fill="#ff8800"/><rect x="384.43" y="134" width="1.13" height="60" fill="#ff8600"/><rect x="385.16" y="134" width="1.13" height="60" fill="#ff8400"/><rect x="385.89" y="134" width="1.13" height="60" fill="#ff8200"/><rect x="386.62" y="134" width="1.13" height="60" fill="#ff8000"/><rect x="387.35" y="134" width="1.13" height="60" fill="#ff7e00"/><rect x="388.08" y="134" width="1.13" height="60" fill="#ff7c00"/><rect x="388.81" y="134" width="1.13" height="60" fill="#ff7b00"/><rect x="389.54" y="134" width="1.13" height="60" fill="#ff7900"/><rect x="390.27" y="134" width="1.13" height="60" fill="#ff7700"/><rect x="391.00" y="134" width="1.13" height="60" fill="#ff7500"/><rect x="391.73" y="134" width="1.13" height="60" fill="#ff7300"/><rect x="392.46" y="134" width="1.13" height="60" fill="#ff7100"/><rect x="393.19" y="134" width="1.13" height="60" fill="#ff6f00"/><rect x="393.92" y="134" width="1.13" height="60" fill="#ff6d00"/><rect x="394.65" y="134" width="1.13" height="60" fill="#ff6b00"/><rect x="395.38" y="134" width="1.13" height="60" fill="#ff6900"/><rect x="396.11" y="134" width="1.13" height="60" fill="#ff6700"/><rect x="396.84" y="134" width="1.13" height="60" fill="#ff6500"/><rect x="397.57" y="134" width="1.13" height="60" fill="#ff6300"/><rect x="398.30" y="134" width="1.13" height="60" fill="#ff6100"/><rect x="399.03" y="134" width="1.13" height="60" fill="#ff5f00"/><rect x="399.76" y="134" width="1.13" height="60" fill="#ff5d00"/><rect x="400.49" y="134" width="1.13" height="60" fill="#ff5b00"/><rect x="401.22" y="134" width="1.13" height="60" fill="#ff5900"/><rect x="401.95" y="134" width="1.13" height="60" fill="#ff5700"/><rect x="402.68" y="134" width="1.13" height="60" fill="#ff5500"/><rect x="403.41" y="134" width="1.13" height="60" fill="#ff5300"/><rect x="404.14" y="134" width="1.13" height="60" fill="#ff5100"/><rect x="404.86" y="134" width="1.13" height="60" fill="#ff4f00"/><rect x="405.59" y="134" width="1.13" height="60" fill="#ff4d00"/><rect x="406.32" y="134" width="1.13" height="60" fill="#ff4b00"/><rect x="407.05" y="134" width="1.13" height="60" fill="#ff4900"/><rect x="407.78" y="134" width="1.13" height="60" fill="#ff4600"/><rect x="408.51" y="134" width="1.13" height="60" fill="#ff4400"/><rect x="409.24" y="134" width="1.13" height="60" fill="#ff4200"/><rect x="409.97" y="134" width="1.13" height="60" fill="#ff4000"/><rect x="410.70" y="134" width="1.13" height="60" fill="#ff3e00"/><rect x="411.43" y="134" width="1.13" height="60" fill="#ff3b00"/><rect x="412.16" y="134" width="1.13" height="60" fill="#ff3900"/><rect x="412.89" y="134" width="1.13" height="60" fill="#ff3700"/><rect x="413.62" y="134" width="1.13" height="60" fill="#ff3400"/><rect x="414.35" y="134" width="1.13" height="60" fill="#ff3200"/><rect x="415.08" y="134" width="1.13" height="60" fill="#ff3000"/><rect x="415.81" y="134" width="1.13" height="60" fill="#ff2d00"/><rect x="416.54" y="134" width="1.13" height="60" fill="#ff2b00"/><rect x="417.27" y="134" width="1.13" height="60" fill="#ff2800"/><rect x="418.00" y="134" width="1.13" height="60" fill="#ff2600"/><rect x="418.73" y="134" width="1.13" height="60" fill="#ff2300"/><rect x="419.46" y="134" width="1.13" height="60" fill="#ff2100"/><rect x="420.19" y="134" width="1.13" height="60" fill="#ff1e00"/><rect x="420.92" y="134" width="1.13" height="60" fill="#ff1b00"/><rect x="421.65" y="134" width="1.13" height="60" fill="#ff1900"/><rect x="422.38" y="134" width="1.13" height="60" fill="#ff1600"/><rect x="423.11" y="134" width="1.13" height="60" fill="#ff1300"/><rect x="423.84" y="134" width="1.13" height="60" fill="#ff1000"/><rect x="424.57" y="134" width="1.13" height="60" fill="#ff0d00"/><rect x="425.30" y="134" width="1.13" height="60" fill="#ff0900"/><rect x="426.03" y="134" width="1.13" height="60" fill="#ff0500"/><rect x="426.76" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="427.49" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="428.22" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="428.95" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="429.68" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="430.41" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="431.14" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="431.86" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="432.59" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="433.32" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="434.05" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="434.78" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="435.51" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="436.24" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="436.97" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="437.70" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="438.43" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="439.16" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="439.89" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="440.62" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="441.35" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="442.08" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="442.81" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="443.54" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="444.27" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="445.00" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="445.73" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="446.46" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="447.19" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="447.92" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="448.65" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="449.38" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="450.11" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="450.84" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="451.57" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="452.30" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="453.03" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="453.76" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="454.49" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="455.22" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="455.95" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="456.68" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="457.41" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="458.14" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="458.86" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="459.59" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="460.32" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="461.05" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="461.78" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="462.51" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="463.24" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="463.97" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="464.70" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="465.43" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="466.16" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="466.89" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="467.62" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="468.35" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="469.08" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="469.81" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="470.54" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="471.27" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="472.00" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="472.73" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="473.46" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="474.19" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="474.92" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="475.65" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="476.38" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="477.11" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="477.84" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="478.57" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="479.30" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="480.03" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="480.76" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="481.49" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="482.22" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="482.95" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="483.68" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="484.41" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="485.14" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="485.86" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="486.59" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="487.32" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="488.05" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="488.78" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="489.51" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="490.24" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="490.97" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="491.70" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="492.43" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="493.16" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="493.89" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="494.62" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="495.35" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="496.08" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="496.81" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="497.54" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="498.27" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="499.00" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="499.73" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="500.46" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="501.19" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="501.92" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="502.65" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="503.38" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="504.11" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="504.84" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="505.57" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="506.30" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="507.03" y="134" width="1.13" height="60" fill="#ff0000"/><rect x="507.76" y="134" width="1.13" height="60" fill="#fe0000"/><rect x="508.49" y="134" width="1.13" height="60" fill="#fc0000"/><rect x="509.22" y="134" width="1.13" height="60" fill="#fb0000"/><rect x="509.95" y="134" width="1.13" height="60" fill="#f90000"/><rect x="510.68" y="134" width="1.13" height="60" fill="#f80000"/><rect x="511.41" y="134" width="1.13" height="60" fill="#f60000"/><rect x="512.14" y="134" width="1.13" height="60" fill="#f50000"/><rect x="512.86" y="134" width="1.13" height="60" fill="#f40000"/><rect x="513.59" y="134" width="1.13" height="60" fill="#f20000"/><rect x="514.32" y="134" width="1.13" height="60" fill="#f10000"/><rect x="515.05" y="134" width="1.13" height="60" fill="#ef0000"/><rect x="515.78" y="134" width="1.13" height="60" fill="#ee0000"/><rect x="516.51" y="134" width="1.13" height="60" fill="#ec0000"/><rect x="517.24" y="134" width="1.13" height="60" fill="#eb0000"/><rect x="517.97" y="134" width="1.13" height="60" fill="#e90000"/><rect x="518.70" y="134" width="1.13" height="60" fill="#e80000"/><rect x="519.43" y="134" width="1.13" height="60" fill="#e60000"/><rect x="520.16" y="134" width="1.13" height="60" fill="#e50000"/><rect x="520.89" y="134" width="1.13" height="60" fill="#e30000"/><rect x="521.62" y="134" width="1.13" height="60" fill="#e20000"/><rect x="522.35" y="134" width="1.13" height="60" fill="#e10000"/><rect x="523.08" y="134" width="1.13" height="60" fill="#df0000"/><rect x="523.81" y="134" width="1.13" height="60" fill="#de0000"/><rect x="524.54" y="134" width="1.13" height="60" fill="#dc0000"/><rect x="525.27" y="134" width="1.13" height="60" fill="#db0000"/><rect x="526.00" y="134" width="1.13" height="60" fill="#d90000"/><rect x="526.73" y="134" width="1.13" height="60" fill="#d80000"/><rect x="527.46" y="134" width="1.13" height="60" fill="#d60000"/><rect x="528.19" y="134" width="1.13" height="60" fill="#d50000"/><rect x="528.92" y="134" width="1.13" height="60" fill="#d30000"/><rect x="529.65" y="134" width="1.13" height="60" fill="#d20000"/><rect x="530.38" y="134" width="1.13" height="60" fill="#d00000"/><rect x="531.11" y="134" width="1.13" height="60" fill="#cf0000"/><rect x="531.84" y="134" width="1.13" height="60" fill="#cd0000"/><rect x="532.57" y="134" width="1.13" height="60" fill="#cc0000"/><rect x="533.30" y="134" width="1.13" height="60" fill="#ca0000"/><rect x="534.03" y="134" width="1.13" height="60" fill="#c90000"/><rect x="534.76" y="134" width="1.13" height="60" fill="#c70000"/><rect x="535.49" y="134" width="1.13" height="60" fill="#c60000"/><rect x="536.22" y="134" width="1.13" height="60" fill="#c40000"/><rect x="536.95" y="134" width="1.13" height="60" fill="#c30000"/><rect x="537.68" y="134" width="1.13" height="60" fill="#c10000"/><rect x="538.41" y="134" width="1.13" height="60" fill="#bf0000"/><rect x="539.14" y="134" width="1.13" height="60" fill="#be0000"/><rect x="539.86" y="134" width="1.13" height="60" fill="#bc0000"/><rect x="540.59" y="134" width="1.13" height="60" fill="#bb0000"/><rect x="541.32" y="134" width="1.13" height="60" fill="#b90000"/><rect x="542.05" y="134" width="1.13" height="60" fill="#b80000"/><rect x="542.78" y="134" width="1.13" height="60" fill="#b60000"/><rect x="543.51" y="134" width="1.13" height="60" fill="#b50000"/><rect x="544.24" y="134" width="1.13" height="60" fill="#b30000"/><rect x="544.97" y="134" width="1.13" height="60" fill="#b20000"/><rect x="545.70" y="134" width="1.13" height="60" fill="#b00000"/><rect x="546.43" y="134" width="1.13" height="60" fill="#ae0000"/><rect x="547.16" y="134" width="1.13" height="60" fill="#ad0000"/><rect x="547.89" y="134" width="1.13" height="60" fill="#ab0000"/><rect x="548.62" y="134" width="1.13" height="60" fill="#aa0000"/><rect x="549.35" y="134" width="1.13" height="60" fill="#a80000"/><rect x="550.08" y="134" width="1.13" height="60" fill="#a70000"/><rect x="550.81" y="134" width="1.13" height="60" fill="#a50000"/><rect x="551.54" y="134" width="1.13" height="60" fill="#a30000"/><rect x="552.27" y="134" width="1.13" height="60" fill="#a20000"/><rect x="553.00" y="134" width="1.13" height="60" fill="#a00000"/><rect x="553.73" y="134" width="1.13" height="60" fill="#9f0000"/><rect x="554.46" y="134" width="1.13" height="60" fill="#9d0000"/><rect x="555.19" y="134" width="1.13" height="60" fill="#9b0000"/><rect x="555.92" y="134" width="1.13" height="60" fill="#9a0000"/><rect x="556.65" y="134" width="1.13" height="60" fill="#980000"/><rect x="557.38" y="134" width="1.13" height="60" fill="#960000"/><rect x="558.11" y="134" width="1.13" height="60" fill="#950000"/><rect x="558.84" y="134" width="1.13" height="60" fill="#930000"/><rect x="559.57" y="134" width="1.13" height="60" fill="#920000"/><rect x="560.30" y="134" width="1.13" height="60" fill="#900000"/><rect x="561.03" y="134" width="1.13" height="60" fill="#8e0000"/><rect x="561.76" y="134" width="1.13" height="60" fill="#8d0000"/><rect x="562.49" y="134" width="1.13" height="60" fill="#8b0000"/><rect x="563.22" y="134" width="1.13" height="60" fill="#890000"/><rect x="563.95" y="134" width="1.13" height="60" fill="#880000"/><rect x="564.68" y="134" width="1.13" height="60" fill="#860000"/><rect x="565.41" y="134" width="1.13" height="60" fill="#840000"/><rect x="566.14" y="134" width="1.13" height="60" fill="#830000"/><rect x="566.86" y="134" width="1.13" height="60" fill="#810000"/><rect x="567.59" y="134" width="1.13" height="60" fill="#7f0000"/><rect x="568.32" y="134" width="1.13" height="60" fill="#7d0000"/><rect x="569.05" y="134" width="1.13" height="60" fill="#7c0000"/><rect x="569.78" y="134" width="1.13" height="60" fill="#7a0000"/><rect x="570.51" y="134" width="1.13" height="60" fill="#780000"/><rect x="571.24" y="134" width="1.13" height="60" fill="#770000"/><rect x="571.97" y="134" width="1.13" height="60" fill="#750000"/><rect x="572.70" y="134" width="1.13" height="60" fill="#730000"/><rect x="573.43" y="134" width="1.13" height="60" fill="#710000"/><rect x="574.16" y="134" width="1.13" height="60" fill="#700000"/><rect x="574.89" y="134" width="1.13" height="60" fill="#6e0000"/><rect x="575.62" y="134" width="1.13" height="60" fill="#6c0000"/><rect x="576.35" y="134" width="1.13" height="60" fill="#6a0000"/><rect x="577.08" y="134" width="1.13" height="60" fill="#690000"/><rect x="577.81" y="134" width="1.13" height="60" fill="#670000"/><rect x="578.54" y="134" width="1.13" height="60" fill="#650000"/><rect x="579.27" y="134" width="1.13" height="60" fill="#630000"/><rect x="82.6" y="134" width="3" height="60" fill="#0b0d14"/><rect x="117.3" y="134" width="3" height="60" fill="#0b0d14"/><rect x="193.3" y="134" width="3" height="60" fill="#0b0d14"/><rect x="441.7" y="134" width="3" height="60" fill="#0b0d14"/><rect x="40" y="134" width="540" height="60" fill="none" stroke="#1d2433" stroke-width="0.8"/><text x="40" y="214" font-size="14" font-weight="700" fill="#24345c">Spectre d’absorption</text></svg><figcaption class="hint" style="text-align:center">Ce que montre la simulation (exemple de l’hydrogène) : les raies d’absorption sont aux mêmes longueurs d’onde que les raies d’émission.</figcaption></figure>
+    </div>
+  </article>
+
+  <article class="card">
+    <span class="doc-label">Document 3</span>
+    <h3>Niveaux d’énergie de l’atome de mercure</h3>
+    <p>Les énergies des états de l’atome de mercure sont données ci-dessous, en électron-volt (eV), avec <b>1 eV = 1,60.10<sup>-19</sup> J</b>. L’état fondamental est l’état de plus basse énergie.</p>
+    <div class="scroll" style="margin-top:10px">
+      <table class="data" id="levels-table"></table>
+    </div>
+  </article>
+</section>
+
+<!-- ===================== PARTIE 1 ===================== -->
+<section class="part" id="partie1">
+  <h2><span class="n">Partie 1</span>Diagramme d’énergie de l’atome de mercure</h2>
+
+  <div class="q" id="q1">
+    <div class="q-head"><span class="q-num">1</span><div class="q-text">
+      Construire le diagramme d’énergie de l’atome de mercure à partir du document 3&nbsp;: sur l’axe vertical gradué en eV (de −10,5 eV à 0 eV), placer un segment horizontal pour chacun des niveaux d’énergie E<sub>0</sub> à E<sub>9</sub>.
+    </div></div>
+    <div class="diagram-wrap">
+      <svg class="diagram" id="diag1" viewBox="0 0 420 660" aria-label="Diagramme d’énergie à construire"></svg>
+      <div>
+        <ol class="howto">
+          <li>Choisir un niveau ci-dessous.</li>
+          <li>Cliquer sur le diagramme à la bonne hauteur (la valeur pointée s’affiche).</li>
+          <li>Pour corriger un niveau : le faire glisser, ou le sélectionner à nouveau puis cliquer à la bonne hauteur.</li>
+        </ol>
+        <div class="lvl-chips" id="chips1"></div>
+        <div class="actions">
+          <button class="btn" id="check1">Vérifier le diagramme</button>
+          <button class="btn ghost" id="clear1">Tout effacer</button>
+        </div>
+        <div class="fb" id="fb1"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PARTIE 2 ===================== -->
+<section class="part" id="partie2">
+  <h2><span class="n">Partie 2</span>Modèle de Bohr et lampe à vapeur de mercure</h2>
+  <div id="qcm-2"></div>
+  <div id="qcm-3"></div>
+</section>
+
+<!-- ===================== PARTIE 3 ===================== -->
+<section class="part" id="partie3">
+  <h2><span class="n">Partie 3</span>Mesures et calculs</h2>
+  <p class="intro">Les questions 4 à 6 se répondent dans le tableau de résultats ci-dessous, ligne par ligne.</p>
+
+  <div class="q" id="q4">
+    <div class="q-head"><span class="q-num">4</span><div class="q-text">
+      À l’aide de la simulation (document 2, élément <b>Hg</b>), mesurer la longueur d’onde de la raie <b>violette</b> et de la raie <b>verte</b>, choisies parmi <i>les plus intenses</i>, et indiquer la couleur de la raie de longueur d’onde <b>577 nm</b>. Compléter les lignes «&nbsp;Couleur&nbsp;» et «&nbsp;Longueur d’onde&nbsp;» du tableau.
+    </div></div>
+    <div class="actions"><button class="btn" data-check="4">Vérifier la question 4</button></div>
+    <div class="fb" id="fb4"></div>
+  </div>
+
+
+  <div class="card">
+    <h3>Tableau de résultats</h3>
+    <div class="scroll"><table class="data res" id="res"></table></div>
+  </div>
+
+  <div class="q" id="q5">
+    <div class="q-head"><span class="q-num">5</span><div class="q-text">
+      Calculer les fréquences <i>ν</i>, <i>ν′</i> et <i>ν″</i> associées à ces trois raies et compléter la ligne «&nbsp;Fréquence&nbsp;» (en 10<sup>14</sup> Hz).
+      <p class="hint">Aide : relation entre fréquence, longueur d’onde et célérité <i>c</i>. Attention aux unités de <i>λ</i>.</p>
+    </div></div>
+    <div class="actions"><button class="btn" data-check="5">Vérifier la question 5</button></div>
+    <div class="fb" id="fb5"></div>
+  </div>
+
+  <div class="q" id="q6">
+    <div class="q-head"><span class="q-num">6</span><div class="q-text">
+      Calculer, en joule, l’énergie <b><i>E</i> = <i>h</i> × <i>ν</i></b> du photon associé à chacune des trois raies (document 1), puis exprimer ces énergies en électron-volt (document 3). Compléter les deux lignes «&nbsp;Énergie&nbsp;» du tableau.
+    </div></div>
+    <div class="actions"><button class="btn" data-check="6">Vérifier la question 6</button></div>
+    <div class="fb" id="fb6"></div>
+  </div>
+</section>
+
+<!-- ===================== PARTIE 4 ===================== -->
+<section class="part" id="partie4">
+  <h2><span class="n">Partie 4</span>Identifier les transitions</h2>
+
+  <div class="q" id="q7">
+    <div class="q-head"><span class="q-num">7</span><div class="q-text">
+      On représente l’énergie de chaque photon par un rectangle dont la hauteur <i>L</i> respecte l’échelle du diagramme&nbsp;: <b>1 cm pour 0,5 eV</b>. Calculer les hauteurs <i>L</i>, <i>L′</i> et <i>L″</i> des rectangles représentant <i>E</i>, <i>E′</i> et <i>E″</i>.
+    </div></div>
+    <div class="trans-row"><span class="lab"><span class="swatch" style="background:var(--violet)"></span>Raie violette</span><i>L</i> =<input class="num" id="L0" inputmode="decimal" aria-label="L pour la raie violette" /> cm</div>
+    <div class="trans-row"><span class="lab"><span class="swatch" style="background:var(--vert)"></span>Raie verte</span><i>L′</i> =<input class="num" id="L1" inputmode="decimal" aria-label="L prime pour la raie verte" /> cm</div>
+    <div class="trans-row"><span class="lab"><span class="swatch" style="background:var(--jaune)"></span>Raie à 577 nm</span><i>L″</i> =<input class="num" id="L2" inputmode="decimal" aria-label="L seconde pour la raie à 577 nm" /> cm</div>
+    <div class="actions"><button class="btn" data-check="7">Vérifier la question 7</button></div>
+    <div class="fb" id="fb7"></div>
+  </div>
+
+  <div class="q" id="q8">
+    <div class="q-head"><span class="q-num">8</span><div class="q-text">
+      La hauteur de chaque rectangle correspond à l’écart entre deux niveaux d’énergie. Faire glisser chaque rectangle le long du diagramme pour trouver ces deux niveaux, puis compléter la dernière ligne du tableau («&nbsp;Transition E<sub>n</sub> → E<sub>m</sub>&nbsp;»). Il s’agit ici d’une <b>émission</b>.
+    </div></div>
+    <div class="diagram-wrap">
+      <svg class="diagram" id="diag2" viewBox="0 0 420 660" aria-label="Diagramme d’énergie avec rectangles déplaçables"></svg>
+      <div>
+        <p class="howto">Les rectangles apparaissent quand la question 7 est validée. Les faire glisser verticalement (souris ou doigt) ; ils ont la hauteur que vous avez calculée.</p>
+        <div id="trans-rows"></div>
+        <div class="actions"><button class="btn" data-check="8">Vérifier la question 8</button></div>
+        <div class="fb" id="fb8"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PARTIE 5 ===================== -->
+<section class="part" id="partie5">
+  <h2><span class="n">Partie 5</span>Conclusion</h2>
+  <div id="qcm-9a"></div>
+  <div id="qcm-9b"></div>
+  <div id="qcm-10"></div>
+</section>
+
+</main>
+
+<footer>Lycée Albert Calmette – Physique-chimie</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  /* ============ Données ============ */
+  const H = 6.626e-34, C = 2.998e8, EV = 1.60e-19;
+  const LEVELS = [-10.5, -5.78, -5.56, -4.98, -3.74, -2.71, -2.51, -1.90, -1.81, -1.60];
+  const RAIES = [
+    { key: 'violet', label: 'Raie violette', color: 'var(--violet)', hex: '#6d3fd6', p: '' },
+    { key: 'vert',   label: 'Raie verte',    color: 'var(--vert)',   hex: '#1f9d3a', p: '′' },
+    { key: 'jaune',  label: 'Raie à 577 nm', color: 'var(--jaune)',  hex: '#d4a400', p: '″' },
+  ];
+  // Raies intenses du mercure et transitions attendues (émission : n → m)
+  const HG = [
+    { lambda: 404.7, color: 'violet', n: 5, m: 1 },
+    { lambda: 435.8, color: 'violet', n: 5, m: 2 },
+    { lambda: 546.1, color: 'vert',   n: 5, m: 3 },
+    { lambda: 577.0, color: 'jaune',  n: 9, m: 4 },
+  ];
+  const QIDS = ['q1','q2','q3','q4','q5','q6','q7','q8','q9a','q9b','q10'];
+  const NEEDS = { q5: ['q4', 'la question 4'], q6: ['q5', 'la question 5'], q7: ['q6', 'la question 6'], q8: ['q7', 'la question 7'] };
+  const restoreQcm = [];
+  const TOTAL = 12; // q4 compte double (mesures + couleur) -> voir score()
+
+  const num = (s) => { if (s == null) return NaN; const t = String(s).trim().replace(',', '.').replace(/\s/g, ''); return t === '' ? NaN : Number(t); };
+  const fmt = (x, d = 2) => x.toFixed(d).replace('.', ',');
+  const near = (a, b, tol) => Math.abs(a - b) <= Math.abs(b) * tol;
+  const $ = (id) => document.getElementById(id);
+
+  /* ============ État (sauvegarde locale) ============ */
+  const KEY = 'tp-spectre-atome-mercure-v1';
+  let S = { ok: {}, placed: {}, qcm: {}, inputs: {}, rect: [null, null, null], trans: {} };
+  try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) { /* stockage indisponible */ }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignoré */ } };
+
+  /* ============ Animation du document 1 ============ */
+  (() => {
+    const btn = $('anim-btn'), wrap = btn && btn.closest('.anim-wrap');
+    if (!wrap) return;
+    btn.addEventListener('click', () => {
+      wrap.classList.remove('playing');
+      void wrap.offsetWidth; // relance depuis le début
+      wrap.classList.add('playing');
+      btn.disabled = true;
+      setTimeout(() => { btn.disabled = false; btn.textContent = '▶ Relancer l’animation'; }, 5000);
+    });
+  })();
+
+  /* ============ Tableau des niveaux ============ */
+  (() => {
+    const t = $('levels-table');
+    let h = '<tr><th>État</th><th>Fondamental E<sub>0</sub></th>' + LEVELS.slice(1).map((_, i) => `<th>E<sub>${i + 1}</sub></th>`).join('') + '</tr>';
+    h += '<tr><th>E (eV)</th>' + LEVELS.map((e, i) => `<td>${fmt(e, i ? 2 : 1)}</td>`).join('') + '</tr>';
+    t.innerHTML = h;
+  })();
+
+  /* ============ Retour visuel générique ============ */
+  function feedback(id, type, html) { const el = $(id); el.className = 'fb show ' + type; el.innerHTML = html; }
+  function setDone(qid, ok) {
+    S.ok[qid] = !!ok; save();
+    const box = $(qid); if (box) box.classList.toggle('done', !!ok);
+    refreshLocks(); score();
+  }
+
+  /* ============ Diagrammes SVG ============ */
+  const NS = 'http://www.w3.org/2000/svg';
+  const Y0 = 34, K = 58, AX = 74; // y(0 eV), px par eV, abscisse de l’axe
+  const yOf = (E) => Y0 - E * K;
+  const eOf = (y) => (Y0 - y) / K;
+  const el = (tag, attrs, parent) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (parent) parent.appendChild(n); return n; };
+  function drawAxis(svg) {
+    svg.innerHTML = '';
+    el('line', { x1: AX, y1: yOf(-10.5) + 8, x2: AX, y2: Y0 - 22, stroke: '#1d2433', 'stroke-width': 2 }, svg);
+    el('path', { d: `M${AX - 6} ${Y0 - 14} L${AX} ${Y0 - 26} L${AX + 6} ${Y0 - 14} Z`, fill: '#1d2433' }, svg);
+    const t = el('text', { x: AX - 66, y: Y0 - 14, 'font-size': 14, 'font-weight': 600 }, svg); t.textContent = 'E (eV)';
+    for (let i = 0; i <= 105; i++) {
+      const E = -i / 10, y = yOf(E), major = i % 10 === 0, half = i % 5 === 0;
+      el('line', { x1: AX - (major ? 9 : half ? 6 : 3), y1: y, x2: AX, y2: y, stroke: '#1d2433', 'stroke-width': major ? 1.6 : 0.8 }, svg);
+      if (major || i === 105) { const tx = el('text', { x: AX - 14, y: y + 4, 'font-size': 14, 'text-anchor': 'end' }, svg); tx.textContent = fmt(E, i === 105 ? 1 : 0).replace('-', '−'); }
+      if (major) el('line', { x1: AX, y1: y, x2: 400, y2: y, stroke: '#eef0f4', 'stroke-width': 1 }, svg).setAttribute('pointer-events', 'none');
+    }
+  }
+  // Répartit verticalement les étiquettes pour qu’elles ne se chevauchent pas
+  function labelYs(entries, gap = 17) {
+    const sorted = entries.slice().sort((a, b) => a.y - b.y);
+    const pos = sorted.map(o => o.y);
+    for (let k = 1; k < pos.length; k++) pos[k] = Math.max(pos[k], pos[k - 1] + gap);
+    const out = {}; sorted.forEach((o, k) => out[o.i] = pos[k]); return out;
+  }
+  function levelLabel(parent, i, xLine, yLine, yLab, color) { // étiquette reliée au niveau
+    el('polyline', { points: `${xLine},${yLine} ${xLine + 8},${yLine} ${xLine + 16},${yLab} ${xLine + 20},${yLab}`, fill: 'none', stroke: color, 'stroke-width': 0.8 }, parent);
+    const t = el('text', { x: xLine + 23, y: yLab + 5, 'font-size': 15, fill: color }, parent);
+    t.innerHTML = `E<tspan baseline-shift="sub" font-size="11">${i}</tspan>`;
+  }
+  function svgPoint(svg, evt) { const p = svg.createSVGPoint(); p.x = evt.clientX; p.y = evt.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
+
+  /* ----- Question 1 : construction du diagramme ----- */
+  const svg1 = $('diag1');
+  let selected = null, dragging = null;
+  const chips = $('chips1');
+  LEVELS.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.className = 'lvl-chip'; b.type = 'button'; b.dataset.i = i;
+    b.innerHTML = `E<sub>${i}</sub> = ${fmt(LEVELS[i], i ? 2 : 1)} eV`;
+    b.addEventListener('click', () => { if (S.ok.q1) return; selected = i; renderChips(); });
+    chips.appendChild(b);
+  });
+  function renderChips(check) {
+    chips.querySelectorAll('.lvl-chip').forEach(b => {
+      const i = +b.dataset.i, placed = S.placed[i] != null;
+      b.className = 'lvl-chip' + (selected === i ? ' sel' : '') + (placed ? ' placed' : '');
+      if (check || S.ok.q1) { if (placed) b.classList.add(Math.abs(S.placed[i] - LEVELS[i]) <= 0.03 ? 'good' : 'bad'); }
+    });
+  }
+  let guide, guideTxt;
+  function render1() {
+    drawAxis(svg1);
+    const labs = labelYs(Object.keys(S.placed).map(k => ({ i: +k, y: yOf(S.placed[k]) })));
+    Object.keys(S.placed).forEach(k => {
+      const i = +k, E = S.placed[i], y = yOf(E);
+      const g = el('g', { 'data-i': i, style: S.ok.q1 ? '' : 'cursor:ns-resize' }, svg1);
+      el('rect', { x: AX + 4, y: y - 5, width: 230, height: 10, fill: 'transparent' }, g);
+      el('line', { x1: AX + 6, y1: y, x2: AX + 230, y2: y, stroke: '#24345c', 'stroke-width': 2.4 }, g);
+      levelLabel(g, i, AX + 230, y, labs[i], '#24345c');
+    });
+    guide = el('line', { x1: AX, x2: 400, y1: -10, y2: -10, stroke: '#c2410c', 'stroke-dasharray': '4 3', 'pointer-events': 'none' }, svg1);
+    guideTxt = el('text', { x: AX + 12, y: -10, 'font-size': 14, 'font-weight': 600, fill: '#c2410c', 'text-anchor': 'start', 'pointer-events': 'none' }, svg1);
+  }
+  function clampE(E) { return Math.max(-10.5, Math.min(0, Math.round(E * 100) / 100)); }
+  function showGuide(E) { const y = yOf(E); guide.setAttribute('y1', y); guide.setAttribute('y2', y); guideTxt.setAttribute('y', y - 5); guideTxt.textContent = fmt(E, 2).replace('-', '−') + ' eV'; }
+  svg1.addEventListener('pointermove', (e) => {
+    if (S.ok.q1) return;
+    const E = clampE(eOf(svgPoint(svg1, e).y));
+    if (selected != null || dragging != null) showGuide(E); else { guide.setAttribute('y1', -10); guide.setAttribute('y2', -10); guideTxt.textContent = ''; }
+    if (dragging != null) { S.placed[dragging] = E; const g = svg1.querySelector(`g[data-i="${dragging}"]`); if (g) { const y = yOf(E); g.querySelectorAll('line').forEach(l => { l.setAttribute('y1', y); l.setAttribute('y2', y); }); g.querySelector('rect').setAttribute('y', y - 5); } }
+  });
+  svg1.addEventListener('pointerdown', (e) => {
+    if (S.ok.q1) return;
+    const g = e.target.closest('g[data-i]');
+    if (selected == null && g) { dragging = +g.dataset.i; svg1.setPointerCapture(e.pointerId); return; }
+    if (selected == null) { feedback('fb1', 'warn', 'Choisir d’abord un niveau dans la liste.'); return; }
+    S.placed[selected] = clampE(eOf(svgPoint(svg1, e).y));
+    const next = LEVELS.findIndex((_, i) => S.placed[i] == null);
+    selected = next >= 0 ? next : null;
+    save(); render1(); renderChips();
+  });
+  svg1.addEventListener('pointerup', () => { if (dragging != null) { dragging = null; save(); render1(); renderChips(); } });
+  $('check1').addEventListener('click', () => {
+    const missing = LEVELS.filter((_, i) => S.placed[i] == null).length;
+    if (missing) { feedback('fb1', 'warn', `Il manque encore ${missing} niveau(x) à placer.`); return; }
+    const bad = LEVELS.map((E, i) => Math.abs(S.placed[i] - E) > 0.03 ? i : -1).filter(i => i >= 0);
+    renderChips(true);
+    if (bad.length) { feedback('fb1', 'ko', `Niveau(x) mal placé(s) : ${bad.map(i => 'E<sub>' + i + '</sub>').join(', ')}. Les faire glisser à la bonne hauteur.`); setDone('q1', false); }
+    else { feedback('fb1', 'ok', 'Diagramme correct. Remarquer que les niveaux d’énergie ne peuvent prendre que certaines valeurs.'); setDone('q1', true); render1(); }
+  });
+  $('clear1').addEventListener('click', () => { S.placed = {}; selected = 0; if (S.ok.q1) setDone('q1', false); save(); render1(); renderChips(); $('fb1').className = 'fb'; });
+
+  /* ============ QCM ============ */
+  const QCM = {
+    q2: { n: 2, mount: 'qcm-2', text: 'Quel lien Niels Bohr établit-il entre la quantification des niveaux d’énergie d’un atome et sa structure électronique ?', opts: [
+      ['Les électrons ne peuvent occuper que certaines orbites bien précises autour du noyau : l’énergie de l’atome ne peut donc prendre que certaines valeurs, elle est quantifiée.', true],
+      ['Les électrons peuvent occuper n’importe quelle orbite : l’énergie de l’atome peut prendre toutes les valeurs.', false],
+      ['L’énergie de l’atome ne dépend que de son noyau, pas de ses électrons.', false],
+      ['Seul l’état fondamental a une énergie bien précise ; les états excités peuvent avoir n’importe quelle énergie.', false]],
+      ok: 'Oui : à chaque orbite (couche) électronique correspond une énergie bien déterminée de l’atome.', ko: 'Relire le paragraphe « 1913 » du document 1.' },
+    q3: { n: 3, mount: 'qcm-3', text: 'Observer le spectre d’émission du mercure (Hg) dans la simulation. La lampe à vapeur de mercure est-elle une source de lumière polychromatique ou monochromatique ? Choisir la réponse correctement justifiée.', opts: [
+      ['Polychromatique : son spectre d’émission comporte plusieurs raies, donc plusieurs radiations de longueurs d’onde différentes.', true],
+      ['Monochromatique : la lumière de la lampe paraît d’une seule couleur à l’œil.', false],
+      ['Polychromatique : son spectre d’émission est un spectre continu, comme celui de la lumière blanche.', false],
+      ['Monochromatique : la lampe ne contient qu’un seul élément chimique.', false]],
+      ok: 'Oui : chaque raie correspond à une radiation monochromatique ; la lumière émise en contient plusieurs.', ko: 'Une source monochromatique n’émet qu’une seule radiation (une seule raie). Combien de raies voit-on pour Hg ?' },
+    q9a: { n: 9, mount: 'qcm-9a', text: 'Que vaut l’énergie <i>E</i> d’un photon émis ou absorbé lors d’une transition entre un niveau d’énergie E<sub>n</sub> et un niveau d’énergie E<sub>m</sub> ?', opts: [
+      ['<i>E</i> = |E<sub>n</sub> − E<sub>m</sub>| : la différence entre l’énergie du niveau le plus haut et celle du niveau le plus bas.', true],
+      ['<i>E</i> = E<sub>n</sub> + E<sub>m</sub>', false],
+      ['<i>E</i> = E<sub>n</sub> × E<sub>m</sub>', false],
+      ['<i>E</i> = E<sub>n</sub> : l’énergie du niveau de départ.', false]],
+      ok: 'Oui : c’est exactement ce que montrent les rectangles de la question 8.', ko: 'Repenser aux rectangles de la question 8 : à quoi correspond leur hauteur ?' },
+    q9b: { n: '9 bis', mount: 'qcm-9b', text: 'Pourquoi cette énergie est-elle généralement notée ΔE<sub>n→m</sub> (ou ΔE<sub>m→n</sub>) ?', opts: [
+      ['Parce qu’elle est égale à la variation d’énergie de l’atome au cours de la transition (Δ désigne une variation).', true],
+      ['Parce qu’elle est égale à l’énergie de l’état fondamental.', false],
+      ['Parce que c’est une différence entre deux longueurs d’onde.', false],
+      ['Parce que le photon perd de l’énergie en se déplaçant.', false]],
+      ok: 'Oui : l’atome perd (émission) ou gagne (absorption) exactement l’énergie du photon.', ko: 'Que signifie la lettre grecque Δ en physique ?' },
+    q10: { n: 10, mount: 'qcm-10', text: 'Répondre à la problématique : pourquoi le spectre d’émission d’une lampe à vapeur de mercure présente-t-il des raies ?', opts: [
+      ['Les niveaux d’énergie de l’atome sont quantifiés : seules certaines transitions sont possibles, donc seuls des photons d’énergies (et de longueurs d’onde) bien précises sont émis.', true],
+      ['Le verre de la lampe absorbe certaines couleurs de la lumière blanche émise par le mercure.', false],
+      ['Les atomes de mercure émettent toutes les longueurs d’onde, mais l’œil n’en voit que quelques-unes.', false],
+      ['Chaque raie correspond à un élément chimique différent présent dans la lampe.', false]],
+      ok: 'Exactement : le spectre de raies est la « signature » des niveaux d’énergie quantifiés de l’atome.', ko: 'Faire le lien entre quantification des niveaux (Q1-Q2), énergie des photons (Q6) et transitions (Q8).' },
+  };
+  // Mélange stable (même ordre pour toute la classe)
+  const ORDER = { q2: [2, 0, 3, 1], q3: [1, 3, 0, 2], q9a: [1, 0, 3, 2], q9b: [2, 3, 0, 1], q10: [3, 1, 0, 2] };
+  Object.entries(QCM).forEach(([id, q]) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'q'; wrap.id = id;
+    wrap.innerHTML = `<div class="q-head"><span class="q-num">${q.n}</span><div class="q-text">${q.text}</div></div>
+      <div class="options">${ORDER[id].map(k => `<label><input type="radio" name="${id}" value="${k}" /><span>${q.opts[k][0]}</span></label>`).join('')}</div>
+      <div class="actions"><button class="btn" data-qcm="${id}">Valider</button></div><div class="fb" id="fb-${id}"></div>`;
+    $(q.mount).appendChild(wrap);
+    if (S.qcm[id] != null) { const r = wrap.querySelector(`input[value="${S.qcm[id]}"]`); if (r) r.checked = true; }
+    wrap.querySelector('[data-qcm]').addEventListener('click', () => checkQcm(id));
+    if (S.ok[id]) restoreQcm.push(id);
+  });
+  function checkQcm(id, silent) {
+    const q = QCM[id], wrap = $(id), r = wrap.querySelector('input:checked');
+    if (!r) { feedback('fb-' + id, 'warn', 'Choisir une réponse.'); return; }
+    S.qcm[id] = +r.value;
+    const ok = q.opts[+r.value][1];
+    wrap.querySelectorAll('label').forEach(l => l.classList.remove('good', 'bad'));
+    r.closest('label').classList.add(ok ? 'good' : 'bad');
+    feedback('fb-' + id, ok ? 'ok' : 'ko', ok ? q.ok : q.ko);
+    if (ok) wrap.querySelectorAll('input').forEach(i => i.disabled = true);
+    setDone(id, ok);
+  }
+
+  /* ============ Tableau de résultats (Q4 à Q6, Q8) ============ */
+  const COLORS = ['violet', 'bleu', 'vert', 'jaune', 'orange', 'rouge'];
+  const ROWS = [
+    { id: 'col', label: 'Couleur', q: 4 },
+    { id: 'lam', label: 'Longueur d’onde <i>λ</i> (nm)', q: 4, sym: 'λ' },
+    { id: 'nu',  label: 'Fréquence <i>ν</i> (× 10<sup>14</sup> Hz)', q: 5, sym: 'ν' },
+    { id: 'ej',  label: 'Énergie <i>E</i> du photon (× 10<sup>-19</sup> J)', q: 6, sym: 'E' },
+    { id: 'eev', label: 'Énergie <i>E</i> du photon (eV)', q: 6, sym: 'E' },
+    { id: 'tr',  label: 'Transition E<sub>n</sub> → E<sub>m</sub>', q: 8 },
+  ];
+  (() => {
+    let h = '<tr><th></th>' + RAIES.map(r => `<th><span class="swatch" style="background:${r.color}"></span>${r.label}</th>`).join('') + '</tr>';
+    ROWS.forEach(row => {
+      h += `<tr data-row="${row.id}" data-q="${row.q}"><td>${row.label}</td>`;
+      RAIES.forEach((r, j) => {
+        let c;
+        if (row.id === 'col') c = j < 2 ? `<b>${r.key}</b>` : `<select class="sel" id="col2" aria-label="Couleur de la raie à 577 nm"><option value="">—</option>${COLORS.map(x => `<option>${x}</option>`).join('')}</select>`;
+        else if (row.id === 'lam' && j === 2) c = '<i>λ″</i> = 577,0';
+        else if (row.id === 'tr') c = `<span id="tr${j}">…</span>`;
+        else c = `<span><i>${row.sym}${r.p}</i> =</span><input class="num" id="${row.id}${j}" inputmode="decimal" aria-label="${row.sym}${r.p} – ${row.label.replace(/<[^>]+>/g, '')}" />`;
+        h += `<td><div class="cell">${c}</div></td>`;
+      });
+      h += '</tr>';
+    });
+    $('res').innerHTML = h;
+  })();
+  // restauration des saisies
+  document.querySelectorAll('input.num, select.sel').forEach(inp => {
+    if (S.inputs[inp.id] != null) inp.value = S.inputs[inp.id];
+    inp.addEventListener('input', () => { S.inputs[inp.id] = inp.value; inp.classList.remove('good', 'bad'); save(); });
+  });
+  const mark = (inp, ok) => { inp.classList.remove('good', 'bad'); inp.classList.add(ok ? 'good' : 'bad'); };
+  const pow10hint = (v, ref) => { const r = Math.log10(Math.abs(v / ref)); return Math.abs(r - Math.round(r)) < 0.02 && Math.round(r) !== 0; };
+
+  // Valeurs de l’élève (après validation)
+  const lam = (j) => j === 2 ? 577.0 : num(S.inputs['lam' + j]);
+  const hgOf = (j) => { const l = lam(j); return HG.find(h => Math.abs(h.lambda - l) <= 0.6); };
+
+  const CHECK = {
+    4() {
+      const msgs = []; let ok = true;
+      [0, 1].forEach(j => {
+        const inp = $('lam' + j), v = num(inp.value), h = HG.find(x => x.color === RAIES[j].key && Math.abs(x.lambda - v) <= 0.6);
+        mark(inp, !!h); if (!h) { ok = false;
+          if (isNaN(v)) msgs.push(`${RAIES[j].label} : valeur manquante.`);
+          else if (j === 0 && Math.abs(v - 407.8) <= 0.6) msgs.push('Raie violette : cette raie est peu intense, en choisir une plus intense.');
+          else msgs.push(`${RAIES[j].label} : valeur incorrecte. Zoomer davantage sur la raie dans la simulation.`); }
+      });
+      const s = $('col2'); const okc = s.value === 'jaune'; mark(s, okc);
+      if (!okc) { ok = false; msgs.push('Couleur de la raie à 577 nm : observer sa position dans le spectre.'); }
+      if (ok) { feedback('fb4', 'ok', 'Mesures correctes.'); ['lam0', 'lam1', 'col2'].forEach(i => $(i).disabled = true); }
+      else feedback('fb4', 'ko', msgs.join('<br>'));
+      setDone('q4', ok); S.ok.q4col = okc; save(); score();
+    },
+    5() {
+      const msgs = []; let ok = true;
+      RAIES.forEach((r, j) => {
+        const inp = $('nu' + j), v = num(inp.value), ref = C / (lam(j) * 1e-9) / 1e14;
+        const g = near(v, ref, 0.01); mark(inp, g);
+        if (!g) { ok = false; msgs.push(isNaN(v) ? `${r.label} : valeur manquante.` : pow10hint(v, ref) ? `${r.label} : erreur de puissance de 10 – convertir <i>λ</i> en mètre et exprimer <i>ν</i> en 10<sup>14</sup> Hz.` : `${r.label} : valeur incorrecte – utiliser <i>ν</i> = <i>c</i> / <i>λ</i>.`); }
+      });
+      if (ok) { feedback('fb5', 'ok', 'Fréquences correctes : <i>ν</i> = <i>c</i> / <i>λ</i>.'); [0, 1, 2].forEach(j => $('nu' + j).disabled = true); } else feedback('fb5', 'ko', msgs.join('<br>'));
+      setDone('q5', ok);
+    },
+    6() {
+      const msgs = []; let ok = true;
+      RAIES.forEach((r, j) => {
+        const ej = $('ej' + j), ee = $('eev' + j), vj = num(ej.value), ve = num(ee.value);
+        const refJ = H * (C / (lam(j) * 1e-9)) / 1e-19, refE = refJ * 1e-19 / EV;
+        const gj = near(vj, refJ, 0.015), ge = near(ve, refE, 0.02); mark(ej, gj); mark(ee, ge);
+        if (!gj) { ok = false; msgs.push(isNaN(vj) ? `${r.label} : énergie en joule manquante.` : pow10hint(vj, refJ) ? `${r.label} : énergie en J – erreur de puissance de 10 (résultat attendu en 10<sup>-19</sup> J).` : `${r.label} : énergie en J incorrecte – utiliser <i>E</i> = <i>h</i> × <i>ν</i>.`); }
+        if (!ge) { ok = false; msgs.push(isNaN(ve) ? `${r.label} : énergie en eV manquante.` : `${r.label} : énergie en eV incorrecte – diviser l’énergie en joule par 1,60.10<sup>-19</sup>.`); }
+      });
+      if (ok) { feedback('fb6', 'ok', 'Énergies correctes.'); [0, 1, 2].forEach(j => { $('ej' + j).disabled = true; $('eev' + j).disabled = true; }); } else feedback('fb6', 'ko', msgs.join('<br>'));
+      setDone('q6', ok);
+    },
+    7() {
+      const msgs = []; let ok = true;
+      RAIES.forEach((r, j) => {
+        const inp = $('L' + j), v = num(inp.value), ref = num(S.inputs['eev' + j]) / 0.5;
+        const g = near(v, ref, 0.02); mark(inp, g);
+        if (!g) { ok = false; msgs.push(isNaN(v) ? `${r.label} : valeur manquante.` : `${r.label} : incorrect – 1 cm représente 0,5 eV.`); }
+      });
+      if (ok) { feedback('fb7', 'ok', 'Hauteurs correctes. Les rectangles sont disponibles pour la question 8.'); [0, 1, 2].forEach(j => $('L' + j).disabled = true); } else feedback('fb7', 'ko', msgs.join('<br>'));
+      setDone('q7', ok); render2();
+    },
+    8() {
+      const msgs = []; let ok = true;
+      RAIES.forEach((r, j) => {
+        const sn = $('tn' + j), sm = $('tm' + j), h = hgOf(j);
+        const g = h && +sn.value === h.n && +sm.value === h.m; mark(sn, g); mark(sm, g);
+        if (!g) { ok = false;
+          if (sn.value === '' || sm.value === '') msgs.push(`${r.label} : choisir les deux niveaux.`);
+          else if (h && +sn.value === h.m && +sm.value === h.n) msgs.push(`${r.label} : bons niveaux, mais pour une émission l’atome passe du niveau le plus haut au niveau le plus bas.`);
+          else msgs.push(`${r.label} : transition incorrecte – placer le bas du rectangle exactement sur un niveau et regarder où arrive son sommet.`); }
+      });
+      if (ok) { feedback('fb8', 'ok', 'Transitions correctes : chaque raie correspond à une transition entre deux niveaux d’énergie bien précis.'); RAIES.forEach((_, j) => { $('tn' + j).disabled = true; $('tm' + j).disabled = true; }); } else feedback('fb8', 'ko', msgs.join('<br>'));
+      setDone('q8', ok); fillTransitions();
+    },
+  };
+  document.querySelectorAll('[data-check]').forEach(b => b.addEventListener('click', () => CHECK[b.dataset.check]()));
+
+  /* ----- Question 8 : diagramme avec rectangles ----- */
+  const svg2 = $('diag2');
+  const RX = [AX + 222, AX + 266, AX + 310];
+  let rdrag = null, rOff = 0;
+  function render2() {
+    drawAxis(svg2);
+    const labs = labelYs(LEVELS.map((E, i) => ({ i, y: yOf(E) })));
+    LEVELS.forEach((E, i) => {
+      const y = yOf(E);
+      el('line', { x1: AX + 6, y1: y, x2: AX + 150, y2: y, stroke: '#24345c', 'stroke-width': 2.2 }, svg2);
+      levelLabel(svg2, i, AX + 150, y, labs[i], '#24345c');
+    });
+    if (!S.ok.q7) return;
+    RAIES.forEach((r, j) => {
+      const hE = num(S.inputs['eev' + j]); if (isNaN(hE)) return;
+      if (S.rect[j] == null) S.rect[j] = -9.5 + j * 0.4; // énergie du bas du rectangle
+      const yb = yOf(S.rect[j]), ht = hE * K;
+      const g = el('g', { 'data-r': j, style: 'cursor:ns-resize' }, svg2);
+      el('rect', { x: RX[j], y: yb - ht, width: 30, height: ht, fill: r.hex, 'fill-opacity': 0.35, stroke: r.hex, 'stroke-width': 2, rx: 2 }, g);
+      el('line', { x1: AX + 6, x2: RX[j] + 30, y1: yb, y2: yb, stroke: r.hex, 'stroke-dasharray': '3 3', 'stroke-width': 1 }, g);
+      el('line', { x1: AX + 6, x2: RX[j] + 30, y1: yb - ht, y2: yb - ht, stroke: r.hex, 'stroke-dasharray': '3 3', 'stroke-width': 1 }, g);
+      const t = el('text', { x: RX[j] + 15, y: yb - ht / 2 + 4, 'font-size': 12, 'text-anchor': 'middle', 'font-weight': 700, fill: '#1d2433' }, g); t.textContent = 'L' + r.p;
+    });
+  }
+  svg2.addEventListener('pointerdown', (e) => {
+    const g = e.target.closest('g[data-r]'); if (!g || S.ok.q8) return;
+    rdrag = +g.dataset.r; rOff = eOf(svgPoint(svg2, e).y) - S.rect[rdrag]; svg2.setPointerCapture(e.pointerId);
+  });
+  svg2.addEventListener('pointermove', (e) => {
+    if (rdrag == null) return;
+    const hE = num(S.inputs['eev' + rdrag]);
+    let b = eOf(svgPoint(svg2, e).y) - rOff;
+    b = Math.max(-10.5, Math.min(-hE, b));
+    S.rect[rdrag] = Math.round(b * 100) / 100; render2();
+  });
+  svg2.addEventListener('pointerup', () => { if (rdrag != null) { rdrag = null; save(); } });
+
+  (() => {
+    const opts = '<option value="">—</option>' + LEVELS.map((_, i) => `<option value="${i}">E${String.fromCharCode(0x2080 + i)}</option>`).join('');
+    $('trans-rows').innerHTML = RAIES.map((r, j) => `<div class="trans-row"><span class="lab"><span class="swatch" style="background:${r.color}"></span>${r.label}</span>
+      <select class="sel" id="tn${j}" aria-label="Niveau de départ">${opts}</select> → <select class="sel" id="tm${j}" aria-label="Niveau d’arrivée">${opts}</select></div>`).join('');
+    RAIES.forEach((_, j) => ['tn', 'tm'].forEach(p => { const s = $(p + j); if (S.inputs[p + j] != null) s.value = S.inputs[p + j]; s.addEventListener('change', () => { S.inputs[p + j] = s.value; s.classList.remove('good', 'bad'); save(); fillTransitions(); }); }));
+  })();
+  function fillTransitions() {
+    RAIES.forEach((_, j) => {
+      const n = S.inputs['tn' + j], m = S.inputs['tm' + j];
+      $('tr' + j).innerHTML = (n !== undefined && n !== '' && m !== undefined && m !== '') ? `E<sub>${n}</sub> → E<sub>${m}</sub>` : '…';
+    });
+  }
+
+  /* ============ Verrous (progression guidée) ============ */
+  function refreshLocks() {
+    Object.entries(NEEDS).forEach(([q, [need, txt]]) => {
+      const box = $(q), locked = !S.ok[need];
+      let note = box.querySelector('.locked');
+      if (locked && !note) { note = document.createElement('p'); note.className = 'locked'; note.textContent = `Valider d’abord ${txt}.`; box.insertBefore(note, box.querySelector('.q-head').nextSibling); }
+      if (!locked && note) note.remove();
+      box.querySelectorAll('button').forEach(b => b.disabled = locked);
+    });
+    const lockMap = { nu: 'q4', ej: 'q5', eev: 'q5' };
+    Object.entries(lockMap).forEach(([p, need]) => RAIES.forEach((_, j) => { const i = $(p + j); const done = S.ok[{ nu: 'q5', ej: 'q6', eev: 'q6' }[p]]; i.disabled = !S.ok[need] || !!done; }));
+    RAIES.forEach((_, j) => { $('L' + j).disabled = !S.ok.q6 || !!S.ok.q7; $('tn' + j).disabled = $('tm' + j).disabled = !S.ok.q7 || !!S.ok.q8; });
+    if (S.ok.q4) ['lam0', 'lam1', 'col2'].forEach(i => $(i).disabled = true);
+    // ligne active du tableau
+    const cur = !S.ok.q4 ? 4 : !S.ok.q5 ? 5 : !S.ok.q6 ? 6 : !S.ok.q8 ? 8 : 0;
+    document.querySelectorAll('#res tr[data-q]').forEach(tr => tr.classList.toggle('active', +tr.dataset.q === cur));
+  }
+
+  /* ============ Score ============ */
+  function score() {
+    const n = QIDS.filter(q => S.ok[q]).length + (S.ok.q4 ? 1 : 0); // Q4 vaut 2 points
+    $('ptxt').textContent = `${n} / ${TOTAL}`;
+    $('pfill').style.width = (100 * n / TOTAL) + '%';
+  }
+  /* ============ Enregistrement JSON ============ */
+  const poste = $('poste');
+  if (S.poste) poste.value = S.poste;
+  poste.addEventListener('input', () => { S.poste = poste.value.trim(); poste.classList.remove('bad'); save(); });
+  const canPick = typeof window.showSaveFilePicker === 'function';
+  if (!canPick) $('save-hint').remove();
+  function exportData() {
+    const val = (id) => S.inputs[id] ?? '';
+    const qcm = (id) => ({ validee: !!S.ok[id], reponse: S.qcm[id] != null ? QCM[id].opts[S.qcm[id]][0].replace(/<[^>]+>/g, '') : '' });
+    const niveaux = {}; LEVELS.forEach((_, i) => { niveaux['E' + i] = S.placed[i] ?? null; });
+    const trio = (p) => ({ violette: val(p + '0'), verte: val(p + '1'), raie_577nm: val(p + '2') });
+    return {
+      tp: 'Spectre d’absorption et d’émission d’un atome',
+      poste: S.poste,
+      date: new Date().toISOString(),
+      score: { points: QIDS.filter(q => S.ok[q]).length + (S.ok.q4 ? 1 : 0), total: TOTAL },
+      questions: {
+        q1: { validee: !!S.ok.q1, niveaux_places_eV: niveaux },
+        q2: qcm('q2'), q3: qcm('q3'),
+        q4: { validee: !!S.ok.q4, lambda_nm: { violette: val('lam0'), verte: val('lam1'), raie_577nm: '577,0' }, couleur_577nm: val('col2') },
+        q5: { validee: !!S.ok.q5, frequence_1e14Hz: trio('nu') },
+        q6: { validee: !!S.ok.q6, energie_1e_19J: trio('ej'), energie_eV: trio('eev') },
+        q7: { validee: !!S.ok.q7, hauteur_cm: trio('L') },
+        q8: { validee: !!S.ok.q8, transitions: Object.fromEntries(RAIES.map((r, j) => [['violette', 'verte', 'raie_577nm'][j], (val('tn' + j) !== '' && val('tm' + j) !== '') ? `E${val('tn' + j)} -> E${val('tm' + j)}` : ''])) },
+        q9: qcm('q9a'), q9bis: qcm('q9b'), q10: qcm('q10'),
+      },
+    };
+  }
+  $('save').addEventListener('click', async () => {
+    if (!S.poste) { poste.classList.add('bad'); poste.focus(); feedback('fb-save', 'warn', 'Indiquer le numéro de poste avant d’enregistrer.'); return; }
+    const now = new Date(), z = (n) => String(n).padStart(2, '0');
+    const stamp = `${now.getFullYear()}-${z(now.getMonth() + 1)}-${z(now.getDate())}_${z(now.getHours())}h${z(now.getMinutes())}`;
+    const name = `TP_spectre_Hg_poste-${S.poste.replace(/[^\w-]+/g, '_')}_${stamp}.json`;
+    const blob = new Blob([JSON.stringify(exportData(), null, 2)], { type: 'application/json' });
+    try {
+      if (canPick) {
+        const handle = await window.showSaveFilePicker({ suggestedName: name, types: [{ description: 'Fichier JSON', accept: { 'application/json': ['.json'] } }] });
+        const w = await handle.createWritable(); await w.write(blob); await w.close();
+        feedback('fb-save', 'ok', `Travail enregistré : ${handle.name}`);
+      } else {
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        feedback('fb-save', 'ok', `Fichier ${name} enregistré.`);
+      }
+    } catch (e) {
+      if (e && e.name === 'AbortError') return; // l’élève a annulé
+      feedback('fb-save', 'ko', 'L’enregistrement a échoué. Réessayer.');
+    }
+  });
+
+
+  /* ============ Initialisation ============ */
+  if (Object.keys(S.placed).length === 0) selected = 0;
+  render1(); renderChips(); if (S.ok.q1) { $('q1').classList.add('done'); renderChips(true); }
+  ['q4', 'q5', 'q6', 'q7', 'q8'].forEach(q => { if (S.ok[q]) $(q).classList.add('done'); });
+  render2(); fillTransitions(); refreshLocks(); restoreQcm.forEach(id => checkQcm(id)); score();
+});
+</script>
+</body>
+</html>
