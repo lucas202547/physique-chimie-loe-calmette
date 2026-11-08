@@ -113,6 +113,12 @@ input.num:disabled,select.sel:disabled{background:#f1efe9;color:var(--muted)}
 .res td:first-child{text-align:left;background:#faf8f3;font-weight:600}
 .res .cell{display:flex;align-items:center;justify-content:center;gap:4px}
 .res .cell span{font-size:.85rem;color:var(--muted)}
+.res .cell input.sci-m{max-width:70px}
+.res .cell input.sci-x{max-width:48px;font-size:.8rem;padding:2px 4px;position:relative;top:-.6em}
+.res .cell span.x10{font-size:.95rem;color:inherit;white-space:nowrap}
+.rel{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:12px;font-size:1.05rem}
+.rel .lab{font-size:.95rem;font-weight:600;margin-right:4px}
+.rel select.sel{max-width:72px}
 .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-right:4px}
 tr.active td{background:#fffbea}
 tr.active td:first-child{background:#fff4c7}
@@ -340,17 +346,20 @@ footer{font-size:.85rem;color:var(--muted);text-align:center;padding:30px 0}
 
   <div class="q" id="q5">
     <div class="q-head"><span class="q-num">5</span><div class="q-text">
-      Calculer les fréquences <i>ν</i>, <i>ν′</i> et <i>ν″</i> associées à ces trois raies et compléter la ligne «&nbsp;Fréquence&nbsp;» (en 10<sup>14</sup> Hz).
+      Calculer les fréquences <i>ν</i>, <i>ν′</i> et <i>ν″</i> associées à ces trois raies. Choisir d’abord la relation utilisée, puis compléter la ligne «&nbsp;Fréquence&nbsp;» du tableau en écriture scientifique (un nombre entre 1 et 10, puis la puissance de 10).
       <p class="hint">Aide : relation entre fréquence, longueur d’onde et célérité <i>c</i>. Attention aux unités de <i>λ</i>.</p>
     </div></div>
+    <div class="rel"><span class="lab">Relation utilisée :</span><i>ν</i> = <select class="sel" id="r5n" aria-label="Numérateur de la relation"><option value="">—</option><option>c</option><option>λ</option><option>h</option><option>ν</option><option>E</option></select> / <select class="sel" id="r5d" aria-label="Dénominateur de la relation"><option value="">—</option><option>c</option><option>λ</option><option>h</option><option>ν</option><option>E</option></select></div>
     <div class="actions"><button class="btn" data-check="5">Vérifier la question 5</button></div>
     <div class="fb" id="fb5"></div>
   </div>
 
   <div class="q" id="q6">
     <div class="q-head"><span class="q-num">6</span><div class="q-text">
-      Calculer, en joule, l’énergie <b><i>E</i> = <i>h</i> × <i>ν</i></b> du photon associé à chacune des trois raies (document 1), puis exprimer ces énergies en électron-volt (document 2). Compléter les deux lignes «&nbsp;Énergie&nbsp;» du tableau.
+      Calculer, en joule, l’énergie <i>E</i> du photon associé à chacune des trois raies (document 1), puis exprimer ces énergies en électron-volt (document 2). Choisir d’abord les relations utilisées, puis compléter les deux lignes «&nbsp;Énergie&nbsp;» du tableau (en joule : écriture scientifique).
     </div></div>
+    <div class="rel"><span class="lab">Énergie en joule :</span><i>E</i> = <select class="sel" id="r6a" aria-label="Premier facteur"><option value="">—</option><option>c</option><option>λ</option><option>h</option><option>ν</option><option>E</option></select> × <select class="sel" id="r6b" aria-label="Second facteur"><option value="">—</option><option>c</option><option>λ</option><option>h</option><option>ν</option><option>E</option></select></div>
+    <div class="rel"><span class="lab">Conversion en eV :</span><i>E</i>&nbsp;(eV) = <i>E</i>&nbsp;(J) <select class="sel" id="r6op" aria-label="Opération de conversion"><option value="">—</option><option>×</option><option>÷</option></select> 1,60.10<sup>-19</sup></div>
     <div class="actions"><button class="btn" data-check="6">Vérifier la question 6</button></div>
     <div class="fb" id="fb6"></div>
   </div>
@@ -416,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const $ = (id) => document.getElementById(id);
 
   /* ============ État (sauvegarde locale) ============ */
-  const KEY = 'tp-spectre-atome-mercure-v1';
+  const KEY = 'tp-spectre-atome-mercure-v2';
   let S = { ok: {}, placed: {}, qcm: {}, inputs: {}, rect: [null, null, null], trans: {}, recheck: {} };
   try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(S, JSON.parse(raw)); } catch (e) { /* stockage indisponible */ }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignoré */ } };
@@ -453,7 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ok && k >= 0 && next && S.recheck[next]) { delete S.recheck[next]; save(); CHECK[next.slice(1)](); }
   }
   const CHAIN = ['q4', 'q5', 'q6', 'q8'];
-  const Q_OF = { lam: 'q4', col: 'q4', nu: 'q5', ej: 'q6', eev: 'q6', tn: 'q8', tm: 'q8' };
+  const Q_OF = { lam: 'q4', col: 'q4', nu: 'q5', nux: 'q5', r5n: 'q5', r5d: 'q5', ej: 'q6', ejx: 'q6', eev: 'q6', r6a: 'q6', r6b: 'q6', r6op: 'q6', tn: 'q8', tm: 'q8' };
   // Une valeur modifiée annule la validation de sa question et des questions suivantes (qui en dépendent)
   function invalidateFrom(inputId) {
     const q = Q_OF[inputId.replace(/\d+$/, '')]; if (!q) return;
@@ -628,8 +637,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const ROWS = [
     { id: 'col', label: 'Couleur', q: 4 },
     { id: 'lam', label: 'Longueur d’onde <i>λ</i> (nm)', q: 4, sym: 'λ' },
-    { id: 'nu',  label: 'Fréquence <i>ν</i> (× 10<sup>14</sup> Hz)', q: 5, sym: 'ν' },
-    { id: 'ej',  label: 'Énergie <i>E</i> du photon (× 10<sup>-19</sup> J)', q: 6, sym: 'E' },
+    { id: 'nu',  label: 'Fréquence <i>ν</i> (Hz)', q: 5, sym: 'ν', sci: true },
+    { id: 'ej',  label: 'Énergie <i>E</i> du photon (J)', q: 6, sym: 'E', sci: true },
     { id: 'eev', label: 'Énergie <i>E</i> du photon (eV)', q: 6, sym: 'E' },
     { id: 'tr',  label: 'Transition E<sub>n</sub> → E<sub>m</sub>', q: 8 },
   ];
@@ -642,6 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (row.id === 'col') c = j < 2 ? `<b>${r.key}</b>` : `<select class="sel" id="col2" aria-label="Couleur de la raie à 577 nm"><option value="">—</option>${COLORS.map(x => `<option>${x}</option>`).join('')}</select>`;
         else if (row.id === 'lam' && j === 2) c = '<i>λ″</i> = 577,0';
         else if (row.id === 'tr') c = `<span id="tr${j}">…</span>`;
+        else if (row.sci) c = `<span><i>${row.sym}${r.p}</i> =</span><input class="num sci-m" id="${row.id}${j}" inputmode="decimal" autocomplete="off" aria-label="${row.sym}${r.p} – nombre devant la puissance de 10" /><span class="x10">× 10</span><input class="num sci-x" id="${row.id}x${j}" autocomplete="off" aria-label="${row.sym}${r.p} – exposant de la puissance de 10" />`;
         else c = `<span><i>${row.sym}${r.p}</i> =</span><input class="num" id="${row.id}${j}" inputmode="decimal" aria-label="${row.sym}${r.p} – ${row.label.replace(/<[^>]+>/g, '')}" />`;
         h += `<td><div class="cell">${c}</div></td>`;
       });
@@ -656,6 +666,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   const mark = (inp, ok) => { inp.classList.remove('good', 'bad'); inp.classList.add(ok ? 'good' : 'bad'); };
   const pow10hint = (v, ref) => { const r = Math.log10(Math.abs(v / ref)); return Math.abs(r - Math.round(r)) < 0.02 && Math.round(r) !== 0; };
+
+  // Écriture scientifique : nombre (cellule p+j) × 10^exposant (cellule p+'x'+j)
+  function sci(p, j) {
+    const m = num($(p + j).value), xs = String($(p + 'x' + j).value).trim().replace(/[−–]/g, '-').replace(/^\+/, '');
+    const x = /^-?\d+$/.test(xs) ? +xs : NaN;
+    return { m, x, v: m * Math.pow(10, x) };
+  }
+  // Renvoie null si correct, sinon le message d’erreur
+  function sciCheck(p, j, ref, tol, msgPow, msgBad) {
+    const im = $(p + j), ix = $(p + 'x' + j), { m, x, v } = sci(p, j);
+    if (isNaN(m) || isNaN(x)) { mark(im, false); mark(ix, false);
+      return isNaN(m) && isNaN(x) ? 'valeur manquante.' : isNaN(m) ? 'nombre manquant devant × 10.' : 'exposant de la puissance de 10 manquant ou mal écrit (nombre entier, ex. 14 ou -19).'; }
+    if (near(v, ref, tol)) {
+      if (Math.abs(m) < 1 || Math.abs(m) >= 10) { mark(im, false); mark(ix, false); return 'valeur juste, mais pas en écriture scientifique : le nombre devant × 10 doit être compris entre 1 et 10.'; }
+      mark(im, true); mark(ix, true); return null;
+    }
+    if (pow10hint(v, ref)) { mark(im, true); mark(ix, false); return msgPow; }
+    mark(im, false); mark(ix, false); return msgBad;
+  }
+  const relMsg = (a, b) => (a.value === '' || b.value === '') ? 'Relation : choisir les deux grandeurs.' : null;
 
   // Valeurs de l’élève (après validation)
   const lam = (j) => j === 2 ? 577.0 : num(S.inputs['lam' + j]);
@@ -679,21 +709,32 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     5() {
       const msgs = []; let ok = true;
+      const rn = $('r5n'), rd = $('r5d'), relOk = rn.value === 'c' && rd.value === 'λ';
+      mark(rn, relOk); mark(rd, relOk);
+      if (!relOk) { ok = false; msgs.push(relMsg(rn, rd) || (rn.value === 'λ' && rd.value === 'c' ? 'Relation : grandeurs inversées – vérifier avec les unités (Hz = s<sup>-1</sup>).' : 'Relation incorrecte – quelle grandeur s’exprime en m.s<sup>-1</sup> ? laquelle en m ?')); }
       RAIES.forEach((r, j) => {
-        const inp = $('nu' + j), v = num(inp.value), ref = C / (lam(j) * 1e-9) / 1e14;
-        const g = near(v, ref, 0.01); mark(inp, g);
-        if (!g) { ok = false; msgs.push(isNaN(v) ? `${r.label} : valeur manquante.` : pow10hint(v, ref) ? `${r.label} : erreur de puissance de 10 – convertir <i>λ</i> en mètre et exprimer <i>ν</i> en 10<sup>14</sup> Hz.` : `${r.label} : valeur incorrecte – utiliser <i>ν</i> = <i>c</i> / <i>λ</i>.`); }
+        const e = sciCheck('nu', j, C / (lam(j) * 1e-9), 0.01,
+          'erreur de puissance de 10 – as-tu converti <i>λ</i> en mètre (1 nm = 10<sup>-9</sup> m) ?',
+          'valeur incorrecte – revoir le calcul.');
+        if (e) { ok = false; msgs.push(`${r.label} : ${e}`); }
       });
       if (ok) { feedback('fb5', 'ok', 'Fréquences correctes : <i>ν</i> = <i>c</i> / <i>λ</i>.'); } else feedback('fb5', 'ko', msgs.join('<br>'));
       setDone('q5', ok);
     },
     6() {
       const msgs = []; let ok = true;
+      const ra = $('r6a'), rb = $('r6b'), ro = $('r6op');
+      const relOk = [ra.value, rb.value].sort().join() === ['h', 'ν'].sort().join();
+      mark(ra, relOk); mark(rb, relOk);
+      if (!relOk) { ok = false; msgs.push(relMsg(ra, rb) || 'Relation <i>E</i> en joule incorrecte – relire le document 1.'); }
+      const opOk = ro.value === '÷'; mark(ro, opOk);
+      if (!opOk) { ok = false; msgs.push(ro.value === '' ? 'Conversion en eV : choisir l’opération.' : 'Conversion en eV : 1 eV vaut 1,60.10<sup>-19</sup> J ; un nombre d’eV est donc plus grand ou plus petit que le nombre de joules ?'); }
       RAIES.forEach((r, j) => {
-        const ej = $('ej' + j), ee = $('eev' + j), vj = num(ej.value), ve = num(ee.value);
-        const refJ = H * (C / (lam(j) * 1e-9)) / 1e-19, refE = refJ * 1e-19 / EV;
-        const gj = near(vj, refJ, 0.015), ge = near(ve, refE, 0.02); mark(ej, gj); mark(ee, ge);
-        if (!gj) { ok = false; msgs.push(isNaN(vj) ? `${r.label} : énergie en joule manquante.` : pow10hint(vj, refJ) ? `${r.label} : énergie en J – erreur de puissance de 10 (résultat attendu en 10<sup>-19</sup> J).` : `${r.label} : énergie en J incorrecte – utiliser <i>E</i> = <i>h</i> × <i>ν</i>.`); }
+        const ee = $('eev' + j), ve = num(ee.value);
+        const refJ = H * (C / (lam(j) * 1e-9)), refE = refJ / EV;
+        const ge = near(ve, refE, 0.02); mark(ee, ge);
+        const e = sciCheck('ej', j, refJ, 0.015, 'énergie en J – erreur de puissance de 10.', 'énergie en J incorrecte – revoir le calcul.');
+        if (e) { ok = false; msgs.push(`${r.label} : ${e}`); }
         if (!ge) { ok = false; msgs.push(isNaN(ve) ? `${r.label} : énergie en eV manquante.` : `${r.label} : énergie en eV incorrecte – diviser l’énergie en joule par 1,60.10<sup>-19</sup>.`); }
       });
       if (ok) { feedback('fb6', 'ok', 'Énergies correctes.'); } else feedback('fb6', 'ko', msgs.join('<br>'));
@@ -775,8 +816,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!locked && note) note.remove();
       box.querySelectorAll('button').forEach(b => b.disabled = locked);
     });
-    const lockMap = { nu: 'q4', ej: 'q5', eev: 'q5', tn: 'q6', tm: 'q6' };
+    const lockMap = { nu: 'q4', nux: 'q4', ej: 'q5', ejx: 'q5', eev: 'q5', tn: 'q6', tm: 'q6' };
     Object.entries(lockMap).forEach(([p, need]) => RAIES.forEach((_, j) => { $(p + j).disabled = !S.ok[need]; }));
+    ['r5n', 'r5d'].forEach(id => { $(id).disabled = !S.ok.q4; });
+    ['r6a', 'r6b', 'r6op'].forEach(id => { $(id).disabled = !S.ok.q5; });
     // ligne active du tableau
     const cur = !S.ok.q4 ? 4 : !S.ok.q5 ? 5 : !S.ok.q6 ? 6 : !S.ok.q8 ? 8 : 0;
     document.querySelectorAll('#res tr[data-q]').forEach(tr => tr.classList.toggle('active', +tr.dataset.q === cur));
@@ -799,6 +842,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const qcm = (id) => ({ validee: !!S.ok[id], reponse: S.qcm[id] != null ? QCM[id].opts[S.qcm[id]][0].replace(/<[^>]+>/g, '') : '' });
     const niveaux = {}; LEVELS.forEach((_, i) => { niveaux['E' + i] = S.placed[i] ?? null; });
     const trio = (p) => ({ violette: val(p + '0'), verte: val(p + '1'), raie_577nm: val(p + '2') });
+    const sciStr = (p, j) => (val(p + j) === '' && val(p + 'x' + j) === '') ? '' : `${val(p + j)} × 10^${val(p + 'x' + j)}`;
+    const trioSci = (p) => ({ violette: sciStr(p, 0), verte: sciStr(p, 1), raie_577nm: sciStr(p, 2) });
     return {
       tp: 'Spectre d’absorption et d’émission d’un atome',
       poste: S.poste,
@@ -808,8 +853,8 @@ document.addEventListener('DOMContentLoaded', () => {
         q1: { validee: !!S.ok.q1, niveaux_places_eV: niveaux },
         q2: qcm('q2'), q3: qcm('q3'),
         q4: { validee: !!S.ok.q4, lambda_nm: { violette: val('lam0'), verte: val('lam1'), raie_577nm: '577,0' }, couleur_577nm: val('col2') },
-        q5: { validee: !!S.ok.q5, frequence_1e14Hz: trio('nu') },
-        q6: { validee: !!S.ok.q6, energie_1e_19J: trio('ej'), energie_eV: trio('eev') },
+        q5: { validee: !!S.ok.q5, relation: `ν = ${val('r5n') || '?'} / ${val('r5d') || '?'}`, frequence_Hz: trioSci('nu') },
+        q6: { validee: !!S.ok.q6, relation: `E = ${val('r6a') || '?'} × ${val('r6b') || '?'}`, conversion_eV: `E(eV) = E(J) ${val('r6op') || '?'} 1,60e-19`, energie_J: trioSci('ej'), energie_eV: trio('eev') },
         q7: { validee: !!S.ok.q8, transitions: Object.fromEntries(RAIES.map((r, j) => [['violette', 'verte', 'raie_577nm'][j], (val('tn' + j) !== '' && val('tm' + j) !== '') ? `E${val('tn' + j)} -> E${val('tm' + j)}` : ''])) },
         q8: qcm('q9a'), q8bis: qcm('q9b'), q9: qcm('q10'),
       },
