@@ -410,7 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
   // Raies intenses du mercure et transitions attendues (émission : n → m)
   const HG = [
-    { lambda: 404.7, color: 'violet', n: 5, m: 1 },
+    { lambda: 404.7, color: 'violet', n: 5, m: 1, alt: [[7, 3]] }, // E7 → E3 (3,08 eV) aussi accepté
     { lambda: 435.8, color: 'violet', n: 5, m: 2 },
     { lambda: 546.1, color: 'vert',   n: 5, m: 3 },
     { lambda: 577.0, color: 'jaune',  n: 9, m: 4 },
@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
   (() => {
     const t = $('levels-table');
     let h = '<tr><th>État</th><th>Fondamental E<sub>0</sub></th>' + LEVELS.slice(1).map((_, i) => `<th>E<sub>${i + 1}</sub></th>`).join('') + '</tr>';
-    h += '<tr><th>E (eV)</th>' + LEVELS.map((e, i) => `<td>${fmt(e, i ? 2 : 1)}</td>`).join('') + '</tr>';
+    h += '<tr><th>E (eV)</th>' + LEVELS.map((e, i) => `<td>${fmt(e, i ? 2 : 1).replace('-', '−')}</td>`).join('') + '</tr>';
     t.innerHTML = h;
   })();
 
@@ -519,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
   LEVELS.forEach((_, i) => {
     const b = document.createElement('button');
     b.className = 'lvl-chip'; b.type = 'button'; b.dataset.i = i;
-    b.innerHTML = `E<sub>${i}</sub> = ${fmt(LEVELS[i], i ? 2 : 1)} eV`;
+    b.innerHTML = `E<sub>${i}</sub> = ${fmt(LEVELS[i], i ? 2 : 1).replace('-', '−')} eV`;
     b.addEventListener('click', () => { if (S.ok.q1) return; selected = i; renderChips(); });
     chips.appendChild(b);
   });
@@ -663,7 +663,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // restauration des saisies
   document.querySelectorAll('input.num, select.sel').forEach(inp => {
     if (S.inputs[inp.id] != null) inp.value = S.inputs[inp.id];
-    inp.addEventListener('input', () => { S.inputs[inp.id] = inp.value; inp.classList.remove('good', 'bad'); save(); invalidateFrom(inp.id); });
+    inp.addEventListener('input', () => { S.inputs[inp.id] = inp.value; inp.classList.remove('good', 'bad');
+      if (/^lam/.test(inp.id)) delete S.ok.q4lam; if (inp.id === 'col2') delete S.ok.q4col; // point partiel de Q4 à revérifier
+      save(); invalidateFrom(inp.id); score(); });
   });
   const mark = (inp, ok) => { inp.classList.remove('good', 'bad'); inp.classList.add(ok ? 'good' : 'bad'); };
   const pow10hint = (v, ref) => { const r = Math.log10(Math.abs(v / ref)); return Math.abs(r - Math.round(r)) < 0.02 && Math.round(r) !== 0; };
@@ -695,9 +697,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const CHECK = {
     4() {
       const msgs = []; let ok = true;
+      let okl = true;
       [0, 1].forEach(j => {
         const inp = $('lam' + j), v = num(inp.value), h = HG.find(x => x.color === RAIES[j].key && Math.abs(x.lambda - v) <= 0.6);
-        mark(inp, !!h); if (!h) { ok = false;
+        mark(inp, !!h); if (!h) { ok = false; okl = false;
           if (isNaN(v)) msgs.push(`${RAIES[j].label} : valeur manquante.`);
           else if (j === 0 && Math.abs(v - 407.8) <= 0.6) msgs.push('Raie violette : cette raie est peu intense, en choisir une plus intense.');
           else msgs.push(`${RAIES[j].label} : valeur incorrecte. Zoomer davantage sur la raie dans la simulation.`); }
@@ -706,6 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!okc) { ok = false; msgs.push('Couleur de la raie à 577 nm : observer sa position dans le spectre.'); }
       if (ok) { feedback('fb4', 'ok', 'Mesures correctes.'); }
       else feedback('fb4', 'ko', msgs.join('<br>'));
+      S.ok.q4lam = okl; S.ok.q4col = okc;
       setDone('q4', ok);
     },
     5() {
@@ -745,10 +749,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const msgs = []; let ok = true;
       RAIES.forEach((r, j) => {
         const sn = $('tn' + j), sm = $('tm' + j), h = hgOf(j);
-        const g = h && +sn.value === h.n && +sm.value === h.m; mark(sn, g); mark(sm, g);
+        const okT = (a, b) => !!h && ((a === h.n && b === h.m) || (h.alt || []).some(([x, y]) => a === x && b === y));
+        const g = okT(+sn.value, +sm.value); mark(sn, g); mark(sm, g);
         if (!g) { ok = false;
           if (sn.value === '' || sm.value === '') msgs.push(`${r.label} : choisir les deux niveaux.`);
-          else if (h && +sn.value === h.m && +sm.value === h.n) msgs.push(`${r.label} : bons niveaux, mais pour une émission l’atome passe du niveau le plus haut au niveau le plus bas.`);
+          else if (okT(+sm.value, +sn.value)) msgs.push(`${r.label} : bons niveaux, mais pour une émission l’atome passe du niveau le plus haut au niveau le plus bas.`);
           else msgs.push(`${r.label} : transition incorrecte – placer le bas du rectangle exactement sur un niveau et regarder où arrive son sommet.`); }
       });
       if (ok) { feedback('fb8', 'ok', 'Transitions correctes : chaque raie correspond à une transition entre deux niveaux d’énergie bien précis.'); } else feedback('fb8', 'ko', msgs.join('<br>'));
@@ -827,8 +832,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ============ Score ============ */
+  // Q4 vaut 2 points : 1 pour les mesures, 1 pour la couleur (attribuables séparément)
+  const points = () => QIDS.filter(q => q !== 'q4' && S.ok[q]).length + (S.ok.q4 ? 2 : (S.ok.q4lam ? 1 : 0) + (S.ok.q4col ? 1 : 0));
   function score() {
-    const n = QIDS.filter(q => S.ok[q]).length + (S.ok.q4 ? 1 : 0); // Q4 vaut 2 points
+    const n = points();
     $('ptxt').textContent = `${n} / ${TOTAL}`;
     $('pfill').style.width = (100 * n / TOTAL) + '%';
   }
@@ -849,7 +856,7 @@ document.addEventListener('DOMContentLoaded', () => {
       tp: 'Spectre d’absorption et d’émission d’un atome',
       poste: S.poste,
       date: new Date().toISOString(),
-      score: { points: QIDS.filter(q => S.ok[q]).length + (S.ok.q4 ? 1 : 0), total: TOTAL },
+      score: { points: points(), total: TOTAL },
       questions: {
         q1: { validee: !!S.ok.q1, niveaux_places_eV: niveaux },
         q2: qcm('q2'), q3: qcm('q3'),
