@@ -222,12 +222,31 @@ sub,sup{line-height:0}
 html,body{background:#fff;overflow:hidden}
 .wrap{padding:14px}
 .card{margin-bottom:0}
+.info{margin-top:12px}
+.info .vals{grid-template-columns:repeat(4,1fr)}
+@media (max-width:640px){.info .vals{grid-template-columns:repeat(2,1fr)}}
+.danger{margin-top:10px;border-radius:10px;padding:10px 12px;font-size:15px;border-left:5px solid}
+.danger.d2{background:#fbe1e1;border-color:#b3001b;color:#7a0012}
+.danger.d1{background:#fdeedd;border-color:#e06600;color:#7a3500}
+.danger.d0{background:var(--ok-soft);border-color:var(--ok);color:#165f36}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-top:4px}
+.legend span::before{content:&quot;&quot;;display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-2px;background:var(--c)}
 &lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;wrap&quot;&gt;
   &lt;div class=&quot;card&quot;&gt;
     &lt;h2&gt;Le spectre électromagnétique&lt;/h2&gt;
-    &lt;p class=&quot;hint&quot;&gt;Déplace le curseur (échelle logarithmique) ou clique sur une application pour situer son domaine sur le spectre.&lt;/p&gt;
-    &lt;div class=&quot;strip-wrap&quot;&gt;&lt;canvas id=&quot;emBar&quot; height=&quot;90&quot;&gt;&lt;/canvas&gt;&lt;/div&gt;
+    &lt;p class=&quot;hint&quot;&gt;Déplace le curseur (échelle logarithmique) ou clique sur une application pour situer son domaine sur le spectre. Les rayonnements marqués ⚠ sont dangereux pour l&#x27;organisme.&lt;/p&gt;
+    &lt;div class=&quot;strip-wrap&quot;&gt;&lt;canvas id=&quot;emBar&quot; height=&quot;112&quot;&gt;&lt;/canvas&gt;&lt;/div&gt;
     &lt;input type=&quot;range&quot; id=&quot;lamSlider&quot; min=&quot;-12&quot; max=&quot;4&quot; step=&quot;any&quot; value=&quot;-6.26&quot; aria-label=&quot;Longueur d&#x27;onde (échelle log)&quot;&gt;
+    &lt;div class=&quot;legend&quot;&gt;&lt;span style=&quot;--c:#b3001b&quot;&gt;rayonnements ionisants : très dangereux&lt;/span&gt;&lt;span style=&quot;--c:#e06600&quot;&gt;ultraviolets : dangereux pour la peau et les yeux&lt;/span&gt;&lt;/div&gt;
+    &lt;div class=&quot;info&quot;&gt;
+      &lt;div class=&quot;vals&quot;&gt;
+        &lt;div class=&quot;val&quot;&gt;&lt;div class=&quot;k&quot;&gt;Domaine&lt;/div&gt;&lt;div class=&quot;v&quot; id=&quot;vDom&quot;&gt;–&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;val&quot;&gt;&lt;div class=&quot;k&quot;&gt;Longueur d&#x27;onde λ&lt;/div&gt;&lt;div class=&quot;v&quot; id=&quot;vLam&quot;&gt;–&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;val&quot;&gt;&lt;div class=&quot;k&quot;&gt;Fréquence ν&lt;/div&gt;&lt;div class=&quot;v&quot; id=&quot;vNu&quot;&gt;–&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;val&quot;&gt;&lt;div class=&quot;k&quot;&gt;Énergie d&#x27;un photon&lt;/div&gt;&lt;div class=&quot;v&quot; id=&quot;vE&quot;&gt;–&lt;/div&gt;&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;danger d0&quot; id=&quot;vDanger&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
     &lt;div class=&quot;apps&quot; id=&quot;apps&quot;&gt;&lt;/div&gt;
   &lt;/div&gt;
 
@@ -286,7 +305,7 @@ const domains=[
   {n:&#x27;Ondes radio&#x27;,a:0,b:5,col:&#x27;#2c6fb0&#x27;}
 ];
 const apps=[
-  [&#x27;Scintigraphie (γ)&#x27;,1e-12],[&#x27;Radiographie (X)&#x27;,1e-10],[&#x27;Stérilisation UV-C&#x27;,254e-9],[&#x27;UV-A (bronzage)&#x27;,365e-9],
+  [&#x27;⚠ Scintigraphie (γ)&#x27;,1e-12],[&#x27;⚠ Radiographie (X)&#x27;,1e-10],[&#x27;⚠ Stérilisation UV-C&#x27;,254e-9],[&#x27;⚠ UV-A (bronzage)&#x27;,365e-9],
   [&#x27;Lumière verte&#x27;,532e-9],[&#x27;Lumière rouge&#x27;,650e-9],[&#x27;Télécommande IR&#x27;,940e-9],[&#x27;Caméra thermique&#x27;,10e-6],
   [&#x27;Wifi 5 GHz&#x27;,0.06],[&#x27;Wifi 2,4 GHz / four micro-ondes&#x27;,0.125],[&#x27;Téléphonie 4G (800 MHz)&#x27;,0.375],[&#x27;IRM (64 MHz)&#x27;,4.69],[&#x27;Radio FM (100 MHz)&#x27;,3]
 ];
@@ -299,6 +318,14 @@ function drawBar(){
   const cv=document.getElementById(&#x27;emBar&#x27;); const [ctx,W,H]=fitCanvas(cv);
   const x=lg=&gt;(lg-LMIN)/(LMAX-LMIN)*W;
   ctx.clearRect(0,0,W,H);
+  // bandeau des rayonnements dangereux (γ, X, UV : λ &lt; 400 nm)
+  const xi=x(-7), xu=x(Math.log10(4e-7));
+  ctx.fillStyle=&#x27;#b3001b&#x27;; ctx.fillRect(0,2,xi,17);
+  ctx.fillStyle=&#x27;#e06600&#x27;; ctx.fillRect(xi,2,xu-xi,17);
+  ctx.fillStyle=&#x27;#fff&#x27;; ctx.font=&#x27;700 11px system-ui&#x27;; ctx.textAlign=&#x27;center&#x27;;
+  ctx.fillText(xi&gt;300?&#x27;☢ Rayonnements ionisants : très dangereux&#x27;:xi&gt;170?&#x27;☢ Ionisants : très dangereux&#x27;:&#x27;☢ Ionisants&#x27;,xi/2,14.5);
+  if(xu-xi&gt;26) ctx.fillText(&#x27;⚠ UV&#x27;,(xi+xu)/2,14.5);
+  ctx.save(); ctx.translate(0,22);
   domains.forEach(d=&gt;{
     const x0=Math.max(0,x(d.a)), x1=Math.min(W,x(d.b));
     if(d.n===&#x27;Visible&#x27;){
@@ -323,10 +350,31 @@ function drawBar(){
   const xc=x(+slider.value);
   ctx.fillStyle=css(&#x27;--ink&#x27;); ctx.beginPath(); ctx.moveTo(xc,58); ctx.lineTo(xc-6,66); ctx.lineTo(xc+6,66); ctx.fill();
   ctx.fillRect(xc-1,18,2,40);
+  ctx.restore();
 }
 function sup(k){const m={&#x27;-&#x27;:&#x27;⁻&#x27;,&#x27;0&#x27;:&#x27;⁰&#x27;,&#x27;1&#x27;:&#x27;¹&#x27;,&#x27;2&#x27;:&#x27;²&#x27;,&#x27;3&#x27;:&#x27;³&#x27;,&#x27;4&#x27;:&#x27;⁴&#x27;,&#x27;5&#x27;:&#x27;⁵&#x27;,&#x27;6&#x27;:&#x27;⁶&#x27;,&#x27;7&#x27;:&#x27;⁷&#x27;,&#x27;8&#x27;:&#x27;⁸&#x27;,&#x27;9&#x27;:&#x27;⁹&#x27;};return String(k).split(&#x27;&#x27;).map(ch=&gt;m[ch]).join(&#x27;&#x27;)}
 
-function updT1(){drawBar()}
+const DANGER={
+  &#x27;Rayons γ&#x27;:[2,&#x27;☢ &lt;b&gt;Très dangereux&lt;/b&gt; : rayonnement ionisant, extrêmement énergétique. Il détruit les cellules : on l\&#x27;utilise en radiothérapie pour tuer les cellules cancéreuses, avec une radioprotection stricte.&#x27;],
+  &#x27;Rayons X&#x27;:[2,&#x27;☢ &lt;b&gt;Dangereux&lt;/b&gt; : rayonnement ionisant, il peut endommager l\&#x27;ADN des cellules. Les doses reçues lors des radiographies sont limitées et le personnel se protège (tablier et murs plombés).&#x27;],
+  &#x27;Ultraviolets&#x27;:[1,&#x27;⚠ &lt;b&gt;Dangereux pour la peau et les yeux&lt;/b&gt; : coups de soleil, vieillissement et cancers de la peau, lésions des yeux. Protection : crème solaire, lunettes filtrantes. Les UV-C, utilisés pour stériliser, sont les plus énergétiques.&#x27;],
+  &#x27;Visible&#x27;:[0,&#x27;Sans danger aux intensités usuelles. Attention cependant aux faisceaux laser et à l\&#x27;observation directe du Soleil, qui peuvent brûler la rétine.&#x27;],
+  &#x27;Infrarouges&#x27;:[0,&#x27;Sans danger aux intensités usuelles. À forte intensité, ils provoquent des brûlures par échauffement.&#x27;],
+  &#x27;Micro-ondes&#x27;:[0,&#x27;Sans danger aux puissances usuelles (wifi, téléphone). À forte puissance, ils chauffent les tissus : c\&#x27;est le principe du four à micro-ondes, d\&#x27;où sa grille métallique de protection.&#x27;],
+  &#x27;Ondes radio&#x27;:[0,&#x27;Sans danger aux puissances usuelles.&#x27;]
+};
+function updT1(){
+  drawBar();
+  const lg=+slider.value, lam=Math.pow(10,lg), nu=c/lam, E=HC_EVNM/(lam*1e9);
+  const d=domains.find(d=&gt;lg&gt;=d.a&amp;&amp;lg&lt;d.b)||domains[domains.length-1];
+  document.getElementById(&#x27;vDom&#x27;).textContent=d.n;
+  document.getElementById(&#x27;vLam&#x27;).innerHTML=lamUnit(lam);
+  document.getElementById(&#x27;vNu&#x27;).innerHTML=freqUnit(nu);
+  document.getElementById(&#x27;vE&#x27;).innerHTML=fr(E)+&#x27; eV&#x27;;
+  const [lvl,txt]=DANGER[d.n]; const box=document.getElementById(&#x27;vDanger&#x27;);
+  box.className=&#x27;danger d&#x27;+lvl;
+  box.innerHTML=txt+(d.n===&#x27;Ultraviolets&#x27;&amp;&amp;lam&lt;1e-7?&#x27; Les UV lointains (λ &amp;lt; 100 nm) sont même ionisants.&#x27;:&#x27;&#x27;);
+}
 slider.oninput=updT1;
 window.addEventListener(&#x27;resize&#x27;,drawBar);
 updT1();
