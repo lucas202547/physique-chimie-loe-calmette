@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Appli interactive pour comprendre et tracer le vecteur vitesse : tangente, calcul de la valeur, échelle, exemples et exercices. Physique-chimie, classe de seconde.">
+<title>Le vecteur vitesse — Physique-chimie, classe de seconde</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,700;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vert:#0e7c5b; --vert-clair:#d4efe6; --vert-pale:#f0faf6;
+  --bleu:#1a5fa8; --bleu-clair:#ddeaf9;
+  --orange:#c8620a; --orange-clair:#fdecd8;
+  --rouge:#c0392b;
+  --gris-bg:#f7f6f2; --gris-bord:#dddbd4;
+  --texte:#1e1e1e; --texte-2:#4a4a4a; --texte-3:#7a7a7a;
+  --blanc:#ffffff;
+  --serif:'Lora',Georgia,serif;
+  --sans:'Source Sans 3','Segoe UI',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:60px}
+body{font-family:var(--sans);background:var(--gris-bg);color:var(--texte);line-height:1.55;font-size:16px}
+.page{max-width:1000px;margin:0 auto;background:var(--blanc);box-shadow:0 0 0 1px var(--gris-bord)}
+header.hero{background:var(--vert);color:#fff;padding:2rem 1.5rem 1.6rem}
+.tag{display:inline-block;background:rgba(255,255,255,.18);padding:2px 12px;border-radius:99px;font-size:13px;letter-spacing:.04em}
+header.hero h1{font-family:var(--serif);font-size:2.1rem;margin:.6rem 0 .3rem;line-height:1.2}
+header.hero p{opacity:.92;max-width:62ch}
+nav.top{position:sticky;top:0;z-index:30;background:var(--vert-pale);border-bottom:1px solid var(--gris-bord);display:flex;gap:.4rem;overflow-x:auto;padding:.5rem 1rem}
+nav.top a{flex:none;text-decoration:none;color:var(--vert);font-weight:600;font-size:14px;padding:.3rem .8rem;border-radius:99px;border:1px solid transparent;white-space:nowrap}
+nav.top a:hover{background:var(--vert-clair);border-color:var(--vert)}
+nav.top a b{display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;border-radius:50%;background:var(--vert);color:#fff;font-size:12px;margin-right:6px}
+.section{padding:1.8rem 1.5rem}
+.section-titre{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
+.num{flex:none;width:34px;height:34px;border-radius:50%;background:var(--vert);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+h2{font-family:var(--serif);font-size:1.45rem;line-height:1.25}
+h3{font-family:var(--serif);font-size:1.1rem;margin:.2rem 0 .5rem}
+p{margin:.5rem 0}
+hr.sep{border:0;border-top:1px solid var(--gris-bord);margin:0 1.5rem}
+.def,.retenir,.exemple{border-radius:10px;padding:.8rem 1rem;margin:.9rem 0}
+.def{background:#fff;border:1px solid var(--gris-bord);border-left:5px solid var(--vert)}
+.retenir{background:var(--vert-clair);border:1px solid #a9d9c7}
+.exemple{background:var(--gris-bg);border:1px solid var(--gris-bord)}
+.attention{background:var(--orange-clair);border:1px solid #f1c79e;border-radius:10px;padding:.8rem 1rem;margin:.9rem 0}
+.lbl{display:block;font-weight:700;font-size:13px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.2rem}
+.def .lbl{color:var(--vert)} .retenir .lbl{color:var(--vert)} .exemple .lbl{color:var(--texte-2)} .attention .lbl{color:var(--orange)}
+.formule{background:var(--vert-pale);border:1px solid var(--vert-clair);border-radius:10px;text-align:center;font-family:var(--serif);font-size:1.15rem;padding:.9rem 1rem;margin:.9rem 0}
+.formule small{display:block;font-family:var(--sans);font-size:13px;color:var(--texte-3);margin-top:.3rem}
+.vec{position:relative;display:inline-block;font-style:italic}
+.vec::after{content:"→";position:absolute;left:50%;top:-.7em;transform:translateX(-50%) scale(.72);font-style:normal;line-height:1}
+.frac{display:inline-block;vertical-align:middle;text-align:center;margin:0 .25em}
+.frac>span{display:block;padding:0 .35em;line-height:1.5}
+.frac>span:first-child{border-bottom:1.5px solid currentColor;padding-top:.35em}
+sub{line-height:0;font-size:.72em}
+.cards4{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.7rem;margin:1rem 0}
+.carte{border:1px solid var(--gris-bord);border-radius:10px;padding:.7rem .9rem;background:#fff}
+.carte b{display:block;color:var(--vert);font-family:var(--serif)}
+.carte span.pt{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.schema{border:1px solid var(--gris-bord);border-radius:10px;background:#fcfcfa;overflow:hidden;margin:.8rem 0}
+.schema svg{display:block;width:100%;height:auto;touch-action:none}
+.cap{font-size:13.5px;color:var(--texte-3);margin:.2rem 0 .8rem}
+.ctl{display:flex;flex-wrap:wrap;gap:.8rem 1.4rem;align-items:center;background:var(--bleu-clair);border:1px solid #b9d1ee;border-radius:10px;padding:.7rem 1rem;margin:.8rem 0}
+.ctl label{font-weight:600;font-size:14.5px;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.ctl input[type=range]{width:200px;accent-color:var(--bleu)}
+select,input[type=number],input[type=text]{font:inherit;padding:.35rem .6rem;border:1.5px solid var(--gris-bord);border-radius:8px;background:#fff}
+input[type=number],input[type=text]{width:110px}
+.btn{background:var(--vert);color:#fff;border:0;border-radius:8px;padding:.5rem 1rem;font:inherit;font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sec{background:#fff;color:var(--vert);border:1.5px solid var(--vert)}
+.btn.bleu{background:var(--bleu)}
+.readout{font-weight:600;color:var(--texte-2)}
+.calc{background:#fff;border:1px solid var(--gris-bord);border-radius:10px;padding:.8rem 1rem .8rem 1rem}
+.calc ol{padding-left:1.3rem}
+.calc li{margin:.45rem 0}
+.calc .res{background:var(--vert-clair);border-radius:8px;padding:.5rem .8rem;margin-top:.6rem;font-size:1.05rem}
+.msg{min-height:1.4em;color:var(--orange);font-weight:600;margin:.3rem 0}
+table{border-collapse:collapse;width:100%;margin:.5rem 0;font-size:14.5px}
+th,td{border:1px solid var(--gris-bord);padding:.3rem .6rem;text-align:center}
+th{background:var(--vert-pale)}
+tr.sel td{background:var(--bleu-clair);font-weight:700}
+details{margin:.6rem 0}
+summary{cursor:pointer;font-weight:600;color:var(--bleu)}
+.legend{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;font-size:13.5px;color:var(--texte-2);margin:.2rem 0 .6rem}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.data{background:var(--gris-bg);border:1px solid var(--gris-bord);border-radius:10px;padding:.6rem 1rem;margin:.6rem 0}
+.data ul{list-style:none}
+.data li{margin:.15rem 0}
+.q{margin:.8rem 0;padding:.7rem 1rem;border:1px solid var(--gris-bord);border-radius:10px}
+.q .row{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:.4rem}
+.fb{margin-top:.4rem;font-weight:600;min-height:1.2em}
+.fb.ok{color:var(--vert)} .fb.ko{color:var(--rouge)} .fb.neutre{color:var(--texte-2)}
+.cards-ex{display:grid;gap:1.1rem}
+.card-ex{border:1px solid var(--gris-bord);border-radius:12px;padding:.9rem 1rem}
+.score-bar{position:sticky;top:46px;z-index:20;background:#1a3a60;color:#fff;border-radius:10px;padding:.6rem 1rem;display:flex;align-items:center;gap:1rem;margin:.5rem 0 1rem}
+.score-bar .prog{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.25);overflow:hidden}
+.score-bar .prog i{display:block;height:100%;width:0;background:#7fe0b8;transition:width .3s}
+.exo{border:1px solid var(--gris-bord);border-radius:12px;padding:.9rem 1rem;margin:.9rem 0}
+.exo .n{display:inline-flex;width:26px;height:26px;border-radius:50%;background:#1a3a60;color:#fff;align-items:center;justify-content:center;font-weight:700;font-size:14px;margin-right:.5rem}
+.opts{display:grid;gap:.5rem;margin:.6rem 0}
+.opt{text-align:left;font:inherit;background:#fff;border:1.5px solid var(--gris-bord);border-radius:8px;padding:.5rem .8rem;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--bleu);background:var(--bleu-clair)}
+.opt.ok{border-color:var(--vert);background:var(--vert-clair)}
+.opt.ko{border-color:var(--rouge);background:#fbe4e1}
+footer{padding:1.2rem 1.5rem;color:var(--texte-3);font-size:13.5px;text-align:center}
+@media (max-width:600px){header.hero h1{font-size:1.6rem}.section{padding:1.4rem 1rem}.ctl input[type=range]{width:150px}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <span class="tag">Physique-chimie · Classe de seconde</span>
+  <h1>Le vecteur vitesse</h1>
+  <p>Comprendre ce qu'est la tangente à une trajectoire, calculer la valeur de la vitesse à partir d'une chronophotographie, puis tracer le vecteur vitesse avec la bonne échelle.</p>
+</header>
+
+<nav class="top" aria-label="Sections">
+  <a href="#s1"><b>1</b>Définition</a>
+  <a href="#s2"><b>2</b>Tangente</a>
+  <a href="#s3"><b>3</b>Calcul</a>
+  <a href="#s4"><b>4</b>Tracé</a>
+  <a href="#s5"><b>5</b>Exemples</a>
+  <a href="#s6"><b>6</b>Exercices</a>
+</nav>
+
+<!-- ============ 1. DÉFINITION ============ -->
+<section class="section" id="s1">
+  <div class="section-titre"><span class="num">1</span><h2>Pourquoi un vecteur pour décrire la vitesse ?</h2></div>
+  <p>Dire « la voiture roule à 54 km/h » ne suffit pas toujours : <strong>dans quelle direction</strong> va-t-elle ? Dans quel sens ? Pour décrire complètement la vitesse d'un point en mouvement, on utilise un <strong>vecteur</strong>.</p>
+
+  <div class="def"><span class="lbl">Définition</span>
+    Le <strong>vecteur vitesse</strong> <span class="vec">v</span> d'un point mobile, à un instant donné, décrit à la fois <em>la rapidité</em> et <em>la direction</em> du mouvement du point à cet instant. Il est caractérisé par quatre éléments.
+  </div>
+
+  <div class="cards4">
+    <div class="carte"><b><span class="pt" style="background:#1a5fa8"></span>Origine</b>La position M du point à l'instant considéré.</div>
+    <div class="carte"><b><span class="pt" style="background:#c8620a"></span>Direction</b>La <strong>tangente</strong> à la trajectoire en M.</div>
+    <div class="carte"><b><span class="pt" style="background:#0e7c5b"></span>Sens</b>Celui du mouvement.</div>
+    <div class="carte"><b><span class="pt" style="background:#c0392b"></span>Norme (valeur)</b>La vitesse <em>v</em>, en m/s ; elle est représentée par la longueur de la flèche, avec une <strong>échelle</strong>.</div>
+  </div>
+
+  <div class="schema"><svg id="s1-svg" viewBox="0 0 720 300" role="img" aria-label="Vecteur vitesse tangent à une trajectoire courbe"></svg></div>
+  <p class="cap">Le vecteur vitesse en M : origine en M, direction tangente à la trajectoire (pointillés), sens du mouvement, longueur proportionnelle à la vitesse.</p>
+
+  <div class="exemple"><span class="lbl">Unités</span>
+    En physique, on exprime la vitesse en m/s. Pour convertir : 1 km = 10<sup>3</sup> m et 1 h = 3,6.10<sup>3</sup> s.<br>
+    Exemple : 54 km/h = 54.10<sup>3</sup> m / 3,6.10<sup>3</sup> s = 15 m/s. Donc 1 m/s = 3,6 km/h.
+  </div>
+</section>
+<hr class="sep">
+
+<!-- ============ 2. TANGENTE ============ -->
+<section class="section" id="s2">
+  <div class="section-titre"><span class="num">2</span><h2>La tangente à une trajectoire</h2></div>
+  <div class="def"><span class="lbl">Définition</span>
+    La <strong>tangente</strong> à une courbe en un point M est la droite qui « effleure » la courbe en M : elle passe par M et a, en ce point, la même direction que la courbe.
+  </div>
+  <p>Problème : sur une chronophotographie, on ne connaît la position du mobile qu'en quelques points. On ne peut donc pas tracer directement la tangente. On l'<strong>approche</strong> par une <em>sécante</em> : une droite qui passe par deux points de la trajectoire, proches de M<sub>i</sub>.</p>
+
+  <h3>Expérience 1 — La sécante se rapproche de la tangente</h3>
+  <p>Déplacez le point M<sub>i</sub> le long de la trajectoire, puis <strong>rapprochez les points voisins</strong> (curseur « écart ») : que devient l'angle entre la sécante (M<sub>i</sub>M<sub>i+1</sub>) et la tangente ?</p>
+  <div class="ctl">
+    <label>Trajectoire
+      <select id="s2-curve">
+        <option value="cercle">Cercle</option>
+        <option value="parabole">Parabole</option>
+        <option value="sinus">Sinusoïde</option>
+      </select>
+    </label>
+    <label><span>Position de M<sub>i</sub></span> <input type="range" id="s2-pos" min="0" max="100" value="22"></label>
+    <label><span>Écart entre points voisins</span> <input type="range" id="s2-h" min="1" max="100" value="85"></label>
+    <label><input type="checkbox" id="s2-o" checked> <span>Afficher la sécante M<sub>i</sub>M<sub>i+1</sub></span></label>
+  </div>
+  <div class="schema"><svg id="s2-svg" viewBox="0 0 640 360" role="img" aria-label="Sécante et tangente"></svg></div>
+  <div class="legend">
+    <span><i style="background:#1a5fa8"></i>M<sub>i</sub></span>
+    <span><i style="background:#c8620a"></i>point suivant M<sub>i+1</sub> et sécante (M<sub>i</sub>M<sub>i+1</sub>)</span>
+    <span><i style="background:#0e7c5b"></i>tangente et vecteur vitesse</span>
+  </div>
+  <p class="readout" id="s2-read"></p>
+  <div class="retenir"><span class="lbl">À retenir</span>
+    Plus les points voisins sont proches (durée Δt petite), plus la sécante est proche de la tangente en M<sub>i</sub>. La direction du vecteur vitesse en M<sub>i</sub> (la tangente) est donc voisine de celle de la droite (M<sub>i</sub>M<sub>i+1</sub>).
+  </div>
+
+  <h3>Expérience 2 — La bille dont on coupe le fil</h3>
+  <p>Une bille tourne au bout d'un fil. Cliquez sur « Couper le fil » : dans quelle direction part-elle ?</p>
+  <div class="ctl">
+    <button class="btn" id="cut-btn">Couper le fil</button>
+    <button class="btn sec" id="cut-reset">Recommencer</button>
+  </div>
+  <div class="schema"><svg id="cut-svg" viewBox="0 0 600 380" role="img" aria-label="Bille attachée à un fil"></svg></div>
+  <p class="cap">Après la coupure, plus rien ne retient la bille : elle part en ligne droite, suivant la direction de son vecteur vitesse, donc la tangente au cercle au point où le fil a été coupé.</p>
+</section>
+<hr class="sep">
+
+<!-- ============ 3. CALCUL ============ -->
+<section class="section" id="s3">
+  <div class="section-titre"><span class="num">3</span><h2>Calculer la valeur de la vitesse</h2></div>
+  <p>On dispose d'une <strong>chronophotographie</strong> : les positions M<sub>0</sub>, M<sub>1</sub>, M<sub>2</sub>… du mobile sont relevées à intervalles de temps réguliers Δt. Pour estimer la vitesse en M<sub>i</sub>, on utilise la distance parcourue entre les deux positions voisines.</p>
+  <div class="formule">
+    <span class="vec">v</span><sub>i</sub> ≈
+    <span class="frac"><span><span class="vec">M<sub>i</sub>M<sub>i+1</sub></span></span><span>t<sub>i+1</sub> − t<sub>i</sub></span></span>
+    =
+    <span class="frac"><span><span class="vec">M<sub>i</sub>M<sub>i+1</sub></span></span><span>Δt</span></span>
+    <div style="margin-top:.5rem">et sa valeur : &nbsp; <em>v</em><sub>i</sub> =
+    <span class="frac"><span>M<sub>i</sub>M<sub>i+1</sub></span><span>Δt</span></span></div>
+    <small>La valeur est exprimée en m/s si la distance est en m et la durée en s.</small>
+  </div>
+  <div class="attention"><span class="lbl">Attention</span>
+    Les distances lues sur le schéma sont à convertir avec l'<strong>échelle des distances</strong> (par exemple 1 cm sur le schéma ↔ 0,4 m dans la réalité) et les durées doivent être en secondes (1 ms = 10<sup>-3</sup> s).
+  </div>
+
+  <div class="ctl">
+    <label><span>Mouvement</span>
+      <select id="s3-sc"></select>
+    </label>
+    <label><input type="checkbox" id="s3-all"> Tracer tous les vecteurs</label>
+  </div>
+  <p class="cap">Cliquez sur un point de la chronophotographie pour voir le calcul en M<sub>i</sub>.</p>
+  <div class="schema"><svg id="s3-svg" viewBox="0 0 800 300" role="img" aria-label="Chronophotographie cliquable"></svg></div>
+  <div class="msg" id="s3-msg"></div>
+  <div class="calc" id="s3-calc"></div>
+  <details><summary>Voir toutes les valeurs de ce mouvement</summary><div id="s3-table"></div></details>
+</section>
+<hr class="sep">
+
+<!-- ============ 4. TRACÉ ============ -->
+<section class="section" id="s4">
+  <div class="section-titre"><span class="num">4</span><h2>Tracer le vecteur vitesse</h2></div>
+  <div class="retenir"><span class="lbl">Méthode en 4 étapes</span>
+    <ol style="padding-left:1.2rem">
+      <li><strong>Calculer</strong> la valeur <em>v</em> de la vitesse (section 3).</li>
+      <li><strong>Convertir</strong> en longueur de flèche avec l'échelle des vitesses : <em>L</em> = <em>v</em> ÷ échelle (par exemple 1 cm ↔ 4 m/s).</li>
+      <li><strong>Direction</strong> : la tangente à la trajectoire en M<sub>i</sub>, voisine de la droite (M<sub>i</sub>M<sub>i+1</sub>) ; <strong>sens</strong> : celui du mouvement.</li>
+      <li><strong>Origine</strong> : placer le début de la flèche en M<sub>i</sub>.</li>
+    </ol>
+  </div>
+
+  <div class="ctl">
+    <label>Mouvement <select id="w-sc"></select></label>
+    <button class="btn sec" id="w-new">Autre point</button>
+  </div>
+  <div class="data" id="w-data"></div>
+
+  <div class="q">
+    <strong>Étape 1.</strong> Calculer la valeur <em>v</em> de la vitesse en M<sub id="w-isub1"></sub>.
+    <div class="row"><input type="text" inputmode="decimal" id="w-v" placeholder="v"> m/s <button class="btn" id="w-vbtn">Vérifier</button></div>
+    <div class="fb" id="w-vfb"></div>
+  </div>
+  <div class="q">
+    <strong>Étape 2.</strong> Calculer la longueur <em>L</em> de la flèche à dessiner.
+    <div class="row"><input type="text" inputmode="decimal" id="w-L" placeholder="L"> cm <button class="btn" id="w-Lbtn">Vérifier</button></div>
+    <div class="fb" id="w-Lfb"></div>
+  </div>
+  <div class="q">
+    <strong>Étapes 3 et 4.</strong> Sur le schéma, <strong>cliquez ou faites glisser</strong> la pointe de la flèche pour tracer le vecteur depuis M<sub id="w-isub2"></sub>.
+    <div class="schema"><svg id="w-svg" viewBox="0 0 800 300" role="img" aria-label="Atelier de tracé"></svg></div>
+    <div class="row"><button class="btn bleu" id="w-check">Vérifier mon tracé</button><button class="btn sec" id="w-sol">Voir la solution</button></div>
+    <div class="fb" id="w-tfb"></div>
+  </div>
+  <details><summary>Un indice ?</summary>
+    <p>La valeur se calcule avec <em>v</em> = distance ÷ durée, où la distance mesurée sur le schéma est convertie en mètres avec l'échelle des distances. Les points orange sont ceux qu'on utilise : la direction du vecteur est la tangente en M<sub>i</sub>, voisine de la droite qui relie ces deux points.</p>
+  </details>
+</section>
+<hr class="sep">
+
+<!-- ============ 5. EXEMPLES ============ -->
+<section class="section" id="s5">
+  <div class="section-titre"><span class="num">5</span><h2>Exemples de mouvements</h2></div>
+  <p>Voici les vecteurs vitesse tracés en <strong>tous</strong> les points de quatre mouvements. Regardez comment changent la direction et la longueur des flèches.</p>
+  <div class="cards-ex" id="s5-cards"></div>
+  <div class="retenir"><span class="lbl">À retenir</span>
+    <ul style="padding-left:1.2rem">
+      <li>Le vecteur vitesse est <strong>constant</strong> seulement si sa direction, son sens <em>et</em> sa valeur ne changent pas (mouvement rectiligne et uniforme).</li>
+      <li>Si la <strong>valeur</strong> change, la longueur des flèches change : les points de la chronophotographie se rapprochent (ralentissement) ou s'écartent (accélération).</li>
+      <li>Si la <strong>direction</strong> change, la trajectoire est courbe.</li>
+    </ul>
+  </div>
+</section>
+<hr class="sep">
+
+<!-- ============ 6. EXERCICES ============ -->
+<section class="section" id="s6">
+  <div class="section-titre"><span class="num">6</span><h2>Exercices d'entraînement</h2></div>
+  <div class="score-bar"><strong id="score-txt">Score : 0 / 9</strong><div class="prog"><i id="score-prog"></i></div><button class="btn sec" id="ex-reset" style="padding:.25rem .7rem">Recommencer</button></div>
+  <div id="ex-list"></div>
+  <div class="retenir" id="ex-final" style="display:none"></div>
+</section>
+
+<footer>Appli HTML autonome — physique-chimie, classe de seconde.</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Outils ---------- */
+const PX = 40;                       // 1 cm du schéma = 40 unités du dessin
+const COL = {vert:'#0e7c5b', bleu:'#1a5fa8', orange:'#c8620a', rouge:'#c0392b', gris:'#7a7a7a', noir:'#1e1e1e'};
+const $ = s => document.querySelector(s);
+const f = (x, n) => x.toFixed(n === undefined ? 1 : n).replace('.', ',');
+const fn = x => String(x).replace('.', ',');
+const fm = x => f(x, x < 10 ? 2 : 1);
+const subs = (k) => '<sub>' + k + '</sub>';
+const Mk = k => 'M' + subs(k);
+const NS = 'http://www.w3.org/2000/svg';
+
+function arrow(x1, y1, x2, y2, col, w, head){
+  w = w || 3;
+  const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy);
+  if (L < 1) return '';
+  const ux = dx / L, uy = dy / L;
+  const hl = Math.min(head || (8 + w * 2), L * 0.85);
+  const bx = x2 - ux * hl, by = y2 - uy * hl;
+  const hw = hl * 0.42;
+  return '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + bx.toFixed(1) + '" y2="' + by.toFixed(1) +
+    '" stroke="' + col + '" stroke-width="' + w + '" stroke-linecap="round"/>' +
+    '<polygon points="' + x2.toFixed(1) + ',' + y2.toFixed(1) + ' ' +
+    (bx - uy * hw).toFixed(1) + ',' + (by + ux * hw).toFixed(1) + ' ' +
+    (bx + uy * hw).toFixed(1) + ',' + (by - ux * hw).toFixed(1) + '" fill="' + col + '"/>';
+}
+const vecLabel = (x, y, name, idx, col, size) => {
+  size = size || 16;
+  const w = size * 0.55, ay = y - size * 0.74, ax = x + size * 0.06;
+  return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" font-family="Lora,Georgia,serif" font-style="italic" font-size="' + size +
+    '" fill="' + col + '">' + name + (idx !== undefined && idx !== '' ? '<tspan dy="4" font-size="' + (size - 5) + '">' + idx + '</tspan>' : '') + '</text>' +
+    '<line x1="' + ax.toFixed(1) + '" y1="' + ay.toFixed(1) + '" x2="' + (ax + w).toFixed(1) + '" y2="' + ay.toFixed(1) + '" stroke="' + col + '" stroke-width="1.4"/>' +
+    '<polygon points="' + (ax + w + 3.5).toFixed(1) + ',' + ay.toFixed(1) + ' ' + (ax + w - 1.5).toFixed(1) + ',' + (ay - 3).toFixed(1) + ' ' + (ax + w - 1.5).toFixed(1) + ',' + (ay + 3).toFixed(1) + '" fill="' + col + '"/>';
+};
+const ptLabel = (x, y, k, col, size) =>
+  '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" text-anchor="middle" font-family="Lora,Georgia,serif" font-style="italic" font-size="' + (size || 13) +
+  '" fill="' + col + '">M<tspan dy="4" font-size="' + ((size || 13) - 3) + '">' + k + '</tspan></text>';
+function svgPoint(svg, e){
+  const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
+}
+
+/* ---------- Mouvements (chronophotographies) ---------- */
+function mk(o){
+  o.pts = [];
+  for (let k = 0; k < o.n; k++) o.pts.push(o.pos(k * o.dt));
+  const N = 160, T = (o.n - 1) * o.dt;
+  o.curve = [];
+  for (let j = 0; j <= N; j++) o.curve.push(o.pos(T * j / N));
+  return o;
+}
+const SC = {
+  mru: mk({id:'mru', nom:'Voiture à vitesse constante', dt:2, dtMs:null, mPerCm:10, echVit:10, n:6, i0:2,
+    pos:t => ({x:15 * t, y:0}), lab:p => ({dx:0, dy:26}),
+    obs:'Les points sont <strong>équidistants</strong> et les vecteurs vitesse sont identiques : même direction, même sens, même longueur. Le vecteur vitesse est constant : mouvement rectiligne et uniforme (v = 15 m/s, soit 54 km/h).'}),
+  frein: mk({id:'frein', nom:'Voiture qui freine', dt:1, dtMs:null, mPerCm:4, echVit:5, n:9, i0:3,
+    pos:t => ({x:20 * t - 1.25 * t * t, y:0}), lab:p => ({dx:0, dy:26}),
+    obs:'Les points se <strong>rapprochent</strong> et les vecteurs ont toujours la même direction et le même sens, mais leur longueur <strong>diminue</strong> : la voiture ralentit. Mouvement rectiligne ralenti.'}),
+  parabole: mk({id:'parabole', nom:'Balle lancée', dt:0.1, dtMs:100, mPerCm:0.4, echVit:4, n:13, i0:4,
+    pos:t => ({x:4 * t, y:6 * t - 4.9 * t * t}), lab:p => ({dx:0, dy:24}),
+    obs:'La direction du vecteur vitesse <strong>change</strong> à chaque instant (la trajectoire est courbe). Sa longueur diminue pendant la montée, est minimale au sommet (vecteur horizontal, v ≈ 4 m/s), puis augmente pendant la descente.'}),
+  circ: mk({id:'circ', nom:'Manège (mouvement circulaire)', dt:0.2, dtMs:200, mPerCm:0.5, echVit:2, n:21, i0:5,
+    pos:t => ({x:2 * Math.cos(1.5 * t), y:2 * Math.sin(1.5 * t)}),
+    lab:p => { const L = Math.hypot(p.x, p.y) || 1; return {dx:-p.x / L * 24, dy:p.y / L * 24 + 4}; },
+    obs:'Les flèches ont toutes la <strong>même longueur</strong> (v ≈ 3 m/s) mais leur <strong>direction change</strong> sans cesse : elles sont tangentes au cercle. Le vecteur vitesse n\'est donc pas constant, même si la valeur de la vitesse l\'est.'})
+};
+const ORDER = ['mru', 'frein', 'parabole', 'circ'];
+const G = {method:'next'};  // vitesse en M_i : M_iM_{i+1} / Δt
+
+const toPx = (sc, p) => ({x:p.x / sc.mPerCm * PX, y:-p.y / sc.mPerCm * PX});
+
+function vel(sc, i, method){
+  const P = sc.pts, n = P.length;
+  if (i < 0 || i > n - 2) return null;
+  const a = i, b = i + 1, k = 1;
+  const dx = P[b].x - P[a].x, dy = P[b].y - P[a].y;
+  const distM = Math.hypot(dx, dy);
+  const dcm = Math.round(distM / sc.mPerCm * 10) / 10;       // mesure à la règle, au mm près
+  const dReal = dcm * sc.mPerCm;
+  const T = k * sc.dt;
+  // direction : tangente à la trajectoire en M_i (la corde M_iM_{i+1} n'en est qu'une approximation)
+  const t0 = a * sc.dt, e = 1e-4, q1 = sc.pos(t0 + e), q0 = sc.pos(t0 - e);
+  const tx = q1.x - q0.x, ty = q1.y - q0.y, tl = Math.hypot(tx, ty);
+  return {a:a, b:b, k:k, dcm:dcm, dReal:dReal, T:T, v:dReal / T, ux:tx / tl, uy:ty / tl};
+}
+function validIdx(sc, method){
+  const r = [];
+  for (let i = 0; i < sc.pts.length; i++) if (vel(sc, i, method)) r.push(i);
+  return r;
+}
+
+function geom(sc, method){
+  const P = sc.pts.map(p => toPx(sc, p));
+  const xs = P.map(p => p.x), ys = P.map(p => p.y);
+  sc.curve.forEach(c => { const p = toPx(sc, c); xs.push(p.x); ys.push(p.y); });
+  P.forEach((p, i) => {
+    const v = vel(sc, i, method);
+    if (v){ const L = v.v / sc.echVit * PX; xs.push(p.x + v.ux * L); ys.push(p.y - v.uy * L); }
+  });
+  let x0 = Math.min.apply(null, xs) - 55, x1 = Math.max.apply(null, xs) + 55;
+  let y0 = Math.min.apply(null, ys) - 50, y1 = Math.max.apply(null, ys) + 85;
+  if (y1 - y0 < 250){ const c = (y0 + y1) / 2; y0 = c - 125; y1 = c + 125; }
+  return {P:P, x0:x0, y0:y0, x1:x1, y1:y1, w:x1 - x0, h:y1 - y0};
+}
+
+/* Dessin d'une chronophotographie. o : method, sel, all, chord, hits, nei, vec, extra(g) */
+function drawChrono(svg, sc, o){
+  const g = geom(sc, o.method);
+  svg.setAttribute('viewBox', g.x0.toFixed(0) + ' ' + g.y0.toFixed(0) + ' ' + g.w.toFixed(0) + ' ' + g.h.toFixed(0));
+  const n = sc.pts.length, sel = o.sel === undefined ? -1 : o.sel;
+  const selV = sel >= 0 ? vel(sc, sel, o.method) : null;
+  let s = '';
+  s += '<polyline points="' + sc.curve.map(c => { const p = toPx(sc, c); return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' ') +
+       '" fill="none" stroke="#b9b6ac" stroke-width="1.5" stroke-dasharray="5 4"/>';
+  if (o.chord && selV){
+    // tangente à la trajectoire en M_i : droite fine en pointillés
+    const P0 = g.P[sel], h = Math.max(70, selV.v / sc.echVit * PX + 30);
+    s += '<line x1="' + (P0.x - selV.ux * h).toFixed(1) + '" y1="' + (P0.y + selV.uy * h).toFixed(1) + '" x2="' + (P0.x + selV.ux * h).toFixed(1) + '" y2="' + (P0.y - selV.uy * h).toFixed(1) + '" stroke="' + COL.vert + '" stroke-width="1" stroke-dasharray="5 4"/>';
+  }
+  if (o.all){
+    for (let i = 0; i < n; i++){
+      if (i === sel) continue;
+      const v = vel(sc, i, o.method); if (!v) continue;
+      const L = v.v / sc.echVit * PX, p = g.P[i];
+      s += arrow(p.x, p.y, p.x + v.ux * L, p.y - v.uy * L, COL.vert, 1.6, 8);
+    }
+  }
+  if (selV && o.vec !== false){
+    const L = selV.v / sc.echVit * PX, p = g.P[sel];
+    const tx = p.x + selV.ux * L, ty = p.y - selV.uy * L;
+    s += arrow(p.x, p.y, tx, ty, COL.vert, 2.2, 11);
+    s += vecLabel(tx + 8, ty - 8, 'v', sel, COL.vert, 17);
+  }
+  const fs = n > 14 ? 11 : 13;
+  for (let k = 0; k < n; k++){
+    const p = g.P[k], valid = !!vel(sc, k, o.method);
+    const isSel = k === sel;
+    const isNei = selV && (k === selV.a || k === selV.b) && !isSel && (o.nei !== false);
+    let fill = COL.noir, r = 4.5, stroke = 'none';
+    if (!valid && o.hits){ fill = '#fff'; stroke = COL.gris; }
+    if (isNei) fill = COL.orange;
+    if (isSel){ fill = COL.bleu; r = 7; }
+    s += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' + r + '" fill="' + fill + '"' + (stroke !== 'none' ? ' stroke="' + stroke + '" stroke-width="1.5"' : '') + '/>';
+    const lo = sc.lab(sc.pts[k]);
+    s += ptLabel(p.x + lo.dx, p.y + lo.dy, k, isSel ? COL.bleu : (isNei ? COL.orange : COL.texte), fs);
+    if (o.hits) s += '<circle class="hit" data-k="' + k + '" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="14" fill="transparent" style="cursor:pointer"/>';
+  }
+  // barres d'échelle
+  const bx = g.x0 + 16, by1 = g.y1 - 40, by2 = g.y1 - 16;
+  s += '<line x1="' + bx + '" y1="' + by1 + '" x2="' + (bx + PX) + '" y2="' + by1 + '" stroke="' + COL.noir + '" stroke-width="3"/>' +
+       '<text x="' + (bx + PX + 8) + '" y="' + (by1 + 4) + '" font-size="11" fill="' + COL.noir + '" font-family="Source Sans 3,sans-serif">1 cm ↔ ' + fn(sc.mPerCm) + ' m</text>' +
+       '<line x1="' + bx + '" y1="' + by2 + '" x2="' + (bx + PX) + '" y2="' + by2 + '" stroke="' + COL.vert + '" stroke-width="3"/>' +
+       '<text x="' + (bx + PX + 8) + '" y="' + (by2 + 4) + '" font-size="11" fill="' + COL.vert + '" font-family="Source Sans 3,sans-serif">1 cm ↔ ' + fn(sc.echVit) + ' m/s</text>';
+  if (o.extra) s += o.extra(g);
+  svg.innerHTML = s;
+  return g;
+}
+
+/* ---------- Section 1 : schéma de définition ---------- */
+(function(){
+  const svg = $('#s1-svg');
+  const P = u => ({x:60 + 600 * u, y:250 - 4 * u * (1 - u) * 200});
+  const D = u => ({x:600, y:-4 * (1 - 2 * u) * 200});
+  let pts = [];
+  for (let j = 0; j <= 120; j++){ const p = P(j / 120); pts.push(p.x.toFixed(1) + ',' + p.y.toFixed(1)); }
+  const u = 0.27, M = P(u), d = D(u), dl = Math.hypot(d.x, d.y), tx = d.x / dl, ty = d.y / dl;
+  let s = '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#b9b6ac" stroke-width="2"/>';
+  s += '<line x1="' + (M.x - tx * 200) + '" y1="' + (M.y - ty * 200) + '" x2="' + (M.x + tx * 230) + '" y2="' + (M.y + ty * 230) + '" stroke="' + COL.orange + '" stroke-width="2" stroke-dasharray="7 5"/>';
+  s += arrow(M.x, M.y, M.x + tx * 130, M.y + ty * 130, COL.vert, 3, 14);
+  s += '<circle cx="' + M.x + '" cy="' + M.y + '" r="6" fill="' + COL.bleu + '"/>';
+  s += ptLabel(M.x - 8, M.y + 26, '', COL.bleu, 15).replace('<tspan dy="4" font-size="12"></tspan>', '');
+  s += vecLabel(M.x + tx * 130 + 8, M.y + ty * 130 - 12, 'v', '', COL.vert, 18);
+  s += '<text x="' + (M.x - 30) + '" y="' + (M.y + 52) + '" font-size="13.5" fill="' + COL.bleu + '" font-weight="600" font-family="Source Sans 3,sans-serif">① Origine : le point M</text>';
+  s += '<text x="' + (M.x + tx * 230 - 160) + '" y="' + (M.y + ty * 230 - 54) + '" font-size="13.5" fill="' + COL.orange + '" font-weight="600" font-family="Source Sans 3,sans-serif">② Direction : la tangente</text>';
+  s += '<text x="' + (M.x + tx * 130 + 6) + '" y="' + (M.y + ty * 130 + 22) + '" font-size="13.5" fill="' + COL.vert + '" font-weight="600" font-family="Source Sans 3,sans-serif">③ Sens du mouvement</text>';
+  s += '<text x="' + (M.x + tx * 130 + 6) + '" y="' + (M.y + ty * 130 + 40) + '" font-size="13.5" fill="' + COL.rouge + '" font-weight="600" font-family="Source Sans 3,sans-serif">④ Longueur ∝ valeur v</text>';
+  s += '<text x="40" y="285" font-size="13" fill="' + COL.gris + '" font-family="Source Sans 3,sans-serif">Trajectoire</text>';
+  svg.innerHTML = s;
+})();
+
+/* ---------- Section 2 : tangente et sécante ---------- */
+const CURVES = {
+  cercle:{closed:true, u0:0, u1:2 * Math.PI, hMax:1.2,
+    P:u => ({x:320 + 130 * Math.cos(u), y:185 - 130 * Math.sin(u)}),
+    D:u => ({x:-130 * Math.sin(u), y:-130 * Math.cos(u)})},
+  parabole:{closed:false, u0:0, u1:1, hMax:0.3,
+    P:u => ({x:70 + 500 * u, y:320 - 4 * u * (1 - u) * 270}),
+    D:u => ({x:500, y:-4 * (1 - 2 * u) * 270})},
+  sinus:{closed:false, u0:0, u1:1, hMax:0.15,
+    P:u => ({x:40 + 560 * u, y:185 - 100 * Math.sin(3 * Math.PI * u)}),
+    D:u => ({x:560, y:-300 * Math.PI * Math.cos(3 * Math.PI * u)})}
+};
+function renderS2(){
+  const c = CURVES[$('#s2-curve').value];
+  const pos = +$('#s2-pos').value / 100, hv = +$('#s2-h').value / 100, one = $('#s2-o').checked;
+  const h = Math.max(0.004 * c.hMax, c.hMax * Math.pow(hv, 1.6));
+  const span = c.u1 - c.u0;
+  const u = c.closed ? c.u0 + pos * span : c.u0 + h + pos * (span - 2 * h);
+  const M = c.P(u), A = c.P(u - h), B = c.P(u + h), D = c.D(u);
+  const dl = Math.hypot(D.x, D.y), tx = D.x / dl, ty = D.y / dl;
+  const angOf = (P, Q) => { const l = Math.hypot(Q.x - P.x, Q.y - P.y), sx = (Q.x - P.x) / l, sy = (Q.y - P.y) / l;
+    return {sx:sx, sy:sy, ang:Math.acos(Math.min(1, Math.abs(tx * sx + ty * sy))) * 180 / Math.PI}; };
+  const s1 = angOf(M, B);
+  let pts = [];
+  for (let j = 0; j <= 240; j++){ const p = c.P(c.u0 + span * j / 240); pts.push(p.x.toFixed(1) + ',' + p.y.toFixed(1)); }
+  let s = '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#b9b6ac" stroke-width="2.5"/>';
+  s += '<line x1="' + (M.x - tx * 170) + '" y1="' + (M.y - ty * 170) + '" x2="' + (M.x + tx * 170) + '" y2="' + (M.y + ty * 170) + '" stroke="' + COL.vert + '" stroke-width="2" stroke-dasharray="7 5"/>';
+  if (one) s += '<line x1="' + (M.x - s1.sx * 40) + '" y1="' + (M.y - s1.sy * 40) + '" x2="' + (B.x + s1.sx * 60) + '" y2="' + (B.y + s1.sy * 60) + '" stroke="' + COL.orange + '" stroke-width="2.6"/>';
+  s += arrow(M.x, M.y, M.x + tx * 85, M.y + ty * 85, COL.vert, 2.4, 12);
+  s += vecLabel(M.x + tx * 85 + 8, M.y + ty * 85 - 8, 'v', 'i', COL.vert, 17);
+  const pl = [[M, 'i', COL.bleu, 7]];
+  if (one) pl.push([B, 'i+1', COL.orange, 5]);
+  pl.forEach(q => {
+    const p = q[0];
+    let nx = ty, ny = -tx; if (ny < 0){ nx = -nx; ny = -ny; }
+    s += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' + q[3] + '" fill="' + q[2] + '"/>';
+    s += '<text x="' + (p.x + nx * 24).toFixed(1) + '" y="' + (p.y + ny * 24 + 4).toFixed(1) + '" text-anchor="middle" font-family="Lora,Georgia,serif" font-style="italic" font-size="14" fill="' + q[2] + '">M<tspan dy="4" font-size="10">' + q[1] + '</tspan></text>';
+  });
+  $('#s2-svg').innerHTML = s;
+  const parts = [];
+  if (one) parts.push('sécante (M\u1d62M\u1d62\u208a\u2081) : ' + f(s1.ang, 1) + ' °');
+  let txt = parts.length ? 'Angle avec la tangente — ' + parts.join(' · ') : 'Aucune sécante affichée : seule la tangente (en pointillés verts) est tracée.';
+  if (one && s1.ang < 1) txt += ' — la sécante est presque confondue avec la tangente.';
+  else if (one && s1.ang > 10) txt += ' — encore loin : rapprochez les points voisins.';
+  $('#s2-read').textContent = txt;
+}
+['#s2-curve', '#s2-pos', '#s2-h', '#s2-o'].forEach(id => $(id).addEventListener('input', renderS2));
+renderS2();
+
+/* Bille dont on coupe le fil */
+const cut = {mode:'turn', th:0, x:0, y:0, vx:0, vy:0, cx:0, cy:0, last:0, token:0};
+const CUT = {cx:300, cy:190, R:110, w:1.3};
+function drawCut(){
+  const c = CUT;
+  let s = '<circle cx="' + c.cx + '" cy="' + c.cy + '" r="' + c.R + '" fill="none" stroke="#d9d6cc" stroke-width="2" stroke-dasharray="5 5"/>';
+  s += '<circle cx="' + c.cx + '" cy="' + c.cy + '" r="4" fill="' + COL.noir + '"/>';
+  let bx, by, dx, dy;
+  if (cut.mode === 'turn'){
+    bx = c.cx + c.R * Math.cos(cut.th); by = c.cy - c.R * Math.sin(cut.th);
+    dx = -Math.sin(cut.th); dy = -Math.cos(cut.th);
+    s += '<line x1="' + c.cx + '" y1="' + c.cy + '" x2="' + bx.toFixed(1) + '" y2="' + by.toFixed(1) + '" stroke="' + COL.orange + '" stroke-width="2.5"/>';
+    s += '<line x1="' + (bx - dx * 150).toFixed(1) + '" y1="' + (by - dy * 150).toFixed(1) + '" x2="' + (bx + dx * 150).toFixed(1) + '" y2="' + (by + dy * 150).toFixed(1) + '" stroke="' + COL.vert + '" stroke-width="1.5" stroke-dasharray="6 5" opacity=".6"/>';
+  } else {
+    bx = cut.x; by = cut.y;
+    const sp = Math.hypot(cut.vx, cut.vy); dx = cut.vx / sp; dy = cut.vy / sp;
+    s += '<line x1="' + cut.cx.toFixed(1) + '" y1="' + cut.cy.toFixed(1) + '" x2="' + bx.toFixed(1) + '" y2="' + by.toFixed(1) + '" stroke="' + COL.vert + '" stroke-width="2" stroke-dasharray="6 5"/>';
+    s += '<text x="' + (c.cx + 12) + '" y="' + (c.cy + 4) + '" font-size="13" fill="' + COL.orange + '" font-family="Source Sans 3,sans-serif">fil coupé</text>';
+  }
+  s += arrow(bx, by, bx + dx * 62, by + dy * 62, COL.vert, 2.4, 12);
+  s += vecLabel(bx + dx * 62 + 8, by + dy * 62 - 8, 'v', '', COL.vert, 17);
+  s += '<circle cx="' + bx.toFixed(1) + '" cy="' + by.toFixed(1) + '" r="10" fill="' + COL.bleu + '"/>';
+  $('#cut-svg').innerHTML = s;
+}
+function cutTick(token, now){
+  if (token !== cut.token) return;
+  const dt = Math.min(0.05, (now - cut.last) / 1000); cut.last = now;
+  if (cut.mode === 'turn') cut.th += CUT.w * dt;
+  else {
+    cut.x += cut.vx * dt; cut.y += cut.vy * dt;
+    if (cut.x < -40 || cut.x > 640 || cut.y < -40 || cut.y > 420){ drawCut(); return; }
+  }
+  drawCut();
+  requestAnimationFrame(t => cutTick(token, t));
+}
+function cutStart(){
+  cut.token++; cut.mode = 'turn'; cut.th = 0.4;
+  $('#cut-btn').disabled = false;
+  cut.last = performance.now();
+  const tk = cut.token;
+  requestAnimationFrame(t => cutTick(tk, t));
+}
+$('#cut-btn').addEventListener('click', () => {
+  if (cut.mode !== 'turn') return;
+  const th = cut.th, sp = CUT.w * CUT.R;
+  cut.x = CUT.cx + CUT.R * Math.cos(th); cut.y = CUT.cy - CUT.R * Math.sin(th);
+  cut.cx = cut.x; cut.cy = cut.y;
+  cut.vx = -Math.sin(th) * sp; cut.vy = -Math.cos(th) * sp;
+  cut.mode = 'free';
+  $('#cut-btn').disabled = true;
+});
+$('#cut-reset').addEventListener('click', cutStart);
+cutStart();
+
+/* ---------- Section 3 : calcul ---------- */
+const S3 = {sc:'parabole', i:4, all:false};
+ORDER.forEach(id => { const o = document.createElement('option'); o.value = id; o.textContent = SC[id].nom; $('#s3-sc').appendChild(o); });
+$('#s3-sc').value = S3.sc;
+
+function dtTexte(sc){ return sc.dtMs ? sc.dtMs + ' ms' : fn(f(sc.dt, sc.dt < 1 ? 2 : 1)) + ' s'; }
+
+function calcHTML(sc, i){
+  const m = G.method, v = vel(sc, i, m);
+  const ta = v.a * sc.dt, tb = v.b * sc.dt;
+  let h = '<ol>';
+  h += '<li><strong>Repérer</strong> les positions utilisées pour M' + subs(i) + ' : ' + Mk(v.a) + ' (t' + subs(v.a) + ' = ' + f(ta, 2) + ' s) et ' + Mk(v.b) + ' (t' + subs(v.b) + ' = ' + f(tb, 2) + ' s).</li>';
+  h += '<li><strong>Mesurer</strong> sur le schéma : ' + Mk(v.a) + Mk(v.b) + ' = <strong>' + f(v.dcm, 1) + ' cm</strong>.<br>Échelle des distances : 1 cm ↔ ' + fn(sc.mPerCm) + ' m, donc ' + Mk(v.a) + Mk(v.b) + ' = ' + f(v.dcm, 1) + ' cm × ' + fn(sc.mPerCm) + ' m/cm = <strong>' + fm(v.dReal) + ' m</strong>.</li>';
+  let dur;
+  if (sc.dtMs){
+    dur = 'Δt = ' + sc.dtMs + ' ms = ' + sc.dtMs + '.10<sup>-3</sup> s.';
+  } else {
+    dur = 'Δt = ' + dtTexte(sc) + '.';
+  }
+  h += '<li><strong>Durée</strong> : ' + dur + '</li>';
+  h += '<li><strong>Calculer</strong> la valeur de la vitesse :<div class="res"><em>v</em>' + subs(i) + ' = ' + Mk(v.a) + Mk(v.b) + ' ÷ ' + 'Δt' + ' = ' + fm(v.dReal) + ' m ÷ ' + (sc.dtMs ? sc.dtMs + '.10<sup>-3</sup>' : f(v.T, 1)) + ' s = <strong>' + f(v.v, 1) + ' m/s</strong></div></li>';
+  const L = v.v / sc.echVit;
+  h += '<li><strong>Tracer</strong> : échelle des vitesses 1 cm ↔ ' + fn(sc.echVit) + ' m/s, donc <em>L</em> = ' + f(v.v, 1) + ' ÷ ' + fn(sc.echVit) + ' = <strong>' + f(L, 1) + ' cm</strong>. La flèche part de ' + Mk(i) + ', tangente à la trajectoire et dans le sens du mouvement.</li>';
+  h += '</ol>';
+  return h;
+}
+function tableHTML(sc){
+  const m = G.method;
+  let h = '<table><tr><th>Point</th><th>t (s)</th><th>Distance ' + Mk('i') + Mk('i+1') + ' sur le schéma (cm)</th><th>Distance ' + Mk('i') + Mk('i+1') + ' réelle (m)</th><th><em>v</em> (m/s)</th></tr>';
+  for (let i = 0; i < sc.pts.length; i++){
+    const v = vel(sc, i, m);
+    h += '<tr' + (i === S3.i ? ' class="sel"' : '') + '><td>' + Mk(i) + '</td><td>' + f(i * sc.dt, 2) + '</td>' +
+      (v ? '<td>' + f(v.dcm, 1) + '</td><td>' + fm(v.dReal) + '</td><td>' + f(v.v, 1) + '</td>' : '<td colspan="3">—</td>') + '</tr>';
+  }
+  return h + '</table>';
+}
+function renderS3(){
+  const sc = SC[S3.sc];
+  if (!vel(sc, S3.i, G.method)) S3.i = Math.min(Math.max(sc.i0, validIdx(sc, G.method)[0]), validIdx(sc, G.method).slice(-1)[0]);
+  drawChrono($('#s3-svg'), sc, {method:G.method, sel:S3.i, all:S3.all, chord:true, hits:true});
+  $('#s3-calc').innerHTML = calcHTML(sc, S3.i);
+  $('#s3-table').innerHTML = tableHTML(sc);
+}
+$('#s3-svg').addEventListener('click', e => {
+  const k = e.target.getAttribute && e.target.getAttribute('data-k');
+  if (k === null || k === undefined) return;
+  const sc = SC[S3.sc], i = +k;
+  if (!vel(sc, i, G.method)){
+    $('#s3-msg').innerHTML = 'On ne peut pas calculer le vecteur en ' + Mk(i) + ' avec cette méthode : il manque une position ' + (i === 0 ? 'avant' : 'après') + ' ce point.';
+    return;
+  }
+  $('#s3-msg').textContent = '';
+  S3.i = i; renderS3();
+});
+$('#s3-sc').addEventListener('change', e => { S3.sc = e.target.value; S3.i = SC[S3.sc].i0; $('#s3-msg').textContent = ''; renderS3(); });
+$('#s3-all').addEventListener('change', e => { S3.all = e.target.checked; renderS3(); });
+
+/* ---------- Section 4 : atelier de tracé ---------- */
+const W = {sc:'parabole', i:4, hx:0, hy:0, sol:false, drag:false};
+ORDER.forEach(id => { const o = document.createElement('option'); o.value = id; o.textContent = SC[id].nom; $('#w-sc').appendChild(o); });
+$('#w-sc').value = W.sc;
+
+function newWorkshop(keepIdx){
+  const sc = SC[W.sc], vi = validIdx(sc, G.method);
+  if (!keepIdx){
+    let i; let guard = 0;
+    do { i = vi[Math.floor(Math.random() * vi.length)]; guard++; } while (i === W.i && vi.length > 1 && guard < 20);
+    W.i = i;
+  }
+  const g = geom(sc, G.method), p = g.P[W.i];
+  W.hx = p.x + 45; W.hy = p.y - 45; W.sol = false;
+  $('#w-v').value = ''; $('#w-L').value = '';
+  ['#w-vfb', '#w-Lfb', '#w-tfb'].forEach(id => { $(id).textContent = ''; $(id).className = 'fb'; });
+  renderWorkshop();
+}
+function renderWorkshop(){
+  const sc = SC[W.sc], v = vel(sc, W.i, G.method);
+  $('#w-isub1').textContent = W.i; $('#w-isub2').textContent = W.i;
+  $('#w-data').innerHTML = '<strong>Données</strong><ul>' +
+    '<li>Intervalle de temps entre deux positions : Δt = ' + dtTexte(sc) + '</li>' +
+    '<li>Mesure sur le schéma : ' + Mk(v.a) + Mk(v.b) + ' = <strong>' + f(v.dcm, 1) + ' cm</strong></li>' +
+    '<li>Échelle des distances : 1 cm ↔ ' + fn(sc.mPerCm) + ' m</li>' +
+    '<li>Échelle des vitesses : 1 cm ↔ ' + fn(sc.echVit) + ' m/s</li></ul>';
+  const g = drawChrono($('#w-svg'), sc, {method:G.method, sel:W.i, vec:false, chord:W.sol, hits:false, extra:function(g){
+    const p = g.P[W.i], tgt = target(sc, g);
+    let s = '';
+    if (W.sol){
+      s += arrow(p.x, p.y, tgt.x, tgt.y, COL.vert, 2.2, 11).replace(/<line /, '<line stroke-dasharray="8 5" ');
+      s += vecLabel(tgt.x + 8, tgt.y - 8, 'v', W.i, COL.vert, 16);
+    }
+    s += arrow(p.x, p.y, W.hx, W.hy, COL.bleu, 2.2, 11);
+    s += '<circle cx="' + W.hx.toFixed(1) + '" cy="' + W.hy.toFixed(1) + '" r="9" fill="rgba(26,95,168,.15)" stroke="' + COL.bleu + '" stroke-width="2.5" style="cursor:grab"/>';
+    return s;
+  }});
+  W.g = g;
+}
+function target(sc, g){
+  const v = vel(sc, W.i, G.method), p = g.P[W.i], L = v.v / sc.echVit * PX;
+  return {x:p.x + v.ux * L, y:p.y - v.uy * L};
+}
+function parseNum(s){ const x = parseFloat(String(s).replace(',', '.')); return isNaN(x) ? null : x; }
+function setFb(id, ok, html){ const e = $(id); e.className = 'fb ' + (ok === null ? 'neutre' : ok ? 'ok' : 'ko'); e.innerHTML = html; }
+
+$('#w-vbtn').addEventListener('click', () => {
+  const sc = SC[W.sc], v = vel(sc, W.i, G.method), x = parseNum($('#w-v').value);
+  if (x === null){ setFb('#w-vfb', null, 'Entrez une valeur numérique.'); return; }
+  if (Math.abs(x - v.v) / v.v <= 0.03){
+    setFb('#w-vfb', true, '✓ Correct : ' + Mk(v.a) + Mk(v.b) + ' = ' + f(v.dcm, 1) + ' cm × ' + fn(sc.mPerCm) + ' m/cm = ' + fm(v.dReal) + ' m ; durée = ' + (sc.dtMs ? sc.dtMs + '.10<sup>-3</sup> s' : f(v.T, 1) + ' s') +
+      ' ; <em>v</em> = ' + f(v.v, 1) + ' m/s.');
+    return;
+  }
+  const r = x / v.v; let hint = 'Revoyez le calcul : <em>v</em> = distance réelle ÷ durée.';
+  if (sc.dtMs && (r > 500 || r < 0.002)) hint = 'Attention à la conversion : 1 ms = 10<sup>-3</sup> s.';
+  else if (Math.abs(x - v.dcm / v.T) / (v.dcm / v.T) < 0.05) hint = 'Vous avez oublié de convertir la distance du schéma avec l\'échelle des distances.';
+  setFb('#w-vfb', false, '✗ Pas tout à fait. ' + hint);
+});
+$('#w-Lbtn').addEventListener('click', () => {
+  const sc = SC[W.sc], v = vel(sc, W.i, G.method), x = parseNum($('#w-L').value), L = v.v / sc.echVit;
+  if (x === null){ setFb('#w-Lfb', null, 'Entrez une valeur numérique.'); return; }
+  if (Math.abs(x - L) <= Math.max(0.1, 0.04 * L)) setFb('#w-Lfb', true, '✓ Correct : <em>L</em> = ' + f(v.v, 1) + ' m/s ÷ ' + fn(sc.echVit) + ' m/s par cm = ' + f(L, 1) + ' cm (soit ' + Math.round(L * PX) + ' unités du dessin).');
+  else setFb('#w-Lfb', false, '✗ Non. La longueur est <em>L</em> = <em>v</em> ÷ échelle, avec <em>v</em> = ' + f(v.v, 1) + ' m/s et 1 cm ↔ ' + fn(sc.echVit) + ' m/s.');
+});
+$('#w-check').addEventListener('click', () => {
+  const sc = SC[W.sc], g = W.g, p = g.P[W.i], t = target(sc, g);
+  const ax = W.hx - p.x, ay = W.hy - p.y, bx = t.x - p.x, by = t.y - p.y;
+  const la = Math.hypot(ax, ay), lb = Math.hypot(bx, by);
+  if (la < 6){ setFb('#w-tfb', null, 'Placez la pointe de la flèche sur le schéma.'); return; }
+  let ang = Math.acos(Math.max(-1, Math.min(1, (ax * bx + ay * by) / (la * lb)))) * 180 / Math.PI;
+  const ratio = la / lb, errs = [];
+  if (ang > 12) errs.push(ang > 90 ? 'le sens est à revoir (la flèche doit suivre le mouvement)' : 'la direction n\'est pas assez proche de la tangente (voisine de la droite ' + Mk(vel(sc, W.i, G.method).a) + Mk(vel(sc, W.i, G.method).b) + ')');
+  if (Math.abs(ratio - 1) > 0.12) errs.push(ratio < 1 ? 'la flèche est trop courte' : 'la flèche est trop longue');
+  if (!errs.length) setFb('#w-tfb', true, '✓ Bravo, votre vecteur est correct (écart de direction ' + f(ang, 0) + ' °, longueur à ' + f(Math.abs(ratio - 1) * 100, 0) + ' % près).');
+  else setFb('#w-tfb', false, '✗ ' + errs.join(' ; ') + '. Vous pouvez déplacer la pointe ou afficher la solution.');
+});
+$('#w-sol').addEventListener('click', () => { W.sol = true; renderWorkshop(); setFb('#w-tfb', null, 'En vert : le vecteur attendu. La droite en pointillés fins est la tangente à la trajectoire en M<sub>i</sub>.'); });
+$('#w-new').addEventListener('click', () => newWorkshop());
+$('#w-sc').addEventListener('change', e => { W.sc = e.target.value; W.i = -1; newWorkshop(); });
+(function(){
+  const svg = $('#w-svg');
+  const move = e => {
+    const p = svgPoint(svg, e), g = W.g;
+    W.hx = Math.max(g.x0 + 5, Math.min(g.x1 - 5, p.x)); W.hy = Math.max(g.y0 + 5, Math.min(g.y1 - 5, p.y));
+    renderWorkshop();
+  };
+  svg.addEventListener('pointerdown', e => { W.drag = true; try { svg.setPointerCapture(e.pointerId); } catch (x) {} move(e); e.preventDefault(); });
+  svg.addEventListener('pointermove', e => { if (W.drag) move(e); });
+  const end = () => { W.drag = false; };
+  svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
+})();
+
+/* ---------- Section 5 : exemples ---------- */
+(function(){
+  const box = $('#s5-cards');
+  ORDER.forEach(id => {
+    const sc = SC[id], d = document.createElement('div');
+    d.className = 'card-ex';
+    d.innerHTML = '<h3>' + sc.nom + '</h3><div class="schema"><svg id="s5-' + id + '" viewBox="0 0 800 300" role="img" aria-label="' + sc.nom + '"></svg></div>' +
+      '<p class="cap">Δt = ' + dtTexte(sc) + ' · 1 cm ↔ ' + fn(sc.mPerCm) + ' m · 1 cm ↔ ' + fn(sc.echVit) + ' m/s</p><p>' + sc.obs + '</p>';
+    box.appendChild(d);
+  });
+})();
+function renderS5(){
+  ORDER.forEach(id => drawChrono($('#s5-' + id), SC[id], {method:G.method, sel:-1, all:true, hits:false}));
+}
+
+/* ---------- Section 6 : exercices ---------- */
+function exSvgRot(){
+  const cx = 150, cy = 115, R = 78, th = 40 * Math.PI / 180;
+  const bx = cx + R * Math.cos(th), by = cy - R * Math.sin(th);
+  const tcc = {x:-Math.sin(th), y:-Math.cos(th)};           // tangente, sens trigonométrique (écran)
+  const rad = {x:Math.cos(th), y:-Math.sin(th)};            // radial vers l'extérieur
+  const L = 58;
+  let s = '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" fill="none" stroke="#b9b6ac" stroke-width="2"/>';
+  s += '<circle cx="' + cx + '" cy="' + cy + '" r="3" fill="' + COL.noir + '"/>';
+  const D = [['A', -rad.x, -rad.y], ['B', tcc.x, tcc.y], ['C', rad.x, rad.y], ['D', -tcc.x, -tcc.y]];
+  D.forEach(d => {
+    s += arrow(bx, by, bx + d[1] * L, by + d[2] * L, COL.bleu, 3, 11);
+    s += '<text x="' + (bx + d[1] * (L + 14) - 5).toFixed(1) + '" y="' + (by + d[2] * (L + 14) + 5).toFixed(1) + '" font-size="16" font-weight="700" fill="' + COL.bleu + '" font-family="Source Sans 3,sans-serif">' + d[0] + '</text>';
+  });
+  s += '<circle cx="' + bx.toFixed(1) + '" cy="' + by.toFixed(1) + '" r="7" fill="' + COL.orange + '"/>';
+  s += '<text x="' + (bx + 10).toFixed(1) + '" y="' + (by - 12).toFixed(1) + '" font-size="14" font-style="italic" fill="' + COL.orange + '" font-family="Lora,serif">M</text>';
+  s += '<text x="' + (cx - 38) + '" y="' + (cy + 5) + '" font-size="13" fill="' + COL.gris + '" font-family="Source Sans 3,sans-serif">sens ↺</text>';
+  return '<div class="schema" style="max-width:360px"><svg viewBox="0 0 330 230" role="img" aria-label="Mouvement circulaire et quatre flèches">' + s + '</svg></div>';
+}
+function exSvgLine(){
+  let s = '<line x1="20" y1="60" x2="480" y2="60" stroke="#b9b6ac" stroke-dasharray="5 4"/>';
+  for (let k = 0; k < 5; k++){
+    const x = 50 + k * 90;
+    s += '<circle cx="' + x + '" cy="60" r="5" fill="' + COL.noir + '"/>';
+    if (k < 4) s += arrow(x, 60, x + 62, 60, COL.vert, 2.2, 11);
+  }
+  return '<div class="schema" style="max-width:520px"><svg viewBox="0 0 500 110" role="img" aria-label="Positions et vecteurs vitesse alignés">' + s + '</svg></div>';
+}
+const EX = [
+  {t:'qcm', q:'Le vecteur vitesse d\'un point mobile en M est :', o:['dirigé vers le centre de la trajectoire', 'tangent à la trajectoire en M et orienté dans le sens du mouvement', 'perpendiculaire à la trajectoire en M', 'toujours horizontal'], ok:1,
+   e:'La direction du vecteur vitesse est la tangente à la trajectoire et son sens est celui du mouvement.'},
+  {t:'qcm', q:'Une balle décrit un cercle dans le sens indiqué. Quelle flèche représente son vecteur vitesse en M ?', pre:exSvgRot(), o:['Flèche A', 'Flèche B', 'Flèche C', 'Flèche D'], ok:1,
+   e:'Le vecteur vitesse est tangent au cercle : A et C sont radiales (vers le centre ou vers l\'extérieur), donc incorrectes. D est tangente mais dans le sens contraire du mouvement. La bonne réponse est B.'},
+  {t:'num', q:'Sur une chronophotographie, on mesure M' + subs(3) + 'M' + subs(4) + ' = 4,5 cm. L\'échelle est 1 cm ↔ 2 m et Δt = 0,50 s. Calculer la valeur <em>v</em>' + subs(3) + ' en M' + subs(3) + '.', ans:18, tol:0.02, u:'m/s',
+   e:'M3M4 = 4,5 cm × 2 m/cm = 9,0 m ; v3 = M3M4 ÷ Δt = 9,0 m ÷ 0,50 s = 18 m/s.'},
+  {t:'num', q:'Un mobile a une vitesse <em>v</em> = 12 m/s. L\'échelle des vitesses est 1 cm ↔ 4 m/s. Quelle longueur de flèche faut-il tracer ?', ans:3.0, tol:0.02, u:'cm',
+   e:'L = v ÷ échelle = 12 m/s ÷ 4 m/s par cm = 3,0 cm.'},
+  {t:'qcm', q:'Dans une chronophotographie, Δt = 40 ms. Que vaut Δt en secondes ?', o:['40.10<sup>3</sup> s', '40.10<sup>-3</sup> s', '4,0.10<sup>-3</sup> s', '0,40 s'], ok:1,
+   e:'1 ms = 10<sup>-3</sup> s, donc 40 ms = 40.10<sup>-3</sup> s = 0,040 s.'},
+  {t:'qcm', q:'Les positions successives d\'un mobile en mouvement rectiligne sont de plus en plus rapprochées. Les vecteurs vitesse successifs :', o:['ont la même direction et leur longueur diminue', 'ont la même direction et leur longueur augmente', 'changent de direction', 'sont tous égaux'], ok:0,
+   e:'Les points se rapprochent : la distance parcourue pendant chaque Δt diminue, donc la valeur de la vitesse diminue. La trajectoire est une droite, la direction ne change pas.'},
+  {t:'qcm', q:'Un manège tourne avec une vitesse de valeur constante. Le vecteur vitesse d\'un enfant sur le manège est-il constant ?', o:['Oui, car sa valeur est constante', 'Non, car sa direction change à chaque instant', 'Oui, car la trajectoire est un cercle', 'Non, car sa valeur augmente'], ok:1,
+   e:'Un vecteur est constant seulement si sa direction, son sens et sa valeur sont constants. Ici la valeur est constante, mais la direction (tangente au cercle) change : le vecteur vitesse n\'est pas constant.'},
+  {t:'qcm', q:'Voici les positions d\'un mobile à intervalles de temps égaux et ses vecteurs vitesse. Que peut-on dire du mouvement ?', pre:exSvgLine(), o:['Circulaire uniforme', 'Rectiligne accéléré', 'Rectiligne uniforme', 'Rectiligne ralenti'], ok:2,
+   e:'Les vecteurs sont identiques (même direction, même sens, même longueur) et les points sont équidistants : mouvement rectiligne et uniforme.'},
+  {t:'num', q:'Convertir une vitesse de 72 km/h en m/s.', ans:20, tol:0.01, u:'m/s',
+   e:'72 km/h = 72.10<sup>3</sup> m ÷ 3,6.10<sup>3</sup> s = 20 m/s.'}
+];
+let score = 0; const done = new Set();
+function updateScore(){
+  $('#score-txt').textContent = 'Score : ' + score + ' / ' + EX.length;
+  $('#score-prog').style.width = (done.size / EX.length * 100) + '%';
+  if (done.size === EX.length){
+    const fin = $('#ex-final'); fin.style.display = 'block';
+    const msg = score === EX.length ? 'Excellent, vous maîtrisez le vecteur vitesse !' : score >= 6 ? 'Très bien ! Relisez les explications des questions manquées.' : 'Continuez : reprenez les sections 3 et 4 puis recommencez les exercices.';
+    fin.innerHTML = '<span class="lbl">Bilan</span>Score final : <strong>' + score + ' / ' + EX.length + '</strong>. ' + msg;
+  }
+}
+function renderEx(){
+  const box = $('#ex-list'); box.innerHTML = ''; score = 0; done.clear();
+  $('#ex-final').style.display = 'none';
+  EX.forEach((e, idx) => {
+    const d = document.createElement('div'); d.className = 'exo';
+    let h = '<div><span class="n">' + (idx + 1) + '</span>' + e.q + '</div>' + (e.pre || '');
+    if (e.t === 'qcm') h += '<div class="opts">' + e.o.map((o, j) => '<button class="opt" data-ex="' + idx + '" data-o="' + j + '">' + o + '</button>').join('') + '</div>';
+    else h += '<div class="row" style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;margin-top:.5rem"><input type="text" inputmode="decimal" id="in' + idx + '" placeholder="?" style="width:110px"> ' + e.u + ' <button class="btn" data-num="' + idx + '">Valider</button></div>';
+    h += '<div class="fb" id="fb' + idx + '"></div>';
+    d.innerHTML = h; box.appendChild(d);
+  });
+  updateScore();
+}
+function finishEx(idx, ok, extra){
+  const e = EX[idx], fb = $('#fb' + idx);
+  done.add(idx); if (ok) score++;
+  fb.className = 'fb ' + (ok ? 'ok' : 'ko');
+  fb.innerHTML = (ok ? '✓ Bravo. ' : '✗ Pas tout à fait. ') + e.e + (extra || '');
+  updateScore();
+}
+$('#ex-list').addEventListener('click', ev => {
+  const b = ev.target.closest('button'); if (!b) return;
+  if (b.hasAttribute('data-o')){
+    const idx = +b.getAttribute('data-ex'), j = +b.getAttribute('data-o');
+    if (done.has(idx)) return;
+    const e = EX[idx], btns = b.parentNode.querySelectorAll('.opt');
+    btns.forEach(x => x.disabled = true);
+    btns[e.ok].classList.add('ok');
+    if (j !== e.ok) b.classList.add('ko');
+    finishEx(idx, j === e.ok);
+  } else if (b.hasAttribute('data-num')){
+    const idx = +b.getAttribute('data-num');
+    if (done.has(idx)) return;
+    const e = EX[idx], x = parseNum($('#in' + idx).value);
+    if (x === null){ const fb = $('#fb' + idx); fb.className = 'fb neutre'; fb.textContent = 'Entrez une valeur numérique.'; return; }
+    $('#in' + idx).disabled = true; b.disabled = true;
+    finishEx(idx, Math.abs(x - e.ans) / e.ans <= e.tol);
+  }
+});
+$('#ex-list').addEventListener('keydown', ev => {
+  if (ev.key === 'Enter' && ev.target.tagName === 'INPUT'){ const b = ev.target.parentNode.querySelector('button'); if (b) b.click(); }
+});
+$('#ex-reset').addEventListener('click', renderEx);
+
+/* ---------- Initialisation ---------- */
+renderEx();
+renderS3();
+newWorkshop();
+renderS5();
+})();
+</script>
+</body>
+</html>
