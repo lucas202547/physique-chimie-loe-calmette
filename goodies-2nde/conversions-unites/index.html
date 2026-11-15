@@ -334,7 +334,6 @@ const STEPS = {
   1: [
     { t: 'Je repère le préfixe', h: () => `<p>Dans « 3,2 kg », l'unité de départ est le gramme (g), et le préfixe est <b>k</b> (kilo).</p><p class="eq">3,2 <span class="rep">k</span>g</p>` },
     { t: 'Je remplace le préfixe par sa valeur', h: () => `<p>Dans la table : k = 10<sup>3</sup>. On <b>remplace la lettre k par .10<sup>3</sup></b>.</p><p class="eq big">3,2 <span class="rep">k</span>g = 3,2<span class="rep">.10<sup>3</sup></span> g</p>` },
-    { t: 'Je conclus', h: () => `<p class="eq">3,2 kg = 3,2.10<sup>3</sup> g = 3 200 g</p><p>Autre exemple, avec un préfixe « petit » : <span class="eq">250 mL = 250.10<sup>-3</sup> L</span> (m = 10<sup>-3</sup>).</p>` },
     { t: 'Je vérifie', h: () => `<p>Le kilogramme est <b>plus grand</b> que le gramme : il faut donc <b>plus</b> de grammes que de kilogrammes. 3 200 est bien plus grand que 3,2. ✔</p>` }
   ],
   2: [
@@ -415,8 +414,7 @@ function renderExercise(lvl, fam, host, index) {
       ? `<div class="frow">① Je remplace le préfixe par sa valeur : <b>${p.s}</b> = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la valeur du préfixe" data-f="a"></div>
          <div class="frow">② Je conclus : ${f(x)} ${p.s}${u} = <input class="sm" type="text" inputmode="decimal" autocomplete="off" aria-label="Résultat" placeholder="ex. 3,2.10^3" data-f="r"> <b>${u}</b></div>`
       : `<div class="frow">① Je remplace le préfixe par sa valeur : 1 ${p.s}${u} = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la relation 1 ${p.s}${u}" data-f="a"> ${u}</div>
-         <div class="frow">② J'isole 1 ${u} : 1 ${u} = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la relation 1 ${u}" data-f="b"> ${p.s}${u}</div>
-         <div class="frow">③ Je conclus : ${fmtVal(x)} ${u} = <input class="sm" type="text" inputmode="decimal" autocomplete="off" aria-label="Résultat" data-f="r"> <b>${p.s}${u}</b></div>`;
+         <div class="frow">② J'isole 1 ${u} : 1 ${u} = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la relation 1 ${u}" data-f="b"> ${p.s}${u}</div>`;
     card.classList.remove('done');
     card.innerHTML = `
       <span class="tag phys">${fam.titre}</span>
@@ -440,7 +438,7 @@ function renderExercise(lvl, fam, host, index) {
 
   function check() {
     const { u, p, e, x, ans } = st;
-    const a = parseExp(val('a').value), r = parseNum(val('r').value);
+    const a = parseExp(val('a').value), r = lvl === 1 ? parseNum(val('r').value) : null;
     const b = lvl === 2 ? parseExp(val('b').value) : null;
     const msgs = []; let ok = true;
     const inv = e > 0 ? 'positif' : 'négatif';
@@ -455,29 +453,24 @@ function renderExercise(lvl, fam, host, index) {
       else if (b !== -e) { ok = false; msgs.push('② ✘ ' + (b === e ? `Pour isoler 1 ${u}, on passe à l'<b>opposé</b> : 10<sup>${e}</sup> devient 10<sup>${-e}</sup>.` : 'Pour isoler 1 ' + u + ', divise les deux côtés de la relation ① par la puissance de 10 : l\'exposant change de signe.')); }
       else msgs.push(`② ✔ 1 ${u} = 10<sup>${-e}</sup> ${p.s}${u}`);
     }
-    /* résultat */
-    const lab = lvl === 1 ? '②' : '③';
-    if (Number.isNaN(r)) { ok = false; msgs.push(`${lab} Écris le résultat sous forme d'un nombre (ou d'une puissance de 10).`); }
-    else if (!close(r, ans)) {
-      ok = false;
-      const wrong = lvl === 1 ? pw(x, -e) : pw(x, e);
-      let d;
-      if (close(r, wrong)) {
-        d = lvl === 1
-          ? `Tu as utilisé 10<sup>${-e}</sup> au lieu de 10<sup>${e}</sup> : on remplace le préfixe par sa valeur, pas par son inverse.`
-          : `Tu as converti dans le mauvais sens : un ${p.s}${u} est ${e > 0 ? 'plus grand' : 'plus petit'} qu'un ${u}, donc le nombre doit être ${e > 0 ? 'plus petit' : 'plus grand'}.`;
-      } else if (close(r, x * e) || close(r, x + e)) {
-        d = `10<sup>${e}</sup> ne veut pas dire « fois ${e} » : 10<sup>${e}</sup> = ${f(Math.pow(10, e), 9)}.`;
-      } else if ([10, 100, 1000, 0.1, 0.01, 0.001, 1e6, 1e-6].some(k => close(r / ans, k))) {
-        d = 'Il y a un décalage d\'une puissance de 10 : revérifie l\'exposant dans ton calcul.';
-      } else d = 'Ce n\'est pas la bonne valeur. Utilise l\'indice ou regarde la méthode.';
-      msgs.push(`${lab} ✘ ${d}`);
-    } else msgs.push(`${lab} ✔`);
+    /* résultat (niveau 1 seulement) */
+    if (lvl === 1) {
+      if (Number.isNaN(r)) { ok = false; msgs.push('② Écris le résultat sous forme d\'un nombre (ou d\'une puissance de 10).'); }
+      else if (!close(r, ans)) {
+        ok = false;
+        let d;
+        if (close(r, pw(x, -e))) d = `Tu as utilisé 10<sup>${-e}</sup> au lieu de 10<sup>${e}</sup> : on remplace le préfixe par sa valeur, pas par son inverse.`;
+        else if (close(r, x * e) || close(r, x + e)) d = `10<sup>${e}</sup> ne veut pas dire « fois ${e} » : 10<sup>${e}</sup> = ${f(Math.pow(10, e), 9)}.`;
+        else if ([10, 100, 1000, 0.1, 0.01, 0.001, 1e6, 1e-6].some(k => close(r / ans, k))) d = 'Il y a un décalage d\'une puissance de 10 : revérifie l\'exposant dans ton calcul.';
+        else d = 'Ce n\'est pas la bonne valeur. Utilise l\'indice ou regarde la méthode.';
+        msgs.push(`② ✘ ${d}`);
+      } else msgs.push('② ✔');
+    }
     const fb = $('.fb', card);
     tries++;
     if (ok) {
       fb.className = 'fb ok';
-      fb.innerHTML = `✔ Bravo ! ${lvl === 1 ? `${f(x)} ${p.s}${u} = ${f(x)}.10<sup>${e}</sup> ${u}` : `${fmtVal(x)} ${u} = ${fmtVal(ans)} ${p.s}${u}`}.${tries === 1 ? ' Du premier coup !' : ''}`;
+      fb.innerHTML = `✔ Bravo ! ${lvl === 1 ? `${f(x)} ${p.s}${u} = ${f(x)}.10<sup>${e}</sup> ${u}` : `1 ${p.s}${u} = 10<sup>${e}</sup> ${u}, donc 1 ${u} = 10<sup>${-e}</sup> ${p.s}${u}`}.${tries === 1 ? ' Du premier coup !' : ''}`;
       card.classList.add('done'); markSolved(`${lvl}-${fam.id}`);
     } else {
       fb.className = 'fb ko';
