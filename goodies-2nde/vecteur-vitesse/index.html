@@ -142,7 +142,11 @@ footer{padding:1.2rem 1.5rem;color:var(--texte-3);font-size:13.5px;text-align:ce
     <div class="carte"><b><span class="pt" style="background:#c0392b"></span>Norme (valeur)</b>La vitesse <em>v</em>, en m/s ; elle est représentée par la longueur de la flèche, avec une <strong>échelle</strong>.</div>
   </div>
 
-  <div class="schema"><svg id="s1-svg" viewBox="0 0 720 300" role="img" aria-label="Vecteur vitesse tangent à une trajectoire courbe"></svg></div>
+  <p><strong>Faites glisser le point M</strong> le long de la trajectoire (ou utilisez le curseur) : l'origine, la direction et le sens du vecteur vitesse suivent le point.</p>
+  <div class="ctl">
+    <label><span>Position de M</span> <input type="range" id="s1-pos" min="8" max="92" value="27"></label>
+  </div>
+  <div class="schema"><svg id="s1-svg" viewBox="0 0 720 340" role="img" aria-label="Vecteur vitesse tangent à une trajectoire courbe" style="touch-action:none;cursor:grab"></svg></div>
   <p class="cap">Le vecteur vitesse en M : origine en M, direction tangente à la trajectoire (pointillés), sens du mouvement, longueur proportionnelle à la vitesse.</p>
 
   <div class="exemple"><span class="lbl">Unités</span>
@@ -479,26 +483,42 @@ function drawChrono(svg, sc, o){
   return g;
 }
 
-/* ---------- Section 1 : schéma de définition ---------- */
+/* ---------- Section 1 : schéma de définition (point M déplaçable) ---------- */
 (function(){
-  const svg = $('#s1-svg');
-  const P = u => ({x:60 + 600 * u, y:250 - 4 * u * (1 - u) * 200});
-  const D = u => ({x:600, y:-4 * (1 - 2 * u) * 200});
+  const svg = $('#s1-svg'), slider = $('#s1-pos');
+  const H = 170;
+  const P = u => ({x:60 + 600 * u, y:290 - 4 * u * (1 - u) * H});
+  const D = u => ({x:600, y:-4 * (1 - 2 * u) * H});
   let pts = [];
   for (let j = 0; j <= 120; j++){ const p = P(j / 120); pts.push(p.x.toFixed(1) + ',' + p.y.toFixed(1)); }
-  const u = 0.27, M = P(u), d = D(u), dl = Math.hypot(d.x, d.y), tx = d.x / dl, ty = d.y / dl;
-  let s = '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#b9b6ac" stroke-width="2"/>';
-  s += '<line x1="' + (M.x - tx * 200) + '" y1="' + (M.y - ty * 200) + '" x2="' + (M.x + tx * 230) + '" y2="' + (M.y + ty * 230) + '" stroke="' + COL.orange + '" stroke-width="2" stroke-dasharray="7 5"/>';
-  s += arrow(M.x, M.y, M.x + tx * 130, M.y + ty * 130, COL.vert, 3, 14);
-  s += '<circle cx="' + M.x + '" cy="' + M.y + '" r="6" fill="' + COL.bleu + '"/>';
-  s += ptLabel(M.x - 8, M.y + 26, '', COL.bleu, 15).replace('<tspan dy="4" font-size="12"></tspan>', '');
-  s += vecLabel(M.x + tx * 130 + 8, M.y + ty * 130 - 12, 'v', '', COL.vert, 18);
-  s += '<text x="' + (M.x - 30) + '" y="' + (M.y + 52) + '" font-size="13.5" fill="' + COL.bleu + '" font-weight="600" font-family="Source Sans 3,sans-serif">① Origine : le point M</text>';
-  s += '<text x="' + (M.x + tx * 230 - 160) + '" y="' + (M.y + ty * 230 - 54) + '" font-size="13.5" fill="' + COL.orange + '" font-weight="600" font-family="Source Sans 3,sans-serif">② Direction : la tangente</text>';
-  s += '<text x="' + (M.x + tx * 130 + 6) + '" y="' + (M.y + ty * 130 + 22) + '" font-size="13.5" fill="' + COL.vert + '" font-weight="600" font-family="Source Sans 3,sans-serif">③ Sens du mouvement</text>';
-  s += '<text x="' + (M.x + tx * 130 + 6) + '" y="' + (M.y + ty * 130 + 40) + '" font-size="13.5" fill="' + COL.rouge + '" font-weight="600" font-family="Source Sans 3,sans-serif">④ Longueur ∝ valeur v</text>';
-  s += '<text x="40" y="285" font-size="13" fill="' + COL.gris + '" font-family="Source Sans 3,sans-serif">Trajectoire</text>';
-  svg.innerHTML = s;
+  const curve = '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#b9b6ac" stroke-width="2"/>';
+  const txt = (x, y, col, t) => '<text x="' + x + '" y="' + y + '" font-size="13.5" fill="' + col + '" font-weight="600" font-family="Source Sans 3,sans-serif">' + t + '</text>';
+  const key = txt(190, 232, COL.bleu, '① Origine : le point M') + txt(190, 254, COL.orange, '② Direction : la tangente au point M') +
+              txt(190, 276, COL.vert, '③ Sens du mouvement') + txt(190, 298, COL.rouge, '④ Longueur : proportionnelle à la valeur v') +
+              '<text x="40" y="327" font-size="13" fill="' + COL.gris + '" font-family="Source Sans 3,sans-serif">Trajectoire</text>';
+  function draw(u){
+    const M = P(u), d = D(u), dl = Math.hypot(d.x, d.y), tx = d.x / dl, ty = d.y / dl, L = 130;
+    let s = curve;
+    s += '<line x1="' + (M.x - tx * 200) + '" y1="' + (M.y - ty * 200) + '" x2="' + (M.x + tx * 230) + '" y2="' + (M.y + ty * 230) + '" stroke="' + COL.orange + '" stroke-width="2" stroke-dasharray="7 5"/>';
+    s += arrow(M.x, M.y, M.x + tx * L, M.y + ty * L, COL.vert, 3, 14);
+    // nom du vecteur : au-dessus du milieu de la flèche
+    const q = {x: M.x + tx * L / 2 + ty * 24, y: M.y + ty * L / 2 - tx * 24};
+    s += vecLabel(q.x - 5, q.y + 6, 'v', '', COL.vert, 18);
+    // point M (halo = on peut le saisir)
+    s += '<circle cx="' + M.x.toFixed(1) + '" cy="' + M.y.toFixed(1) + '" r="13" fill="' + COL.bleu + '" fill-opacity=".15" stroke="' + COL.bleu + '" stroke-opacity=".5" stroke-width="1.5"/>';
+    s += '<circle cx="' + M.x.toFixed(1) + '" cy="' + M.y.toFixed(1) + '" r="6" fill="' + COL.bleu + '"/>';
+    s += ptLabel(M.x - ty * 24 - 5, M.y + tx * 24 + 5, '', COL.bleu, 15).replace('<tspan dy="4" font-size="12"></tspan>', '');
+    svg.innerHTML = s + key;
+  }
+  const setU = u => { u = Math.max(0.08, Math.min(0.92, u)); slider.value = Math.round(u * 100); draw(u); };
+  let drag = false;
+  const move = e => { const p = svgPoint(svg, e); setU((p.x - 60) / 600); };
+  svg.addEventListener('pointerdown', e => { drag = true; try { svg.setPointerCapture(e.pointerId); } catch (x) {} svg.style.cursor = 'grabbing'; move(e); e.preventDefault(); });
+  svg.addEventListener('pointermove', e => { if (drag) move(e); });
+  const end = () => { drag = false; svg.style.cursor = 'grab'; };
+  svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
+  slider.addEventListener('input', () => draw(+slider.value / 100));
+  draw(0.27);
 })();
 
 /* ---------- Section 2 : tangente et sécante ---------- */
