@@ -361,7 +361,7 @@ const FAM = [
   { id: 'autres', titre: 'Énergie, puissance, fréquence, matière', units: [{ u: 'J', p: ['k', 'M'] }, { u: 'W', p: ['m', 'k', 'M', 'G'] }, { u: 'Hz', p: ['k', 'M', 'G'] }, { u: 'mol', p: ['m'] }] }
 ];
 const M1 = [0.5, 0.75, 1.2, 1.5, 2.5, 3.2, 4.8, 12, 25, 45, 120, 250, 750];
-const M2 = [1.5, 2.5, 3.2, 4.5, 7.5, 12, 25, 45, 250];
+const M2 = [2, 1.5, 2.5, 3.2, 4.5, 7.5, 12, 25, 45, 250];
 
 function newState(lvl, fam) {
   const un = pick(fam.units);
@@ -371,8 +371,8 @@ function newState(lvl, fam) {
     const x = pick(M1);
     return { lvl, fam, u: un.u, p, e, x, ans: pw(x, e) };
   }
-  const A = pick(M2), x = pw(A, e);
-  return { lvl, fam, u: un.u, p, e, x, ans: A };
+  const x = pick(M2);
+  return { lvl, fam, u: un.u, p, e, x, ans: pw(x, -e) };
 }
 
 function stepsHTML(st) {
@@ -391,7 +391,7 @@ function stepsHTML(st) {
   const xp = xs.includes('<sup>') ? `(${xs})` : xs;
   return `<ol>
     <li>J'imagine la conversion inverse (${xp} ${p.s}${u} en ${u}) et je remplace le préfixe par sa valeur : <span class="eq">${xp} <span class="rep">${p.s}</span>${u} = ${xp}<span class="rep">.10<sup>${e}</sup></span> ${u}</span></li>
-    <li>Je prends l'opposé de la puissance de 10 : <span class="eq">${xp} ${u} = ${xp}<span class="rep">.10<sup>${-e}</sup></span> ${p.s}${u}${Math.abs(e) <= 3 || !xs.includes('<sup>') ? ` = ${fmtVal(st.ans)} ${p.s}${u}` : ''}</span></li>
+    <li>Je prends l'opposé de la puissance de 10 : <span class="eq">${xp} ${u} = ${xp}<span class="rep">.10<sup>${-e}</sup></span> ${p.s}${u}${fmtVal(st.ans).includes('<sup>') ? '' : ` = ${fmtVal(st.ans)} ${p.s}${u}`}</span></li>
     <li>Je vérifie : un ${p.s}${u} est ${grand ? 'plus grand' : 'plus petit'} qu'un ${u}, donc le nombre doit être ${grand ? 'plus petit' : 'plus grand'} ✔</li>
   </ol>`;
 }
@@ -553,7 +553,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => { cas = Number(b.dataset.cas); stepIdx = 0; renderSteps(); }));
   renderDrill();
   FAM.forEach((fam, i) => renderExercise(1, fam, $('#ex-niv1'), i + 1));
-  FAM.forEach((fam, i) => renderExercise(2, fam, $('#ex-niv2'), i + 1));
+  /* niveau 2 : la famille « Masse » (exemple 1) passe en dernier */
+  [...FAM.slice(1), FAM[0]].forEach((fam, i) => renderExercise(2, fam, $('#ex-niv2'), i + 1));
   const opt = [`<option value="0">aucun (unité seule)</option>`].concat(PFX.map(p => `<option value="${p.e}">${p.s} (${p.n}, 10^${p.e})</option>`)).join('');
   $('#sm-from').innerHTML = opt; $('#sm-to').innerHTML = opt;
   $('#sm-from').value = String(byS('c').e); $('#sm-to').value = String(byS('k').e);
