@@ -323,7 +323,7 @@ function prefixTableHTML() {
 let exploreP = 'k';
 function renderExplore() {
   const u = $('#ex-unit').value, p = byS(exploreP);
-  $('#pstrip').innerHTML = PFX.map(q => `<button type="button" data-p="${q.s}" aria-pressed="${q.s === exploreP}">${q.s}<small>10<sup>${q.e}</sup></small></button>`).join('');
+  $('#pstrip').innerHTML = PFX.filter(q => q.s !== 'h').map(q => `<button type="button" data-p="${q.s}" aria-pressed="${q.s === exploreP}">${q.s}<small>10<sup>${q.e}</sup></small></button>`).join('');
   $('#explore').innerHTML = `<p class="eq big">1 ${p.s}${u} = 10<sup>${p.e}</sup> ${u}</p>
     <p class="eq big">1 ${u} = 10<sup>${-p.e}</sup> ${p.s}${u}</p>
     <p>Le préfixe <b>${p.n}</b> (${p.s}) vaut <b>10<sup>${p.e}</sup></b> : un ${p.s}${u} est <b>${p.e > 0 ? 'plus grand' : 'plus petit'}</b> qu'un ${u}.</p>`;
