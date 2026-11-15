@@ -184,7 +184,7 @@ select{font:inherit;padding:.4rem .6rem;border:1.5px solid #b9b19c;border-radius
   <p>Deux cas, deux exemples fil rouge. Clique sur « Étape suivante » pour dérouler.</p>
   <div class="tabs" role="tablist">
     <button type="button" role="tab" data-cas="1" aria-selected="true">Cas 1 : kg → g (préfixe → unité)</button>
-    <button type="button" role="tab" data-cas="2" aria-selected="false">Cas 2 : m → km (unité → préfixe)</button>
+    <button type="button" role="tab" data-cas="2" aria-selected="false">Cas 2 : g → kg (unité → préfixe)</button>
   </div>
   <div class="steps" id="steps"></div>
   <div class="row">
@@ -227,7 +227,7 @@ select{font:inherit;padding:.4rem .6rem;border:1.5px solid #b9b19c;border-radius
 
 <section id="niveau2">
   <h2>6. Niveau 2 : de l'unité vers le préfixe (m → km)</h2>
-  <p>Cette fois, c'est l'unité d'arrivée qui porte le préfixe. Écris d'abord la relation avec le préfixe remplacé, puis isole l'unité de départ.</p>
+  <p>Cette fois, c'est l'unité d'arrivée qui porte le préfixe. <b>J'imagine la conversion inverse</b> (de « préfixe + unité » vers l'unité) et je remplace le préfixe par sa valeur. Puis je <b>prends l'opposé de la puissance de 10</b>.</p>
   <details><summary>Afficher la table des préfixes</summary><div class="ptable-slot"></div></details>
   <div id="ex-niv2" style="margin-top:.8rem"></div>
 </section>
@@ -253,7 +253,7 @@ select{font:inherit;padding:.4rem .6rem;border:1.5px solid #b9b19c;border-radius
     <ol style="padding-left:1.3rem">
       <li>Je repère le préfixe et je le <b>remplace par sa valeur</b> (k = 10<sup>3</sup>, m = 10<sup>-3</sup>…).</li>
       <li><b>De « préfixe + unité » vers l'unité</b> : 3,2 kg = 3,2.10<sup>3</sup> g.</li>
-      <li><b>De l'unité vers « préfixe + unité »</b> : 1 km = 10<sup>3</sup> m, donc 1 m = 10<sup>-3</sup> km, donc 2500 m = 2500.10<sup>-3</sup> km.</li>
+      <li><b>De l'unité vers « préfixe + unité »</b> : j'imagine l'inverse, 2 kg = 2.10<sup>3</sup> g, puis je prends l'opposé de la puissance de 10 : 2 g = 2.10<sup>-3</sup> kg.</li>
       <li>Je vérifie : unité plus grande → nombre plus petit ; unité plus petite → nombre plus grand.</li>
     </ol>
   </div>
@@ -337,10 +337,9 @@ const STEPS = {
     { t: 'Je vérifie', h: () => `<p>Le kilogramme est <b>plus grand</b> que le gramme : il faut donc <b>plus</b> de grammes que de kilogrammes. 3 200 est bien plus grand que 3,2. ✔</p>` }
   ],
   2: [
-    { t: 'J\'écris la relation avec le préfixe remplacé', h: () => `<p>On veut passer de m à km. Le préfixe est dans l'unité d'arrivée : <b>km</b>. Je le remplace par sa valeur (k = 10<sup>3</sup>) :</p><p class="eq big">1 <span class="rep">k</span>m = 1<span class="rep">.10<sup>3</sup></span> m</p>` },
-    { t: 'J\'isole 1 m', h: () => `<p>Je divise les deux côtés par 10<sup>3</sup> : l'exposant devient son <b>opposé</b>.</p><p class="eq big">1 m = 10<sup>-3</sup> km</p>` },
-    { t: 'Je multiplie par la valeur de départ', h: () => `<p class="eq">2500 m = 2500.10<sup>-3</sup> km = 2,5 km</p><p>Autre exemple : pour convertir 0,25 L en mL, j'écris 1 mL = 10<sup>-3</sup> L, donc 1 L = 10<sup>3</sup> mL, donc <span class="eq">0,25 L = 0,25.10<sup>3</sup> mL = 250 mL</span>.</p>` },
-    { t: 'Je vérifie', h: () => `<p>Le kilomètre est <b>plus grand</b> que le mètre : il faut donc <b>moins</b> de kilomètres que de mètres. 2,5 est bien plus petit que 2500. ✔</p>` }
+    { t: 'J\'imagine la conversion inverse', h: () => `<p>On veut convertir <b>2 g en kg</b>. J'imagine plutôt la conversion inverse : <b>2 kg en g</b>. Là, je sais faire : je remplace le préfixe par sa valeur (k = 10<sup>3</sup>).</p><p class="eq big">2 <span class="rep">k</span>g = 2<span class="rep">.10<sup>3</sup></span> g</p>` },
+    { t: 'Je prends l\'opposé de la puissance de 10', h: () => `<p>Pour revenir de g vers kg, je change le <b>signe de l'exposant</b> : 10<sup>3</sup> devient 10<sup>-3</sup>.</p><p class="eq big">2 g = 2<span class="rep">.10<sup>-3</sup></span> kg</p>` },
+    { t: 'Je vérifie', h: () => `<p>Le kilogramme est <b>plus grand</b> que le gramme : il faut donc <b>moins</b> de kilogrammes que de grammes. 2.10<sup>-3</sup> = 0,002 est bien plus petit que 2. ✔</p>` }
   ]
 };
 let cas = 1, stepIdx = 0;
@@ -362,7 +361,7 @@ const FAM = [
   { id: 'autres', titre: 'Énergie, puissance, fréquence, matière', units: [{ u: 'J', p: ['k', 'M'] }, { u: 'W', p: ['m', 'k', 'M', 'G'] }, { u: 'Hz', p: ['k', 'M', 'G'] }, { u: 'mol', p: ['m'] }] }
 ];
 const M1 = [0.5, 0.75, 1.2, 1.5, 2.5, 3.2, 4.8, 12, 25, 45, 120, 250, 750];
-const M2 = [0.5, 1.5, 2.5, 3.2, 4.5, 7.5, 12, 25, 45, 250];
+const M2 = [1.5, 2.5, 3.2, 4.5, 7.5, 12, 25, 45, 250];
 
 function newState(lvl, fam) {
   const un = pick(fam.units);
@@ -389,10 +388,10 @@ function stepsHTML(st) {
     </ol>`;
   }
   const xs = fmtVal(x), grand = e > 0;
+  const xp = xs.includes('<sup>') ? `(${xs})` : xs;
   return `<ol>
-    <li>J'écris la relation avec le préfixe remplacé : <span class="eq">1 <span class="rep">${p.s}</span>${u} = 1<span class="rep">.10<sup>${e}</sup></span> ${u}</span></li>
-    <li>J'isole 1 ${u} (exposant opposé) : <span class="eq">1 ${u} = 10<sup>${-e}</sup> ${p.s}${u}</span></li>
-    <li>Je multiplie : <span class="eq">${xs} ${u} = ${mul(xs, -e)} ${p.s}${u} = ${fmtVal(st.ans)} ${p.s}${u}</span></li>
+    <li>J'imagine la conversion inverse (${xp} ${p.s}${u} en ${u}) et je remplace le préfixe par sa valeur : <span class="eq">${xp} <span class="rep">${p.s}</span>${u} = ${xp}<span class="rep">.10<sup>${e}</sup></span> ${u}</span></li>
+    <li>Je prends l'opposé de la puissance de 10 : <span class="eq">${xp} ${u} = ${xp}<span class="rep">.10<sup>${-e}</sup></span> ${p.s}${u}${Math.abs(e) <= 3 || !xs.includes('<sup>') ? ` = ${fmtVal(st.ans)} ${p.s}${u}` : ''}</span></li>
     <li>Je vérifie : un ${p.s}${u} est ${grand ? 'plus grand' : 'plus petit'} qu'un ${u}, donc le nombre doit être ${grand ? 'plus petit' : 'plus grand'} ✔</li>
   </ol>`;
 }
@@ -407,14 +406,15 @@ function renderExercise(lvl, fam, host, index) {
   function build() {
     st = newState(lvl, fam); tries = 0;
     const { u, p, e, x } = st;
+    const xp = fmtVal(x).includes('<sup>') ? `(${fmtVal(x)})` : fmtVal(x);
     const enonce = lvl === 1
       ? `Convertis <b>${f(x)} ${p.s}${u}</b> en <b>${u}</b>.`
       : `Convertis <b>${fmtVal(x)} ${u}</b> en <b>${p.s}${u}</b>.`;
     const fields = lvl === 1
       ? `<div class="frow">① Je remplace le préfixe par sa valeur : <b>${p.s}</b> = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la valeur du préfixe" data-f="a"></div>
          <div class="frow">② Je conclus : ${f(x)} ${p.s}${u} = <input class="sm" type="text" inputmode="decimal" autocomplete="off" aria-label="Résultat" placeholder="ex. 3,2.10^3" data-f="r"> <b>${u}</b></div>`
-      : `<div class="frow">① Je remplace le préfixe par sa valeur : 1 ${p.s}${u} = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la relation 1 ${p.s}${u}" data-f="a"> ${u}</div>
-         <div class="frow">② J'isole 1 ${u} : 1 ${u} = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la relation 1 ${u}" data-f="b"> ${p.s}${u}</div>`;
+      : `<div class="frow">① J'imagine l'inverse : ${xp} ${p.s}${u} = ${xp}.10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la conversion inverse" data-f="a"> ${u}</div>
+         <div class="frow">② Je prends l'opposé de la puissance de 10 : ${xp} ${u} = ${xp}.10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la conversion demandée" data-f="b"> ${p.s}${u}</div>`;
     card.classList.remove('done');
     card.innerHTML = `
       <span class="tag phys">${fam.titre}</span>
@@ -429,7 +429,7 @@ function renderExercise(lvl, fam, host, index) {
       </div>
       <div class="hint" role="note">${lvl === 1
         ? 'Dans la table des préfixes, cherche la puissance de 10 associée à la lettre du préfixe, puis remplace la lettre par « .10^ » suivi de cet exposant.'
-        : 'Commence par écrire la relation avec le préfixe de l\'unité d\'arrivée (1 ' + p.s + u + ' = 10^… ' + u + '), puis isole 1 ' + u + ' : l\'exposant devient son opposé.'}</div>
+        : 'Imagine la conversion inverse, de ' + p.s + u + ' vers ' + u + ' : cherche dans la table la puissance de 10 associée à « ' + p.s + ' » et remplace la lettre par sa valeur. Ensuite, prends l\'opposé de cet exposant.'}</div>
       <div class="fb" role="status" aria-live="polite"></div>
       <div class="method">${stepsHTML(st)}</div>`;
   }
@@ -438,6 +438,7 @@ function renderExercise(lvl, fam, host, index) {
 
   function check() {
     const { u, p, e, x, ans } = st;
+    const xq = fmtVal(x);
     const a = parseExp(val('a').value), r = lvl === 1 ? parseNum(val('r').value) : null;
     const b = lvl === 2 ? parseExp(val('b').value) : null;
     const msgs = []; let ok = true;
@@ -446,12 +447,12 @@ function renderExercise(lvl, fam, host, index) {
     /* ① */
     if (Number.isNaN(a)) { ok = false; msgs.push('① Écris l\'exposant : un nombre entier, avec son signe.'); }
     else if (a !== e) { ok = false; msgs.push('① ✘ ' + (a === -e ? signMsg : `Regarde la table des préfixes : quelle puissance de 10 correspond à « ${p.s} » ?`)); }
-    else msgs.push(`① ✔ ${p.s} = 10<sup>${e}</sup>`);
+    else msgs.push(lvl === 1 ? `① ✔ ${p.s} = 10<sup>${e}</sup>` : `① ✔ le préfixe ${p.s} est remplacé par 10<sup>${e}</sup>`);
     /* ② (niveau 2 seulement) */
     if (lvl === 2) {
       if (Number.isNaN(b)) { ok = false; msgs.push('② Écris l\'exposant : un nombre entier, avec son signe.'); }
-      else if (b !== -e) { ok = false; msgs.push('② ✘ ' + (b === e ? `Pour isoler 1 ${u}, on passe à l'<b>opposé</b> : 10<sup>${e}</sup> devient 10<sup>${-e}</sup>.` : 'Pour isoler 1 ' + u + ', divise les deux côtés de la relation ① par la puissance de 10 : l\'exposant change de signe.')); }
-      else msgs.push(`② ✔ 1 ${u} = 10<sup>${-e}</sup> ${p.s}${u}`);
+      else if (b !== -e) { ok = false; msgs.push('② ✘ ' + (b === e ? `Tu as recopié l'exposant de ①. Il faut prendre son <b>opposé</b> : 10<sup>${e}</sup> devient 10<sup>${-e}</sup>.` : 'Prends l\'opposé de l\'exposant trouvé en ① : s\'il est positif, il devient négatif, et inversement.')); }
+      else msgs.push(`② ✔ l'opposé de ${e} est ${-e}`);
     }
     /* résultat (niveau 1 seulement) */
     if (lvl === 1) {
@@ -470,7 +471,7 @@ function renderExercise(lvl, fam, host, index) {
     tries++;
     if (ok) {
       fb.className = 'fb ok';
-      fb.innerHTML = `✔ Bravo ! ${lvl === 1 ? `${f(x)} ${p.s}${u} = ${f(x)}.10<sup>${e}</sup> ${u}` : `1 ${p.s}${u} = 10<sup>${e}</sup> ${u}, donc 1 ${u} = 10<sup>${-e}</sup> ${p.s}${u}`}.${tries === 1 ? ' Du premier coup !' : ''}`;
+      fb.innerHTML = `✔ Bravo ! ${lvl === 1 ? `${f(x)} ${p.s}${u} = ${f(x)}.10<sup>${e}</sup> ${u}` : `${xq} ${p.s}${u} = ${mul(xq, e)} ${u}, donc ${xq} ${u} = ${mul(xq, -e)} ${p.s}${u}`}.${tries === 1 ? ' Du premier coup !' : ''}`;
       card.classList.add('done'); markSolved(`${lvl}-${fam.id}`);
     } else {
       fb.className = 'fb ko';
