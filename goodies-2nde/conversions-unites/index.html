@@ -123,6 +123,7 @@ footer{margin:2.5rem 0 3rem;color:var(--muted);font-size:.9rem;text-align:center
 .pstrip button[aria-pressed=true] small{color:#fff}
 .frow{margin:.55rem 0;line-height:2.3}
 input.sm{width:10.5rem}
+input.mant{width:6.5rem}
 input.exp{width:4.2rem;text-align:center}
 sup.ebox{position:relative;top:-.7em;vertical-align:baseline;line-height:0;font-size:1em;margin-left:.1rem}
 sup.ebox input.exp{width:3.4rem;height:1.8rem;box-sizing:border-box;font-size:.85rem;line-height:1.2;padding:.1rem .25rem}
@@ -227,7 +228,7 @@ select{font:inherit;padding:.4rem .6rem;border:1.5px solid #b9b19c;border-radius
 
 <section id="niveau1">
   <h2>5. Niveau 1 : du préfixe vers l'unité (kg → g)</h2>
-  <p>Remplace le préfixe par sa valeur, puis écris le résultat. Tu peux répondre avec une puissance de 10 (par exemple <b>3,2.10<sup>3</sup></b>) ou avec un nombre décimal.</p>
+  <p>Remplace le préfixe par sa valeur, puis écris le résultat. Écris le résultat sous la forme <b>nombre.10<sup>exposant</sup></b> (par exemple <b>3,2.10<sup>3</sup></b>) : le nombre dans la grande case, l'exposant dans la petite. Tu peux aussi écrire un nombre décimal et laisser la case de l'exposant vide.</p>
   <details><summary>Afficher la table des préfixes</summary><div class="ptable-slot"></div></details>
   <div id="ex-niv1" style="margin-top:.8rem"></div>
 </section>
@@ -419,7 +420,7 @@ function renderExercise(lvl, fam, host, index) {
       : `Convertis <b>${fmtVal(x)} ${u}</b> en <b>${p.s}${u}</b>.`;
     const fields = lvl === 1
       ? `<div class="frow">① Je remplace le préfixe par sa valeur : <b>${p.s}</b> = 10<sup class="ebox"><input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la valeur du préfixe" data-f="a"></sup></div>
-         <div class="frow">② Je conclus : ${f(x)} ${p.s}${u} = <input class="sm" type="text" inputmode="decimal" autocomplete="off" aria-label="Résultat" placeholder="ex. 3,2.10³" data-f="r"> <b>${u}</b></div>`
+         <div class="frow">② Je conclus : ${f(x)} ${p.s}${u} = <input class="sm mant" type="text" inputmode="decimal" autocomplete="off" aria-label="Nombre du résultat" placeholder="ex. 3,2" data-f="r">.10<sup class="ebox"><input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant du résultat" data-f="s"></sup> <b>${u}</b></div>`
       : `<div class="frow">① J'imagine l'inverse : ${xp} ${p.s}${u} = ${xp}.10<sup class="ebox"><input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la conversion inverse" data-f="a"></sup> ${u}</div>
          <div class="frow">② Je prends l'opposé de la puissance de 10 : ${xp} ${u} = ${xp}.10<sup class="ebox"><input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la conversion demandée" data-f="b"></sup> ${p.s}${u}</div>`;
     card.classList.remove('done');
@@ -447,6 +448,8 @@ function renderExercise(lvl, fam, host, index) {
     const { u, p, e, x, ans } = st;
     const xq = fmtVal(x);
     const a = parseExp(val('a').value), r = lvl === 1 ? parseNum(val('r').value) : null;
+    const sx = lvl === 1 ? (val('s').value.trim() === '' ? 0 : parseExp(val('s').value)) : null;
+    const rr = lvl === 1 ? r * Math.pow(10, sx) : null; /* valeur écrite : nombre.10^exposant (exposant vide = 0) */
     const b = lvl === 2 ? parseExp(val('b').value) : null;
     const msgs = []; let ok = true;
     const inv = e > 0 ? 'positif' : 'négatif';
@@ -463,13 +466,14 @@ function renderExercise(lvl, fam, host, index) {
     }
     /* résultat (niveau 1 seulement) */
     if (lvl === 1) {
-      if (Number.isNaN(r)) { ok = false; msgs.push('② Écris le résultat sous forme d\'un nombre (ou d\'une puissance de 10).'); }
-      else if (!close(r, ans)) {
+      if (Number.isNaN(r)) { ok = false; msgs.push('② Écris le nombre qui précède .10, puis l\'exposant dans la petite case (laisse-la vide pour un nombre décimal).'); }
+      else if (Number.isNaN(sx)) { ok = false; msgs.push('② Écris l\'exposant : un nombre entier, avec son signe.'); }
+      else if (!close(rr, ans)) {
         ok = false;
         let d;
-        if (close(r, pw(x, -e))) d = `Tu as utilisé 10<sup>${-e}</sup> au lieu de 10<sup>${e}</sup> : on remplace le préfixe par sa valeur, pas par son inverse.`;
-        else if (close(r, x * e) || close(r, x + e)) d = `10<sup>${e}</sup> ne veut pas dire « fois ${e} » : 10<sup>${e}</sup> = ${f(Math.pow(10, e), 9)}.`;
-        else if ([10, 100, 1000, 0.1, 0.01, 0.001, 1e6, 1e-6].some(k => close(r / ans, k))) d = 'Il y a un décalage d\'une puissance de 10 : revérifie l\'exposant dans ton calcul.';
+        if (close(rr, pw(x, -e))) d = `Tu as utilisé 10<sup>${-e}</sup> au lieu de 10<sup>${e}</sup> : on remplace le préfixe par sa valeur, pas par son inverse.`;
+        else if (close(rr, x * e) || close(rr, x + e)) d = `10<sup>${e}</sup> ne veut pas dire « fois ${e} » : 10<sup>${e}</sup> = ${f(Math.pow(10, e), 9)}.`;
+        else if ([10, 100, 1000, 0.1, 0.01, 0.001, 1e6, 1e-6].some(k => close(rr / ans, k))) d = 'Il y a un décalage d\'une puissance de 10 : revérifie l\'exposant dans ton calcul.';
         else d = 'Ce n\'est pas la bonne valeur. Utilise l\'indice ou regarde la méthode.';
         msgs.push(`② ✘ ${d}`);
       } else msgs.push('② ✔');
