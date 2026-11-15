@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Goodies de seconde : convertir des unités avec une seule méthode, remplacer le préfixe par sa valeur (kg vers g, m vers km).">
+<title>Les conversions d'unités — Goodies de seconde</title>
+<style>
+:root{
+  --bg:#f6f3ec; --ink:#1d2733; --muted:#5d6b7a; --card:#ffffff; --line:#ddd6c6;
+  --primary:#0f5e66; --primary-d:#0a4a51; --primary-l:#dff1f3;
+  --accent:#e07a1f; --accent-l:#fff1dd;
+  --ok:#1f7a45; --ok-l:#e6f4ec; --bad:#b3261e; --bad-l:#fbeae8;
+  --radius:14px; --shadow:0 2px 10px rgba(29,39,51,.08);
+  --font:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --font-h:Georgia,"Times New Roman",serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;font-size:1.0625rem}
+.wrap{max-width:900px;margin-inline:auto;padding-inline:1.1rem}
+h1,h2,h3{font-family:var(--font-h);line-height:1.25}
+h2{font-size:1.65rem;color:var(--primary-d);margin-bottom:.6rem}
+h3{font-size:1.2rem;margin-bottom:.4rem}
+p{margin-bottom:.7rem}
+sup{font-size:.7em}
+
+/* En-tête */
+.top{background:var(--primary);color:#fff;padding:2rem 0 1.6rem}
+.crumb{font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;opacity:.85;margin-bottom:.3rem}
+.top h1{font-size:2.3rem;margin-bottom:.4rem}
+.lead{max-width:60ch;opacity:.95}
+.score{display:inline-block;margin-top:.8rem;background:rgba(255,255,255,.16);padding:.3rem .8rem;border-radius:999px;font-size:.95rem}
+
+/* Navigation */
+nav.menu{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
+nav.menu ul{list-style:none;display:flex;gap:.2rem;overflow-x:auto;padding:.35rem 1.1rem;max-width:900px;margin-inline:auto}
+nav.menu a{display:block;white-space:nowrap;padding:.35rem .8rem;border-radius:999px;color:var(--primary-d);text-decoration:none;font-size:.95rem;font-weight:600}
+nav.menu a:hover,nav.menu a:focus-visible{background:var(--primary-l)}
+
+section{padding:2rem 0 .6rem;scroll-margin-top:3rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.1rem 1.2rem;margin-bottom:1.1rem}
+.grid{display:grid;gap:1rem;grid-template-columns:1fr}
+@media(min-width:768px){.grid.g3{grid-template-columns:repeat(3,1fr)}.grid.g2{grid-template-columns:repeat(2,1fr)}}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:.1rem .6rem;border-radius:999px;margin-bottom:.4rem}
+.tag.daily{background:var(--accent-l);color:#9a4d07}
+.tag.phys{background:var(--primary-l);color:var(--primary-d)}
+.note{background:var(--accent-l);border-left:4px solid var(--accent);padding:.6rem .9rem;border-radius:6px;margin:.7rem 0}
+.note.blue{background:var(--primary-l);border-color:var(--primary)}
+
+/* Tableaux de proportionnalité */
+table.prop{border-collapse:separate;border-spacing:6px;margin:.6rem 0 .9rem;max-width:100%}
+table.prop th{text-align:left;font-weight:600;padding:.5rem .8rem;background:#f1ede2;border-radius:8px;min-width:8rem}
+table.prop td{text-align:center;padding:.5rem 1rem;min-width:5.5rem;border:1px solid var(--line);border-radius:8px;font-variant-numeric:tabular-nums;background:#fff}
+table.prop td.q{border:2px dashed var(--accent);font-weight:700;color:#9a4d07;background:var(--accent-l)}
+table.prop td.pr{background:var(--accent-l);outline:2px solid var(--accent)}
+table.prop td.dv{background:var(--primary-l);outline:2px solid var(--primary)}
+.legend{font-size:.9rem;color:var(--muted)}
+.legend b.o{color:#9a4d07}.legend b.b{color:var(--primary-d)}
+
+/* Boutons et champs */
+button{font:inherit;cursor:pointer;border-radius:10px;border:1.5px solid var(--primary);background:#fff;color:var(--primary-d);padding:.45rem .95rem;font-weight:600}
+button:hover{background:var(--primary-l)}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button.main{background:var(--primary);color:#fff}
+button.main:hover{background:var(--primary-d)}
+button.ghost{border-color:var(--line);color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0}
+input[type=text],input[type=number]{font:inherit;padding:.45rem .7rem;border:1.5px solid #b9b19c;border-radius:10px;width:9rem;background:#fff}
+.unit{font-weight:600}
+.fb{margin-top:.6rem;padding:.6rem .9rem;border-radius:10px;display:none}
+.fb.ok{display:block;background:var(--ok-l);border-left:4px solid var(--ok);color:#124d2b}
+.fb.ko{display:block;background:var(--bad-l);border-left:4px solid var(--bad);color:#7d1a14}
+.hint{display:none;margin-top:.5rem;padding:.5rem .8rem;background:#eef2f6;border-radius:8px;font-size:.97rem}
+.hint.show{display:block}
+.method{display:none;margin-top:.7rem;border-top:1px dashed var(--line);padding-top:.7rem}
+.method.show{display:block}
+.method ol{padding-left:1.3rem}
+.method li{margin-bottom:.4rem}
+.done{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok-l)}
+
+/* Démo, pas à pas */
+.demo svg{width:100%;max-width:420px;height:auto;display:block}
+.demo .ax{stroke:#9aa3ad;stroke-width:1}
+.demo text{font-size:11px;fill:#5d6b7a}
+.demo .ln{stroke:var(--primary);stroke-width:2}
+.demo .pt{fill:var(--primary)}
+.demo .sel{fill:var(--accent);stroke:#fff;stroke-width:2}
+.demo .gd{stroke:var(--accent);stroke-dasharray:4 3}
+input[type=range]{width:100%;max-width:420px;accent-color:var(--primary)}
+.steps .st{display:none;margin-bottom:.8rem}
+.steps .st.show{display:block;animation:in .25s ease}
+.steps .st.last{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-l)}
+.steps .num{display:inline-grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:.95rem;margin-right:.4rem}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+details{margin-top:.6rem}
+summary{cursor:pointer;font-weight:600;color:var(--primary-d)}
+.eq{font-family:Cambria,"Cambria Math",Georgia,serif;font-size:1.1rem;background:#f4f1e8;padding:.3rem .7rem;border-radius:8px;display:inline-block;margin:.2rem 0}
+.bad{color:var(--bad);font-weight:600}.good{color:var(--ok);font-weight:600}
+.quiz label{display:block;padding:.35rem .6rem;border:1.5px solid var(--line);border-radius:10px;margin:.3rem 0;cursor:pointer}
+.quiz label:hover{background:var(--primary-l)}
+.quiz input{margin-right:.5rem;accent-color:var(--primary)}
+.sim .fields{display:grid;gap:.6rem;grid-template-columns:1fr 1fr}
+.sim label{display:block;font-size:.9rem;color:var(--muted)}
+.sim input{width:100%}
+footer{margin:2.5rem 0 3rem;color:var(--muted);font-size:.9rem;text-align:center}
+
+@media print{
+  body{background:#fff;color:#000}.top{background:#fff;color:#000;border-bottom:2px solid #000}
+  nav.menu,button,.hint,.score{display:none!important}
+  .card{box-shadow:none;border:1px solid #000;break-inside:avoid}
+  .tag,.note,table.prop td.q{background:#fff!important;color:#000!important}
+}
+
+.ptable{border-collapse:collapse;width:100%;max-width:600px;margin:.6rem 0}
+.ptable th,.ptable td{border:1px solid var(--line);padding:.3rem .6rem;text-align:center}
+.ptable thead th{background:#f1ede2}
+.rep{background:var(--accent-l);outline:2px solid var(--accent);border-radius:5px;padding:0 .25em}
+.pstrip{display:flex;flex-wrap:wrap;gap:.35rem;margin:.6rem 0}
+.pstrip button{display:flex;flex-direction:column;align-items:center;min-width:3.4rem;padding:.3rem .5rem;line-height:1.25}
+.pstrip button small{font-weight:400;color:var(--muted)}
+.pstrip button[aria-pressed=true]{background:var(--primary);color:#fff}
+.pstrip button[aria-pressed=true] small{color:#fff}
+.frow{margin:.55rem 0}
+input.sm{width:10.5rem}
+input.exp{width:4.2rem;text-align:center}
+select{font:inherit;padding:.4rem .6rem;border:1.5px solid #b9b19c;border-radius:10px;background:#fff}
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}
+.tabs button[aria-selected=true]{background:var(--primary);color:#fff}
+.big{font-size:1.35rem}
+.sim .fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+.sim select{width:100%}
+@media(max-width:480px){.sim .fields{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="crumb">Goodies · Classe de seconde</p>
+    <h1>Les conversions d'unités</h1>
+    <p class="lead">Une seule méthode, toujours la même : <b>remplacer le préfixe par sa valeur</b>. D'abord de kg vers g, puis de m vers km.</p>
+    <p class="score" aria-live="polite">Exercices réussis : <b id="score">0</b> / <span id="total">0</span></p>
+  </div>
+</header>
+
+<nav class="menu" aria-label="Sections">
+  <ul>
+    <li><a href="#comprendre">Comprendre</a></li>
+    <li><a href="#methode">La méthode</a></li>
+    <li><a href="#pieges">Pièges</a></li>
+    <li><a href="#echauffement">Échauffement</a></li>
+    <li><a href="#niveau1">Niveau 1</a></li>
+    <li><a href="#niveau2">Niveau 2</a></li>
+    <li><a href="#simulateur">Simulateur</a></li>
+  </ul>
+</nav>
+
+<main class="wrap">
+
+<section id="comprendre">
+  <h2>1. Un préfixe, c'est un nombre</h2>
+  <div class="card">
+    <p>Un <b>préfixe</b> se place devant une unité et représente une <b>puissance de 10</b>. Par exemple, « kilo » (symbole <b>k</b>) vaut 10<sup>3</sup>, c'est-à-dire 1 000 :</p>
+    <p class="eq">1 kg = 10<sup>3</sup> g</p>
+    <div class="note blue"><b>Rappel sur les puissances de 10.</b> 10<sup>3</sup> = 1 000 (exposant positif : grand nombre). 10<sup>-3</sup> = 1 ÷ 1 000 = 0,001 (exposant négatif : petit nombre).</div>
+  </div>
+  <div class="card">
+    <h3>Explore les préfixes</h3>
+    <p>Choisis un préfixe et une unité.</p>
+    <div class="pstrip" id="pstrip" role="group" aria-label="Préfixes"></div>
+    <div class="row"><label for="ex-unit"><b>Unité :</b></label>
+      <select id="ex-unit"><option>m</option><option>g</option><option>L</option><option>s</option><option>Hz</option><option>W</option><option>J</option><option>A</option><option>V</option><option>mol</option></select></div>
+    <div id="explore" aria-live="polite"></div>
+  </div>
+  <div class="card">
+    <h3>La table des préfixes</h3>
+    <div id="ptable"></div>
+  </div>
+</section>
+
+<section id="methode">
+  <h2>2. La méthode : remplacer le préfixe par sa valeur</h2>
+  <p>Deux cas, deux exemples fil rouge. Clique sur « Étape suivante » pour dérouler.</p>
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" data-cas="1" aria-selected="true">Cas 1 : kg → g (préfixe → unité)</button>
+    <button type="button" role="tab" data-cas="2" aria-selected="false">Cas 2 : m → km (unité → préfixe)</button>
+  </div>
+  <div class="steps" id="steps"></div>
+  <div class="row">
+    <button type="button" class="main" id="st-next">Étape suivante</button>
+    <button type="button" id="st-prev">Étape précédente</button>
+    <button type="button" class="ghost" id="st-reset">Recommencer</button>
+  </div>
+</section>
+
+<section id="pieges">
+  <h2>3. Les trois erreurs classiques</h2>
+  <div class="grid g3">
+    <div class="card">
+      <h3>① Le signe de l'exposant</h3>
+      <p>kilo, méga, giga : exposant <b>positif</b>. milli, micro, nano : exposant <b>négatif</b>.</p>
+      <p>Contrôle : une unité plus grande demande un nombre plus petit, et inversement.</p>
+    </div>
+    <div class="card">
+      <h3>② « m » : mètre ou milli ?</h3>
+      <p>Seul, <b>m</b> est le mètre. Devant une unité, c'est le préfixe milli : <b>mm</b> = milli + mètre, <b>mL</b> = milli + litre.</p>
+    </div>
+    <div class="card">
+      <h3>③ Décaler la virgule au hasard</h3>
+      <p>Pas de « je décale de 3 rangs, mais dans quel sens ? ». On <b>remplace</b> le préfixe par sa valeur, et on écrit : <b>250 mL = 250.10<sup>-3</sup> L</b>.</p>
+    </div>
+  </div>
+</section>
+
+<section id="echauffement">
+  <h2>4. Échauffement : connais-tu les préfixes ?</h2>
+  <div id="drill"></div>
+</section>
+
+<section id="niveau1">
+  <h2>5. Niveau 1 : du préfixe vers l'unité (kg → g)</h2>
+  <p>Remplace le préfixe par sa valeur, puis écris le résultat. Tu peux répondre avec une puissance de 10 (par exemple <b>3,2.10^3</b>) ou avec un nombre décimal.</p>
+  <details><summary>Afficher la table des préfixes</summary><div class="ptable-slot"></div></details>
+  <div id="ex-niv1" style="margin-top:.8rem"></div>
+</section>
+
+<section id="niveau2">
+  <h2>6. Niveau 2 : de l'unité vers le préfixe (m → km)</h2>
+  <p>Cette fois, c'est l'unité d'arrivée qui porte le préfixe. Écris d'abord la relation avec le préfixe remplacé, puis isole l'unité de départ.</p>
+  <details><summary>Afficher la table des préfixes</summary><div class="ptable-slot"></div></details>
+  <div id="ex-niv2" style="margin-top:.8rem"></div>
+</section>
+
+<section id="simulateur">
+  <h2>7. Simulateur : de préfixe à préfixe</h2>
+  <div class="card sim">
+    <p>Pour aller plus loin : la même méthode marche entre deux préfixes (par exemple cm → km). Choisis une valeur, un préfixe de départ et un préfixe d'arrivée.</p>
+    <div class="fields">
+      <div><label for="sm-x">Valeur</label><input type="text" id="sm-x" inputmode="decimal" value="4,5"></div>
+      <div><label for="sm-u">Unité (sans préfixe)</label><input type="text" id="sm-u" value="m"></div>
+      <div><label for="sm-from">Préfixe de départ</label><select id="sm-from"></select></div>
+      <div><label for="sm-to">Préfixe d'arrivée</label><select id="sm-to"></select></div>
+    </div>
+    <div class="row"><button type="button" class="main" id="sm-go">Convertir</button></div>
+    <div id="sm-out" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="essentiel">
+  <h2>À retenir</h2>
+  <div class="card">
+    <ol style="padding-left:1.3rem">
+      <li>Je repère le préfixe et je le <b>remplace par sa valeur</b> (k = 10<sup>3</sup>, m = 10<sup>-3</sup>…).</li>
+      <li><b>De « préfixe + unité » vers l'unité</b> : 3,2 kg = 3,2.10<sup>3</sup> g.</li>
+      <li><b>De l'unité vers « préfixe + unité »</b> : 1 km = 10<sup>3</sup> m, donc 1 m = 10<sup>-3</sup> km, donc 2500 m = 2500.10<sup>-3</sup> km.</li>
+      <li>Je vérifie : unité plus grande → nombre plus petit ; unité plus petite → nombre plus grand.</li>
+    </ol>
+  </div>
+</section>
+
+</main>
+<footer class="wrap">Goodies de seconde · Les conversions d'unités</footer>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- Outils ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const f = (x, d = 6) => (Math.round(x * 10 ** d) / 10 ** d).toLocaleString('fr-FR', { maximumFractionDigits: d });
+const pw = (x, e) => Number((x * Math.pow(10, e)).toPrecision(12));
+const close = (x, y) => Math.abs(x - y) <= 0.005 * Math.abs(y) + 1e-12;
+
+function sci(v) {
+  const [m, e] = v.toExponential(9).split('e');
+  return `${f(Number(m), 6)}.10<sup>${Number(e)}</sup>`;
+}
+function fmtVal(v) {
+  const a = Math.abs(v);
+  return (a >= 1e-3 && a < 1e7) ? f(v, 9) : sci(v);
+}
+/* x.10^n : parenthèses si x est déjà écrit en puissance de 10 */
+const mul = (xs, n) => (xs.includes('<sup>') ? `(${xs})` : xs) + `.10<sup>${n}</sup>`;
+
+const SUP = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '-' };
+function norm(s) {
+  return String(s).replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/g, m => '^' + [...m].map(c => SUP[c]).join('')).replace(/[−–]/g, '-');
+}
+function parseNum(s) {
+  const t = norm(s).trim().toLowerCase().replace(/[\s  ]/g, '').replace(/,/g, '.').replace(/[×*]/g, 'x');
+  if (!t) return NaN;
+  const m = t.match(/^(-?\d*\.?\d+)(?:x10\^?|\.10\^)\(?([+-]?\d+)\)?$/);
+  if (m) return Number(m[1]) * Math.pow(10, Number(m[2]));
+  return /^[+-]?\d*\.?\d+(e[+-]?\d+)?$/.test(t) ? Number(t) : NaN;
+}
+function parseExp(s) {
+  const t = norm(s).trim().replace(/\s/g, '').replace(/^10\^/, '');
+  return /^[+-]?\d+$/.test(t) ? parseInt(t, 10) : NaN;
+}
+
+/* ---------- Score ---------- */
+const solved = new Set();
+const markSolved = id => { solved.add(id); $('#score').textContent = solved.size; };
+
+/* ---------- Préfixes ---------- */
+const PFX = [
+  { s: 'G', n: 'giga', e: 9 }, { s: 'M', n: 'méga', e: 6 }, { s: 'k', n: 'kilo', e: 3 },
+  { s: 'h', n: 'hecto', e: 2 }, { s: 'da', n: 'déca', e: 1 },
+  { s: 'd', n: 'déci', e: -1 }, { s: 'c', n: 'centi', e: -2 }, { s: 'm', n: 'milli', e: -3 },
+  { s: 'µ', n: 'micro', e: -6 }, { s: 'n', n: 'nano', e: -9 }
+];
+const byS = s => PFX.find(p => p.s === s);
+
+function prefixTableHTML() {
+  return `<table class="ptable"><thead><tr><th scope="col">Préfixe</th><th scope="col">Symbole</th><th scope="col">Valeur</th><th scope="col">Exemple</th></tr></thead><tbody>` +
+    PFX.map(p => `<tr><td>${p.n}</td><td><b>${p.s}</b></td><td>10<sup>${p.e}</sup></td><td>1 ${p.s}m = 10<sup>${p.e}</sup> m</td></tr>`).join('') +
+    `</tbody></table>`;
+}
+
+/* ---------- Explorateur ---------- */
+let exploreP = 'k';
+function renderExplore() {
+  const u = $('#ex-unit').value, p = byS(exploreP);
+  $('#pstrip').innerHTML = PFX.map(q => `<button type="button" data-p="${q.s}" aria-pressed="${q.s === exploreP}">${q.s}<small>10<sup>${q.e}</sup></small></button>`).join('');
+  $('#explore').innerHTML = `<p class="eq big">1 ${p.s}${u} = 10<sup>${p.e}</sup> ${u}</p>
+    <p class="eq big">1 ${u} = 10<sup>${-p.e}</sup> ${p.s}${u}</p>
+    <p>Le préfixe <b>${p.n}</b> (${p.s}) vaut <b>10<sup>${p.e}</sup></b> : un ${p.s}${u} est <b>${p.e > 0 ? 'plus grand' : 'plus petit'}</b> qu'un ${u}.</p>`;
+}
+
+/* ---------- Méthode pas à pas ---------- */
+const STEPS = {
+  1: [
+    { t: 'Je repère le préfixe', h: () => `<p>Dans « 3,2 kg », l'unité de départ est le gramme (g), et le préfixe est <b>k</b> (kilo).</p><p class="eq">3,2 <span class="rep">k</span>g</p>` },
+    { t: 'Je remplace le préfixe par sa valeur', h: () => `<p>Dans la table : k = 10<sup>3</sup>. On <b>remplace la lettre k par .10<sup>3</sup></b>.</p><p class="eq big">3,2 <span class="rep">k</span>g = 3,2<span class="rep">.10<sup>3</sup></span> g</p>` },
+    { t: 'Je conclus', h: () => `<p class="eq">3,2 kg = 3,2.10<sup>3</sup> g = 3 200 g</p><p>Autre exemple, avec un préfixe « petit » : <span class="eq">250 mL = 250.10<sup>-3</sup> L</span> (m = 10<sup>-3</sup>).</p>` },
+    { t: 'Je vérifie', h: () => `<p>Le kilogramme est <b>plus grand</b> que le gramme : il faut donc <b>plus</b> de grammes que de kilogrammes. 3 200 est bien plus grand que 3,2. ✔</p>` }
+  ],
+  2: [
+    { t: 'J\'écris la relation avec le préfixe remplacé', h: () => `<p>On veut passer de m à km. Le préfixe est dans l'unité d'arrivée : <b>km</b>. Je le remplace par sa valeur (k = 10<sup>3</sup>) :</p><p class="eq big">1 <span class="rep">k</span>m = 1<span class="rep">.10<sup>3</sup></span> m</p>` },
+    { t: 'J\'isole 1 m', h: () => `<p>Je divise les deux côtés par 10<sup>3</sup> : l'exposant devient son <b>opposé</b>.</p><p class="eq big">1 m = 10<sup>-3</sup> km</p>` },
+    { t: 'Je multiplie par la valeur de départ', h: () => `<p class="eq">2500 m = 2500.10<sup>-3</sup> km = 2,5 km</p><p>Autre exemple : pour convertir 0,25 L en mL, j'écris 1 mL = 10<sup>-3</sup> L, donc 1 L = 10<sup>3</sup> mL, donc <span class="eq">0,25 L = 0,25.10<sup>3</sup> mL = 250 mL</span>.</p>` },
+    { t: 'Je vérifie', h: () => `<p>Le kilomètre est <b>plus grand</b> que le mètre : il faut donc <b>moins</b> de kilomètres que de mètres. 2,5 est bien plus petit que 2500. ✔</p>` }
+  ]
+};
+let cas = 1, stepIdx = 0;
+function renderSteps() {
+  const list = STEPS[cas];
+  $('#steps').innerHTML = list.map((s, i) => `<div class="card st${i <= stepIdx ? ' show' : ''}${i === stepIdx ? ' last' : ''}"><h3><span class="num">${i + 1}</span>${s.t}</h3>${s.h()}</div>`).join('');
+  $('#st-next').disabled = stepIdx >= list.length - 1;
+  $('#st-prev').disabled = stepIdx <= 0;
+  document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', String(Number(b.dataset.cas) === cas)));
+}
+
+/* ---------- Familles d'exercices ---------- */
+const FAM = [
+  { id: 'masse', titre: 'Masse', units: [{ u: 'g', p: ['k', 'm', 'µ'] }] },
+  { id: 'longueur', titre: 'Longueur', units: [{ u: 'm', p: ['k', 'c', 'm', 'µ', 'n'] }] },
+  { id: 'volume', titre: 'Volume', units: [{ u: 'L', p: ['m', 'c', 'd'] }] },
+  { id: 'duree', titre: 'Durée', units: [{ u: 's', p: ['m', 'µ', 'n'] }] },
+  { id: 'elec', titre: 'Électricité', units: [{ u: 'A', p: ['m', 'µ'] }, { u: 'V', p: ['m', 'k'] }, { u: 'Ω', p: ['k', 'M'] }] },
+  { id: 'autres', titre: 'Énergie, puissance, fréquence, matière', units: [{ u: 'J', p: ['k', 'M'] }, { u: 'W', p: ['m', 'k', 'M', 'G'] }, { u: 'Hz', p: ['k', 'M', 'G'] }, { u: 'mol', p: ['m'] }] }
+];
+const M1 = [0.5, 0.75, 1.2, 1.5, 2.5, 3.2, 4.8, 12, 25, 45, 120, 250, 750];
+const M2 = [0.5, 1.5, 2.5, 3.2, 4.5, 7.5, 12, 25, 45, 250];
+
+function newState(lvl, fam) {
+  const un = pick(fam.units);
+  const ps = lvl === 2 ? un.p.filter(s => s !== 'n') : un.p;
+  const p = byS(pick(ps)), e = p.e;
+  if (lvl === 1) {
+    const x = pick(M1);
+    return { lvl, fam, u: un.u, p, e, x, ans: pw(x, e) };
+  }
+  const A = pick(M2), x = pw(A, e);
+  return { lvl, fam, u: un.u, p, e, x, ans: A };
+}
+
+function stepsHTML(st) {
+  const { u, p, e, x } = st;
+  if (st.lvl === 1) {
+    const grand = e > 0;
+    return `<ol>
+      <li>Je repère le préfixe : <b>${p.s}</b> (${p.n}). L'unité de départ est « ${u} ».</li>
+      <li>Je remplace le préfixe par sa valeur : <b>${p.s} = 10<sup>${e}</sup></b>.
+        <p class="eq">${f(x)} <span class="rep">${p.s}</span>${u} = ${f(x)}<span class="rep">.10<sup>${e}</sup></span> ${u}</p></li>
+      <li>Je conclus : <b>${f(x)} ${p.s}${u} = ${f(x)}.10<sup>${e}</sup> ${u}</b>${Math.abs(e) <= 3 && e > 0 ? ` = ${fmtVal(st.ans)} ${u}` : ''}.</li>
+      <li>Je vérifie : un ${p.s}${u} est ${grand ? 'plus grand' : 'plus petit'} qu'un ${u}, donc le nombre doit être ${grand ? 'plus grand' : 'plus petit'} ✔</li>
+    </ol>`;
+  }
+  const xs = fmtVal(x), grand = e > 0;
+  return `<ol>
+    <li>J'écris la relation avec le préfixe remplacé : <span class="eq">1 <span class="rep">${p.s}</span>${u} = 1<span class="rep">.10<sup>${e}</sup></span> ${u}</span></li>
+    <li>J'isole 1 ${u} (exposant opposé) : <span class="eq">1 ${u} = 10<sup>${-e}</sup> ${p.s}${u}</span></li>
+    <li>Je multiplie : <span class="eq">${xs} ${u} = ${mul(xs, -e)} ${p.s}${u} = ${fmtVal(st.ans)} ${p.s}${u}</span></li>
+    <li>Je vérifie : un ${p.s}${u} est ${grand ? 'plus grand' : 'plus petit'} qu'un ${u}, donc le nombre doit être ${grand ? 'plus petit' : 'plus grand'} ✔</li>
+  </ol>`;
+}
+
+/* ---------- Carte d'exercice (niveaux 1 et 2) ---------- */
+function renderExercise(lvl, fam, host, index) {
+  const card = document.createElement('article');
+  card.className = 'card ex';
+  host.appendChild(card);
+  let st, tries = 0;
+
+  function build() {
+    st = newState(lvl, fam); tries = 0;
+    const { u, p, e, x } = st;
+    const enonce = lvl === 1
+      ? `Convertis <b>${f(x)} ${p.s}${u}</b> en <b>${u}</b>.`
+      : `Convertis <b>${fmtVal(x)} ${u}</b> en <b>${p.s}${u}</b>.`;
+    const fields = lvl === 1
+      ? `<div class="frow">① Je remplace le préfixe par sa valeur : <b>${p.s}</b> = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la valeur du préfixe" data-f="a"></div>
+         <div class="frow">② Je conclus : ${f(x)} ${p.s}${u} = <input class="sm" type="text" inputmode="decimal" autocomplete="off" aria-label="Résultat" placeholder="ex. 3,2.10^3" data-f="r"> <b>${u}</b></div>`
+      : `<div class="frow">① Je remplace le préfixe par sa valeur : 1 ${p.s}${u} = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la relation 1 ${p.s}${u}" data-f="a"> ${u}</div>
+         <div class="frow">② J'isole 1 ${u} : 1 ${u} = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la relation 1 ${u}" data-f="b"> ${p.s}${u}</div>
+         <div class="frow">③ Je conclus : ${fmtVal(x)} ${u} = <input class="sm" type="text" inputmode="decimal" autocomplete="off" aria-label="Résultat" data-f="r"> <b>${p.s}${u}</b></div>`;
+    card.classList.remove('done');
+    card.innerHTML = `
+      <span class="tag phys">${fam.titre}</span>
+      <h3>${index}. ${lvl === 1 ? `${p.s}${u} → ${u}` : `${u} → ${p.s}${u}`}</h3>
+      <p>${enonce}</p>
+      ${fields}
+      <div class="row">
+        <button type="button" class="main" data-act="check">Vérifier mon résultat</button>
+        <button type="button" data-act="hint">Indice</button>
+        <button type="button" data-act="method">Voir la méthode</button>
+        <button type="button" class="ghost" data-act="new">Nouvelles valeurs</button>
+      </div>
+      <div class="hint" role="note">${lvl === 1
+        ? 'Dans la table des préfixes, cherche la puissance de 10 associée à la lettre du préfixe, puis remplace la lettre par « .10^ » suivi de cet exposant.'
+        : 'Commence par écrire la relation avec le préfixe de l\'unité d\'arrivée (1 ' + p.s + u + ' = 10^… ' + u + '), puis isole 1 ' + u + ' : l\'exposant devient son opposé.'}</div>
+      <div class="fb" role="status" aria-live="polite"></div>
+      <div class="method">${stepsHTML(st)}</div>`;
+  }
+
+  const val = k => $(`[data-f="${k}"]`, card);
+
+  function check() {
+    const { u, p, e, x, ans } = st;
+    const a = parseExp(val('a').value), r = parseNum(val('r').value);
+    const b = lvl === 2 ? parseExp(val('b').value) : null;
+    const msgs = []; let ok = true;
+    const inv = e > 0 ? 'positif' : 'négatif';
+    const signMsg = `Attention au signe : « ${p.n} » a un exposant <b>${inv}</b>.`;
+    /* ① */
+    if (Number.isNaN(a)) { ok = false; msgs.push('① Écris l\'exposant : un nombre entier, avec son signe.'); }
+    else if (a !== e) { ok = false; msgs.push('① ✘ ' + (a === -e ? signMsg : `Regarde la table des préfixes : quelle puissance de 10 correspond à « ${p.s} » ?`)); }
+    else msgs.push(`① ✔ ${p.s} = 10<sup>${e}</sup>`);
+    /* ② (niveau 2 seulement) */
+    if (lvl === 2) {
+      if (Number.isNaN(b)) { ok = false; msgs.push('② Écris l\'exposant : un nombre entier, avec son signe.'); }
+      else if (b !== -e) { ok = false; msgs.push('② ✘ ' + (b === e ? `Pour isoler 1 ${u}, on passe à l'<b>opposé</b> : 10<sup>${e}</sup> devient 10<sup>${-e}</sup>.` : 'Pour isoler 1 ' + u + ', divise les deux côtés de la relation ① par la puissance de 10 : l\'exposant change de signe.')); }
+      else msgs.push(`② ✔ 1 ${u} = 10<sup>${-e}</sup> ${p.s}${u}`);
+    }
+    /* résultat */
+    const lab = lvl === 1 ? '②' : '③';
+    if (Number.isNaN(r)) { ok = false; msgs.push(`${lab} Écris le résultat sous forme d'un nombre (ou d'une puissance de 10).`); }
+    else if (!close(r, ans)) {
+      ok = false;
+      const wrong = lvl === 1 ? pw(x, -e) : pw(x, e);
+      let d;
+      if (close(r, wrong)) {
+        d = lvl === 1
+          ? `Tu as utilisé 10<sup>${-e}</sup> au lieu de 10<sup>${e}</sup> : on remplace le préfixe par sa valeur, pas par son inverse.`
+          : `Tu as converti dans le mauvais sens : un ${p.s}${u} est ${e > 0 ? 'plus grand' : 'plus petit'} qu'un ${u}, donc le nombre doit être ${e > 0 ? 'plus petit' : 'plus grand'}.`;
+      } else if (close(r, x * e) || close(r, x + e)) {
+        d = `10<sup>${e}</sup> ne veut pas dire « fois ${e} » : 10<sup>${e}</sup> = ${f(Math.pow(10, e), 9)}.`;
+      } else if ([10, 100, 1000, 0.1, 0.01, 0.001, 1e6, 1e-6].some(k => close(r / ans, k))) {
+        d = 'Il y a un décalage d\'une puissance de 10 : revérifie l\'exposant dans ton calcul.';
+      } else d = 'Ce n\'est pas la bonne valeur. Utilise l\'indice ou regarde la méthode.';
+      msgs.push(`${lab} ✘ ${d}`);
+    } else msgs.push(`${lab} ✔`);
+    const fb = $('.fb', card);
+    tries++;
+    if (ok) {
+      fb.className = 'fb ok';
+      fb.innerHTML = `✔ Bravo ! ${lvl === 1 ? `${f(x)} ${p.s}${u} = ${f(x)}.10<sup>${e}</sup> ${u}` : `${fmtVal(x)} ${u} = ${fmtVal(ans)} ${p.s}${u}`}.${tries === 1 ? ' Du premier coup !' : ''}`;
+      card.classList.add('done'); markSolved(`${lvl}-${fam.id}`);
+    } else {
+      fb.className = 'fb ko';
+      fb.innerHTML = msgs.join('<br>') + (tries >= 2 ? '<br>Besoin d\'aide ? Clique sur « Indice » ou « Voir la méthode ».' : '');
+    }
+  }
+
+  card.addEventListener('click', ev => {
+    const act = ev.target.closest('button')?.dataset.act;
+    if (!act) return;
+    if (act === 'new') build();
+    else if (act === 'hint') $('.hint', card).classList.toggle('show');
+    else if (act === 'method') $('.method', card).classList.toggle('show');
+    else if (act === 'check') check();
+  });
+  card.addEventListener('keydown', ev => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') check(); });
+  build();
+}
+
+/* ---------- Échauffement : valeur d'un préfixe ---------- */
+function renderDrill() {
+  const host = $('#drill');
+  const card = document.createElement('article');
+  card.className = 'card';
+  host.appendChild(card);
+  let p;
+  function build() {
+    let q; do { q = pick(PFX); } while (p && q.s === p.s && PFX.length > 1);
+    p = q;
+    card.classList.remove('done');
+    card.innerHTML = `<p>Complète : le préfixe <b class="big">${p.s}</b> vaut 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant du préfixe ${p.s}"></p>
+      <div class="row"><button type="button" class="main" data-act="check">Vérifier mon résultat</button><button type="button" class="ghost" data-act="new">Autre préfixe</button></div>
+      <div class="fb" role="status" aria-live="polite"></div>`;
+  }
+  function check() {
+    const v = parseExp($('input', card).value), fb = $('.fb', card);
+    if (Number.isNaN(v)) { fb.className = 'fb ko'; fb.textContent = 'Écris un nombre entier avec son signe, par exemple -3.'; return; }
+    if (v === p.e) { fb.className = 'fb ok'; fb.innerHTML = `✔ Oui : ${p.s} (${p.n}) = 10<sup>${p.e}</sup>.`; card.classList.add('done'); markSolved('drill'); }
+    else { fb.className = 'fb ko'; fb.innerHTML = '✘ ' + (v === -p.e ? `Attention au signe : « ${p.n} » a un exposant <b>${p.e > 0 ? 'positif' : 'négatif'}</b>.` : 'Regarde la table des préfixes plus haut.'); }
+  }
+  card.addEventListener('click', ev => {
+    const act = ev.target.closest('button')?.dataset.act;
+    if (act === 'new') build(); else if (act === 'check') check();
+  });
+  card.addEventListener('keydown', ev => { if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') check(); });
+  build();
+}
+
+/* ---------- Simulateur ---------- */
+function runSim() {
+  const x = parseNum($('#sm-x').value), u = $('#sm-u').value.trim() || 'm';
+  const a = Number($('#sm-from').value), b = Number($('#sm-to').value);
+  const sym = e => (e === 0 ? '' : PFX.find(p => p.e === e).s);
+  const out = $('#sm-out');
+  if (Number.isNaN(x)) { out.innerHTML = '<div class="fb ko">Entre une valeur numérique.</div>'; return; }
+  const fs = sym(a), ts = sym(b), xs = fmtVal(x);
+  const li = [];
+  if (a !== 0) li.push(`Je remplace le préfixe de départ : <span class="eq">${xs} ${fs}${u} = ${mul(xs, a)} ${u}</span>`);
+  if (b !== 0) li.push(`J'écris la relation d'arrivée : 1 ${ts}${u} = 10<sup>${b}</sup> ${u}, donc <span class="eq">1 ${u} = 10<sup>${-b}</sup> ${ts}${u}</span>`);
+  const res = pw(x, a - b);
+  const m1 = mul(xs, a - b), v1 = fmtVal(res);
+  li.push(`Je conclus : <span class="eq">${xs} ${fs}${u} = ${m1} ${ts}${u}${v1 !== m1 && !v1.includes('<sup>') ? ` = ${v1} ${ts}${u}` : ''}</span>`);
+  out.innerHTML = `<ol style="padding-left:1.3rem;margin-top:.6rem">${li.map(t => `<li>${t}</li>`).join('')}</ol>
+    <div class="fb ok">✔ ${xs} ${fs}${u} = <b>${fmtVal(res)} ${ts}${u}</b></div>`;
+}
+
+/* ---------- Initialisation ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  $('#total').textContent = FAM.length * 2 + 1;
+  $('#ptable').innerHTML = prefixTableHTML();
+  document.querySelectorAll('.ptable-slot').forEach(s => { s.innerHTML = prefixTableHTML(); });
+  renderExplore();
+  $('#pstrip').addEventListener('click', ev => { const b = ev.target.closest('button[data-p]'); if (b) { exploreP = b.dataset.p; renderExplore(); } });
+  $('#ex-unit').addEventListener('change', renderExplore);
+  renderSteps();
+  $('#st-next').addEventListener('click', () => { if (stepIdx < STEPS[cas].length - 1) { stepIdx++; renderSteps(); } });
+  $('#st-prev').addEventListener('click', () => { if (stepIdx > 0) { stepIdx--; renderSteps(); } });
+  $('#st-reset').addEventListener('click', () => { stepIdx = 0; renderSteps(); });
+  document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => { cas = Number(b.dataset.cas); stepIdx = 0; renderSteps(); }));
+  renderDrill();
+  FAM.forEach((fam, i) => renderExercise(1, fam, $('#ex-niv1'), i + 1));
+  FAM.forEach((fam, i) => renderExercise(2, fam, $('#ex-niv2'), i + 1));
+  const opt = [`<option value="0">aucun (unité seule)</option>`].concat(PFX.map(p => `<option value="${p.e}">${p.s} (${p.n}, 10^${p.e})</option>`)).join('');
+  $('#sm-from').innerHTML = opt; $('#sm-to').innerHTML = opt;
+  $('#sm-from').value = String(byS('c').e); $('#sm-to').value = String(byS('k').e);
+  $('#sm-go').addEventListener('click', runSim);
+});
+})();
+</script>
+</body>
+</html>
