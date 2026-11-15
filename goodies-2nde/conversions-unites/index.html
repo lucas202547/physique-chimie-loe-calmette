@@ -121,9 +121,11 @@ footer{margin:2.5rem 0 3rem;color:var(--muted);font-size:.9rem;text-align:center
 .pstrip button small{font-weight:400;color:var(--muted)}
 .pstrip button[aria-pressed=true]{background:var(--primary);color:#fff}
 .pstrip button[aria-pressed=true] small{color:#fff}
-.frow{margin:.55rem 0}
+.frow{margin:.55rem 0;line-height:2.3}
 input.sm{width:10.5rem}
 input.exp{width:4.2rem;text-align:center}
+sup.ebox{position:relative;top:-.7em;vertical-align:baseline;line-height:0;font-size:1em;margin-left:.1rem}
+sup.ebox input.exp{width:3.4rem;height:1.8rem;box-sizing:border-box;font-size:.85rem;line-height:1.2;padding:.1rem .25rem}
 select{font:inherit;padding:.4rem .6rem;border:1.5px solid #b9b19c;border-radius:10px;background:#fff}
 .tabs{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem}
 .tabs button[aria-selected=true]{background:var(--primary);color:#fff}
@@ -225,7 +227,7 @@ select{font:inherit;padding:.4rem .6rem;border:1.5px solid #b9b19c;border-radius
 
 <section id="niveau1">
   <h2>5. Niveau 1 : du préfixe vers l'unité (kg → g)</h2>
-  <p>Remplace le préfixe par sa valeur, puis écris le résultat. Tu peux répondre avec une puissance de 10 (par exemple <b>3,2.10^3</b>) ou avec un nombre décimal.</p>
+  <p>Remplace le préfixe par sa valeur, puis écris le résultat. Tu peux répondre avec une puissance de 10 (par exemple <b>3,2.10<sup>3</sup></b>) ou avec un nombre décimal.</p>
   <details><summary>Afficher la table des préfixes</summary><div class="ptable-slot"></div></details>
   <div id="ex-niv1" style="margin-top:.8rem"></div>
 </section>
@@ -316,6 +318,7 @@ const PFX = [
   { s: 'd', n: 'déci', e: -1 }, { s: 'c', n: 'centi', e: -2 }, { s: 'm', n: 'milli', e: -3 },
   { s: 'µ', n: 'micro', e: -6 }, { s: 'n', n: 'nano', e: -9 }
 ];
+const supU = n => String(n).replace(/-/g, '⁻').replace(/\d/g, d => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
 const byS = s => PFX.find(p => p.s === s);
 
 function prefixTableHTML() {
@@ -415,10 +418,10 @@ function renderExercise(lvl, fam, host, index) {
       ? `Convertis <b>${f(x)} ${p.s}${u}</b> en <b>${u}</b>.`
       : `Convertis <b>${fmtVal(x)} ${u}</b> en <b>${p.s}${u}</b>.`;
     const fields = lvl === 1
-      ? `<div class="frow">① Je remplace le préfixe par sa valeur : <b>${p.s}</b> = 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la valeur du préfixe" data-f="a"></div>
-         <div class="frow">② Je conclus : ${f(x)} ${p.s}${u} = <input class="sm" type="text" inputmode="decimal" autocomplete="off" aria-label="Résultat" placeholder="ex. 3,2.10^3" data-f="r"> <b>${u}</b></div>`
-      : `<div class="frow">① J'imagine l'inverse : ${xp} ${p.s}${u} = ${xp}.10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la conversion inverse" data-f="a"> ${u}</div>
-         <div class="frow">② Je prends l'opposé de la puissance de 10 : ${xp} ${u} = ${xp}.10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la conversion demandée" data-f="b"> ${p.s}${u}</div>`;
+      ? `<div class="frow">① Je remplace le préfixe par sa valeur : <b>${p.s}</b> = 10<sup class="ebox"><input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la valeur du préfixe" data-f="a"></sup></div>
+         <div class="frow">② Je conclus : ${f(x)} ${p.s}${u} = <input class="sm" type="text" inputmode="decimal" autocomplete="off" aria-label="Résultat" placeholder="ex. 3,2.10³" data-f="r"> <b>${u}</b></div>`
+      : `<div class="frow">① J'imagine l'inverse : ${xp} ${p.s}${u} = ${xp}.10<sup class="ebox"><input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la conversion inverse" data-f="a"></sup> ${u}</div>
+         <div class="frow">② Je prends l'opposé de la puissance de 10 : ${xp} ${u} = ${xp}.10<sup class="ebox"><input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant de la conversion demandée" data-f="b"></sup> ${p.s}${u}</div>`;
     card.classList.remove('done');
     card.innerHTML = `
       <span class="tag phys">${fam.titre}</span>
@@ -432,7 +435,7 @@ function renderExercise(lvl, fam, host, index) {
         <button type="button" class="ghost" data-act="new">Nouvelles valeurs</button>
       </div>
       <div class="hint" role="note">${lvl === 1
-        ? 'Dans la table des préfixes, cherche la puissance de 10 associée à la lettre du préfixe, puis remplace la lettre par « .10^ » suivi de cet exposant.'
+        ? 'Dans la table des préfixes, cherche la puissance de 10 associée à la lettre du préfixe, puis remplace la lettre par « .10 » suivi de cet exposant, écrit en petit en haut.'
         : 'Imagine la conversion inverse, de ' + p.s + u + ' vers ' + u + ' : cherche dans la table la puissance de 10 associée à « ' + p.s + ' » et remplace la lettre par sa valeur. Ensuite, prends l\'opposé de cet exposant.'}</div>
       <div class="fb" role="status" aria-live="polite"></div>
       <div class="method">${stepsHTML(st)}</div>`;
@@ -506,7 +509,7 @@ function renderDrill() {
     let q; do { q = pick(PFX); } while (p && q.s === p.s && PFX.length > 1);
     p = q;
     card.classList.remove('done');
-    card.innerHTML = `<p>Complète : le préfixe <b class="big">${p.s}</b> vaut 10<span aria-hidden="true">^</span> <input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant du préfixe ${p.s}"></p>
+    card.innerHTML = `<p>Complète : le préfixe <b class="big">${p.s}</b> vaut 10<sup class="ebox"><input class="exp" type="text" inputmode="numeric" autocomplete="off" aria-label="Exposant du préfixe ${p.s}"></sup></p>
       <div class="row"><button type="button" class="main" data-act="check">Vérifier mon résultat</button><button type="button" class="ghost" data-act="new">Autre préfixe</button></div>
       <div class="fb" role="status" aria-live="polite"></div>`;
   }
@@ -559,7 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
   FAM.forEach((fam, i) => renderExercise(1, fam, $('#ex-niv1'), i + 1));
   /* niveau 2 : la famille « Masse » (exemple 1) passe en dernier */
   [...FAM.slice(1), FAM[0]].forEach((fam, i) => renderExercise(2, fam, $('#ex-niv2'), i + 1));
-  const opt = [`<option value="0">aucun (unité seule)</option>`].concat(PFX.map(p => `<option value="${p.e}">${p.s} (${p.n}, 10^${p.e})</option>`)).join('');
+  const opt = [`<option value="0">aucun (unité seule)</option>`].concat(PFX.map(p => `<option value="${p.e}">${p.s} (${p.n}, 10${supU(p.e)})</option>`)).join('');
   $('#sm-from').innerHTML = opt; $('#sm-to').innerHTML = opt;
   $('#sm-from').value = String(byS('c').e); $('#sm-to').value = String(byS('k').e);
   $('#sm-go').addEventListener('click', runSim);
