@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Goodies de seconde : comprendre et appliquer la règle de trois (proportionnalité) avec des exemples du quotidien et de physique-chimie.">
+<title>La règle de trois — Goodies de seconde</title>
+<style>
+:root{
+  --bg:#f6f3ec; --ink:#1d2733; --muted:#5d6b7a; --card:#ffffff; --line:#ddd6c6;
+  --primary:#0f5e66; --primary-d:#0a4a51; --primary-l:#dff1f3;
+  --accent:#e07a1f; --accent-l:#fff1dd;
+  --ok:#1f7a45; --ok-l:#e6f4ec; --bad:#b3261e; --bad-l:#fbeae8;
+  --radius:14px; --shadow:0 2px 10px rgba(29,39,51,.08);
+  --font:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --font-h:Georgia,"Times New Roman",serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;font-size:1.0625rem}
+.wrap{max-width:900px;margin-inline:auto;padding-inline:1.1rem}
+h1,h2,h3{font-family:var(--font-h);line-height:1.25}
+h2{font-size:1.65rem;color:var(--primary-d);margin-bottom:.6rem}
+h3{font-size:1.2rem;margin-bottom:.4rem}
+p{margin-bottom:.7rem}
+sup{font-size:.7em}
+
+/* En-tête */
+.top{background:var(--primary);color:#fff;padding:2rem 0 1.6rem}
+.crumb{font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;opacity:.85;margin-bottom:.3rem}
+.top h1{font-size:2.3rem;margin-bottom:.4rem}
+.lead{max-width:60ch;opacity:.95}
+.score{display:inline-block;margin-top:.8rem;background:rgba(255,255,255,.16);padding:.3rem .8rem;border-radius:999px;font-size:.95rem}
+
+/* Navigation */
+nav.menu{position:sticky;top:0;z-index:10;background:#fff;border-bottom:1px solid var(--line)}
+nav.menu ul{list-style:none;display:flex;gap:.2rem;overflow-x:auto;padding:.35rem 1.1rem;max-width:900px;margin-inline:auto}
+nav.menu a{display:block;white-space:nowrap;padding:.35rem .8rem;border-radius:999px;color:var(--primary-d);text-decoration:none;font-size:.95rem;font-weight:600}
+nav.menu a:hover,nav.menu a:focus-visible{background:var(--primary-l)}
+
+section{padding:2rem 0 .6rem;scroll-margin-top:3rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.1rem 1.2rem;margin-bottom:1.1rem}
+.grid{display:grid;gap:1rem;grid-template-columns:1fr}
+@media(min-width:768px){.grid.g3{grid-template-columns:repeat(3,1fr)}.grid.g2{grid-template-columns:repeat(2,1fr)}}
+.tag{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:.1rem .6rem;border-radius:999px;margin-bottom:.4rem}
+.tag.daily{background:var(--accent-l);color:#9a4d07}
+.tag.phys{background:var(--primary-l);color:var(--primary-d)}
+.note{background:var(--accent-l);border-left:4px solid var(--accent);padding:.6rem .9rem;border-radius:6px;margin:.7rem 0}
+.note.blue{background:var(--primary-l);border-color:var(--primary)}
+
+/* Tableaux de proportionnalité */
+table.prop{border-collapse:separate;border-spacing:6px;margin:.6rem 0 .9rem;max-width:100%}
+table.prop th{text-align:left;font-weight:600;padding:.5rem .8rem;background:#f1ede2;border-radius:8px;min-width:8rem}
+table.prop td{text-align:center;padding:.5rem 1rem;min-width:5.5rem;border:1px solid var(--line);border-radius:8px;font-variant-numeric:tabular-nums;background:#fff}
+table.prop td.q{border:2px dashed var(--accent);font-weight:700;color:#9a4d07;background:var(--accent-l)}
+table.prop td.pr{background:var(--accent-l);outline:2px solid var(--accent)}
+table.prop td.dv{background:var(--primary-l);outline:2px solid var(--primary)}
+.legend{font-size:.9rem;color:var(--muted)}
+.legend b.o{color:#9a4d07}.legend b.b{color:var(--primary-d)}
+
+/* Boutons et champs */
+button{font:inherit;cursor:pointer;border-radius:10px;border:1.5px solid var(--primary);background:#fff;color:var(--primary-d);padding:.45rem .95rem;font-weight:600}
+button:hover{background:var(--primary-l)}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button.main{background:var(--primary);color:#fff}
+button.main:hover{background:var(--primary-d)}
+button.ghost{border-color:var(--line);color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0}
+input[type=text],input[type=number]{font:inherit;padding:.45rem .7rem;border:1.5px solid #b9b19c;border-radius:10px;width:9rem;background:#fff}
+.unit{font-weight:600}
+.fb{margin-top:.6rem;padding:.6rem .9rem;border-radius:10px;display:none}
+.fb.ok{display:block;background:var(--ok-l);border-left:4px solid var(--ok);color:#124d2b}
+.fb.ko{display:block;background:var(--bad-l);border-left:4px solid var(--bad);color:#7d1a14}
+.hint{display:none;margin-top:.5rem;padding:.5rem .8rem;background:#eef2f6;border-radius:8px;font-size:.97rem}
+.hint.show{display:block}
+.method{display:none;margin-top:.7rem;border-top:1px dashed var(--line);padding-top:.7rem}
+.method.show{display:block}
+.method ol{padding-left:1.3rem}
+.method li{margin-bottom:.4rem}
+.done{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok-l)}
+
+/* Démo, pas à pas */
+.demo svg{width:100%;max-width:420px;height:auto;display:block}
+.demo .ax{stroke:#9aa3ad;stroke-width:1}
+.demo text{font-size:11px;fill:#5d6b7a}
+.demo .ln{stroke:var(--primary);stroke-width:2}
+.demo .pt{fill:var(--primary)}
+.demo .sel{fill:var(--accent);stroke:#fff;stroke-width:2}
+.demo .gd{stroke:var(--accent);stroke-dasharray:4 3}
+input[type=range]{width:100%;max-width:420px;accent-color:var(--primary)}
+.steps .st{display:none;margin-bottom:.8rem}
+.steps .st.show{display:block;animation:in .25s ease}
+.steps .st.last{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-l)}
+.steps .num{display:inline-grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--primary);color:#fff;font-weight:700;font-size:.95rem;margin-right:.4rem}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+details{margin-top:.6rem}
+summary{cursor:pointer;font-weight:600;color:var(--primary-d)}
+.eq{font-family:Cambria,"Cambria Math",Georgia,serif;font-size:1.1rem;background:#f4f1e8;padding:.3rem .7rem;border-radius:8px;display:inline-block;margin:.2rem 0}
+.bad{color:var(--bad);font-weight:600}.good{color:var(--ok);font-weight:600}
+.quiz label{display:block;padding:.35rem .6rem;border:1.5px solid var(--line);border-radius:10px;margin:.3rem 0;cursor:pointer}
+.quiz label:hover{background:var(--primary-l)}
+.quiz input{margin-right:.5rem;accent-color:var(--primary)}
+.sim .fields{display:grid;gap:.6rem;grid-template-columns:1fr 1fr}
+.sim label{display:block;font-size:.9rem;color:var(--muted)}
+.sim input{width:100%}
+footer{margin:2.5rem 0 3rem;color:var(--muted);font-size:.9rem;text-align:center}
+
+@media print{
+  body{background:#fff;color:#000}.top{background:#fff;color:#000;border-bottom:2px solid #000}
+  nav.menu,button,.hint,.score{display:none!important}
+  .card{box-shadow:none;border:1px solid #000;break-inside:avoid}
+  .tag,.note,table.prop td.q{background:#fff!important;color:#000!important}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="crumb">Goodies · Classe de seconde</p>
+    <h1>La règle de trois</h1>
+    <p class="lead">Comprendre la proportionnalité, maîtriser la méthode et s'entraîner : au marché, en cuisine… et en physique-chimie.</p>
+    <p class="score" aria-live="polite">Exercices réussis : <b id="score">0</b> / <span id="total">0</span></p>
+  </div>
+</header>
+
+<nav class="menu" aria-label="Sections">
+  <ul>
+    <li><a href="#comprendre">Comprendre</a></li>
+    <li><a href="#methode">La méthode</a></li>
+    <li><a href="#pieges">Pièges</a></li>
+    <li><a href="#quotidien">Vie quotidienne</a></li>
+    <li><a href="#physique">Physique-chimie</a></li>
+    <li><a href="#proportionnel">Proportionnel ?</a></li>
+    <li><a href="#simulateur">Simulateur</a></li>
+  </ul>
+</nav>
+
+<main class="wrap">
+
+<!-- ========== COMPRENDRE ========== -->
+<section id="comprendre">
+  <h2>1. Comprendre la proportionnalité</h2>
+  <div class="card demo">
+    <p>Deux grandeurs sont <b>proportionnelles</b> quand on passe de l'une à l'autre en <b>multipliant toujours par le même nombre</b> : le <b>coefficient de proportionnalité</b>.</p>
+    <p>Exemple : des pommes à <b>2,40 € le kilogramme</b>. Déplace le curseur pour changer la masse achetée.</p>
+    <label for="kg" class="row"><b>Masse achetée : <span id="kg-val">3</span> kg</b></label>
+    <input type="range" id="kg" min="0" max="10" step="1" value="3" aria-describedby="demo-res">
+    <p id="demo-res" aria-live="polite" style="margin-top:.6rem"></p>
+    <div id="graph"></div>
+    <div class="note blue">
+      <b>Ce qu'il faut remarquer.</b> (1) Si la masse est multipliée par 2, le prix aussi. (2) Pour 0 kg, on paie 0 €. (3) Les points sont <b>alignés avec l'origine</b> du graphique. (4) Le rapport « prix ÷ masse » est toujours le même : c'est le coefficient <b>k = 2,40 €/kg</b>.
+    </div>
+  </div>
+  <div class="card">
+    <h3>La règle de trois, c'est quoi ?</h3>
+    <p>Quand on connaît <b>trois valeurs</b> d'une situation de proportionnalité, on peut trouver la <b>quatrième</b>. D'où le nom !</p>
+    <p class="eq">3 kg → 7,50 € &nbsp;;&nbsp; 8 kg → ?</p>
+  </div>
+</section>
+
+<!-- ========== METHODE ========== -->
+<section id="methode">
+  <h2>2. La méthode pas à pas</h2>
+  <p>Exemple fil rouge : <b>3 kg de pommes coûtent 7,50 €. Combien coûtent 8 kg de pommes ?</b></p>
+  <div class="steps" id="steps"></div>
+  <div class="row">
+    <button type="button" class="main" id="st-next">Étape suivante</button>
+    <button type="button" id="st-prev">Étape précédente</button>
+    <button type="button" class="ghost" id="st-reset">Recommencer</button>
+  </div>
+  <details class="card">
+    <summary>Une autre méthode : le « retour à l'unité »</summary>
+    <p style="margin-top:.6rem">On cherche d'abord ce que vaut <b>1 kg</b> :</p>
+    <p class="eq">1 kg coûte 7,50 ÷ 3 = 2,50 €</p>
+    <p>Puis on multiplie par la quantité voulue :</p>
+    <p class="eq">8 kg coûtent 8 × 2,50 = 20 €</p>
+    <p>Le nombre 2,50 est le <b>coefficient de proportionnalité</b>. C'est exactement le même calcul que le produit en croix (7,5 × 8 ÷ 3), fait en deux temps.</p>
+  </details>
+</section>
+
+<!-- ========== PIEGES ========== -->
+<section id="pieges">
+  <h2>3. Les trois erreurs classiques</h2>
+  <div class="grid g3">
+    <div class="card">
+      <h3>① Additionner</h3>
+      <p>« 8 kg, c'est 5 kg de plus que 3 kg, donc je rajoute 5 € : 12,50 € »</p>
+      <p><span class="bad">Faux.</span> On ajoute des kilogrammes, pas des euros ! La proportionnalité fonctionne par <b>multiplication</b> : 20 €.</p>
+    </div>
+    <div class="card">
+      <h3>② Diviser par le mauvais nombre</h3>
+      <p>On <b>divise</b> par le nombre qui est <b>en diagonale avec le « ? »</b>, et on <b>multiplie</b> les deux autres.</p>
+      <p>Astuce : le résultat doit être plus grand si la quantité augmente. Sinon, il y a une erreur.</p>
+    </div>
+    <div class="card">
+      <h3>③ Oublier les unités</h3>
+      <p>Les valeurs d'une même grandeur doivent être dans la <b>même unité</b> avant de calculer.</p>
+      <p>250 mL = 250.10<sup>-3</sup> L &nbsp;;&nbsp; 1,5 kg = 1,5.10<sup>3</sup> g</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== EXERCICES ========== -->
+<section id="quotidien">
+  <h2>4. S'entraîner : vie de tous les jours</h2>
+  <p>Complète le tableau dans ta tête (ou sur ton brouillon), calcule, puis clique sur <b>Vérifier mon résultat</b>. Le bouton <b>Nouvelles valeurs</b> te donne un autre exercice du même type.</p>
+  <div id="ex-quotidien"></div>
+</section>
+
+<section id="physique">
+  <h2>5. S'entraîner : physique-chimie</h2>
+  <p>Les mêmes outils, appliqués à la masse volumique, aux solutions, à la quantité de matière… Fais attention aux unités !</p>
+  <div id="ex-phys"></div>
+</section>
+
+<section id="proportionnel">
+  <h2>6. Est-ce vraiment proportionnel ?</h2>
+  <p>Avant d'appliquer la règle de trois, il faut s'assurer que la situation est bien proportionnelle. <b>Test rapide :</b> pour 0 on doit obtenir 0, et si on double une grandeur, l'autre doit doubler.</p>
+  <div id="quiz"></div>
+</section>
+
+<section id="simulateur">
+  <h2>7. Simulateur : teste ta propre situation</h2>
+  <div class="card sim">
+    <p>Remplis <b>trois cases sur quatre</b> et laisse vide la case à trouver.</p>
+    <div class="fields">
+      <div><label for="sn-a">Nom de la grandeur A</label><input type="text" id="sn-a" value="Grandeur A"></div>
+      <div><label for="sn-b">Nom de la grandeur B</label><input type="text" id="sn-b" value="Grandeur B"></div>
+      <div><label for="s-a">A, cas 1</label><input type="text" id="s-a" inputmode="decimal"></div>
+      <div><label for="s-c">A, cas 2</label><input type="text" id="s-c" inputmode="decimal"></div>
+      <div><label for="s-b">B, cas 1</label><input type="text" id="s-b" inputmode="decimal"></div>
+      <div><label for="s-d">B, cas 2</label><input type="text" id="s-d" inputmode="decimal"></div>
+    </div>
+    <div class="row"><button type="button" class="main" id="sim-go">Résoudre</button><button type="button" class="ghost" id="sim-clear">Effacer</button></div>
+    <div id="sim-out" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="essentiel">
+  <h2>À retenir</h2>
+  <div class="card">
+    <ol style="padding-left:1.3rem">
+      <li>Je vérifie que la situation est <b>proportionnelle</b> (0 → 0 ; doubler → doubler).</li>
+      <li>Je range les données dans un <b>tableau</b>, avec les mêmes unités dans une même ligne.</li>
+      <li>Je multiplie les deux nombres de la diagonale sans le « ? » et je <b>divise</b> par le dernier.</li>
+      <li>Je <b>vérifie</b> : unité, ordre de grandeur, coefficient identique dans les deux colonnes.</li>
+    </ol>
+  </div>
+</section>
+
+</main>
+<footer class="wrap">Goodies de seconde · La règle de trois</footer>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- Outils ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const r6 = x => Math.round(x * 1e6) / 1e6;
+const f = (x, d = 3) => r6(x).toLocaleString('fr-FR', { maximumFractionDigits: d });
+const close = (x, y) => Math.abs(x - y) <= 0.005 * Math.abs(y) + 1e-9;
+
+function parseNum(s) {
+  let t = String(s).trim().toLowerCase().replace(/[\s  ]/g, '').replace(/,/g, '.').replace(/[×*]/g, 'x');
+  if (!t) return NaN;
+  const m = t.match(/^(-?\d*\.?\d+)(?:x10\^?|\.10\^)\(?(-?\d+)\)?$/);
+  if (m) return Number(m[1]) * Math.pow(10, Number(m[2]));
+  return /^-?\d*\.?\d+(e-?\d+)?$/.test(t) ? Number(t) : NaN;
+}
+
+/* ---------- Score ---------- */
+const solved = new Set();
+function markSolved(id) { solved.add(id); $('#score').textContent = solved.size; }
+
+/* ---------- Tableau de proportionnalité ---------- */
+function propTable(labA, labB, a1, b1, a2, b2, cls = {}) {
+  const c = k => (cls[k] ? ' ' + cls[k] : '');
+  const cell = (k, v) => `<td data-pos="${k}" class="${(v === '?' ? 'q' : '') + c(k)}">${v}</td>`;
+  return `<table class="prop"><tbody>
+    <tr><th scope="row">${labA}</th>${cell('a1', a1)}${cell('a2', a2)}</tr>
+    <tr><th scope="row">${labB}</th>${cell('b1', b1)}${cell('b2', b2)}</tr>
+  </tbody></table>`;
+}
+
+/* ---------- Scénarios d'exercices ---------- */
+const LIQ = [
+  { de: "d'éthanol", b: 790 }, { de: "d'huile d'olive", b: 920 },
+  { de: "d'eau salée", b: 1060 }, { de: 'de lait', b: 1030 }
+];
+const SOL = ['le chlorure de sodium', 'le saccharose', 'le sulfate de cuivre'];
+const MOL = [
+  { n: "l'eau", F: 'H₂O', M: 18 }, { n: 'le dioxyde de carbone', F: 'CO₂', M: 44 },
+  { n: 'le glucose', F: 'C₆H₁₂O₆', M: 180 }, { n: "l'éthanol", F: 'C₂H₆O', M: 46 },
+  { n: 'le chlorure de sodium', F: 'NaCl', M: 58.5 }
+];
+const REAC = [
+  { eq: 'CH₄ + 2 O₂ → CO₂ + 2 H₂O', A: 'CH₄', B: 'O₂', a: 1, b: 2 },
+  { eq: '2 H₂ + O₂ → 2 H₂O', A: 'O₂', B: 'H₂O', a: 1, b: 2 },
+  { eq: 'C₃H₈ + 5 O₂ → 3 CO₂ + 4 H₂O', A: 'C₃H₈', B: 'O₂', a: 1, b: 5 },
+  { eq: '4 Fe + 3 O₂ → 2 Fe₂O₃', A: 'Fe', B: 'Fe₂O₃', a: 4, b: 2 }
+];
+
+const SCENARIOS = [
+  /* ----- Vie quotidienne ----- */
+  { id: 'pommes', cat: 'daily', titre: 'Au marché', labA: 'Masse de pommes (kg)', labB: 'Prix (€)', uA: 'kg', uB: '€',
+    gen() { const r = pick([1.8, 2.4, 2.5, 3.2, 3.6]), a = pick([2, 3, 4, 5]); let c = pick([6, 7, 8, 9, 10, 12]); if (c === a) c++;
+      return { a, b: r6(a * r), c, d: r6(c * r) }; },
+    qAB: g => `${f(g.a)} kg de pommes coûtent ${f(g.b)} €. Combien coûtent ${f(g.c)} kg de pommes ?`,
+    qBA: g => `${f(g.a)} kg de pommes coûtent ${f(g.b)} €. Avec ${f(g.d)} €, quelle masse de pommes peut-on acheter ?` },
+
+  { id: 'farine', cat: 'daily', titre: 'En cuisine', labA: 'Nombre de personnes', labB: 'Farine (g)', uA: 'personnes', uB: 'g',
+    gen() { const r = pick([50, 62.5, 75, 87.5]), a = pick([4, 6, 8]); let c = pick([3, 5, 9, 10, 12, 15]); if (c === a) c++;
+      return { a, b: r6(a * r), c, d: r6(c * r) }; },
+    qAB: g => `Une recette pour ${f(g.a)} personnes demande ${f(g.b)} g de farine. Quelle masse de farine faut-il pour ${f(g.c)} personnes ?`,
+    qBA: g => `Une recette pour ${f(g.a)} personnes demande ${f(g.b)} g de farine. Avec ${f(g.d)} g de farine, pour combien de personnes peut-on faire la recette ?` },
+
+  { id: 'carburant', cat: 'daily', titre: 'En voiture', labA: 'Distance (km)', labB: 'Carburant (L)', uA: 'km', uB: 'L',
+    gen() { const p = pick([5, 6, 6.5, 7.5]), c = pick([60, 80, 150, 250, 320, 420, 450]);
+      return { a: 100, b: p, c, d: r6(c * p / 100) }; },
+    qAB: g => `Une voiture consomme ${f(g.b)} L de carburant pour ${f(g.a)} km. Quelle quantité de carburant consomme-t-elle pour un trajet de ${f(g.c)} km ?`,
+    qBA: g => `Une voiture consomme ${f(g.b)} L de carburant pour ${f(g.a)} km. Avec ${f(g.d)} L, quelle distance peut-elle parcourir ?` },
+
+  { id: 'job', cat: 'daily', titre: "Job d'été", labA: 'Durée de travail (h)', labB: 'Salaire (€)', uA: 'h', uB: '€',
+    gen() { const r = pick([11.5, 12, 12.5, 13]), a = pick([6, 8, 10, 12, 15]); let c = pick([4, 5, 7, 9, 14, 20, 25]); if (c === a) c++;
+      return { a, b: r6(a * r), c, d: r6(c * r) }; },
+    qAB: g => `Pour un job d'été, ${f(g.a)} h de travail sont payées ${f(g.b)} €. Combien gagne-t-on en ${f(g.c)} h ?`,
+    qBA: g => `Pour un job d'été, ${f(g.a)} h de travail sont payées ${f(g.b)} €. Combien d'heures faut-il travailler pour gagner ${f(g.d)} € ?` },
+
+  /* ----- Physique-chimie ----- */
+  { id: 'orage', cat: 'phys', titre: 'Un orage', labA: 'Durée (s)', labB: 'Distance parcourue par le son (m)', uA: 's', uB: 'm',
+    gen() { return { a: 1, b: 340, c: pick([2, 3, 4, 5, 6, 8, 10]) , get d() { return 340 * this.c; } }; },
+    qAB: g => `Le son se propage dans l'air à 340 m/s : en 1 s, il parcourt 340 m. Tu entends le tonnerre ${f(g.c)} s après avoir vu l'éclair (on néglige la durée de propagation de la lumière). À quelle distance (en m) a lieu l'éclair ?`,
+    qBA: g => `Le son se propage dans l'air à 340 m/s : en 1 s, il parcourt 340 m. Un éclair tombe à ${f(g.d)} m. Au bout de combien de secondes entend-on le tonnerre ?`, pBA: .3 },
+
+  { id: 'masse-vol', cat: 'phys', titre: "Masse d'un liquide", labA: 'Volume', labB: 'Masse (g)', uA: 'L', uB: 'g',
+    gen() { const l = pick(LIQ), mL = pick([20, 100, 150, 250, 500, 750]), c = mL / 1000;
+      return { a: 1, b: l.b, c, d: r6(l.b * c), liq: l.de, mL, show: { a: '1 L', c: `${f(mL)} mL` },
+        vDisp: `${f(mL)}.10<sup>-3</sup>`, conv: `${f(mL)} mL = ${f(mL)}.10<sup>-3</sup> L` }; },
+    qAB: g => `1 L ${g.liq} a une masse de ${f(g.b)} g. Quelle est la masse de ${f(g.mL)} mL de ce liquide ?`, answerUnit: 'g' },
+
+  { id: 'dissolution', cat: 'phys', titre: 'Au labo : dissolution', labA: 'Volume de solution (mL)', labB: 'Masse dissoute (g)', uA: 'mL', uB: 'g',
+    gen() { const b = pick([2, 3.5, 5, 7.5]), c = pick([50, 150, 200, 250, 500, 750]);
+      return { a: 100, b, c, d: r6(c * b / 100), sol: pick(SOL) }; },
+    qAB: g => `Pour préparer ${f(g.a)} mL de solution, on dissout ${f(g.b)} g de ${g.sol}. Quelle masse de ${g.sol} faut-il dissoudre pour préparer ${f(g.c)} mL de solution de même concentration ?`,
+    qBA: g => `Pour préparer ${f(g.a)} mL de solution, on dissout ${f(g.b)} g de ${g.sol}. On dispose de ${f(g.d)} g de ${g.sol} : quel volume de solution de même concentration peut-on préparer ?` },
+
+  { id: 'mole', cat: 'phys', titre: 'Quantité de matière', labA: 'Quantité de matière (mol)', labB: 'Masse (g)', uA: 'mol', uB: 'g', pBA: .6,
+    gen() { const m = pick(MOL), c = pick([0.5, 1.5, 2, 3, 4, 5]); return { a: 1, b: m.M, c, d: r6(m.M * c), m }; },
+    qAB: g => `La masse molaire de ${g.m.n} (${g.m.F}) est M = ${f(g.m.M)} g/mol : une mole de cette espèce a une masse de ${f(g.m.M)} g. Quelle est la masse de ${f(g.c)} mol ?`,
+    qBA: g => `La masse molaire de ${g.m.n} (${g.m.F}) est M = ${f(g.m.M)} g/mol : une mole de cette espèce a une masse de ${f(g.m.M)} g. Quelle quantité de matière (en mol) y a-t-il dans ${f(g.d)} g ?` },
+
+  { id: 'stoechio', cat: 'phys', titre: 'Bilan de matière', labA: 'Quantité de A (mol)', labB: 'Quantité de B (mol)', uA: 'mol', uB: 'mol',
+    gen() { const r = pick(REAC); let c = pick([0.2, 0.4, 0.5, 1.5, 2, 3]); if (c === r.a) c = 2.5;
+      return { a: r.a, b: r.b, c, d: r6(r.b * c / r.a), r }; },
+    qAB: g => `Équation de la réaction : ${g.r.eq}. D'après les coefficients, quand ${f(g.a)} mol de ${g.r.A} réagit, ${f(g.b)} mol de ${g.r.B} sont mises en jeu. Pour ${f(g.c)} mol de ${g.r.A}, quelle quantité de ${g.r.B} est mise en jeu ?`,
+    qBA: g => `Équation de la réaction : ${g.r.eq}. D'après les coefficients, quand ${f(g.a)} mol de ${g.r.A} réagit, ${f(g.b)} mol de ${g.r.B} sont mises en jeu. Pour ${f(g.d)} mol de ${g.r.B}, quelle quantité de ${g.r.A} est concernée ?`,
+    labels: g => ({ A: `Quantité de ${g.r.A} (mol)`, B: `Quantité de ${g.r.B} (mol)` }) }
+];
+
+/* ---------- État d'un exercice ---------- */
+function newState(sc) {
+  const g = sc.gen();
+  const ba = !!sc.qBA && Math.random() < (sc.pBA ?? 0.3);
+  const st = { g, ba, a: g.a, b: g.b, target: ba ? 'A' : 'B', v: ba ? g.d : g.c, ans: ba ? g.c : g.d, tries: 0 };
+  st.text = ba ? sc.qBA(g) : sc.qAB(g);
+  st.show = g.show || {};
+  const lab = sc.labels ? sc.labels(g) : null;
+  st.labA = lab ? lab.A : sc.labA; st.labB = lab ? lab.B : sc.labB;
+  st.unit = ba ? sc.uA : sc.uB;
+  return st;
+}
+
+function stepsHTML(st) {
+  const { a, b, v, ans, target, g } = st;
+  const vd = g.vDisp || f(v), cd = g.vDisp || f(g.c);
+  const eq = target === 'B'
+    ? `${f(a)} × ? = ${f(b)} × ${vd}`
+    : `? × ${f(b)} = ${f(a)} × ${vd}`;
+  const calc = target === 'B'
+    ? `? = (${f(b)} × ${vd}) ÷ ${f(a)} = ${f(r6(b * v))} ÷ ${f(a)} = ${f(ans)}`
+    : `? = (${f(a)} × ${vd}) ÷ ${f(b)} = ${f(r6(a * v))} ÷ ${f(b)} = ${f(ans)}`;
+  const ref = target === 'B' ? a : b, known = target === 'B' ? b : a;
+  const cmp = v > ref ? 'supérieure' : 'inférieure', cmpR = v > ref ? 'supérieur' : 'inférieur';
+  return `<ol>
+    <li>Je repère les deux grandeurs proportionnelles : <b>${st.labA}</b> et <b>${st.labB}</b>.</li>
+    ${g.conv ? `<li>Je mets les volumes dans la même unité : <span class="eq">${g.conv}</span></li>` : ''}
+    <li>Je range les données dans le tableau ci-dessus. Les nombres <b style="color:#9a4d07">orange</b> sont à multiplier, le nombre <b style="color:var(--primary-d)">bleu</b> est celui par lequel on divise.</li>
+    <li>Produit en croix : <span class="eq">${eq}</span></li>
+    <li>Je calcule : <span class="eq">${calc} ${st.unit}</span></li>
+    <li>Je vérifie : le coefficient est le même dans les deux colonnes
+      (<b>${f(g.b)} ÷ ${f(g.a)} = ${f(g.b / g.a, 4)}</b> et <b>${f(g.d)} ÷ ${cd} = ${f(g.d / g.c, 4)}</b>).
+      Cohérence : la valeur donnée (${vd}) est ${cmp} à ${f(ref)}, donc le résultat doit être ${cmpR} à ${f(known)}. ✔</li>
+  </ol>`;
+}
+
+function diagnose(x, st) {
+  const { a, b, v, ans, target } = st;
+  const inv = target === 'B' ? a * v / b : b * v / a;
+  const add = target === 'B' ? b + v - a : a + v - b;
+  const ratio = x / ans;
+  if (close(x, inv)) return "Tu as sans doute inversé la division : on divise par le nombre qui est <b>en diagonale avec le « ? »</b>, pas par l'autre.";
+  if (close(x, add)) return "Tu as raisonné par <b>addition</b> (« j'ajoute la même différence »). La proportionnalité fonctionne par <b>multiplication</b>.";
+  if (ratio > 0 && [10, 100, 1000, 0.1, 0.01, 0.001].some(p => close(ratio, p)))
+    return "Ton résultat est décalé d'une <b>puissance de 10</b> : vérifie tes conversions d'unités (mL ↔ L, g ↔ kg…).";
+  if (close(x, v)) return "Tu as recopié la valeur de l'énoncé : il reste à calculer la case « ? ».";
+  return "Ce n'est pas la bonne valeur. Utilise l'indice, ou regarde la méthode pas à pas.";
+}
+
+/* ---------- Carte d'exercice ---------- */
+function renderExercise(sc, host, index) {
+  const card = document.createElement('article');
+  card.className = 'card ex';
+  host.appendChild(card);
+  let st;
+
+  function build() {
+    st = newState(sc);
+    const g = st.g;
+    const tableHTML = propTable(st.labA, st.labB,
+      st.show.a || f(st.a), f(st.b),
+      st.ba ? '?' : (st.show.c || f(g.c)), st.ba ? f(g.d) : '?');
+    card.classList.remove('done');
+    card.innerHTML = `
+      <span class="tag ${sc.cat}">${sc.cat === 'daily' ? 'Vie quotidienne' : 'Physique-chimie'}</span>
+      <h3>${index}. ${sc.titre}</h3>
+      <p>${st.text}</p>
+      ${tableHTML}
+      <div class="row">
+        <label for="in-${sc.id}"><b>Ta réponse :</b></label>
+        <input type="text" id="in-${sc.id}" inputmode="decimal" autocomplete="off" placeholder="ex. 12,5">
+        <span class="unit">${st.unit}</span>
+      </div>
+      <div class="row">
+        <button type="button" class="main" data-act="check">Vérifier mon résultat</button>
+        <button type="button" data-act="hint">Indice</button>
+        <button type="button" data-act="method">Voir la méthode</button>
+        <button type="button" class="ghost" data-act="new">Nouvelles valeurs</button>
+      </div>
+      <div class="hint" role="note">Les deux nombres de la diagonale qui <b>ne contient pas le « ? »</b> se multiplient ; on divise ensuite par le dernier nombre.${g.conv ? ' <b>Attention :</b> les deux volumes doivent être dans la même unité.' : ''}</div>
+      <div class="fb" role="status" aria-live="polite"></div>
+      <div class="method"><p class="legend"><b class="o">Orange</b> : nombres à multiplier · <b class="b">Bleu</b> : nombre par lequel on divise</p>${stepsHTML(st)}</div>`;
+  }
+
+  card.addEventListener('click', e => {
+    const act = e.target.closest('button')?.dataset.act;
+    if (!act) return;
+    if (act === 'new') { build(); return; }
+    if (act === 'hint') { $('.hint', card).classList.toggle('show'); return; }
+    if (act === 'method') { showMethod(); return; }
+    if (act === 'check') check();
+  });
+  card.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') check(); });
+
+  function showMethod() {
+    const m = $('.method', card);
+    m.classList.toggle('show');
+    const pr = st.target === 'B' ? ['b1', 'a2'] : ['a1', 'b2'];
+    const dv = st.target === 'B' ? 'a1' : 'b1';
+    card.querySelectorAll('td[data-pos]').forEach(td => {
+      td.classList.remove('pr', 'dv');
+      if (m.classList.contains('show')) {
+        if (pr.includes(td.dataset.pos)) td.classList.add('pr');
+        if (td.dataset.pos === dv) td.classList.add('dv');
+      }
+    });
+  }
+
+  function check() {
+    const fb = $('.fb', card);
+    const x = parseNum($('input', card).value);
+    if (Number.isNaN(x)) { fb.className = 'fb ko'; fb.textContent = 'Entre un nombre (tu peux écrire une virgule). Exemple : 12,5'; return; }
+    st.tries++;
+    if (close(x, st.ans)) {
+      fb.className = 'fb ok';
+      fb.innerHTML = `✔ Bravo ! <b>${f(st.ans)} ${st.unit}</b>.${st.tries === 1 ? ' Du premier coup !' : ''} Regarde la méthode pour t'assurer que tu sais l'expliquer.`;
+      card.classList.add('done');
+      markSolved(sc.id);
+    } else {
+      fb.className = 'fb ko';
+      fb.innerHTML = '✘ ' + diagnose(x, st) + (st.tries >= 2 ? ' <br>Besoin d\'aide ? Clique sur « Indice » ou « Voir la méthode ».' : '');
+    }
+  }
+  build();
+}
+
+/* ---------- Vrai / faux : proportionnel ? ---------- */
+const QUIZ = [
+  { q: 'Le prix de pommes vendues à 2,40 € le kilogramme, selon la masse achetée.', p: true,
+    why: 'Le prix au kilogramme est constant : 0 kg coûte 0 €, et doubler la masse double le prix.' },
+  { q: "La taille d'un enfant, selon son âge.", p: false,
+    why: "À 0 an, un bébé mesure déjà environ 50 cm, et la taille ne double pas quand l'âge double." },
+  { q: "La distance parcourue par un cycliste roulant à vitesse constante (20 km/h), selon la durée du trajet.", p: true,
+    why: 'd = v × t avec v constante : la distance est proportionnelle à la durée.' },
+  { q: "L'aire d'un carré, selon la longueur de son côté.", p: false,
+    why: 'Si le côté est multiplié par 2, l\'aire est multipliée par 4 (A = c²).' },
+  { q: 'Le prix d\'une course de taxi (prise en charge 4 € + 1,50 € par km), selon la distance parcourue.', p: false,
+    why: 'Pour 0 km, on paie déjà 4 € : le graphique ne passe pas par l\'origine.' },
+  { q: "La masse d'un échantillon d'eau pure, selon son volume.", p: true,
+    why: 'La masse volumique de l\'eau est constante (1 g/mL) : m = ρ × V.' },
+  { q: "La tension aux bornes d'un conducteur ohmique, selon l'intensité du courant qui le traverse.", p: true,
+    why: 'Loi d\'Ohm : U = R × I, avec R constante. U est proportionnelle à I.' },
+  { q: 'La concentration d\'une solution diluée, selon le volume final obtenu (même quantité de soluté).', p: false,
+    why: 'C = n ÷ V : si V double, C est divisée par 2. C\'est de la proportionnalité <b>inverse</b> (C × V est constant), pas directe.' }
+];
+
+function renderQuiz() {
+  const host = $('#quiz');
+  QUIZ.forEach((it, i) => {
+    const card = document.createElement('article');
+    card.className = 'card quiz';
+    card.innerHTML = `
+      <p><b>${i + 1}.</b> ${it.q}</p>
+      <label><input type="radio" name="qz${i}" value="1"> Proportionnel</label>
+      <label><input type="radio" name="qz${i}" value="0"> Pas proportionnel</label>
+      <div class="row"><button type="button" class="main">Vérifier mon résultat</button></div>
+      <div class="fb" role="status" aria-live="polite"></div>`;
+    host.appendChild(card);
+    $('button', card).addEventListener('click', () => {
+      const sel = card.querySelector('input:checked');
+      const fb = $('.fb', card);
+      if (!sel) { fb.className = 'fb ko'; fb.textContent = 'Choisis une réponse avant de vérifier.'; return; }
+      if ((sel.value === '1') === it.p) {
+        fb.className = 'fb ok'; fb.innerHTML = `✔ Exact. ${it.why}`;
+        card.classList.add('done'); markSolved('qz' + i);
+      } else {
+        fb.className = 'fb ko'; fb.innerHTML = `✘ Pas tout à fait. Teste : pour 0, obtient-on 0 ? Si on double une grandeur, l'autre double-t-elle ?`;
+      }
+    });
+  });
+}
+
+/* ---------- Démo : pommes, curseur, graphique ---------- */
+function drawDemo(n) {
+  const W = 420, H = 240, m = { l: 46, r: 14, t: 14, b: 40 }, xm = 10, ym = 24;
+  const X = x => m.l + x / xm * (W - m.l - m.r), Y = y => H - m.b - y / ym * (H - m.t - m.b);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Graphique du prix en fonction de la masse de pommes">`;
+  for (let x = 0; x <= xm; x += 2) s += `<line class="ax" x1="${X(x)}" x2="${X(x)}" y1="${Y(0)}" y2="${Y(0) + 4}"/><text x="${X(x)}" y="${Y(0) + 17}" text-anchor="middle">${x}</text>`;
+  for (let y = 0; y <= ym; y += 6) s += `<line class="ax" x1="${X(0) - 4}" x2="${X(0)}" y1="${Y(y)}" y2="${Y(y)}"/><text x="${X(0) - 8}" y="${Y(y) + 4}" text-anchor="end">${y}</text>`;
+  s += `<line class="ax" x1="${X(0)}" x2="${X(xm)}" y1="${Y(0)}" y2="${Y(0)}"/><line class="ax" x1="${X(0)}" x2="${X(0)}" y1="${Y(0)}" y2="${Y(ym)}"/>`;
+  s += `<text x="${X(xm / 2)}" y="${H - 6}" text-anchor="middle">masse (kg)</text><text x="12" y="${Y(ym / 2)}" transform="rotate(-90 12 ${Y(ym / 2)})" text-anchor="middle">prix (€)</text>`;
+  s += `<line class="ln" x1="${X(0)}" y1="${Y(0)}" x2="${X(xm)}" y2="${Y(2.4 * xm)}"/>`;
+  for (let i = 0; i <= xm; i++) s += `<circle class="pt" cx="${X(i)}" cy="${Y(2.4 * i)}" r="3"/>`;
+  s += `<line class="gd" x1="${X(n)}" x2="${X(n)}" y1="${Y(0)}" y2="${Y(2.4 * n)}"/><line class="gd" x1="${X(0)}" x2="${X(n)}" y1="${Y(2.4 * n)}" y2="${Y(2.4 * n)}"/>`;
+  s += `<circle class="sel" cx="${X(n)}" cy="${Y(2.4 * n)}" r="6"/></svg>`;
+  return s;
+}
+function updateDemo() {
+  const n = Number($('#kg').value), p = r6(2.4 * n);
+  $('#kg-val').textContent = n;
+  $('#demo-res').innerHTML = `<b>${n} kg</b> coûtent <b>${f(p, 2)} €</b>` + (n > 0 ? ` &nbsp;·&nbsp; prix ÷ masse = ${f(p, 2)} ÷ ${n} = <b>2,4 €/kg</b>` : ' &nbsp;·&nbsp; 0 kg → 0 € ✔');
+  $('#graph').innerHTML = drawDemo(n);
+}
+
+/* ---------- Méthode pas à pas (fil rouge) ---------- */
+const STEPS = [
+  { t: 'Je repère les grandeurs proportionnelles',
+    h: () => `<p>La <b>masse de pommes</b> (kg) et le <b>prix</b> (€). Test : 0 kg coûte 0 €, et 2 fois plus de pommes coûte 2 fois plus cher. ✔</p>` },
+  { t: 'Je construis le tableau',
+    h: () => `<p>Je range les grandeurs <b>en lignes</b>, les deux situations <b>en colonnes</b>. La case à trouver est notée « ? ».</p>${propTable('Masse (kg)', 'Prix (€)', '3', '7,5', '8', '?')}` },
+  { t: 'Je fais le produit en croix',
+    h: () => `<p>Je multiplie les nombres de la diagonale qui ne contient pas le « ? » (en orange), puis je divise par le nombre en diagonale avec le « ? » (en bleu).</p>${propTable('Masse (kg)', 'Prix (€)', '3', '7,5', '8', '?', { a1: 'dv', b1: 'pr', a2: 'pr' })}<p class="eq">3 × ? = 7,5 × 8</p>` },
+  { t: 'Je calcule',
+    h: () => `<p class="eq">? = (7,5 × 8) ÷ 3 = 60 ÷ 3 = 20</p><p>8 kg de pommes coûtent <b>20 €</b>.</p>` },
+  { t: 'Je vérifie',
+    h: () => `<p>• Coefficient : 7,5 ÷ 3 = <b>2,5 €/kg</b> et 20 ÷ 8 = <b>2,5 €/kg</b> : identique ✔<br>• Cohérence : 8 kg &gt; 3 kg, donc le prix doit être plus grand que 7,5 € ✔<br>• Unité : des euros ✔</p><p class="good">Phrase-réponse : « 8 kg de pommes coûtent 20 €. »</p>` }
+];
+let stepIdx = 0;
+function renderSteps() {
+  const host = $('#steps');
+  host.innerHTML = STEPS.map((s, i) => `<div class="card st${i <= stepIdx ? ' show' : ''}${i === stepIdx ? ' last' : ''}"><h3><span class="num">${i + 1}</span>${s.t}</h3>${s.h()}</div>`).join('');
+  $('#st-next').disabled = stepIdx >= STEPS.length - 1;
+  $('#st-prev').disabled = stepIdx <= 0;
+}
+
+/* ---------- Simulateur ---------- */
+function runSim() {
+  const out = $('#sim-out');
+  const ids = ['a', 'b', 'c', 'd'];
+  const raw = ids.map(k => $('#s-' + k).value.trim());
+  const empty = ids.filter((k, i) => raw[i] === '');
+  const nA = $('#sn-a').value.trim() || 'Grandeur A', nB = $('#sn-b').value.trim() || 'Grandeur B';
+  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  if (empty.length !== 1) { out.innerHTML = '<div class="fb ko">Laisse exactement <b>une</b> case vide et remplis les trois autres.</div>'; return; }
+  const v = {};
+  for (let i = 0; i < 4; i++) if (raw[i] !== '') {
+    const x = parseNum(raw[i]);
+    if (Number.isNaN(x) || x <= 0) { out.innerHTML = '<div class="fb ko">Les trois valeurs doivent être des nombres strictement positifs.</div>'; return; }
+    v[ids[i]] = x;
+  }
+  const u = empty[0];
+  const formulas = {
+    d: [() => v.b * v.c / v.a, `${f(v.a)} × ? = ${f(v.b)} × ${f(v.c)}`, () => `(${f(v.b)} × ${f(v.c)}) ÷ ${f(v.a)}`],
+    c: [() => v.a * v.d / v.b, `? × ${f(v.b)} = ${f(v.a)} × ${f(v.d)}`, () => `(${f(v.a)} × ${f(v.d)}) ÷ ${f(v.b)}`],
+    b: [() => v.a * v.d / v.c, `${f(v.a)} × ${f(v.d)} = ? × ${f(v.c)}`, () => `(${f(v.a)} × ${f(v.d)}) ÷ ${f(v.c)}`],
+    a: [() => v.b * v.c / v.d, `? × ${f(v.d)} = ${f(v.b)} × ${f(v.c)}`, () => `(${f(v.b)} × ${f(v.c)}) ÷ ${f(v.d)}`]
+  }[u];
+  const res = formulas[0]();
+  v[u] = res;
+  const T = k => k === u ? '?' : f(v[k], 4);
+  out.innerHTML = `<h3>Résultat</h3>${propTable(esc(nA), esc(nB), T('a'), T('b'), T('c'), T('d'))}
+    <p>Produit en croix : <span class="eq">${formulas[1]}</span></p>
+    <p>Calcul : <span class="eq">? = ${formulas[2]()} = ${f(res, 4)}</span></p>
+    <div class="fb ok">✔ La case vide vaut <b>${f(res, 4)}</b>. Coefficient : ${f(v.b / v.a, 4)} (cas 1) et ${f(v.d / v.c, 4)} (cas 2).</div>`;
+}
+
+/* ---------- Initialisation ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  $('#total').textContent = SCENARIOS.length + QUIZ.length;
+  SCENARIOS.filter(s => s.cat === 'daily').forEach((s, i) => renderExercise(s, $('#ex-quotidien'), i + 1));
+  SCENARIOS.filter(s => s.cat === 'phys').forEach((s, i) => renderExercise(s, $('#ex-phys'), i + 1));
+  renderQuiz();
+  $('#kg').addEventListener('input', updateDemo); updateDemo();
+  renderSteps();
+  $('#st-next').addEventListener('click', () => { if (stepIdx < STEPS.length - 1) { stepIdx++; renderSteps(); } });
+  $('#st-prev').addEventListener('click', () => { if (stepIdx > 0) { stepIdx--; renderSteps(); } });
+  $('#st-reset').addEventListener('click', () => { stepIdx = 0; renderSteps(); });
+  $('#sim-go').addEventListener('click', runSim);
+  $('#sim-clear').addEventListener('click', () => { ['a', 'b', 'c', 'd'].forEach(k => { $('#s-' + k).value = ''; }); $('#sim-out').innerHTML = ''; });
+});
+})();
+</script>
+</body>
+</html>
