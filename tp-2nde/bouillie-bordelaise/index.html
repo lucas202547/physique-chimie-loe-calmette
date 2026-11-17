@@ -215,11 +215,11 @@ footer{margin-top:40px;font-size:.85rem;color:var(--gris);text-align:center}
     <p style="margin:.2em 0">Diluer une solution (appelée <b>solution mère</b>) consiste à prélever une petite quantité de solution mère et à lui ajouter un solvant (de l'eau distillée) pour préparer une solution moins concentrée (appelée <b>solution fille</b>). On définit le facteur de dilution <i>F</i> (sans unité) par :</p>
     <div class="formule">
       <i>F</i> =
-      <span class="frac"><span><i>t</i><sub>m</sub></span><span><i>t</i><sub>f</sub></span></span>
+      <span class="frac"><span><i>C</i><sub>m</sub></span><span><i>C</i><sub>f</sub></span></span>
       =
       <span class="frac"><span><i>V</i><sub>f</sub></span><span><i>V</i><sub>m</sub></span></span>
     </div>
-    <p class="note" style="margin:0"><i>t</i><sub>m</sub> et <i>t</i><sub>f</sub> : concentrations en masse des solutions mère et fille, exprimées dans la même unité.<br>
+    <p class="note" style="margin:0"><i>C</i><sub>m</sub> et <i>C</i><sub>f</sub> : concentrations en masse des solutions mère et fille, exprimées dans la même unité.<br>
     <i>V</i><sub>m</sub> et <i>V</i><sub>f</sub> : volumes de solution mère prélevée et de solution fille préparée, exprimés dans la même unité.<br>
     <i>F</i> est alors sans unité.</p>
   </div>
@@ -353,7 +353,7 @@ footer{margin-top:40px;font-size:.85rem;color:var(--gris);text-align:center}
           <label><input type="radio" name="q23" value="oui"> Elle respecte la limite</label>
           <label><input type="radio" name="q23" value="non"> Elle ne respecte pas la limite</label>
         </div>
-        <p class="aide">Indice : <i>t</i><sub>f</sub> = <i>t</i><sub>m</sub> / <i>F</i>.</p>
+        <p class="aide">Indice : <i>C</i><sub>f</sub> = <i>C</i><sub>m</sub> / <i>F</i>.</p>
       </div>
     </div>
   </div>
@@ -366,10 +366,10 @@ footer{margin-top:40px;font-size:.85rem;color:var(--gris);text-align:center}
   <!-- Q4 -->
   <div class="q" id="q34">
     <div class="q-tete"><div class="q-num">4</div>
-      <div class="q-txt"><p>Calculer le produit <i>t</i><sub>m</sub> × <i>V</i><sub>m</sub> puis le produit <i>t</i><sub>f</sub> × <i>V</i><sub>f</sub>. Proposer une unité pour le résultat obtenu.</p>
+      <div class="q-txt"><p>Calculer le produit <i>C</i><sub>m</sub> × <i>V</i><sub>m</sub> puis le produit <i>C</i><sub>f</sub> × <i>V</i><sub>f</sub>. Proposer une unité pour le résultat obtenu.</p>
         <div class="rep">
-          <label><i>t</i><sub>m</sub> × <i>V</i><sub>m</sub> = <input type="text" inputmode="decimal" class="court" id="q34-a"></label>
-          <label><i>t</i><sub>f</sub> × <i>V</i><sub>f</sub> = <input type="text" inputmode="decimal" class="court" id="q34-b"></label>
+          <label><i>C</i><sub>m</sub> × <i>V</i><sub>m</sub> = <input type="text" inputmode="decimal" class="court" id="q34-a"></label>
+          <label><i>C</i><sub>f</sub> × <i>V</i><sub>f</sub> = <input type="text" inputmode="decimal" class="court" id="q34-b"></label>
           <label>Unité : <input type="text" class="court" id="q34-u" autocomplete="off"></label>
         </div>
         <p class="aide">Convertis les volumes en litres : tu peux aussi garder les mL, mais précise alors l'unité du produit.</p>
@@ -407,12 +407,12 @@ footer{margin-top:40px;font-size:.85rem;color:var(--gris);text-align:center}
   <!-- Q7 -->
   <div class="q" id="q37">
     <div class="q-tete"><div class="q-num">7</div>
-      <div class="q-txt"><p>Retrouver, à partir de la réponse à la question 5 (<i>t</i><sub>m</sub> × <i>V</i><sub>m</sub> = <i>t</i><sub>f</sub> × <i>V</i><sub>f</sub>), l'expression littérale de l'égalité donnant le facteur de dilution <i>F</i>.</p>
+      <div class="q-txt"><p>Retrouver, à partir de la réponse à la question 5 (<i>C</i><sub>m</sub> × <i>V</i><sub>m</sub> = <i>C</i><sub>f</sub> × <i>V</i><sub>f</sub>), l'expression littérale de l'égalité donnant le facteur de dilution <i>F</i>.</p>
         <div class="choix" style="flex-direction:column;align-items:flex-start">
-          <label><input type="radio" name="q37" value="a"> <i>F</i> = <i>t</i><sub>m</sub> / <i>t</i><sub>f</sub> = <i>V</i><sub>f</sub> / <i>V</i><sub>m</sub></label>
-          <label><input type="radio" name="q37" value="b"> <i>F</i> = <i>t</i><sub>m</sub> / <i>t</i><sub>f</sub> = <i>V</i><sub>m</sub> / <i>V</i><sub>f</sub></label>
-          <label><input type="radio" name="q37" value="c"> <i>F</i> = <i>t</i><sub>f</sub> / <i>t</i><sub>m</sub> = <i>V</i><sub>f</sub> / <i>V</i><sub>m</sub></label>
-          <label><input type="radio" name="q37" value="d"> <i>F</i> = <i>t</i><sub>m</sub> × <i>V</i><sub>m</sub> / (<i>t</i><sub>f</sub> × <i>V</i><sub>f</sub>)</label>
+          <label><input type="radio" name="q37" value="a"> <i>F</i> = <i>C</i><sub>m</sub> / <i>C</i><sub>f</sub> = <i>V</i><sub>f</sub> / <i>V</i><sub>m</sub></label>
+          <label><input type="radio" name="q37" value="b"> <i>F</i> = <i>C</i><sub>m</sub> / <i>C</i><sub>f</sub> = <i>V</i><sub>m</sub> / <i>V</i><sub>f</sub></label>
+          <label><input type="radio" name="q37" value="c"> <i>F</i> = <i>C</i><sub>f</sub> / <i>C</i><sub>m</sub> = <i>V</i><sub>f</sub> / <i>V</i><sub>m</sub></label>
+          <label><input type="radio" name="q37" value="d"> <i>F</i> = <i>C</i><sub>m</sub> × <i>V</i><sub>m</sub> / (<i>C</i><sub>f</sub> × <i>V</i><sub>f</sub>)</label>
         </div>
       </div>
     </div>
@@ -570,7 +570,7 @@ footer{margin-top:40px;font-size:.85rem;color:var(--gris);text-align:center}
     visu.innerHTML=html;
     var tfs=(Math.round(tf*100)/100).toString().replace('.',',');
     var Fs=(Math.round(F*100)/100).toString().replace('.',',');
-    var msg='<b>F</b> = '+vf+' / '+vm+' = <b>'+Fs+'</b> ; <b>t<sub>f</sub></b> = '+tm+' / '+Fs+' = <b>'+tfs+' g.L⁻¹</b>. ';
+    var msg='<b>F</b> = '+vf+' / '+vm+' = <b>'+Fs+'</b> ; <b>C<sub>f</sub></b> = '+tm+' / '+Fs+' = <b>'+tfs+' g.L⁻¹</b>. ';
     if(vm>=vf) msg+='⚠ Le volume prélevé ne peut pas dépasser le volume de la fiole.';
     else if(Math.abs(tf-4)<0.01) msg+='✅ Concentration égale à la limite de 4,0 g.L⁻¹ : utilisable en agriculture biologique.';
     else if(tf<4) msg+='La solution est plus diluée que la limite de 4,0 g.L⁻¹ : conforme mais plus faible que nécessaire.';
