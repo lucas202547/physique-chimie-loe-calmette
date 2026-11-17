@@ -42,6 +42,8 @@ hr.sep{border:0;border-top:1px solid var(--gris-bord);margin:0 1.5rem}
 .def,.retenir,.exemple{border-radius:10px;padding:.8rem 1rem;margin:.9rem 0}
 .def{background:#fff;border:1px solid var(--gris-bord);border-left:5px solid var(--vert)}
 .retenir{background:var(--vert-clair);border:1px solid #a9d9c7}
+.retenir.rt{background:#fbe4e1;border-color:#e6b0aa;color:var(--rouge)}
+.retenir.rt .lbl{color:var(--rouge)}
 .exemple{background:var(--gris-bg);border:1px solid var(--gris-bord)}
 .attention{background:var(--orange-clair);border:1px solid #f1c79e;border-radius:10px;padding:.8rem 1rem;margin:.9rem 0}
 .lbl{display:block;font-weight:700;font-size:13px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.2rem}
@@ -164,8 +166,8 @@ footer{padding:1.2rem 1.5rem;color:var(--texte-3);font-size:13.5px;text-align:ce
   </div>
   <p>Sur une chronophotographie, on ne peut pas prendre des points infiniment proches. La sécante (M<sub>i</sub>M<sub>i+1</sub>) donne la direction du <strong>vecteur déplacement</strong> entre ces deux points, ce n'est pas une bonne approximation de la tangente.</p>
 
-  <h3>Expérience 1 — La sécante se rapproche de la tangente</h3>
-  <p>Déplacez le point M<sub>i</sub> le long de la trajectoire, puis <strong>rapprochez les points voisins</strong> (curseur « écart ») : que devient l'angle entre la sécante (M<sub>i</sub>M<sub>i+1</sub>) et la tangente ?</p>
+  <h3>Première approche — Avec deux points consécutifs</h3>
+  <p>Déplacez le point M<sub>i</sub> le long de la trajectoire, puis <strong>rapprochez les points voisins</strong> (curseur « écart ») : que devient l'angle entre la sécante (M<sub>i</sub>M<sub>i+1</sub>) et la tangente ? Les points noirs forment la chronophotographie : positions du mobile à intervalles de temps réguliers Δt.</p>
   <div class="ctl">
     <label>Trajectoire
       <select id="s2-curve">
@@ -181,19 +183,20 @@ footer{padding:1.2rem 1.5rem;color:var(--texte-3);font-size:13.5px;text-align:ce
   <div class="schema"><svg id="s2-svg" viewBox="0 0 640 360" role="img" aria-label="Sécante et tangente"></svg></div>
   <div class="legend">
     <span><i style="background:#1a5fa8"></i>M<sub>i</sub></span>
+    <span><i style="background:#1e1e1e"></i>autres positions de la chronophotographie</span>
     <span><i style="background:#c8620a"></i>point suivant M<sub>i+1</sub> et sécante (M<sub>i</sub>M<sub>i+1</sub>)</span>
     <span><i style="background:#0e7c5b"></i>tangente et vecteur vitesse</span>
   </div>
   <p class="readout" id="s2-read"></p>
-  <div class="retenir"><span class="lbl">À retenir</span>
+  <div class="retenir rt"><span class="lbl">À retenir</span>
     Plus les deux points sont proches (durée Δt petite), plus la sécante se rapproche de la tangente. Quand les points sont infiniment proches, la sécante et la tangente sont confondues. La direction du vecteur vitesse en M<sub>i</sub> est celle de la tangente.
   </div>
   <div class="exemple"><span class="lbl">Remarque</span>
     Pour estimer la direction de la tangente en M<sub>i</sub>, on obtient une meilleure approximation avec le segment qui <strong>encadre</strong> le point, c'est-à-dire la droite (M<sub>i−1</sub>M<sub>i+1</sub>) : M<sub>i</sub> se trouve alors « au milieu » des deux points utilisés. Cette remarque ne concerne que la direction ; la valeur de la vitesse se calcule comme dans la section 3.
   </div>
 
-  <h3>Expérience 2 — Avec le segment qui encadre le point</h3>
-  <p>Même simulation, mais avec la sécante (M<sub>i−1</sub>M<sub>i+1</sub>) qui encadre M<sub>i</sub>. Pour un même écart entre les points, comparez l'angle avec celui de l'expérience 1.</p>
+  <h3>Deuxième approche — Avec le segment qui encadre le point</h3>
+  <p>Même simulation, mais avec la sécante (M<sub>i−1</sub>M<sub>i+1</sub>) qui encadre M<sub>i</sub>. Pour un même écart entre les points, comparez l'angle avec celui de la première approche.</p>
   <div class="ctl">
     <label>Trajectoire
       <select id="s2b-curve">
@@ -209,19 +212,23 @@ footer{padding:1.2rem 1.5rem;color:var(--texte-3);font-size:13.5px;text-align:ce
   <div class="schema"><svg id="s2b-svg" viewBox="0 0 640 360" role="img" aria-label="Sécante qui encadre le point et tangente"></svg></div>
   <div class="legend">
     <span><i style="background:#1a5fa8"></i>M<sub>i</sub></span>
+    <span><i style="background:#1e1e1e"></i>autres positions de la chronophotographie</span>
     <span><i style="background:#c8620a"></i>points M<sub>i−1</sub> et M<sub>i+1</sub> et sécante (M<sub>i−1</sub>M<sub>i+1</sub>)</span>
     <span><i style="background:#0e7c5b"></i>tangente et vecteur vitesse</span>
   </div>
   <p class="readout" id="s2b-read"></p>
+  <div class="retenir rt"><span class="lbl">À retenir</span>
+    Pour déterminer la direction de la tangente au point M<sub>i</sub>, on peut constater que sa direction est (avec une bonne approximation) celle du segment qui encadre le point M<sub>i</sub> (soit M<sub>i−1</sub>M<sub>i+1</sub>).
+  </div>
 
-  <h3>Expérience 3 — La bille dont on coupe le fil</h3>
+  <h3>Expérience — La bille dont on coupe le fil</h3>
   <p>Une bille tourne au bout d'un fil. Cliquez sur « Couper le fil » : dans quelle direction part-elle ?</p>
   <div class="ctl">
     <button class="btn" id="cut-btn">Couper le fil</button>
     <button class="btn sec" id="cut-reset">Recommencer</button>
   </div>
   <div class="schema"><svg id="cut-svg" viewBox="0 0 600 380" role="img" aria-label="Bille attachée à un fil"></svg></div>
-  <p class="cap">Après la coupure, plus rien ne retient la bille : elle part en ligne droite, suivant la direction de son vecteur vitesse, donc la tangente au cercle au point où le fil a été coupé.</p>
+  <p class="cap">Les points noirs sont les positions de la bille à intervalles de temps réguliers (chronophotographie) : avant la coupure ils sont sur le cercle, après ils sont alignés et équidistants. Après la coupure, plus rien ne retient la bille : elle part en ligne droite, suivant la direction de son vecteur vitesse, donc la tangente au cercle au point où le fil a été coupé.</p>
 </section>
 <hr class="sep">
 
@@ -301,7 +308,7 @@ footer{padding:1.2rem 1.5rem;color:var(--texte-3);font-size:13.5px;text-align:ce
   <div class="section-titre"><span class="num">5</span><h2>Exemples de mouvements</h2></div>
   <p>Voici les vecteurs vitesse tracés en <strong>tous</strong> les points de quatre mouvements. Regardez comment changent la direction et la longueur des flèches.</p>
   <div class="cards-ex" id="s5-cards"></div>
-  <div class="retenir"><span class="lbl">À retenir</span>
+  <div class="retenir rt"><span class="lbl">À retenir</span>
     <ul style="padding-left:1.2rem">
       <li>Le vecteur vitesse est <strong>constant</strong> seulement si sa direction, son sens <em>et</em> sa valeur ne changent pas (mouvement rectiligne et uniforme).</li>
       <li>Si la <strong>valeur</strong> change, la longueur des flèches change : les points de la chronophotographie se rapprochent (ralentissement) ou s'écartent (accélération).</li>
@@ -548,6 +555,11 @@ function renderSec(pre, mode){
   let pts = [];
   for (let j = 0; j <= 240; j++){ const p = c.P(c.u0 + span * j / 240); pts.push(p.x.toFixed(1) + ',' + p.y.toFixed(1)); }
   let s = '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#b9b6ac" stroke-width="2.5"/>';
+  /* chronophotographie : positions à intervalles de temps réguliers Δt (écart = curseur) */
+  { const kk = [], KM = 8;
+    if (c.closed){ const n = Math.floor(span / h), K = Math.min(KM, Math.floor((n - 1) / 2)); for (let k = -K; k <= K; k++) kk.push(k); }
+    else { const kd = Math.min(KM, Math.floor((u - c.u0) / h + 1e-9)), ku = Math.min(KM, Math.floor((c.u1 - u) / h + 1e-9)); for (let k = -kd; k <= ku; k++) kk.push(k); }
+    kk.forEach(k => { if (k === 0) return; const q = c.P(u + k * h); s += '<circle cx="' + q.x.toFixed(1) + '" cy="' + q.y.toFixed(1) + '" r="4" fill="' + COL.noir + '"/>'; }); }
   s += '<line x1="' + (M.x - tx * 170) + '" y1="' + (M.y - ty * 170) + '" x2="' + (M.x + tx * 170) + '" y2="' + (M.y + ty * 170) + '" stroke="' + COL.vert + '" stroke-width="2" stroke-dasharray="7 5"/>';
   if (one) s += '<line x1="' + (P0.x - s1.sx * 40) + '" y1="' + (P0.y - s1.sy * 40) + '" x2="' + (B.x + s1.sx * 60) + '" y2="' + (B.y + s1.sy * 60) + '" stroke="' + COL.orange + '" stroke-width="2.6"/>';
   s += arrow(M.x, M.y, M.x + tx * 85, M.y + ty * 85, COL.vert, 2.4, 12);
@@ -572,22 +584,36 @@ function renderS2(){ renderSec('s2', 'suivant'); renderSec('s2b', 'encadrant'); 
 renderS2();
 
 /* Bille dont on coupe le fil */
-const cut = {mode:'turn', th:0, x:0, y:0, vx:0, vy:0, cx:0, cy:0, last:0, token:0};
-const CUT = {cx:300, cy:190, R:110, w:1.3};
-function drawCut(){
+const CUT = {cx:300, cy:190, R:110, w:1.3, DT:0.3};
+const cut = {mode:'turn', T:0, tc:0, th0:0.4, last:0, token:0};
+function cutPos(t){
   const c = CUT;
+  if (cut.mode === 'turn' || t <= cut.tc){ const th = cut.th0 + c.w * t; return {x:c.cx + c.R * Math.cos(th), y:c.cy - c.R * Math.sin(th)}; }
+  const thc = cut.th0 + c.w * cut.tc, sp = c.w * c.R, d = t - cut.tc;
+  return {x:c.cx + c.R * Math.cos(thc) - Math.sin(thc) * sp * d, y:c.cy - c.R * Math.sin(thc) - Math.cos(thc) * sp * d};
+}
+function drawCut(){
+  const c = CUT, B = cutPos(cut.T), bx = B.x, by = B.y;
   let s = '<circle cx="' + c.cx + '" cy="' + c.cy + '" r="' + c.R + '" fill="none" stroke="#d9d6cc" stroke-width="2" stroke-dasharray="5 5"/>';
   s += '<circle cx="' + c.cx + '" cy="' + c.cy + '" r="4" fill="' + COL.noir + '"/>';
-  let bx, by, dx, dy;
+  /* chronophotographie : positions à intervalles de temps réguliers */
+  const kN = Math.floor(cut.T / c.DT);
+  const kmin = cut.mode === 'turn' ? Math.max(0, kN - 14) : Math.max(0, Math.floor(cut.tc / c.DT) - 14);
+  for (let k = kmin; k <= kN; k++){
+    const p = cutPos(k * c.DT);
+    if (Math.hypot(p.x - bx, p.y - by) < 12) continue;
+    s += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="4" fill="' + COL.noir + '"/>';
+  }
+  let dx, dy;
   if (cut.mode === 'turn'){
-    bx = c.cx + c.R * Math.cos(cut.th); by = c.cy - c.R * Math.sin(cut.th);
-    dx = -Math.sin(cut.th); dy = -Math.cos(cut.th);
+    const th = cut.th0 + c.w * cut.T;
+    dx = -Math.sin(th); dy = -Math.cos(th);
     s += '<line x1="' + c.cx + '" y1="' + c.cy + '" x2="' + bx.toFixed(1) + '" y2="' + by.toFixed(1) + '" stroke="' + COL.orange + '" stroke-width="2.5"/>';
     s += '<line x1="' + (bx - dx * 150).toFixed(1) + '" y1="' + (by - dy * 150).toFixed(1) + '" x2="' + (bx + dx * 150).toFixed(1) + '" y2="' + (by + dy * 150).toFixed(1) + '" stroke="' + COL.vert + '" stroke-width="1.5" stroke-dasharray="6 5" opacity=".6"/>';
   } else {
-    bx = cut.x; by = cut.y;
-    const sp = Math.hypot(cut.vx, cut.vy); dx = cut.vx / sp; dy = cut.vy / sp;
-    s += '<line x1="' + cut.cx.toFixed(1) + '" y1="' + cut.cy.toFixed(1) + '" x2="' + bx.toFixed(1) + '" y2="' + by.toFixed(1) + '" stroke="' + COL.vert + '" stroke-width="2" stroke-dasharray="6 5"/>';
+    const thc = cut.th0 + c.w * cut.tc, P0 = cutPos(cut.tc);
+    dx = -Math.sin(thc); dy = -Math.cos(thc);
+    s += '<line x1="' + P0.x.toFixed(1) + '" y1="' + P0.y.toFixed(1) + '" x2="' + bx.toFixed(1) + '" y2="' + by.toFixed(1) + '" stroke="' + COL.vert + '" stroke-width="2" stroke-dasharray="6 5"/>';
     s += '<text x="' + (c.cx + 12) + '" y="' + (c.cy + 4) + '" font-size="13" fill="' + COL.orange + '" font-family="Source Sans 3,sans-serif">fil coupé</text>';
   }
   s += arrow(bx, by, bx + dx * 62, by + dy * 62, COL.vert, 2.4, 12);
@@ -598,16 +624,16 @@ function drawCut(){
 function cutTick(token, now){
   if (token !== cut.token) return;
   const dt = Math.min(0.05, (now - cut.last) / 1000); cut.last = now;
-  if (cut.mode === 'turn') cut.th += CUT.w * dt;
-  else {
-    cut.x += cut.vx * dt; cut.y += cut.vy * dt;
-    if (cut.x < -40 || cut.x > 640 || cut.y < -40 || cut.y > 420){ drawCut(); return; }
+  cut.T += dt;
+  if (cut.mode === 'free'){
+    const p = cutPos(cut.T);
+    if (p.x < -40 || p.x > 640 || p.y < -40 || p.y > 420){ drawCut(); return; }
   }
   drawCut();
   requestAnimationFrame(t => cutTick(token, t));
 }
 function cutStart(){
-  cut.token++; cut.mode = 'turn'; cut.th = 0.4;
+  cut.token++; cut.mode = 'turn'; cut.T = 0; cut.tc = 0;
   $('#cut-btn').disabled = false;
   cut.last = performance.now();
   const tk = cut.token;
@@ -615,11 +641,7 @@ function cutStart(){
 }
 $('#cut-btn').addEventListener('click', () => {
   if (cut.mode !== 'turn') return;
-  const th = cut.th, sp = CUT.w * CUT.R;
-  cut.x = CUT.cx + CUT.R * Math.cos(th); cut.y = CUT.cy - CUT.R * Math.sin(th);
-  cut.cx = cut.x; cut.cy = cut.y;
-  cut.vx = -Math.sin(th) * sp; cut.vy = -Math.cos(th) * sp;
-  cut.mode = 'free';
+  cut.tc = cut.T; cut.mode = 'free';
   $('#cut-btn').disabled = true;
 });
 $('#cut-reset').addEventListener('click', cutStart);
