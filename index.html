@@ -41,6 +41,8 @@ h1{font-weight:700;font-size:60px;line-height:1.02;letter-spacing:-.02em;}
 /* CARTES */
 .carte{flex:1 1 360px;min-width:0;display:flex;gap:20px;align-items:center;text-decoration:none;color:var(--texte);background:var(--carte);border:1px solid var(--bord);border-radius:14px;padding:16px;transition:border-color .2s,transform .2s;}
 .carte.large{flex-basis:740px;}
+/* Goodies : carte alignée sur la carte des cours (colonne de gauche = 180px + 20px d'écart) */
+@media (min-width:561px){.carte.goodies{margin-left:200px;}}
 .carte:hover{border-color:#4a5f8a;transform:translateY(-2px);}
 .carte:focus-visible{outline:3px solid var(--blanc);outline-offset:3px;}
 .case{flex:0 0 132px;height:132px;border-radius:10px;color:var(--fond);padding:12px;display:flex;flex-direction:column;justify-content:space-between;}
@@ -109,7 +111,7 @@ h1{font-weight:700;font-size:60px;line-height:1.02;letter-spacing:-.02em;}
           <span class="desc">Dissolution, bouillie bordelaise (dilution), changement d'état, vitesse du son, caractéristiques d'un son.</span>
         </span>
       </a>
-      <a class="carte" href="goodies-2nde/">
+      <a class="carte goodies" href="goodies-2nde/">
         <span class="case goodies" aria-hidden="true"><span class="num">03</span><span class="sym">Go</span><span class="unite">goodies</span></span>
         <span class="texte">
           <span class="titre">Les goodies de seconde</span>
@@ -138,7 +140,7 @@ h1{font-weight:700;font-size:60px;line-height:1.02;letter-spacing:-.02em;}
           <span class="desc">Lentilles d'appareils photographiques : mise au point et distance focale ; dosage par spectrophotométrie.</span>
         </span>
       </a>
-      <a class="carte" href="goodies-1ere/">
+      <a class="carte goodies" href="goodies-1ere/">
         <span class="case goodies" aria-hidden="true"><span class="num">01</span><span class="sym">Go</span><span class="unite">goodie</span></span>
         <span class="texte">
           <span class="titre">Les goodies de première spécialité</span>
