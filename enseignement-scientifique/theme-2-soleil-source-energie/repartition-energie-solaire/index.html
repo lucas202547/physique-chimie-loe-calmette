@@ -39,7 +39,7 @@
   .ident input {
     font: inherit; padding: 5px 8px; border: 1.5px solid var(--bord); border-radius: 6px; width: 11rem;
   }
-  .ident input#poste { width: 7rem; text-transform: uppercase; }
+  .ident input#anonymat { width: 11rem; text-transform: uppercase; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; }
   button {
     font: inherit; cursor: pointer; border-radius: 6px; padding: 6px 14px; border: 1.5px solid var(--accent);
@@ -140,11 +140,8 @@
   <h1>L'énergie solaire inégalement répartie sur Terre</h1>
 
   <div class="ident">
-    <label>Numéro de TP
-      <input type="text" id="numTP" autocomplete="off" maxlength="20">
-    </label>
-    <label>Numéro de poste
-      <input type="text" id="poste" autocomplete="off" maxlength="4" inputmode="text">
+    <label>Numéro d'anonymat
+      <input type="text" id="anonymat" autocomplete="off" maxlength="10">
     </label>
   </div>
 
@@ -819,11 +816,10 @@
   majGraphes();
 
   /* ================= Champs d'identification ================= */
-  var numTP = document.getElementById('numTP');
-  var poste = document.getElementById('poste');
-  poste.addEventListener('input', function () {
-    var v = poste.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 4);
-    if (v !== poste.value) poste.value = v;
+  var anonymat = document.getElementById('anonymat');
+  anonymat.addEventListener('input', function () {
+    var v = anonymat.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 10);
+    if (v !== anonymat.value) anonymat.value = v;
   });
 
   /* ================= Messages ================= */
@@ -832,7 +828,7 @@
     msg.className = kind || '';
     msg.textContent = text;
   }
-  var MSG_POSTE = 'Numéro de poste manquant : renseignez-le en haut de la page <em>(pour les classes de secondes, ajouter la lettre du groupe (A ou B))</em>. Rien n\'a été enregistré.';
+  var MSG_ANONYMAT = 'Numéro d\'anonymat manquant : renseignez-le en haut de la page. Rien n\'a été enregistré.';
 
   /* ================= Boîte de confirmation ================= */
   var voile = document.getElementById('voile');
@@ -900,20 +896,17 @@
 
   /* ================= Enregistrer ================= */
   document.getElementById('btnEnregistrer').addEventListener('click', async function () {
-    var n = poste.value.trim();
-    if (n === '') { msg.className = 'err'; msg.innerHTML = MSG_POSTE; poste.focus(); return; }
-    var tp = numTP.value.trim();
+    var n = anonymat.value.trim();
+    if (n === '') { msg.className = 'err'; msg.textContent = MSG_ANONYMAT; anonymat.focus(); return; }
     var dt = isoParis(new Date());
     var data = {
       tp_id: TP_ID,
       version: TP_VERSION,
-      numero_tp: tp,
-      numero_poste: n,
+      numero_anonymat: n,
       date_heure: dt.iso,
       reponses: collecter()
     };
-    var tpSeg = tp === '' ? '' : 'TP_' + tp.replace(/[\\\/:*?"<>|\s]+/g, '-') + '_';
-    var nom = tpSeg + 'poste' + n + '_' + dt.fichier + '.json';
+    var nom = 'anonymat' + n + '_' + dt.fichier + '.json';
     var texte = JSON.stringify(data, null, 2);
 
     if (window.showSaveFilePicker) {
@@ -973,7 +966,7 @@
         c.value = (typeof v === 'string') ? v : '';
       });
       majGraphes();
-      say('Réponses importées. Le numéro de TP et le numéro de poste de cette page n\'ont pas été modifiés.', 'ok');
+      say('Réponses importées. Le numéro d\'anonymat de cette page n\'a pas été modifié.', 'ok');
     };
     rd.readAsText(f);
   });
