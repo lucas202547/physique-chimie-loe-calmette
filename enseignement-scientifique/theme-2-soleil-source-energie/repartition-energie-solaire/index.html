@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L'énergie solaire inégalement répartie sur Terre</title>
+<style>
+  :root {
+    --bleu: #0b3d6b;
+    --bleu-clair: #e8f0f9;
+    --accent: #1a5fb4;
+    --bord: #b7c5d6;
+    --texte: #1d2733;
+    --ok: #1b6e3c;
+    --alerte: #9c2a12;
+    --fond-alerte: #fdeee9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+    color: var(--texte);
+    background: #f4f6f9;
+    line-height: 1.5;
+  }
+  header.app {
+    background: #fff;
+    border-bottom: 2px solid var(--bleu);
+    padding: 14px 20px 12px;
+  }
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .badge {
+    border: 1.5px solid var(--accent); color: var(--accent); border-radius: 999px;
+    padding: 1px 12px; font-size: .9rem; font-weight: 600;
+  }
+  h1 { margin: 4px 0 10px; font-size: 1.6rem; color: var(--bleu); }
+  .ident { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 10px; }
+  .ident label { display: flex; flex-direction: column; font-size: .85rem; font-weight: 600; gap: 2px; }
+  .ident input {
+    font: inherit; padding: 5px 8px; border: 1.5px solid var(--bord); border-radius: 6px; width: 11rem;
+  }
+  .ident input#poste { width: 7rem; text-transform: uppercase; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  button {
+    font: inherit; cursor: pointer; border-radius: 6px; padding: 6px 14px; border: 1.5px solid var(--accent);
+    background: #fff; color: var(--accent); font-weight: 600;
+  }
+  button:hover { background: var(--bleu-clair); }
+  button.primaire { background: var(--accent); color: #fff; }
+  button.primaire:hover { background: var(--bleu); }
+  button.danger { border-color: var(--alerte); color: var(--alerte); }
+  button.danger:hover { background: var(--fond-alerte); }
+  #msg { min-height: 1.4em; margin-top: 8px; font-size: .95rem; padding: 0; }
+  #msg.ok { color: var(--ok); }
+  #msg.err { color: var(--alerte); background: var(--fond-alerte); padding: 6px 10px; border-radius: 6px; }
+
+  nav.onglets {
+    display: flex; gap: 4px; flex-wrap: wrap; padding: 10px 20px 0; background: #f4f6f9;
+    position: sticky; top: 0; z-index: 5; border-bottom: 1px solid var(--bord);
+  }
+  nav.onglets button {
+    border-radius: 8px 8px 0 0; border-bottom: none; background: #e9eef5; border-color: var(--bord); color: var(--bleu);
+  }
+  nav.onglets button[aria-selected="true"] { background: #fff; border-color: var(--accent); color: var(--accent); position: relative; top: 1px; }
+
+  main { max-width: 1000px; margin: 0 auto; padding: 18px 16px 60px; }
+  section.panneau[hidden] { display: none; }
+  .carte {
+    background: #fff; border: 1.5px solid var(--bord); border-radius: 12px; padding: 14px 18px; margin: 0 0 18px;
+  }
+  .carte h2 { font-size: 1.15rem; margin: 0 0 8px; color: var(--bleu); }
+  .carte h2 .doc { color: var(--accent); font-size: .95rem; margin-right: 8px; }
+  h3 { font-size: 1.05rem; color: var(--bleu); margin: 18px 0 6px; }
+  .grp-titre { font-size: 1.4rem; color: var(--bleu); margin: 0 0 4px; }
+  .sous-titre { color: #4a5a6c; margin: 0 0 14px; }
+  .question { margin: 14px 0; }
+  .question > label, .question > .enonce { display: block; font-weight: 600; margin-bottom: 4px; }
+  textarea {
+    width: 100%; min-height: 5.5em; font: inherit; padding: 8px; border: 1.5px solid var(--bord);
+    border-radius: 6px; resize: vertical;
+  }
+  textarea:focus, input:focus, button:focus-visible { outline: 3px solid #9ec2f0; outline-offset: 1px; }
+  figure { margin: 10px 0; text-align: center; }
+  figure svg { width: 100%; max-width: 540px; height: auto; }
+  figcaption { font-size: .85rem; color: #4a5a6c; }
+  .placeholder {
+    border: 2px dashed var(--bord); border-radius: 10px; padding: 26px 16px; text-align: center;
+    color: #4a5a6c; background: #fafbfd; margin: 10px 0;
+  }
+  .placeholder strong { color: var(--bleu); display: block; margin-bottom: 4px; }
+  table.donnees { border-collapse: collapse; margin: 8px 0; width: 100%; max-width: 640px; }
+  table.donnees th, table.donnees td { border: 1.5px solid var(--bord); padding: 3px 6px; text-align: center; }
+  table.donnees th { background: var(--bleu-clair); }
+  table.donnees input { width: 100%; font: inherit; padding: 3px 5px; border: 1px solid var(--bord); border-radius: 4px; text-align: center; }
+  table.theorie td, table.theorie th { padding: 3px 14px; }
+  .note { font-size: .9rem; color: #4a5a6c; }
+  ul.materiel { margin: 4px 0 4px 1.1rem; padding: 0; }
+  .indicateurs { background: var(--bleu-clair); border-radius: 10px; padding: 8px 16px 12px; margin-top: 16px; }
+  .indicateurs h3 { margin-top: 6px; }
+  .vocab dt { font-weight: 700; color: var(--bleu); margin-top: 6px; }
+  .vocab dd { margin: 0 0 0 1rem; }
+
+  .sim { border: 1.5px solid var(--accent); border-radius: 10px; padding: 10px 14px 14px; margin: 14px 0; background: #f7faff; }
+  .sim h3 { margin: 0 0 6px; }
+  .sim .cmd { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 6px 0; }
+  .sim input[type=range] { flex: 1 1 220px; min-width: 180px; }
+  .phones { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0; }
+  .phone { border: 3px solid #333; border-radius: 14px; background: #fff; padding: 8px 14px; min-width: 170px; text-align: center; }
+  .phone .lib { font-size: .8rem; color: #4a5a6c; }
+  .phone .val { font-size: 1.7rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  #simMsg { min-height: 1.3em; font-size: .9rem; color: var(--ok); margin-top: 4px; }
+  .sim3d { width: 100%; height: 360px; display: block; touch-action: none; cursor: grab; background: #fff; border: 1px solid var(--bord); border-radius: 8px; }
+  .s3-leg { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .8rem; color: #4a5a6c; margin: 4px 0 10px; }
+  .s3-leg i { display: inline-block; width: 14px; height: 0; border-top: 3px solid; vertical-align: middle; margin-right: 4px; }
+  .s3-cmd { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; }
+  .s3-cmd label { min-width: 56px; font-size: .9rem; font-weight: 600; }
+  .s3-cmd input[type=range] { flex: 1; accent-color: #ba7517; }
+  .s3-cmd .s3-val { min-width: 110px; text-align: right; font-weight: 600; }
+  .s3-btns { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+  .s3-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .s3-card { background: #f1efe8; border-radius: 8px; padding: 8px 12px; }
+  .s3-card .lib { font-size: .8rem; color: #5f5e5a; }
+  .s3-card .val { font-size: 1.25rem; font-weight: 600; }
+  .s3-msg { min-height: 1.3em; font-size: .9rem; color: var(--ok); margin-top: 6px; }
+  .voile {
+    position: fixed; inset: 0; background: rgba(20, 30, 45, .5); display: flex; align-items: center;
+    justify-content: center; z-index: 50; padding: 16px;
+  }
+  .voile[hidden] { display: none; }
+  .boite { background: #fff; border-radius: 12px; padding: 20px 22px; max-width: 460px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,.35); }
+  .boite p { margin: 0 0 16px; font-size: 1.05rem; }
+  .boite .boutons { display: flex; gap: 10px; justify-content: flex-end; }
+  @media (max-width: 600px) { h1 { font-size: 1.3rem; } }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="badges"><span class="badge">Chapitre 4</span><span class="badge">Activité 2</span></div>
+  <h1>L'énergie solaire inégalement répartie sur Terre</h1>
+
+  <div class="ident">
+    <label>Numéro de TP
+      <input type="text" id="numTP" autocomplete="off" maxlength="20">
+    </label>
+    <label>Numéro de poste
+      <input type="text" id="poste" autocomplete="off" maxlength="4" inputmode="text">
+    </label>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="primaire" id="btnEnregistrer">Enregistrer</button>
+    <button type="button" id="btnImporter">Importer mes réponses d'un jour précédent</button>
+    <button type="button" class="danger" id="btnEffacer">Effacer mes réponses</button>
+    <input type="file" id="fichierImport" accept=".json,application/json" hidden>
+  </div>
+  <div id="msg" role="status" aria-live="polite"></div>
+</header>
+
+<main>
+
+<!-- ======================= DOCUMENTS COMMUNS ======================= -->
+<section class="panneau" id="p-commun">
+  <h2 class="grp-titre">Documents</h2>
+
+  <div class="carte">
+    <h2><span class="doc">Doc. 1</span>Une analogie pour mieux comprendre</h2>
+    <p>Cette analogie permet de mieux se représenter l'influence de l'angle d'incidence <i>i</i> d'un rayonnement sur la répartition de l'énergie sur une surface plane. Un même rayonnement incident, portant donc la même énergie, se répartit sur des surfaces différentes suivant l'angle d'incidence <i>i</i> adopté.</p>
+    <figure>
+      <svg id="svgDoc1" viewBox="0 -20 520 240" role="img" aria-label="Un même faisceau de rayons parallèles arrive sur une surface plane, perpendiculairement puis avec une inclinaison : la surface éclairée est plus grande quand le faisceau est incliné."></svg>
+      <figcaption>Même faisceau (même énergie) : à gauche incidence normale, à droite incidence oblique. La zone éclairée est tracée en trait épais.</figcaption>
+    </figure>
+  </div>
+
+  <div class="carte">
+    <h2><span class="doc">Doc. 2</span>Une mesure expérimentale de l'éclairement en fonction de l'angle d'incidence</h2>
+    <figure>
+      <svg id="svgDoc2" viewBox="0 -25 540 175" role="img" aria-label="Trois positions d'un support inclinable face au Soleil : inclinaison α inférieure, égale puis supérieure à α max."></svg>
+      <figcaption>Support inclinable d'inclinaison α face au Soleil.</figcaption>
+    </figure>
+
+    <div class="sim">
+      <h3>Simulation de l'expérience</h3>
+      <p class="note">Inclinez le support avec le curseur : l'inclinaison α et l'éclairement mesuré sont affichés. L'angle d'incidence <i>i</i> est l'angle entre les rayons du Soleil et la perpendiculaire (normale) au support : il est tracé en bleu.</p>
+      <ul>
+        <li>Trouver la valeur d'angle absolu α<sub>max</sub> pour laquelle l'éclairement est le plus important.</li>
+        <li>Faire varier l'inclinaison α de 10° en 10° et noter la valeur de l'éclairement mesuré dans le tableau ci-dessous (le bouton « Relever dans le tableau » reporte α et l'éclairement).</li>
+        <li>Calculer l'angle d'incidence <i>i</i> avec <i>i</i> = |α − α<sub>max</sub>|.</li>
+      </ul>
+      <svg id="svgSim" viewBox="0 0 420 260" role="img" aria-label="Simulation : un support inclinable d'inclinaison α reçoit les rayons parallèles du Soleil." style="width:100%;max-width:460px;display:block;margin:0 auto"></svg>
+      <div class="cmd">
+        <label for="simAlpha"><strong>Inclinaison du support α</strong></label>
+        <input type="range" id="simAlpha" min="0" max="90" step="1" value="10">
+      </div>
+      <div class="phones">
+        <div class="phone"><div class="lib">Inclinaison α</div><div class="val"><span id="simAlphaOut">10</span> °</div></div>
+        <div class="phone"><div class="lib">Éclairement mesuré</div><div class="val"><span id="simEOut">0</span> lux</div></div>
+        <div class="phone" style="border-color:#1a5fb4"><div class="lib">Angle d'incidence <i>i</i></div><div class="val" style="color:#1a5fb4"><span id="simIOut">0</span> °</div></div>
+        <button type="button" id="simReleve" style="align-self:center">Relever dans le tableau</button>
+      </div>
+      <div id="simMsg" role="status" aria-live="polite"></div>
+    </div>
+
+    <p><label for="d2_alpha_max"><strong>Valeur trouvée : α<sub>max</sub> (°)</strong></label>
+      <input type="text" id="d2_alpha_max" data-qid="d2_alpha_max" data-label="Doc. 2 - valeur de α max (°)" inputmode="decimal" style="width:7rem;font:inherit;padding:4px 6px;border:1.5px solid var(--bord);border-radius:6px;"></p>
+
+    <p><strong>Relevés</strong> <span class="note">(inclinaison α, éclairement mesuré, angle d'incidence <i>i</i> que vous calculez)</span></p>
+    <table class="donnees" id="tabD2">
+      <thead><tr><th>α (°)</th><th>Éclairement (lux)</th><th><i>i</i> (°)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+
+    <h3>Valeurs théoriques</h3>
+    <table class="donnees theorie" style="width:auto">
+      <thead><tr><th>Angle d'incidence (°)</th><th>Rayonnement intercepté (%)</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>100</td></tr>
+        <tr><td>10</td><td>98,5</td></tr>
+        <tr><td>20</td><td>94,0</td></tr>
+        <tr><td>30</td><td>86,6</td></tr>
+        <tr><td>40</td><td>76,6</td></tr>
+        <tr><td>50</td><td>64,3</td></tr>
+        <tr><td>60</td><td>50,0</td></tr>
+        <tr><td>70</td><td>34,2</td></tr>
+        <tr><td>80</td><td>17,4</td></tr>
+      </tbody>
+    </table>
+
+    <figure>
+      <svg id="svgGrapheD2" viewBox="0 0 480 300" role="img" aria-label="Graphique du rayonnement intercepté en fonction de l'angle d'incidence : valeurs théoriques et vos mesures."></svg>
+      <figcaption>Aperçu automatique : valeurs théoriques (points reliés) et vos mesures (carrés, éclairement rapporté à la valeur maximale mesurée).</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ======================= GROUPE 1 ======================= -->
+<section class="panneau" id="p-g1">
+  <h2 class="grp-titre">Partie A : une réception inégale suivant l'heure de la journée</h2>
+
+  <div class="carte">
+    <h2>Simulation : la hauteur du Soleil au cours de la journée</h2>
+    <p class="note">Simulation à Nice (43,7° N), le 29 octobre. Déplacez le curseur « Heure » pour suivre la trajectoire apparente du Soleil. L'angle d'incidence <i>i</i> est l'angle entre les rayons du Soleil et la verticale du lieu (perpendiculaire au sol horizontal) ; <i>h</i> est la hauteur du Soleil au-dessus de l'horizon. Faites tourner la scène en la faisant glisser avec la souris ou le doigt. L'éclairement relatif est celui reçu par une surface horizontale, rapporté à celui d'une surface perpendiculaire aux rayons.</p>
+    <div id="simBoxA"></div>
+    <p><strong>Relevés de la simulation</strong> <span class="note">(« Relever dans le tableau » reporte la ligne correspondant à la position du curseur)</span></p>
+    <table class="donnees" id="tabSimA">
+      <thead><tr><th>Heure solaire</th><th>Hauteur <i>h</i> (°)</th><th>Angle d'incidence <i>i</i> (°)</th><th>Éclairement relatif (%)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="carte">
+    <h2>Conclure</h2>
+    <textarea id="a_conclusion" data-qid="a_conclusion" data-label="Partie A - Conclure" aria-label="Conclure" style="min-height:8em"></textarea>
+  </div>
+</section>
+
+<!-- ======================= GROUPE 3 ======================= -->
+<section class="panneau" id="p-g3">
+  <h2 class="grp-titre">Partie B : une inégale répartition suivant le moment de l'année</h2>
+
+  <div class="carte">
+    <h2>Simulation : la hauteur du Soleil au cours de l'année</h2>
+    <p class="note">Simulation à Nice (43,7° N). Déplacez le curseur « Date » pour suivre l'évolution de la trajectoire apparente du Soleil au fil de l'année, à heure solaire fixée (midi solaire par défaut). L'angle d'incidence <i>i</i> est l'angle entre les rayons du Soleil et la verticale du lieu ; <i>h</i> est la hauteur du Soleil au-dessus de l'horizon. Les trois tracés colorés sont ceux du 21 juin, des équinoxes et du 21 décembre.</p>
+    <div id="simBoxB"></div>
+    <p><strong>Relevés de la simulation</strong> <span class="note">(« Relever dans le tableau » reporte la ligne correspondant à la position du curseur)</span></p>
+    <table class="donnees" id="tabSimB">
+      <thead><tr><th>Date</th><th>Hauteur <i>h</i> (°)</th><th>Angle d'incidence <i>i</i> (°)</th><th>Éclairement relatif (%)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="carte">
+    <h2>Vocabulaire</h2>
+    <dl class="vocab">
+      <dt>Équinoxe</dt>
+      <dd>journée de l'année où le jour a une durée égale à celle de la nuit. Il y en a deux par an (printemps et automne).</dd>
+      <dt>Plan de l'écliptique</dt>
+      <dd>plan défini par le mouvement de révolution de la Terre autour du Soleil.</dd>
+      <dt>Solstice</dt>
+      <dd>jour le plus long ou jour le plus court dans une année. Dans l'hémisphère nord, le solstice d'été survient aux alentours du 21 juin tandis que le solstice d'hiver se situe autour du 21 décembre.</dd>
+    </dl>
+  </div>
+
+  <div class="carte">
+    <h2>Conclure</h2>
+    <textarea id="b_conclusion" data-qid="b_conclusion" data-label="Partie B - Conclure" aria-label="Conclure" style="min-height:8em"></textarea>
+  </div>
+</section>
+
+</main>
+
+<!-- Boîte de dialogue de confirmation -->
+<div class="voile" id="voile" hidden>
+  <div class="boite" role="alertdialog" aria-modal="true" aria-labelledby="voileTexte">
+    <p id="voileTexte"></p>
+    <div class="boutons">
+      <button type="button" id="voileAnnuler">Annuler</button>
+      <button type="button" class="danger" id="voileOk">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Identification interne (non visible par l'élève) ---------- */
+  var TP_ID = 'ENERGIE_SOLAIRE_C4A2';
+  var TP_VERSION = '1.2';
+
+  var NS = 'http://www.w3.org/2000/svg';
+
+  /* ================= Construction des tableaux ================= */
+  function buildTable(tbodyId, rows, cols) {
+    var tb = document.querySelector('#' + tbodyId + ' tbody');
+    for (var r = 1; r <= rows; r++) {
+      var tr = document.createElement('tr');
+      cols.forEach(function (c) {
+        var td = document.createElement('td');
+        if (c.fixed) {
+          td.textContent = c.fixed[r - 1];
+        } else {
+          var inp = document.createElement('input');
+          inp.type = 'text';
+          inp.inputMode = 'decimal';
+          inp.autocomplete = 'off';
+          inp.setAttribute('data-qid', c.id + '_' + r);
+          inp.setAttribute('data-label', c.label + ' - ligne ' + r);
+          inp.setAttribute('aria-label', c.label + ', ligne ' + r);
+          if (c.text) inp.inputMode = 'text';
+          td.appendChild(inp);
+        }
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    }
+  }
+  buildTable('tabD2', 12, [
+    { id: 'd2_alpha', label: 'Doc. 2 - inclinaison α (°)' },
+    { id: 'd2_E',     label: 'Doc. 2 - éclairement mesuré (lux)' },
+    { id: 'd2_i',     label: 'Doc. 2 - angle d\'incidence i (°)' }
+  ]);
+  buildTable('tabSimA', 8, [
+    { id: 'a_simHeure', label: 'Partie A - simulation : heure solaire', text: true },
+    { id: 'a_simh', label: 'Partie A - simulation : hauteur h (°)' },
+    { id: 'a_simi', label: 'Partie A - simulation : angle d\'incidence i (°)' },
+    { id: 'a_simE', label: 'Partie A - simulation : éclairement relatif (%)' }
+  ]);
+  buildTable('tabSimB', 8, [
+    { id: 'b_simDate', label: 'Partie B - simulation : date', text: true },
+    { id: 'b_simh', label: 'Partie B - simulation : hauteur h (°)' },
+    { id: 'b_simi', label: 'Partie B - simulation : angle d\'incidence i (°)' },
+    { id: 'b_simE', label: 'Partie B - simulation : éclairement relatif (%)' }
+  ]);
+
+  /* ================= Utilitaires SVG ================= */
+  function el(parent, name, attrs, text) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text !== undefined) e.textContent = text;
+    parent.appendChild(e);
+    return e;
+  }
+  function clearSvg(svg) { while (svg.firstChild) svg.removeChild(svg.firstChild); }
+  function defsArrow(svg) {
+    var d = el(svg, 'defs', {});
+    var m = el(d, 'marker', { id: 'fl' + svg.id, markerWidth: 8, markerHeight: 8, refX: 6, refY: 4, orient: 'auto' });
+    el(m, 'path', { d: 'M0,0 L8,4 L0,8 z', fill: '#c27a00' });
+    return 'url(#fl' + svg.id + ')';
+  }
+  var RAD = Math.PI / 180;
+  var COL_RAY = '#c27a00', COL_TXT = '#1d2733', COL_BLUE = '#1a5fb4', COL_GREY = '#55657a';
+
+  /* ================= Doc. 1 ================= */
+  (function () {
+    var svg = document.getElementById('svgDoc1');
+    var fl = defsArrow(svg);
+    // Surface gauche + faisceau normal
+    el(svg, 'line', { x1: 20, y1: 180, x2: 230, y2: 180, stroke: '#333', 'stroke-width': 2 });
+    for (var k = 0; k < 6; k++) {
+      var x = 80 + k * 12;
+      el(svg, 'line', { x1: x, y1: 30, x2: x, y2: 176, stroke: COL_RAY, 'stroke-width': 1.5, 'marker-end': fl });
+    }
+    el(svg, 'line', { x1: 80, y1: 180, x2: 140, y2: 180, stroke: COL_BLUE, 'stroke-width': 6 });
+    el(svg, 'text', { x: 110, y: 205, 'text-anchor': 'middle', 'font-size': 14, fill: COL_TXT }, 'i = 0°');
+    // Surface droite + faisceau oblique
+    var ix = 50, ex = 290, ey = 180;
+    el(svg, 'line', { x1: 240, y1: 180, x2: 510, y2: 180, stroke: '#333', 'stroke-width': 2 });
+    var i = 45 * RAD, dx = Math.sin(i), dy = Math.cos(i);
+    var px = Math.cos(i), py = -Math.sin(i); // direction perpendiculaire au faisceau
+    var minX = 1e9, maxX = -1e9;
+    for (k = 0; k < 6; k++) {
+      var x0 = 250 + k * 12 * px, y0 = 40 + k * 12 * py;
+      var t = (176 - y0) / dy;
+      var x1 = x0 + t * dx;
+      el(svg, 'line', { x1: x0, y1: y0, x2: x1, y2: 176, stroke: COL_RAY, 'stroke-width': 1.5, 'marker-end': fl });
+      var xe = x0 + ((180 - y0) / dy) * dx;
+      minX = Math.min(minX, xe); maxX = Math.max(maxX, xe);
+    }
+    el(svg, 'line', { x1: minX, y1: 180, x2: maxX, y2: 180, stroke: COL_BLUE, 'stroke-width': 6 });
+    // normale et angle
+    var nx = (minX + maxX) / 2;
+    el(svg, 'line', { x1: nx, y1: 60, x2: nx, y2: 180, stroke: COL_GREY, 'stroke-dasharray': '4 3' });
+    el(svg, 'text', { x: nx + 6, y: 88, 'font-size': 14, fill: COL_TXT, 'font-style': 'italic' }, 'i');
+    el(svg, 'text', { x: nx, y: 205, 'text-anchor': 'middle', 'font-size': 14, fill: COL_TXT }, 'i > 0°');
+  })();
+
+  /* ================= Doc. 2 (schéma) ================= */
+  (function () {
+    var svg = document.getElementById('svgDoc2');
+    var fl = defsArrow(svg);
+    var a0 = 40; // αmax illustratif
+    var s = { x: Math.sin(a0 * RAD), y: -Math.cos(a0 * RAD) }; // direction vers le Soleil
+    var panels = [
+      { cx: 0,   a: 20, label: 'α < α max' },
+      { cx: 180, a: 40, label: 'α = α max  (i = 0°)' },
+      { cx: 360, a: 62, label: 'α > α max' }
+    ];
+    panels.forEach(function (p) {
+      var px = p.cx + 105, py = 115;
+      el(svg, 'line', { x1: p.cx + 10, y1: py, x2: p.cx + 170, y2: py, stroke: '#999', 'stroke-width': 1 });
+      var a = p.a * RAD;
+      var u = { x: -Math.cos(a), y: -Math.sin(a) };
+      el(svg, 'line', { x1: px, y1: py, x2: px + 80 * u.x, y2: py + 80 * u.y, stroke: '#333', 'stroke-width': 5, 'stroke-linecap': 'round' });
+      // arc α
+      var r = 24;
+      el(svg, 'path', { d: 'M ' + (px - r) + ' ' + py + ' A ' + r + ' ' + r + ' 0 0 1 ' + (px + r * u.x) + ' ' + (py + r * u.y), fill: 'none', stroke: COL_BLUE, 'stroke-width': 1.5 });
+      el(svg, 'text', { x: px - 34, y: py + 15, 'font-size': 13, fill: COL_BLUE, 'font-style': 'italic' }, 'α');
+      // Soleil et rayon
+      var cx = px + 40 * u.x, cy = py + 40 * u.y;
+      var sx = cx + 90 * s.x, sy = cy + 90 * s.y;
+      el(svg, 'line', { x1: sx - 8 * s.x, y1: sy - 8 * s.y, x2: cx + 3 * s.x, y2: cy + 3 * s.y, stroke: COL_RAY, 'stroke-width': 1.5, 'marker-end': fl });
+      el(svg, 'circle', { cx: sx + 8 * s.x, cy: sy + 8 * s.y, r: 11, fill: '#f6c445', stroke: COL_RAY });
+      el(svg, 'text', { x: p.cx + 95, y: 143, 'text-anchor': 'middle', 'font-size': 13, fill: COL_TXT }, p.label);
+    });
+  })();
+
+  /* ================= Simulation du Doc. 2 ================= */
+  (function () {
+    var svg = document.getElementById('svgSim');
+    var slider = document.getElementById('simAlpha');
+    var outA = document.getElementById('simAlphaOut');
+    var outE = document.getElementById('simEOut');
+    var simMsg = document.getElementById('simMsg');
+    var outI = document.getElementById('simIOut');
+    var A0 = 37;          // α max du dispositif simulé (caché à l'élève)
+    var E0 = 82000;       // éclairement en incidence normale (lux)
+    var P = { x: 250, y: 230 }, L = 150;
+    var s = { x: Math.sin(A0 * RAD), y: -Math.cos(A0 * RAD) };       // direction vers le Soleil
+    var perp = { x: Math.cos(A0 * RAD), y: Math.sin(A0 * RAD) };
+    var C0 = { x: P.x - 75 * Math.cos(A0 * RAD), y: P.y - 75 * Math.sin(A0 * RAD) };
+
+    function eclairement(a) { return Math.max(0, E0 * Math.cos((a - A0) * RAD)); }
+
+    function dessiner(a) {
+      clearSvg(svg);
+      var fl = defsArrow(svg);
+      el(svg, 'line', { x1: 40, y1: P.y, x2: 410, y2: P.y, stroke: '#999', 'stroke-width': 1.5 });
+      var ar = a * RAD, u = { x: -Math.cos(ar), y: -Math.sin(ar) }, n = { x: Math.sin(ar), y: -Math.cos(ar) };
+      // rayons parallèles
+      var d = { x: -s.x, y: -s.y };
+      [-2, -1, 0, 1, 2].forEach(function (k) {
+        var Q = { x: C0.x + 170 * s.x + k * 20 * perp.x, y: C0.y + 170 * s.y + k * 20 * perp.y };
+        var dn = d.x * n.x + d.y * n.y, len = 200;
+        if (dn < 0) {
+          var r = ((P.x - Q.x) * n.x + (P.y - Q.y) * n.y) / dn;
+          var hx = Q.x + r * d.x, hy = Q.y + r * d.y;
+          var t = (hx - P.x) * u.x + (hy - P.y) * u.y;
+          if (r > 0 && t >= 0 && t <= L) len = r - 2;
+        }
+        el(svg, 'line', { x1: Q.x, y1: Q.y, x2: Q.x + len * d.x, y2: Q.y + len * d.y, stroke: COL_RAY, 'stroke-width': 1.5, 'marker-end': fl });
+      });
+      // Soleil
+      var S = { x: C0.x + 200 * s.x, y: C0.y + 200 * s.y };
+      el(svg, 'circle', { cx: S.x, cy: S.y, r: 13, fill: '#f6c445', stroke: COL_RAY });
+      // support inclinable + cale
+      el(svg, 'line', { x1: P.x, y1: P.y, x2: P.x + L * u.x, y2: P.y + L * u.y, stroke: '#333', 'stroke-width': 6, 'stroke-linecap': 'round' });
+      // smartphone posé sur le support
+      var m = { x: P.x + 80 * u.x, y: P.y + 80 * u.y };
+      el(svg, 'line', { x1: m.x - 18 * u.x, y1: m.y - 18 * u.y, x2: m.x + 18 * u.x, y2: m.y + 18 * u.y, stroke: COL_BLUE, 'stroke-width': 5, 'transform': 'translate(' + (n.x * 5) + ' ' + (n.y * 5) + ')' });
+      // angle d'incidence i : normale au support (au milieu de la plaque) et arc jusqu'au rayon
+      var H = { x: P.x + 75 * u.x, y: P.y + 75 * u.y };
+      var BL = '#1a5fb4';
+      el(svg, 'line', { x1: H.x, y1: H.y, x2: H.x + 95 * n.x, y2: H.y + 95 * n.y, stroke: BL, 'stroke-width': 1.3, 'stroke-dasharray': '4 3' });
+      var di = Math.abs(a - A0);
+      if (di >= 1) {
+        el(svg, 'line', { x1: H.x, y1: H.y, x2: H.x + 95 * s.x, y2: H.y + 95 * s.y, stroke: COL_RAY, 'stroke-width': 1, 'stroke-dasharray': '2 3' });
+        var rr = 58, cr = n.x * s.y - n.y * s.x;
+        el(svg, 'path', { d: 'M ' + (H.x + rr * n.x) + ' ' + (H.y + rr * n.y) + ' A ' + rr + ' ' + rr + ' 0 0 ' + (cr > 0 ? 1 : 0) + ' ' + (H.x + rr * s.x) + ' ' + (H.y + rr * s.y), fill: 'none', stroke: BL, 'stroke-width': 2.5 });
+        var bx = n.x + s.x, by = n.y + s.y, bl = Math.hypot(bx, by);
+        el(svg, 'text', { x: H.x + 78 * bx / bl - 4, y: H.y + 78 * by / bl + 5, 'font-size': 15, fill: BL, 'font-style': 'italic', 'font-weight': 700 }, 'i');
+      } else {
+        el(svg, 'text', { x: H.x + 10, y: H.y + n.y * 100 + 4, 'font-size': 13, fill: BL, 'font-style': 'italic' }, 'i = 0°');
+      }
+      // arc α
+      var r2 = 42;
+      if (a > 1) el(svg, 'path', { d: 'M ' + (P.x - r2) + ' ' + P.y + ' A ' + r2 + ' ' + r2 + ' 0 0 1 ' + (P.x + r2 * u.x) + ' ' + (P.y + r2 * u.y), fill: 'none', stroke: COL_BLUE, 'stroke-width': 1.5 });
+      el(svg, 'text', { x: P.x - 62, y: P.y + 18, 'font-size': 14, fill: COL_BLUE, 'font-style': 'italic' }, 'α');
+    }
+
+    function maj() {
+      var a = parseInt(slider.value, 10);
+      outA.textContent = a;
+      outE.textContent = Math.round(eclairement(a));
+      outI.textContent = Math.abs(a - A0);
+      dessiner(a);
+    }
+    slider.addEventListener('input', maj);
+    maj();
+
+    document.getElementById('simReleve').addEventListener('click', function () {
+      var a = parseInt(slider.value, 10), e = Math.round(eclairement(a));
+      for (var r = 1; r <= 12; r++) {
+        var ia = document.querySelector('[data-qid="d2_alpha_' + r + '"]');
+        var ie = document.querySelector('[data-qid="d2_E_' + r + '"]');
+        if (ia.value.trim() === '' && ie.value.trim() === '') {
+          ia.value = String(a); ie.value = String(e);
+          ia.dispatchEvent(new Event('input', { bubbles: true }));
+          simMsg.textContent = 'Mesure reportée à la ligne ' + r + ' du tableau : α = ' + a + ' °, éclairement = ' + e + ' lux.';
+          return;
+        }
+      }
+      simMsg.textContent = 'Le tableau est plein : effacez une ligne pour reporter une nouvelle mesure.';
+    });
+  })();
+
+  /* ================= Simulation 3D (Nice, 43,7° N) ================= */
+  function makeSim(box, cfg) {
+    var rad = Math.PI / 180, phi = 43.7 * rad, CH = 360;
+    var TP = '#1d2733', TS = '#55657a', BLUE = '#1a5fb4';
+    box.innerHTML =
+      '<canvas class="sim3d" aria-label="Simulation en trois dimensions de la trajectoire apparente du Soleil"></canvas>' +
+      '<div class="s3-leg">' +
+        '<span><i style="border-color:#EF9F27"></i>' + (cfg.ref ? '21 juin' : 'rayon du Soleil') + '</span>' +
+        (cfg.ref ? '<span><i style="border-color:#639922"></i>équinoxes</span><span><i style="border-color:#378ADD"></i>21 décembre</span>' : '') +
+        '<span><i style="border-color:#555;border-top-style:dashed"></i>jour choisi</span>' +
+        '<span><i style="border-color:#D85A30"></i><b>h</b> hauteur</span>' +
+        '<span><i style="border-color:' + BLUE + '"></i><b>i</b> angle d\'incidence</span>' +
+      '</div>' +
+      (cfg.dateFree ? '<div class="s3-cmd"><label for="' + cfg.key + 'N">Date</label><input type="range" id="' + cfg.key + 'N" min="1" max="365" step="1"><span class="s3-val" data-k="nl"></span></div>' : '') +
+      (cfg.hourFree ? '<div class="s3-cmd"><label for="' + cfg.key + 'T">Heure</label><input type="range" id="' + cfg.key + 'T" min="0" max="24" step="0.25"><span class="s3-val" data-k="tl"></span></div>' : '') +
+      '<div class="s3-btns" data-k="btns"></div>' +
+      '<div class="s3-cards">' +
+        '<div class="s3-card"><div class="lib">Hauteur du Soleil <i>h</i></div><div class="val" data-k="rh">–</div></div>' +
+        '<div class="s3-card"><div class="lib">Angle d\'incidence <i>i</i></div><div class="val" data-k="ri">–</div></div>' +
+        '<div class="s3-card"><div class="lib">Éclairement relatif</div><div class="val" data-k="re">–</div></div>' +
+        '<div class="s3-card"><div class="lib">Azimut (depuis le nord)</div><div class="val" data-k="ra">–</div></div>' +
+        '<div class="s3-card"><div class="lib">Déclinaison du Soleil</div><div class="val" data-k="rd">–</div></div>' +
+        '<div class="s3-card"><div class="lib">Ombre / hauteur du bâton</div><div class="val" data-k="rs">–</div></div>' +
+      '</div>' +
+      '<dl class="vocab" style="margin-top:12px">' +
+        '<dt>Éclairement relatif</dt><dd>éclairement reçu par une surface horizontale, exprimé en % de celui qu’elle recevrait si les rayons du Soleil la frappaient perpendiculairement (<i>i</i> = 0°). Il vaut cos <i>i</i> × 100 : plus <i>i</i> est grand, plus la même énergie est répartie sur une grande surface, et plus l’éclairement relatif est faible.</dd>' +
+        '<dt>Azimut</dt><dd>angle qui repère la direction du Soleil sur l’horizon, mesuré à partir du nord (0°) en passant par l’est (90°), le sud (180°) puis l’ouest (270°).</dd>' +
+        '<dt>Déclinaison du Soleil</dt><dd>angle entre la direction du Soleil et le plan de l’équateur terrestre. Elle varie au cours de l’année à cause de l’inclinaison de l’axe de la Terre : environ +23,4° au solstice de juin, 0° aux équinoxes, environ −23,4° au solstice de décembre.</dd>' +
+      '</dl>' +
+      '<div class="s3-msg" data-k="msg" role="status" aria-live="polite"></div>';
+
+    var c = box.querySelector('canvas'), g = c.getContext('2d');
+    var q = function (k) { return box.querySelector('[data-k="' + k + '"]'); };
+    var sN = cfg.dateFree ? box.querySelector('#' + cfg.key + 'N') : null;
+    var sT = cfg.hourFree ? box.querySelector('#' + cfg.key + 'T') : null;
+    var state = { n: cfg.n, t: cfg.t, ref: !!cfg.ref };
+    if (sN) sN.value = state.n;
+    if (sT) sT.value = state.t;
+    var yaw = (cfg.yaw !== undefined ? cfg.yaw : -28) * rad, pitch = 28 * rad, drag = null;
+
+    function dir(n, t) {
+      var d = 23.44 * rad * Math.sin(2 * Math.PI * (284 + n) / 365), H = 15 * (t - 12) * rad;
+      return {
+        E: -Math.cos(d) * Math.sin(H),
+        N: Math.sin(d) * Math.cos(phi) - Math.cos(d) * Math.sin(phi) * Math.cos(H),
+        U: Math.sin(d) * Math.sin(phi) + Math.cos(d) * Math.cos(phi) * Math.cos(H),
+        d: d / rad
+      };
+    }
+    function dateLabel(n) { return new Date(2026, 0, n).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }); }
+    function heureLabel(t) {
+      var hh = Math.floor(t), mm = Math.round((t - hh) * 60);
+      if (mm === 60) { hh += 1; mm = 0; }
+      return String(hh).padStart(2, '0') + ' h ' + String(mm).padStart(2, '0');
+    }
+
+    function draw() {
+      var dpr = window.devicePixelRatio || 1, W = c.clientWidth, H = CH;
+      if (!W) return;
+      if (c.width !== Math.round(W * dpr)) { c.width = Math.round(W * dpr); c.height = H * dpr; }
+      g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+      var n = state.n, t = state.t;
+      var S = Math.min(W / 3.1, 135), ca = Math.cos(yaw), sa = Math.sin(yaw), cb = Math.cos(pitch), sb = Math.sin(pitch);
+      function P(x, y, z) {
+        var x1 = x * ca - y * sa, y1 = x * sa + y * ca, d = y1 * cb - z * sb, up = z * cb + y1 * sb, k = 1 / (1 + d * 0.12);
+        return [W / 2 + x1 * S * k, H * 0.68 - up * S * k, k];
+      }
+      function line(pts, col, w, dash, al) {
+        g.beginPath();
+        pts.forEach(function (p, i) { var qq = P(p[0], p[1], p[2]); i ? g.lineTo(qq[0], qq[1]) : g.moveTo(qq[0], qq[1]); });
+        g.strokeStyle = col; g.lineWidth = w; g.globalAlpha = al == null ? 1 : al; g.setLineDash(dash || []); g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
+      }
+      function ring(r) { var a = []; for (var i = 0; i <= 72; i++) a.push([r * Math.cos(i * 5 * rad), r * Math.sin(i * 5 * rad), 0]); return a; }
+      g.beginPath();
+      ring(1).forEach(function (p, i) { var qq = P(p[0], p[1], p[2]); i ? g.lineTo(qq[0], qq[1]) : g.moveTo(qq[0], qq[1]); });
+      g.fillStyle = 'rgba(136,135,128,0.14)'; g.fill();
+      line(ring(1), TS, 1, null, .6); line(ring(.5), TS, .5, null, .4);
+      line([[-1, 0, 0], [1, 0, 0]], TS, .5, null, .4); line([[0, -1, 0], [0, 1, 0]], TS, .5, null, .4);
+      g.font = '12px sans-serif'; g.fillStyle = TS; g.textAlign = 'center'; g.textBaseline = 'middle';
+      [['N', 0, 1.12], ['S', 0, -1.12], ['E', 1.12, 0], ['O', -1.12, 0]].forEach(function (l) { var qq = P(l[1], l[2], 0); g.fillText(l[0], qq[0], qq[1]); });
+      var R = 1.3;
+      function path(nn) {
+        var runs = [], cur = [];
+        for (var h = 0; h <= 24.01; h += .25) {
+          var v = dir(nn, h);
+          if (v.U > 0) cur.push([v.E * R, v.N * R, v.U * R]); else if (cur.length) { runs.push(cur); cur = []; }
+        }
+        if (cur.length) runs.push(cur);
+        return runs;
+      }
+      if (state.ref) [[172, '#EF9F27'], [80, '#639922'], [355, '#378ADD']].forEach(function (s2) { path(s2[0]).forEach(function (r) { line(r, s2[1], 2, null, .55); }); });
+      path(n).forEach(function (r) { line(r, TP, 1.5, [5, 4], .9); });
+
+      var v = dir(n, t), el = Math.asin(Math.max(-1, Math.min(1, v.U))) / rad, L = .3;
+      if (v.U > 0.02) {
+        var sx = -L * v.E / v.U, sy = -L * v.N / v.U, m = Math.hypot(sx, sy);
+        if (m > 1) { sx /= m; sy /= m; }
+        line([[0, 0, 0], [sx, sy, 0]], TP, 5, null, .35);
+      }
+      line([[0, 0, 0], [0, 0, L]], TP, 3);
+      if (v.U > 0) {
+        var h0 = Math.hypot(v.E, v.N) || 1, hx = v.E / h0, hy = v.N / h0, e = el * rad, iR = Math.PI / 2 - e, arc = [], arcI = [], k;
+        // verticale du lieu (normale au sol)
+        line([[0, 0, 0], [0, 0, .62]], BLUE, 1.2, [3, 3], .9);
+        // arc de la hauteur h
+        for (k = 0; k <= 20; k++) { var a = e * k / 20; arc.push([hx * Math.cos(a) * .45, hy * Math.cos(a) * .45, Math.sin(a) * .45]); }
+        line([[hx * .45, hy * .45, 0], [0, 0, 0]], '#D85A30', 1, [3, 3], .7);
+        line(arc, '#D85A30', 2.5);
+        // arc de l'angle d'incidence i (entre la verticale et le rayon)
+        for (k = 0; k <= 20; k++) { var b = iR * k / 20; arcI.push([hx * Math.sin(b) * .58, hy * Math.sin(b) * .58, Math.cos(b) * .58]); }
+        line(arcI, BLUE, 2.5);
+        var sp = [v.E * R, v.N * R, v.U * R];
+        line([sp, [0, 0, 0]], '#EF9F27', 3);
+        var qs = P(sp[0], sp[1], sp[2]);
+        g.beginPath(); g.arc(qs[0], qs[1], 10 * qs[2], 0, 7); g.fillStyle = '#EF9F27'; g.fill(); g.lineWidth = 1.5; g.strokeStyle = '#BA7517'; g.stroke();
+        g.font = 'italic 14px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+        var lp = P(hx * Math.cos(e / 2) * .68, hy * Math.cos(e / 2) * .68, Math.sin(e / 2) * .68);
+        g.fillStyle = '#D85A30'; g.fillText('h', lp[0], lp[1]);
+        var li = P(hx * Math.sin(iR / 2) * .78, hy * Math.sin(iR / 2) * .78, Math.cos(iR / 2) * .78);
+        g.fillStyle = BLUE; g.fillText('i', li[0], li[1]);
+      } else {
+        g.fillStyle = TS; g.font = '13px sans-serif'; g.textAlign = 'left'; g.fillText('Soleil sous l\'horizon', 10, 18);
+      }
+      var fr = function (x, d) { return x.toFixed(d).replace('.', ','); };
+      if (q('nl')) q('nl').textContent = dateLabel(n);
+      if (q('tl')) q('tl').textContent = heureLabel(t);
+      q('rh').textContent = v.U > 0 ? Math.round(el) + '°' : 'Nuit';
+      q('ri').textContent = v.U > 0 ? Math.round(90 - el) + '°' : '–';
+      q('re').textContent = v.U > 0 ? Math.round(100 * v.U) + ' %' : '–';
+      q('ra').textContent = v.U > 0 ? Math.round((Math.atan2(v.E, v.N) / rad + 360) % 360) + '°' : '–';
+      q('rd').textContent = fr(v.d, 1) + '°';
+      q('rs').textContent = v.U > 0.03 ? fr(Math.sqrt(1 - v.U * v.U) / v.U, 1) : '–';
+      state.cur = { v: v, el: el };
+    }
+
+    // boutons
+    var btns = q('btns');
+    function bouton(txt, fn) { var b = document.createElement('button'); b.type = 'button'; b.textContent = txt; b.addEventListener('click', fn); btns.appendChild(b); return b; }
+    function setN(v) { state.n = v; if (sN) sN.value = v; draw(); }
+    function setT(v) { state.t = v; if (sT) sT.value = v; draw(); }
+    if (cfg.dateFree) {
+      bouton('21 juin', function () { setN(172); });
+      bouton('Équinoxe', function () { setN(80); });
+      bouton('21 déc.', function () { setN(355); });
+    }
+    bouton('Midi solaire', function () { setT(12); });
+    if (cfg.dateFree) {
+      var tog = bouton('Cacher les tracés de référence', function () {
+        state.ref = !state.ref;
+        tog.textContent = state.ref ? 'Cacher les tracés de référence' : 'Afficher les tracés de référence';
+        draw();
+      });
+    }
+    bouton('Relever dans le tableau', function () {
+      var msg = q('msg'), cur = state.cur;
+      if (!cur || cur.v.U <= 0) { msg.textContent = 'Le Soleil est sous l\'horizon : il n\'y a pas de mesure à relever.'; return; }
+      var first = cfg.dateFree ? dateLabel(state.n) : heureLabel(state.t);
+      var vals = [first, String(Math.round(cur.el)), String(Math.round(90 - cur.el)), String(Math.round(100 * cur.v.U))];
+      var cols = ['', 'h', 'i', 'E'];
+      for (var r = 1; r <= 8; r++) {
+        var ins = [], vide = true, j;
+        for (j = 0; j < 4; j++) {
+          var id = cfg.prefix + (j === 0 ? cfg.firstCol : cols[j]) + '_' + r;
+          var inp = document.querySelector('[data-qid="' + id + '"]');
+          ins.push(inp); if (inp.value.trim() !== '') vide = false;
+        }
+        if (vide) {
+          for (j = 0; j < 4; j++) ins[j].value = vals[j];
+          msg.textContent = 'Mesure reportée à la ligne ' + r + ' du tableau.';
+          return;
+        }
+      }
+      msg.textContent = 'Le tableau est plein : effacez une ligne pour reporter une nouvelle mesure.';
+    });
+
+    if (sN) sN.addEventListener('input', function () { state.n = +sN.value; draw(); });
+    if (sT) sT.addEventListener('input', function () { state.t = +sT.value; draw(); });
+    c.addEventListener('pointerdown', function (e) { drag = [e.clientX, e.clientY]; c.setPointerCapture(e.pointerId); c.style.cursor = 'grabbing'; });
+    c.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      yaw += (e.clientX - drag[0]) * .008;
+      pitch = Math.max(5 * rad, Math.min(80 * rad, pitch + (e.clientY - drag[1]) * .006));
+      drag = [e.clientX, e.clientY]; draw();
+    });
+    c.addEventListener('pointerup', function () { drag = null; c.style.cursor = 'grab'; });
+    window.addEventListener('resize', draw);
+    draw();
+    return { draw: draw };
+  }
+  // Partie A : date fixée (29 octobre, comme les mesures du Doc. 3), l'heure varie
+  makeSim(document.getElementById('simBoxA'), { key: 'A', n: 302, t: 10, yaw: -75, dateFree: false, hourFree: true, ref: false, prefix: 'a_sim', firstCol: 'Heure' });
+  // Partie B : la date varie, heure solaire fixée à midi (réglable)
+  makeSim(document.getElementById('simBoxB'), { key: 'B', n: 172, t: 12, dateFree: true, hourFree: true, ref: true, prefix: 'b_sim', firstCol: 'Date' });
+
+  /* ================= Graphiques ================= */
+  function parseNum(s) {
+    if (s === null || s === undefined) return NaN;
+    var t = String(s).trim().replace(',', '.');
+    if (t === '' || !/^[-+]?\d*\.?\d+(e[-+]?\d+)?$/i.test(t)) return NaN;
+    return parseFloat(t);
+  }
+  function niceStep(range, n) {
+    var raw = range / n, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    var f = raw / mag;
+    var nf = f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10;
+    return nf * mag;
+  }
+  function tracer(svg, opt) {
+    clearSvg(svg);
+    var W = 480, H = 300, ml = 52, mr = 16, mt = 16, mb = 48;
+    var all = [];
+    opt.series.forEach(function (s) { all = all.concat(s.pts); });
+    if (opt.series.every(function (s) { return s.pts.length === 0; })) {
+      el(svg, 'text', { x: W / 2, y: H / 2, 'text-anchor': 'middle', 'font-size': 14, fill: COL_GREY }, 'Complétez le tableau pour voir le graphique.');
+      return;
+    }
+    var xmin = Math.min.apply(null, all.map(function (p) { return p[0]; })), xmax = Math.max.apply(null, all.map(function (p) { return p[0]; }));
+    var ymin = Math.min.apply(null, all.map(function (p) { return p[1]; })), ymax = Math.max.apply(null, all.map(function (p) { return p[1]; }));
+    if (opt.xmin !== undefined) xmin = opt.xmin;
+    if (opt.xmax !== undefined) xmax = Math.max(xmax, opt.xmax);
+    if (opt.ymin !== undefined) ymin = Math.min(ymin, opt.ymin);
+    if (opt.ymax !== undefined) ymax = Math.max(ymax, opt.ymax);
+    if (xmax === xmin) { xmax += 1; xmin -= 1; }
+    if (ymax === ymin) { ymax += 1; ymin -= 1; }
+    var sx = niceStep(xmax - xmin, 6), sy = niceStep(ymax - ymin, 5);
+    xmin = Math.floor(xmin / sx) * sx; xmax = Math.ceil(xmax / sx) * sx;
+    ymin = Math.floor(ymin / sy) * sy; ymax = Math.ceil(ymax / sy) * sy;
+    function X(v) { return ml + (W - ml - mr) * (v - xmin) / (xmax - xmin); }
+    function Y(v) { return H - mb - (H - mt - mb) * (v - ymin) / (ymax - ymin); }
+    function fmt(v) { return String(Math.round(v * 1000) / 1000).replace('.', ','); }
+    var v;
+    for (v = xmin; v <= xmax + sx / 1000; v += sx) {
+      el(svg, 'line', { x1: X(v), y1: mt, x2: X(v), y2: H - mb, stroke: '#e1e7ee' });
+      el(svg, 'text', { x: X(v), y: H - mb + 16, 'text-anchor': 'middle', 'font-size': 11, fill: COL_TXT }, fmt(v));
+    }
+    for (v = ymin; v <= ymax + sy / 1000; v += sy) {
+      el(svg, 'line', { x1: ml, y1: Y(v), x2: W - mr, y2: Y(v), stroke: '#e1e7ee' });
+      el(svg, 'text', { x: ml - 6, y: Y(v) + 4, 'text-anchor': 'end', 'font-size': 11, fill: COL_TXT }, fmt(v));
+    }
+    el(svg, 'rect', { x: ml, y: mt, width: W - ml - mr, height: H - mt - mb, fill: 'none', stroke: '#333' });
+    el(svg, 'text', { x: (ml + W - mr) / 2, y: H - 8, 'text-anchor': 'middle', 'font-size': 12, fill: COL_TXT }, opt.xlabel);
+    var yl = el(svg, 'text', { x: 14, y: (mt + H - mb) / 2, 'text-anchor': 'middle', 'font-size': 12, fill: COL_TXT, transform: 'rotate(-90 14 ' + ((mt + H - mb) / 2) + ')' }, opt.ylabel);
+    opt.series.forEach(function (s) {
+      var pts = s.pts.slice().sort(function (a, b) { return a[0] - b[0]; });
+      if (s.line && pts.length > 1) {
+        el(svg, 'polyline', { points: pts.map(function (p) { return X(p[0]) + ',' + Y(p[1]); }).join(' '), fill: 'none', stroke: s.color, 'stroke-width': 1.6, 'stroke-dasharray': s.dash || '' });
+      }
+      pts.forEach(function (p) {
+        if (s.nomarker) return;
+        if (s.marker === 'square') el(svg, 'rect', { x: X(p[0]) - 4, y: Y(p[1]) - 4, width: 8, height: 8, fill: s.color });
+        else el(svg, 'circle', { cx: X(p[0]), cy: Y(p[1]), r: 4, fill: s.fill || s.color, stroke: s.color, 'stroke-width': 1.5 });
+      });
+    });
+    // légende
+    var ly = mt + 12;
+    opt.series.forEach(function (s) {
+      if (!s.name) return;
+      el(svg, 'rect', { x: W - mr - 190, y: ly - 9, width: 10, height: 10, fill: s.marker === 'square' ? s.color : (s.fill || '#fff'), stroke: s.color });
+      el(svg, 'text', { x: W - mr - 174, y: ly, 'font-size': 11, fill: COL_TXT }, s.name);
+      ly += 16;
+    });
+  }
+
+  var THEORIE = [[0, 100], [10, 98.5], [20, 94], [30, 86.6], [40, 76.6], [50, 64.3], [60, 50], [70, 34.2], [80, 17.4]];
+
+  function majGrapheD2() {
+    var pts = [];
+    var E = [], I = [];
+    for (var r = 1; r <= 12; r++) {
+      var e = parseNum(document.querySelector('[data-qid="d2_E_' + r + '"]').value);
+      var i = parseNum(document.querySelector('[data-qid="d2_i_' + r + '"]').value);
+      if (!isNaN(e) && !isNaN(i)) { E.push(e); I.push(i); }
+    }
+    var ref = NaN;
+    if (E.length) {
+      var k0 = I.indexOf(0);
+      ref = k0 >= 0 ? E[k0] : Math.max.apply(null, E);
+    }
+    if (ref > 0) for (var k = 0; k < E.length; k++) pts.push([I[k], 100 * E[k] / ref]);
+    tracer(document.getElementById('svgGrapheD2'), {
+      xlabel: 'Angle d\'incidence i (°)', ylabel: 'Rayonnement intercepté (%)',
+      xmin: 0, xmax: 80, ymin: 0, ymax: 100,
+      series: [
+        { name: 'Valeurs théoriques', pts: THEORIE, line: true, color: COL_BLUE, fill: '#fff' },
+        { name: 'Mes mesures', pts: pts, marker: 'square', color: '#b3261e' }
+      ]
+    });
+  }
+  function majGraphes() { majGrapheD2(); }
+
+  document.getElementById('tabD2').addEventListener('input', majGrapheD2);
+  document.getElementById('d2_alpha_max').addEventListener('input', majGrapheD2);
+  majGraphes();
+
+  /* ================= Champs d'identification ================= */
+  var numTP = document.getElementById('numTP');
+  var poste = document.getElementById('poste');
+  poste.addEventListener('input', function () {
+    var v = poste.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 4);
+    if (v !== poste.value) poste.value = v;
+  });
+
+  /* ================= Messages ================= */
+  var msg = document.getElementById('msg');
+  function say(text, kind) {
+    msg.className = kind || '';
+    msg.textContent = text;
+  }
+  var MSG_POSTE = 'Numéro de poste manquant : renseignez-le en haut de la page <em>(pour les classes de secondes, ajouter la lettre du groupe (A ou B))</em>. Rien n\'a été enregistré.';
+
+  /* ================= Boîte de confirmation ================= */
+  var voile = document.getElementById('voile');
+  var voileTexte = document.getElementById('voileTexte');
+  var voileOk = document.getElementById('voileOk');
+  var voileAnnuler = document.getElementById('voileAnnuler');
+  var dernierFocus = null;
+  function confirmer(texte, labelOk) {
+    return new Promise(function (resolve) {
+      dernierFocus = document.activeElement;
+      voileTexte.textContent = texte;
+      voileOk.textContent = labelOk;
+      voile.hidden = false;
+      voileAnnuler.focus();
+      function fin(res) {
+        voile.hidden = true;
+        voileOk.removeEventListener('click', ok);
+        voileAnnuler.removeEventListener('click', ko);
+        document.removeEventListener('keydown', cle);
+        if (dernierFocus && dernierFocus.focus) dernierFocus.focus();
+        resolve(res);
+      }
+      function ok() { fin(true); }
+      function ko() { fin(false); }
+      function cle(e) { if (e.key === 'Escape') fin(false); }
+      voileOk.addEventListener('click', ok);
+      voileAnnuler.addEventListener('click', ko);
+      document.addEventListener('keydown', cle);
+    });
+  }
+
+  /* ================= Collecte / application des réponses ================= */
+  function champs() { return Array.prototype.slice.call(document.querySelectorAll('[data-qid]')); }
+  function collecter() {
+    return champs().map(function (c) {
+      return { id: c.getAttribute('data-qid'), intitule: c.getAttribute('data-label'), reponse: c.value };
+    });
+  }
+  function aDesReponses() {
+    return champs().some(function (c) { return c.value.trim() !== ''; });
+  }
+  function toutVider() {
+    champs().forEach(function (c) { c.value = ''; });
+    majGraphes();
+  }
+
+  /* ================= Date ISO 8601 Europe/Paris ================= */
+  function isoParis(d) {
+    var f = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/Paris', hourCycle: 'h23',
+      year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+    var p = {};
+    f.formatToParts(d).forEach(function (x) { p[x.type] = x.value; });
+    var asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);
+    var offMin = Math.round((asUTC - Math.floor(d.getTime() / 1000) * 1000) / 60000);
+    var sign = offMin >= 0 ? '+' : '-';
+    var ao = Math.abs(offMin);
+    var oh = String(Math.floor(ao / 60)).padStart(2, '0'), om = String(ao % 60).padStart(2, '0');
+    return {
+      iso: p.year + '-' + p.month + '-' + p.day + 'T' + p.hour + ':' + p.minute + ':' + p.second + sign + oh + ':' + om,
+      fichier: p.year + '-' + p.month + '-' + p.day + '_' + p.hour + p.minute
+    };
+  }
+
+  /* ================= Enregistrer ================= */
+  document.getElementById('btnEnregistrer').addEventListener('click', async function () {
+    var n = poste.value.trim();
+    if (n === '') { msg.className = 'err'; msg.innerHTML = MSG_POSTE; poste.focus(); return; }
+    var tp = numTP.value.trim();
+    var dt = isoParis(new Date());
+    var data = {
+      tp_id: TP_ID,
+      version: TP_VERSION,
+      numero_tp: tp,
+      numero_poste: n,
+      date_heure: dt.iso,
+      reponses: collecter()
+    };
+    var tpSeg = tp === '' ? '' : 'TP_' + tp.replace(/[\\\/:*?"<>|\s]+/g, '-') + '_';
+    var nom = tpSeg + 'poste' + n + '_' + dt.fichier + '.json';
+    var texte = JSON.stringify(data, null, 2);
+
+    if (window.showSaveFilePicker) {
+      try {
+        var h = await window.showSaveFilePicker({
+          suggestedName: nom,
+          types: [{ description: 'Réponses (JSON)', accept: { 'application/json': ['.json'] } }]
+        });
+        var w = await h.createWritable();
+        await w.write(texte);
+        await w.close();
+        say('Réponses enregistrées : ' + h.name, 'ok');
+        return;
+      } catch (e) {
+        if (e && e.name === 'AbortError') { say('Enregistrement annulé.', ''); return; }
+        /* autre erreur : repli sur le téléchargement classique */
+      }
+    }
+    var blob = new Blob([texte], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = nom;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+    say('Réponses enregistrées : ' + nom + ' (voir votre dossier de téléchargements).', 'ok');
+  });
+
+  /* ================= Importer ================= */
+  var fichier = document.getElementById('fichierImport');
+  document.getElementById('btnImporter').addEventListener('click', function () { fichier.click(); });
+  fichier.addEventListener('change', function () {
+    var f = fichier.files && fichier.files[0];
+    if (!f) return;
+    var rd = new FileReader();
+    rd.onerror = function () { say('Le fichier n\'a pas pu être lu. Rien n\'a été modifié.', 'err'); fichier.value = ''; };
+    rd.onload = async function () {
+      fichier.value = '';
+      var d;
+      try { d = JSON.parse(rd.result); } catch (e) { d = null; }
+      if (!d || typeof d !== 'object' || !Array.isArray(d.reponses)) {
+        say('Ce fichier n\'est pas un fichier de réponses valide. Rien n\'a été modifié.', 'err'); return;
+      }
+      if (d.tp_id !== TP_ID) {
+        say('Ce fichier a été enregistré avec un autre TP : import refusé. Rien n\'a été modifié.', 'err'); return;
+      }
+      if (d.version !== TP_VERSION) {
+        say('Ce fichier a été enregistré avec une autre version de ce TP (version ' + String(d.version) + ' ; version actuelle : ' + TP_VERSION + ') : import refusé. Rien n\'a été modifié.', 'err'); return;
+      }
+      if (aDesReponses()) {
+        var ok = await confirmer('Des réponses sont déjà saisies. Les remplacer par celles du fichier importé ?', 'Remplacer');
+        if (!ok) { say('Import annulé. Vos réponses actuelles sont conservées.', ''); return; }
+      }
+      var m = {};
+      d.reponses.forEach(function (r) { if (r && typeof r.id === 'string') m[r.id] = r.reponse; });
+      champs().forEach(function (c) {
+        var v = m[c.getAttribute('data-qid')];
+        c.value = (typeof v === 'string') ? v : '';
+      });
+      majGraphes();
+      say('Réponses importées. Le numéro de TP et le numéro de poste de cette page n\'ont pas été modifiés.', 'ok');
+    };
+    rd.readAsText(f);
+  });
+
+  /* ================= Effacer ================= */
+  document.getElementById('btnEffacer').addEventListener('click', async function () {
+    var ok = await confirmer('Effacer toutes vos réponses ? Cette action est irréversible. Pensez à enregistrer avant.', 'Effacer');
+    if (!ok) { say('', ''); return; }
+    toutVider();
+    say('Toutes vos réponses ont été effacées.', 'ok');
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Enseignement scientifique : activités interactives classées par thèmes du programme.">
+<title>Enseignement scientifique — Activités par thèmes</title>
+<meta name="theme-color" content="#0f1729">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Style « tableau périodique » — commun à l'accueil et aux 6 menus */
+:root{
+  --fond:#0f1729; --carte:#17223a; --carte-2:#1d2a46; --bord:#2c3a57; --bord-survol:#4a5f8a;
+  --texte:#e8edf7; --texte-2:#c3cee2; --texte-3:#9fb0cc; --blanc:#ffffff;
+  --cours:#2bb3a3; --tp:#f2a541; --simu:#a99bfa; --goodies:#f0709a; --es:#7bc96f; --accent:var(--cours);
+  --sans:'Space Grotesk',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+body.type-tp{--accent:var(--tp);}
+body.type-simu{--accent:var(--simu);}
+body.type-goodies{--accent:var(--goodies);}
+body.type-es{--accent:var(--es);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--fond);color:var(--texte);font-family:var(--sans);line-height:1.5;padding:40px 20px 64px;}
+.page{max-width:900px;margin:0 auto;}
+
+/* EN-TÊTE */
+.entete{padding-bottom:28px;margin-bottom:28px;border-bottom:1px solid var(--bord);}
+.retour{display:inline-block;margin-bottom:28px;font-family:var(--mono);font-size:14px;color:var(--texte-2);text-decoration:none;}
+.retour:hover{color:var(--blanc);text-decoration:underline;}
+.retour:focus-visible{outline:2px solid var(--blanc);outline-offset:3px;border-radius:4px;}
+.titre-bloc{display:flex;flex-wrap:wrap;align-items:center;gap:24px;}
+.grande-case{flex:0 0 112px;height:112px;border-radius:10px;background:var(--accent);color:var(--fond);padding:10px 12px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;}
+.grande-case .sym{font-size:48px;font-weight:700;line-height:1;}
+.grande-case .unite{font-family:var(--mono);font-size:11px;}
+.titre-bloc .textes{flex:1 1 300px;display:flex;flex-direction:column;gap:6px;}
+.surtitre{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-3);}
+h1{font-size:44px;font-weight:700;line-height:1.08;letter-spacing:-.02em;}
+.sous{font-size:17px;color:var(--texte-2);}
+
+/* CONTENU */
+.intro{color:var(--texte-2);max-width:660px;margin-bottom:24px;}
+.groupe + .groupe{margin-top:36px;}
+.groupe > h2{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-3);margin-bottom:14px;}
+ul.cours{list-style:none;display:grid;gap:14px;counter-reset:n;}
+
+/* CARTES : la case colorée et son numéro sont produits par le CSS (pas de balise à ajouter) */
+.carte{display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:18px;align-items:start;background:var(--carte);border:1px solid var(--bord);border-radius:14px;padding:16px;transition:border-color .2s,transform .2s;}
+.carte:hover{border-color:var(--bord-survol);transform:translateY(-2px);}
+.carte::before{counter-increment:n;content:counter(n,decimal-leading-zero);grid-column:1;grid-row:1 / span 8;align-self:start;width:56px;height:56px;border-radius:8px;background:var(--accent);color:var(--fond);font-family:var(--mono);font-size:15px;font-weight:600;padding:6px 8px;}
+.carte > *{grid-column:2;}
+.carte .theme{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:2px;}
+.carte h2,.carte h3{font-size:21px;font-weight:700;line-height:1.3;margin-bottom:8px;}
+.carte h2 a,.carte h3 a{color:var(--blanc);text-decoration:none;}
+.carte h2 a::after,.carte h3 a::after{content:' →';color:var(--accent);}
+.carte h2 a:hover,.carte h3 a:hover{text-decoration:underline;}
+.carte h2 a:focus-visible,.carte h3 a:focus-visible{outline:2px solid var(--blanc);outline-offset:3px;border-radius:4px;}
+.parties{list-style:none;display:flex;flex-wrap:wrap;gap:6px;}
+.parties li{font-size:13px;color:var(--texte-2);background:var(--carte-2);border:1px solid var(--bord);border-radius:20px;padding:1px 10px;}
+.carte .desc{font-size:15px;color:var(--texte-2);}
+.telecharger{justify-self:start;margin-top:10px;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;}
+.telecharger:hover{text-decoration:underline;}
+.telecharger:focus-visible{outline:2px solid var(--blanc);outline-offset:3px;border-radius:4px;}
+.vide{font-size:15px;color:var(--texte-3);border:1px dashed var(--bord);border-radius:14px;padding:14px 16px;}
+.pied{margin-top:36px;padding-top:18px;border-top:1px solid var(--bord);font-family:var(--mono);font-size:13px;color:var(--texte-3);}
+
+@media (max-width:560px){
+  body{padding:28px 16px 48px;}
+  .retour{margin-bottom:22px;}
+  .titre-bloc{gap:16px;}
+  .grande-case{flex-basis:80px;height:80px;padding:8px;}
+  .grande-case .sym{font-size:34px;}
+  .grande-case .unite{font-size:9px;}
+  h1{font-size:32px;}
+  .carte{grid-template-columns:44px minmax(0,1fr);column-gap:14px;padding:14px;}
+  .carte::before{width:44px;height:44px;font-size:13px;padding:5px 6px;}
+  .carte h2,.carte h3{font-size:19px;}
+}
+</style>
+</head>
+<body class="type-es">
+
+<div class="page">
+  <header class="entete">
+    <a class="retour" href="../">← Accueil</a>
+    <div class="titre-bloc">
+      <span class="grande-case" aria-hidden="true"><span class="sym">Es</span><span class="unite">activités</span></span>
+      <div class="textes">
+        <p class="surtitre">Enseignement scientifique · Première</p>
+        <h1>Enseignement scientifique</h1>
+        <p class="sous">Activités interactives classées par thèmes du programme</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenu">
+    <p class="intro">Choisis une activité. Elle s'ouvre directement dans le navigateur ; tu peux aussi la télécharger pour la faire sans connexion.</p>
+
+    <section class="groupe">
+      <h2>Thème 1 · Une longue histoire de la matière</h2>
+      <p class="vide">Activités à venir.</p>
+    </section>
+
+    <section class="groupe">
+      <h2>Thème 2 · Le Soleil, notre source d'énergie</h2>
+      <ul class="cours">
+        <li class="carte">
+          <p class="theme">Le rayonnement solaire</p>
+          <h3><a href="theme-2-soleil-source-energie/repartition-energie-solaire/" target="_blank" rel="noopener">L'énergie solaire inégalement répartie sur Terre</a></h3>
+          <p class="desc">Angle d'incidence des rayons du Soleil et éclairement reçu ; variations suivant l'heure de la journée et la saison, avec deux simulations.</p>
+          <a class="telecharger" href="theme-2-soleil-source-energie/repartition-energie-solaire/index.html" download="Activite_energie_solaire.html">⤓ Télécharger le fichier HTML</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="groupe">
+      <h2>Thème 3 · La Terre, un astre singulier</h2>
+      <p class="vide">Activités à venir.</p>
+    </section>
+
+    <section class="groupe">
+      <h2>Thème 4 · Son et musique, porteurs d'information</h2>
+      <p class="vide">Activités à venir.</p>
+    </section>
+
+    <p class="pied">Enseignement scientifique · Première</p>
+  </main>
+</div>
+
+</body>
+</html>

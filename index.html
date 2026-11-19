@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Physique-chimie au lycée : cours interactifs et travaux pratiques de seconde et de première spécialité, simulations.">
+<meta name="description" content="Physique-chimie au lycée : cours interactifs et travaux pratiques de seconde et de première spécialité, enseignement scientifique, simulations.">
 <meta name="theme-color" content="#0f1729">
 <title>Physique-chimie au lycée</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +13,7 @@
 :root{
   --fond:#0f1729; --carte:#17223a; --bord:#2c3a57;
   --texte:#e8edf7; --texte-2:#c3cee2; --texte-3:#9fb0cc; --blanc:#ffffff;
-  --cours:#2bb3a3; --tp:#f2a541; --simu:#a99bfa; --goodies:#f0709a;
+  --cours:#2bb3a3; --tp:#f2a541; --simu:#a99bfa; --goodies:#f0709a; --es:#7bc96f;
   --sans:'Space Grotesk',system-ui,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,monospace;
 }
@@ -46,7 +46,7 @@ h1{font-weight:700;font-size:60px;line-height:1.02;letter-spacing:-.02em;}
 .carte:hover{border-color:#4a5f8a;transform:translateY(-2px);}
 .carte:focus-visible{outline:3px solid var(--blanc);outline-offset:3px;}
 .case{flex:0 0 132px;height:132px;border-radius:10px;color:var(--fond);padding:12px;display:flex;flex-direction:column;justify-content:space-between;}
-.case.cours{background:var(--cours);} .case.tp{background:var(--tp);} .case.simu{background:var(--simu);} .case.goodies{background:var(--goodies);}
+.case.cours{background:var(--cours);} .case.tp{background:var(--tp);} .case.simu{background:var(--simu);} .case.goodies{background:var(--goodies);} .case.es{background:var(--es);}
 .case .num{font-family:var(--mono);font-size:15px;font-weight:600;}
 .case .sym{font-size:52px;font-weight:700;line-height:1;}
 .case .unite{font-family:var(--mono);font-size:12px;}
@@ -86,6 +86,7 @@ h1{font-weight:700;font-size:60px;line-height:1.02;letter-spacing:-.02em;}
       <li><i style="background:var(--tp)"></i>Travaux pratiques</li>
       <li><i style="background:var(--simu)"></i>Simulations</li>
       <li><i style="background:var(--goodies)"></i>Goodies</li>
+      <li><i style="background:var(--es)"></i>Enseignement scientifique</li>
     </ul>
   </header>
 
@@ -145,6 +146,21 @@ h1{font-weight:700;font-size:60px;line-height:1.02;letter-spacing:-.02em;}
         <span class="texte">
           <span class="titre">Les goodies de première spécialité</span>
           <span class="desc">Les demi-équations électroniques : équilibrer pas à pas, avec vérification.</span>
+        </span>
+      </a>
+    </section>
+
+    <!-- ===================== ENSEIGNEMENT SCIENTIFIQUE ===================== -->
+    <section class="rangee">
+      <div class="nom">
+        <span class="periode">Tronc commun</span>
+        <h2 style="font-size:24px">Enseignement scientifique</h2>
+      </div>
+      <a class="carte large" href="enseignement-scientifique/">
+        <span class="case es" aria-hidden="true"><span class="num">01</span><span class="sym">Es</span><span class="unite">activité</span></span>
+        <span class="texte">
+          <span class="titre">Les activités d'enseignement scientifique</span>
+          <span class="desc">Classées par thèmes du programme de première : le Soleil, notre source d'énergie, et les thèmes à venir.</span>
         </span>
       </a>
     </section>
