@@ -15,7 +15,7 @@
   html{scroll-behavior:smooth}
   body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
   a{color:var(--accent)}
-  .wrap{max-width:980px;margin:0 auto;padding:0 16px 90px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 16px 120px}
 
   /* Barre du haut */
   .topbar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 2px 6px rgba(0,0,0,.05)}
@@ -23,7 +23,7 @@
   .toptitle{font-weight:600;flex:1 1 200px;min-width:160px}
   .poste{display:flex;align-items:center;gap:8px}
   .poste label{font-weight:600;white-space:nowrap}
-  .poste input{width:5.6em;text-align:center;font-size:1.05rem;padding:6px 8px;border:2px solid var(--line);border-radius:8px}
+  .poste input[type=text]{width:5.6em;text-align:center;font-size:1.05rem;padding:6px 8px;border:2px solid var(--line);border-radius:8px}
   .btns{display:flex;flex-wrap:wrap;gap:8px}
   button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--accent);background:var(--card);color:var(--accent);padding:7px 14px;font-weight:600}
   button:hover{background:var(--accent-soft)}
@@ -32,7 +32,7 @@
   button.danger{border-color:var(--err);color:var(--err)}
   button.danger:hover{background:var(--err-bg)}
   button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #f2a900;outline-offset:1px}
-  #msg{position:fixed;right:16px;bottom:68px;left:16px;max-width:460px;margin-left:auto;z-index:30}
+  #msg{position:fixed;right:16px;bottom:72px;left:16px;max-width:460px;margin-left:auto;z-index:30}
   #msg .m{margin:0;box-shadow:0 4px 16px rgba(0,0,0,.25);cursor:pointer;padding:9px 14px;border-radius:8px;border:1px solid;font-weight:500}
   #msg .m.ok{background:var(--ok-bg);color:var(--ok);border-color:#9fd6b6}
   #msg .m.warn{background:var(--warn-bg);color:var(--warn);border-color:#f0b98a}
@@ -41,8 +41,8 @@
 
   /* Palette de saisie */
   .fab{position:fixed;right:16px;bottom:16px;z-index:30;box-shadow:0 4px 14px rgba(0,0,0,.3);padding:10px 20px;border-radius:999px}
-  .palette{background:#fffbea;border-bottom:1px solid #ecdc9a}
-  .palette-in{max-width:980px;margin:0 auto;padding:6px 16px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.9rem}
+  .palette{position:fixed;left:0;right:0;bottom:0;z-index:25;background:#fffbea;border-top:1px solid #ecdc9a;box-shadow:0 -2px 8px rgba(0,0,0,.08)}
+  .palette-in{max-width:980px;margin:0 auto;padding:5px 160px 5px 16px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-size:.9rem}
   .palette span.lbl{color:#6b5a00;font-weight:600;margin-right:4px}
   .palette button{padding:2px 9px;font-weight:500;font-size:.95rem;border-color:#c9b64b;color:#4d4100;background:#fff}
   .palette button:hover{background:#fff4c2}
@@ -147,7 +147,7 @@
 <button type="button" class="primary fab" id="btnSaveFab" title="Enregistre vos réponses dans un fichier JSON">Enregistrer</button>
 <div class="palette" aria-label="Aide à la saisie">
   <div class="palette-in">
-    <span class="lbl">Aide à la saisie (cliquez dans une zone de réponse, puis sur un symbole) :</span>
+    <span class="lbl" title="Cliquez d’abord dans une zone de réponse, puis sur le symbole à insérer">Insérer dans la réponse :</span>
     <button type="button" data-ins="→" title="Flèche de réaction">→</button>
     <button type="button" data-ins="⇌" title="Double flèche">⇌</button>
     <button type="button" data-ins="e⁻" title="Électron">e⁻</button>
