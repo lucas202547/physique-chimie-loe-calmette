@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oxydo-réduction</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#fff; --ink:#1d2733; --muted:#5b6776; --line:#d5dbe3;
+    --accent:#0b5cad; --accent-ink:#fff; --accent-soft:#e6f0fb;
+    --warn:#9a3b00; --warn-bg:#fff1e6; --ok:#0d6b3a; --ok-bg:#e6f6ec; --err:#a31621; --err-bg:#fdeaec;
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+  a{color:var(--accent)}
+  .wrap{max-width:980px;margin:0 auto;padding:0 16px 90px}
+
+  /* Barre du haut */
+  .topbar{background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 2px 6px rgba(0,0,0,.05)}
+  .topbar-in{max-width:980px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+  .toptitle{font-weight:600;flex:1 1 200px;min-width:160px}
+  .poste{display:flex;align-items:center;gap:8px}
+  .poste label{font-weight:600;white-space:nowrap}
+  .poste input{width:5.6em;text-align:center;font-size:1.05rem;padding:6px 8px;border:2px solid var(--line);border-radius:8px}
+  .btns{display:flex;flex-wrap:wrap;gap:8px}
+  button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--accent);background:var(--card);color:var(--accent);padding:7px 14px;font-weight:600}
+  button:hover{background:var(--accent-soft)}
+  button.primary{background:var(--accent);color:var(--accent-ink)}
+  button.primary:hover{background:#094c91}
+  button.danger{border-color:var(--err);color:var(--err)}
+  button.danger:hover{background:var(--err-bg)}
+  button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #f2a900;outline-offset:1px}
+  #msg{position:fixed;right:16px;bottom:68px;left:16px;max-width:460px;margin-left:auto;z-index:30}
+  #msg .m{margin:0;box-shadow:0 4px 16px rgba(0,0,0,.25);cursor:pointer;padding:9px 14px;border-radius:8px;border:1px solid;font-weight:500}
+  #msg .m.ok{background:var(--ok-bg);color:var(--ok);border-color:#9fd6b6}
+  #msg .m.warn{background:var(--warn-bg);color:var(--warn);border-color:#f0b98a}
+  #msg .m.err{background:var(--err-bg);color:var(--err);border-color:#eba3a9}
+  #msg .m.info{background:var(--accent-soft);color:#08407a;border-color:#a9c9ec}
+
+  /* Palette de saisie */
+  .fab{position:fixed;right:16px;bottom:16px;z-index:30;box-shadow:0 4px 14px rgba(0,0,0,.3);padding:10px 20px;border-radius:999px}
+  .palette{background:#fffbea;border-bottom:1px solid #ecdc9a}
+  .palette-in{max-width:980px;margin:0 auto;padding:6px 16px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.9rem}
+  .palette span.lbl{color:#6b5a00;font-weight:600;margin-right:4px}
+  .palette button{padding:2px 9px;font-weight:500;font-size:.95rem;border-color:#c9b64b;color:#4d4100;background:#fff}
+  .palette button:hover{background:#fff4c2}
+
+  /* En-tête du TP */
+  header.tp{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin:18px 0;overflow:hidden}
+  header.tp .row1{display:flex;justify-content:space-between;align-items:center;background:var(--accent-soft);padding:10px 16px;font-weight:600;gap:12px;flex-wrap:wrap}
+  header.tp .row1 .n{background:var(--accent);color:#fff;padding:2px 14px;border-radius:6px;font-size:1.3rem;font-weight:800}
+  header.tp h1{margin:0;padding:12px 16px 4px;font-size:1.6rem;text-align:center;letter-spacing:.04em}
+  header.tp .row3{display:grid;grid-template-columns:1fr 2fr;gap:0;border-top:1px solid var(--line);margin-top:8px}
+  header.tp .row3>div{padding:10px 16px}
+  header.tp .row3>div:first-child{border-right:1px solid var(--line);font-weight:600}
+  header.tp .row3 em{color:var(--muted)}
+  @media (max-width:640px){header.tp .row3{grid-template-columns:1fr}header.tp .row3>div:first-child{border-right:0;border-bottom:1px solid var(--line)}}
+
+  .intro{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;margin-bottom:18px}
+  .intro .problem{font-weight:700;margin:.6em 0 0}
+
+  /* Documents */
+  .doc{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:var(--radius);margin:14px 0;overflow:hidden}
+  .doc h3{margin:0;padding:8px 16px;font-size:1rem;background:var(--accent-soft)}
+  .doc .body{padding:12px 16px}
+  .doc p{margin:.4em 0}
+  table.data{border-collapse:collapse;margin:8px 0;max-width:100%}
+  table.data th,table.data td{border:1px solid var(--line);padding:6px 12px;text-align:center}
+  table.data th{background:#f0f3f7}
+  .sw{display:inline-block;width:.9em;height:.9em;border-radius:50%;border:1px solid #6b7480;vertical-align:-1px;margin-right:6px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px}
+  @media (max-width:640px){.cols{grid-template-columns:1fr}}
+  .cols ul{margin:.2em 0;padding-left:1.2em}
+  figure.schema{margin:12px 0 4px;text-align:center}
+  figure.schema svg{width:100%;max-width:640px;height:auto}
+  figure.schema figcaption{color:var(--muted);font-size:.9rem;margin-top:2px}
+  .note{background:#f7f9fc;border:1px solid var(--line);border-left:4px solid #7fa6d1;border-radius:8px;padding:8px 14px;margin:10px 0 2px}
+  .order{display:flex;gap:22px;flex-wrap:wrap;font-weight:600;margin:.4em 0 .2em}
+
+  /* Sections de questions */
+  section.part{margin-top:30px}
+  section.part>h2{font-size:1.2rem;margin:0 0 10px;padding:8px 14px;background:var(--accent);color:#fff;border-radius:var(--radius)}
+  .q{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;margin:12px 0}
+  .q h3{margin:0 0 6px;font-size:1.05rem;color:var(--accent)}
+  .q p{margin:.4em 0}
+  .field{margin:10px 0 2px}
+  .field>label{display:block;font-weight:600;margin-bottom:3px}
+  input[type=text],textarea,select{width:100%;font:inherit;color:var(--ink);padding:8px 10px;border:1px solid #aab4c1;border-radius:8px;background:#fff}
+  textarea{min-height:5.2em;resize:vertical}
+  input.eq,textarea.eq{font-family:"Cambria Math","Segoe UI Symbol","Segoe UI",system-ui,sans-serif;font-size:1.05rem}
+  .hint{color:var(--muted);font-size:.92rem}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+  @media (max-width:640px){.grid2{grid-template-columns:1fr}}
+  .eqbox{background:#f7f9fc;border:1px solid var(--line);border-radius:8px;padding:8px 14px;margin:8px 0;text-align:center;font-size:1.05rem}
+  .eqbox small{color:var(--muted)}
+  .safety{background:var(--warn-bg);border:2px solid #e29a63;color:#7a2f00;border-radius:var(--radius);padding:10px 16px;font-weight:700;margin:10px 0}
+  .data-box{background:#f7f9fc;border:1px solid var(--line);border-radius:8px;padding:8px 18px;margin:10px 0}
+  .data-box ul{margin:.3em 0;padding-left:1.2em}
+  ol.steps{margin:.4em 0;padding-left:1.4em}
+
+  /* Tableaux de saisie */
+  .tablewrap{overflow-x:auto;margin:8px 0}
+  table.in{border-collapse:collapse;width:100%;min-width:560px}
+  table.in th,table.in td{border:1px solid #98a3b1;padding:6px 8px;vertical-align:middle}
+  table.in th{background:#eef2f7;text-align:center}
+  table.in td.rowh{font-weight:600;background:#f7f9fc;text-align:center;white-space:nowrap}
+  table.in td.diag{background:#e4e8ee}
+  table.in td.fixed{text-align:center;font-weight:600;background:#f7f9fc}
+  table.in td input,table.in td select{padding:6px 8px}
+  table.in .ctr{text-align:center}
+  .tr-title{font-weight:700}
+
+  dialog.confirm{border:0;border-radius:12px;padding:0;max-width:440px;width:calc(100% - 32px);box-shadow:0 10px 40px rgba(0,0,0,.35);color:var(--ink)}
+  dialog.confirm::backdrop{background:rgba(20,30,45,.55)}
+  dialog.confirm .in{padding:20px 22px}
+  dialog.confirm h2{margin:0 0 8px;font-size:1.15rem}
+  dialog.confirm p{margin:.3em 0;white-space:pre-line}
+  dialog.confirm .act{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+  footer.end{margin-top:28px;text-align:center;color:var(--muted);font-size:.92rem}
+  sup,sub{line-height:0}
+</style>
+</head>
+<body>
+
+<div class="topbar" role="banner">
+  <div class="topbar-in">
+    <span class="toptitle">Oxydo-réduction</span>
+    <div class="poste">
+      <label for="numtp">Numéro de TP</label>
+      <input id="numtp" type="text" maxlength="6" autocomplete="off">
+    </div>
+    <div class="poste">
+      <label for="poste">Numéro de poste</label>
+      <input id="poste" type="text" maxlength="4" autocomplete="off" aria-describedby="posteHelp">
+    </div>
+    <div class="btns">
+      <button type="button" class="primary" id="btnSave" title="Enregistre vos réponses dans un fichier JSON">Enregistrer</button>
+      <button type="button" id="btnImport" title="Recharge un fichier enregistré lors d'une séance précédente">Importer mes réponses d'un jour précédent</button>
+      <button type="button" class="danger" id="btnClear" title="Efface toutes les réponses saisies">Effacer mes réponses</button>
+    </div>
+    <input type="file" id="fileInput" accept=".json,application/json" hidden>
+  </div>
+</div>
+<div id="msg" role="status" aria-live="polite" title="Cliquer pour fermer le message"></div>
+<button type="button" class="primary fab" id="btnSaveFab" title="Enregistre vos réponses dans un fichier JSON">Enregistrer</button>
+<div class="palette" aria-label="Aide à la saisie">
+  <div class="palette-in">
+    <span class="lbl">Aide à la saisie (cliquez dans une zone de réponse, puis sur un symbole) :</span>
+    <button type="button" data-ins="→" title="Flèche de réaction">→</button>
+    <button type="button" data-ins="⇌" title="Double flèche">⇌</button>
+    <button type="button" data-ins="e⁻" title="Électron">e⁻</button>
+    <button type="button" data-ins="⁺" title="Exposant +">⁺</button>
+    <button type="button" data-ins="⁻" title="Exposant −">⁻</button>
+    <button type="button" data-ins="²⁺" title="Exposant 2+">²⁺</button>
+    <button type="button" data-ins="³⁺" title="Exposant 3+">³⁺</button>
+    <button type="button" data-ins="₂" title="Indice 2">₂</button>
+    <button type="button" data-ins="₃" title="Indice 3">₃</button>
+    <button type="button" data-ins="₄" title="Indice 4">₄</button>
+    <button type="button" data-ins="(aq)">(aq)</button>
+    <button type="button" data-ins="(s)">(s)</button>
+    <button type="button" data-ins="(ℓ)">(ℓ)</button>
+    <button type="button" data-ins="(g)">(g)</button>
+  </div>
+</div>
+
+<dialog class="confirm" id="dlg" aria-labelledby="dlgTitle">
+  <div class="in">
+    <h2 id="dlgTitle"></h2>
+    <p id="dlgText"></p>
+    <div class="act">
+      <button type="button" id="dlgCancel">Annuler</button>
+      <button type="button" class="danger" id="dlgOk"></button>
+    </div>
+  </div>
+</dialog>
+
+<div class="wrap">
+<p id="posteHelp" class="hint" style="margin:10px 2px 0">Renseignez le numéro de TP et votre numéro de poste en haut de la page. Le numéro de poste est obligatoire pour enregistrer <em>(pour les classes de secondes, ajouter la lettre du groupe (A ou B))</em> ; le numéro de TP est facultatif.</p>
+
+<header class="tp">
+  <div class="row1"><span>CONSTITUTION ET TRANSFORMATION DE LA MATIÈRE</span></div>
+  <h1>OXYDO-RÉDUCTION</h1>
+  <div class="row3">
+    <div>Suivi de l’évolution d’un système, siège d’une transformation</div>
+    <div><em>Mettre en œuvre des transformations modélisées par des réactions d’oxydo-réduction.</em></div>
+  </div>
+</header>
+
+<div class="intro">
+  <p>Le phénomène d’oxydoréduction est un phénomène fréquent notamment avec certains métaux. En Europe, le zinc est un métal très utilisé pour réaliser des couvertures d’habitation, des gouttières et des conduits d’évacuation des eaux de pluie.</p>
+  <p class="problem">Comment peut-on comprendre ce phénomène d’oxydoréduction en écrivant des transformations chimiques ?</p>
+</div>
+
+<!-- ===================== DOCUMENTS ===================== -->
+<div class="doc">
+  <h3>Doc.1 : Tests de reconnaissance de quelques ions métalliques</h3>
+  <div class="body">
+    <p>De nombreux ions métalliques en solutions peuvent être identifiés par un test chimique : ils forment des précipités caractéristiques avec les ions hydroxyde HO<sup>–</sup> apportés par la soude ou hydroxyde de sodium (Na<sup>+</sup><sub>(aq)</sub>, HO<sup>–</sup><sub>(aq)</sub>) :</p>
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th scope="row">Couleur du précipité</th>
+        <td><span class="sw" style="background:#2f6fd6"></span>Bleu</td>
+        <td><span class="sw" style="background:#4c9a52"></span>Vert</td>
+        <td><span class="sw" style="background:#b4532a"></span>Rouille</td>
+        <td><span class="sw" style="background:#fff"></span>Blanc</td>
+        <td><span class="sw" style="background:#fff"></span>Blanc</td></tr>
+      <tr><th scope="row">Ion identifié</th>
+        <td>Cu<sup>2+</sup></td><td>Fe<sup>2+</sup></td><td>Fe<sup>3+</sup></td><td>Zn<sup>2+</sup></td><td>Mg<sup>2+</sup></td></tr>
+    </table>
+    </div>
+  </div>
+</div>
+
+<div class="doc">
+  <h3>Doc.2 : Extrait d’une notice d’un fabricant de toiture</h3>
+  <div class="body">
+    <p>« Lorsqu’une eau ruisselle sur une toiture en métal M<sub>1</sub> elle peut se charger en ions métalliques M<sub>1</sub><sup>n+</sup>. Si ces ions entrent ensuite en contact avec un autre métal M<sub>2</sub>, ils peuvent alors selon la nature de celui-ci, accélérer sa corrosion. Il faut éviter de poser le métal M<sub>1</sub> au-dessus d’un autre susceptible de réagir avec les ions métalliques M<sub>1</sub><sup>n+</sup>. Les réactions qui ont lieu sont des réactions d’oxydo-réduction.</p>
+    <p>Ainsi il convient d’installer de haut en bas d’une toiture les métaux dans l’ordre suivant : »</p>
+    <div class="order"><span>1. Zinc</span><span>2. Fer</span><span>3. Cuivre</span></div>
+    <figure class="schema">
+      <svg viewBox="0 0 640 275" role="img" aria-label="Schéma en coupe d’une toiture inclinée composée de trois métaux, de haut en bas : zinc, fer, cuivre. Chaque métal libère ses ions (Zn2+, Fe2+, Cu2+), qui sont entraînés par l’eau de pluie vers le bas de la toiture.">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0b5cad"/></marker>
+          <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1d2733"/></marker>
+        </defs>
+        <polygon points="80,96.0 240,142.7 240,156.7 80,110.0" fill="none" stroke="#1d2733" stroke-width="1.5"/>
+        <line x1="160.0" y1="134.3" x2="160.0" y2="147.3" stroke="#5b6776" stroke-width="1"/>
+        <text x="160.0" y="163.3" text-anchor="middle" font-size="15" font-weight="600" fill="#1d2733">1. Zinc (Zn)</text>
+        <line x1="146.0" y1="112.3" x2="146.0" y2="98.3" stroke="#1d2733" stroke-width="1" marker-end="url(#ah2)"/>
+        <line x1="160.0" y1="116.3" x2="160.0" y2="102.3" stroke="#1d2733" stroke-width="1" marker-end="url(#ah2)"/>
+        <line x1="174.0" y1="120.4" x2="174.0" y2="106.4" stroke="#1d2733" stroke-width="1" marker-end="url(#ah2)"/>
+        <text x="160.0" y="93.3" text-anchor="middle" font-size="15" fill="#1d2733">Zn²⁺</text>
+        <polygon points="240,142.7 400,189.3 400,203.3 240,156.7" fill="none" stroke="#1d2733" stroke-width="1.5"/>
+        <line x1="320.0" y1="181.0" x2="320.0" y2="194.0" stroke="#5b6776" stroke-width="1"/>
+        <text x="320.0" y="210.0" text-anchor="middle" font-size="15" font-weight="600" fill="#1d2733">2. Fer (Fe)</text>
+        <line x1="306.0" y1="158.9" x2="306.0" y2="144.9" stroke="#1d2733" stroke-width="1" marker-end="url(#ah2)"/>
+        <line x1="320.0" y1="163.0" x2="320.0" y2="149.0" stroke="#1d2733" stroke-width="1" marker-end="url(#ah2)"/>
+        <line x1="334.0" y1="167.1" x2="334.0" y2="153.1" stroke="#1d2733" stroke-width="1" marker-end="url(#ah2)"/>
+        <text x="320.0" y="140.0" text-anchor="middle" font-size="15" fill="#1d2733">Fe²⁺</text>
+        <polygon points="400,189.3 560,236.0 560,250.0 400,203.3" fill="none" stroke="#1d2733" stroke-width="1.5"/>
+        <line x1="480.0" y1="227.7" x2="480.0" y2="240.7" stroke="#5b6776" stroke-width="1"/>
+        <text x="480.0" y="256.7" text-anchor="middle" font-size="15" font-weight="600" fill="#1d2733">3. Cuivre (Cu)</text>
+        <line x1="466.0" y1="205.6" x2="466.0" y2="191.6" stroke="#1d2733" stroke-width="1" marker-end="url(#ah2)"/>
+        <line x1="480.0" y1="209.7" x2="480.0" y2="195.7" stroke="#1d2733" stroke-width="1" marker-end="url(#ah2)"/>
+        <line x1="494.0" y1="213.8" x2="494.0" y2="199.8" stroke="#1d2733" stroke-width="1" marker-end="url(#ah2)"/>
+        <text x="480.0" y="186.7" text-anchor="middle" font-size="15" fill="#1d2733">Cu²⁺</text>
+        <line x1="100" y1="43.8" x2="540" y2="172.2" stroke="#0b5cad" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#ah)"/>
+        <text transform="translate(110,35.8) rotate(16.26)" font-size="14" fill="#0b5cad" font-style="italic">Eau de pluie qui ruisselle et entraîne les ions</text>
+        <text x="72" y="102.0" text-anchor="end" font-size="14" fill="#5b6776">Haut</text>
+        <text x="570" y="246.0" font-size="14" fill="#5b6776">Bas</text>
+      </svg>
+      <figcaption>Schéma d’une toiture réalisée avec trois métaux, installés de haut en bas dans l’ordre indiqué par le fabricant. Chaque métal libère des ions dans l’eau de pluie, qui les entraîne vers le bas.</figcaption>
+    </figure>
+    <div class="note">
+      <strong>Pour comprendre :</strong> l’eau de pluie contient un peu de dioxygène dissous. Ce dioxygène oxyde lentement les métaux, d’autant plus que cette eau est légèrement acide en raison du dioxyde de carbone dissous qu’elle contient. Les atomes du métal sont alors transformés en ions métalliques : c’est le phénomène de <strong>corrosion</strong>. Tous les métaux ne sont pas également sensibles à ce phénomène, d’où l’ordre de pose indiqué par le fabricant. Les ions formés sont entraînés par l’eau de ruissellement et peuvent ensuite réagir avec un autre métal placé plus bas sur la toiture.
+    </div>
+  </div>
+</div>
+
+<div class="doc">
+  <h3>Doc.3 : L’élément cuivre</h3>
+  <div class="body">
+    <p>L’élément chimique cuivre existe dans la nature sous différents aspects :</p>
+    <div class="tablewrap">
+    <table class="data">
+      <tr><th>Aspect</th><th>Nom</th><th>Formule</th></tr>
+      <tr><td>Poudre noire</td><td>Oxyde de cuivre</td><td>CuO</td></tr>
+      <tr><td>Précipité bleu</td><td>Hydroxyde de cuivre</td><td>Cu(OH)<sub>2</sub></td></tr>
+      <tr><td>Métal rosé</td><td>Atome de cuivre</td><td>Cu</td></tr>
+      <tr><td>Solution bleue</td><td>Ion cuivre</td><td>Cu<sup>2+</sup></td></tr>
+    </table>
+    </div>
+  </div>
+</div>
+
+<div class="doc">
+  <h3>Doc.4 : Un mélange accidentel</h3>
+  <div class="body">
+    <p>Le 15 juillet 2008, à Sèches-sur-Le-Loir dans une entreprise de fabrication de produits alimentaires, lors d’une livraison de produits chimiques, 1850 litres d’une solution d’acide chlorhydrique de formule (H<sup>+</sup><sub>(aq)</sub> + Cl<sup>−</sup><sub>(aq)</sub>) sont versés accidentellement dans une cuve de 2 500 litres. Une réaction a lieu entre l’acide chlorhydrique et la cuve métallique qui perd son étanchéité. La réaction est à l’origine d’un dégagement gazeux. L’acide s’écoule au sol et dégrade également le bac de rétention en béton. Les pompiers répandent du sable pour contenir le produit.</p>
+  </div>
+</div>
+
+<div class="doc">
+  <h3>Doc.5 : Matériel et produits disponibles</h3>
+  <div class="body cols">
+    <ul>
+      <li>6 tubes à essais + bouchons</li>
+      <li>2 béchers de 50 mL et un pot de yaourt</li>
+      <li>3 pipettes</li>
+      <li>Poudre de fer, poudre de zinc et tournure (petits morceaux) de cuivre</li>
+      <li>Balance, spatule, coupelle de pesée</li>
+      <li>Erlenmeyer de 250 mL avec bouchon</li>
+      <li>Hydroxyde de sodium NaOH<sub>(s)</sub> (perles)</li>
+    </ul>
+    <div>
+      <ul>
+        <li>Solutions aqueuses à 0,1 mol L<sup>−1</sup> :
+          <ul>
+            <li>sulfate de cuivre (Cu<sup>2+</sup><sub>(aq)</sub> + SO<sub>4</sub><sup>2−</sup><sub>(aq)</sub>)</li>
+            <li>sulfate de zinc (Zn<sup>2+</sup><sub>(aq)</sub> + SO<sub>4</sub><sup>2−</sup><sub>(aq)</sub>)</li>
+            <li>hydroxyde de sodium ou soude (Na<sup>+</sup><sub>(aq)</sub> + HO<sup>−</sup><sub>(aq)</sub>)</li>
+            <li>acide chlorhydrique (H<sup>+</sup><sub>(aq)</sub> + Cl<sup>−</sup><sub>(aq)</sub>)</li>
+          </ul>
+        </li>
+        <li>Bleu de méthylène</li>
+        <li>Glucose (poudre)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PARTIE I ===================== -->
+<section class="part" id="partie1">
+  <h2>I. Réactions entre un métal et une solution d’ions métalliques</h2>
+
+  <div class="q">
+    <h3>1. Concevoir une expérience</h3>
+    <p>À partir du classement proposé par le fabricant (cf. Doc.2), identifier les réactions possibles ou impossibles entre un ion métallique et le métal d’un autre élément chimique parmi les cas décrits.</p>
+    <div class="tablewrap">
+    <table class="in">
+      <tr><th></th><th scope="col">Cuivre (Cu)</th><th scope="col">Zinc (Zn)</th><th scope="col">Fer (Fe)</th></tr>
+      <tr>
+        <td class="rowh">Cuivre II (Cu<sup>2+</sup>)</td>
+        <td class="diag"></td>
+        <td><select data-id="i1_tab_Cu2_Zn" data-label="Tableau : ion Cu²⁺ avec le métal Zinc (Zn)" aria-label="Cu2+ avec Zn"><option value="">— choisir —</option><option>Réaction possible</option><option>Réaction impossible</option></select></td>
+        <td><select data-id="i1_tab_Cu2_Fe" data-label="Tableau : ion Cu²⁺ avec le métal Fer (Fe)" aria-label="Cu2+ avec Fe"><option value="">— choisir —</option><option>Réaction possible</option><option>Réaction impossible</option></select></td>
+      </tr>
+      <tr>
+        <td class="rowh">Zinc II (Zn<sup>2+</sup>)</td>
+        <td><select data-id="i1_tab_Zn2_Cu" data-label="Tableau : ion Zn²⁺ avec le métal Cuivre (Cu)" aria-label="Zn2+ avec Cu"><option value="">— choisir —</option><option>Réaction possible</option><option>Réaction impossible</option></select></td>
+        <td class="diag"></td>
+        <td><select data-id="i1_tab_Zn2_Fe" data-label="Tableau : ion Zn²⁺ avec le métal Fer (Fe)" aria-label="Zn2+ avec Fe"><option value="">— choisir —</option><option>Réaction possible</option><option>Réaction impossible</option></select></td>
+      </tr>
+      <tr>
+        <td class="rowh">Fer II (Fe<sup>2+</sup>)</td>
+        <td><select data-id="i1_tab_Fe2_Cu" data-label="Tableau : ion Fe²⁺ avec le métal Cuivre (Cu)" aria-label="Fe2+ avec Cu"><option value="">— choisir —</option><option>Réaction possible</option><option>Réaction impossible</option></select></td>
+        <td><select data-id="i1_tab_Fe2_Zn" data-label="Tableau : ion Fe²⁺ avec le métal Zinc (Zn)" aria-label="Fe2+ avec Zn"><option value="">— choisir —</option><option>Réaction possible</option><option>Réaction impossible</option></select></td>
+        <td class="diag"></td>
+      </tr>
+    </table>
+    </div>
+
+    <p>Dans le cas de la réaction possible mettant en jeu les éléments chimiques cuivre et fer, identifier la solution contenant le cation métallique ainsi que le métal à utiliser (donner leur formule) :</p>
+    <div class="grid2">
+      <div class="field"><label for="i1_cation">Solution contenant le cation métallique (formule)</label>
+        <input type="text" class="eq" id="i1_cation" data-id="i1_cation" data-label="Solution contenant le cation métallique (formule)" autocomplete="off" spellcheck="false"></div>
+      <div class="field"><label for="i1_metal">Métal à utiliser (formule)</label>
+        <input type="text" class="eq" id="i1_metal" data-id="i1_metal" data-label="Métal à utiliser (formule)" autocomplete="off" spellcheck="false"></div>
+    </div>
+  </div>
+
+  <div class="q">
+    <h3>2. Expérience</h3>
+    <p>Verser deux pointes de spatule du métal au fond d’un tube à essais et remplir ce dernier au tiers de sa capacité avec la solution contenant le cation. Mettre un bouchon et bien agiter. Noter vos observations (évolution de la couleur de la solution, aspect du dépôt métallique) :</p>
+    <div class="field"><label for="i2_observations" class="hint">Observations</label>
+      <textarea id="i2_observations" data-id="i2_observations" data-label="Expérience : observations (couleur de la solution, aspect du dépôt métallique)"></textarea></div>
+
+    <p>Proposer une interprétation des observations précédentes (en termes de consommation de réactif et de formation de produit) ainsi qu’un test à réaliser pour identifier le cation formé.</p>
+    <div class="field"><label for="i2_interpretation" class="hint">Interprétation et test proposé</label>
+      <textarea id="i2_interpretation" data-id="i2_interpretation" data-label="Expérience : interprétation et test proposé pour identifier le cation formé"></textarea></div>
+
+    <p>Réaliser le test proposé.</p>
+    <div class="field"><label for="i2_test" class="hint">Résultat du test</label>
+      <textarea id="i2_test" data-id="i2_test" data-label="Expérience : résultat du test réalisé" style="min-height:3.6em"></textarea></div>
+  </div>
+
+  <div class="q">
+    <h3>3. Exploitation</h3>
+    <p>Écrire l’équation bilan modélisant cette transformation chimique.</p>
+    <div class="field"><label for="i3_equation" class="hint">Équation bilan</label>
+      <input type="text" class="eq" id="i3_equation" data-id="i3_equation" data-label="Exploitation : équation bilan de la transformation" autocomplete="off" spellcheck="false"></div>
+
+    <p>Écrire les deux demi-équations montrant les échanges d’électrons entre l’atome et l’ion de chaque élément chimique, ainsi que les deux couples d’oxydo-réduction correspondants.</p>
+    <div class="tablewrap">
+    <table class="in">
+      <tr><th style="width:30%">Couple (Ox/Red)</th><th>Demi-équation</th></tr>
+      <tr><td><input type="text" class="eq" data-id="i3_couple_1" data-label="Exploitation : couple d’oxydo-réduction n°1" aria-label="Couple 1" autocomplete="off" spellcheck="false"></td>
+          <td><input type="text" class="eq" data-id="i3_demi_1" data-label="Exploitation : demi-équation n°1" aria-label="Demi-équation 1" autocomplete="off" spellcheck="false"></td></tr>
+      <tr><td><input type="text" class="eq" data-id="i3_couple_2" data-label="Exploitation : couple d’oxydo-réduction n°2" aria-label="Couple 2" autocomplete="off" spellcheck="false"></td>
+          <td><input type="text" class="eq" data-id="i3_demi_2" data-label="Exploitation : demi-équation n°2" aria-label="Demi-équation 2" autocomplete="off" spellcheck="false"></td></tr>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PARTIE II ===================== -->
+<section class="part" id="partie2">
+  <h2>II. Autres réactions avec un métal</h2>
+
+  <div class="q">
+    <p>Mettre en œuvre une expérience simple permettant de déterminer, parmi les trois métaux fer, zinc et cuivre, celui qui pourrait constituer une cuve inattaquable par l’acide chlorhydrique (cf. Doc.4).</p>
+    <div class="field"><label for="ii_experience" class="hint">Expérience réalisée, observations et conclusion</label>
+      <textarea id="ii_experience" data-id="ii_experience" data-label="Partie II : expérience réalisée, observations et métal inattaquable par l’acide chlorhydrique"></textarea></div>
+  </div>
+
+  <div class="q">
+    <p>Mettre en œuvre le protocole et compléter le tableau suivant pour les transformations qui ont eu lieu (les ions Cl<sup>–</sup> sont « spectateurs »), sachant que le métal se transforme en cation métallique.</p>
+
+    <div class="tablewrap">
+    <table class="in" id="tabII">
+      <tr><td class="rowh tr-title">Transformation 1</td>
+          <td><label class="hint" for="t1_reactifs">Réactifs :</label><input type="text" class="eq" id="t1_reactifs" data-id="t1_reactifs" data-label="Transformation 1 : réactifs" autocomplete="off" spellcheck="false"></td>
+          <td><label class="hint" for="t1_produits">Produits :</label><input type="text" class="eq" id="t1_produits" data-id="t1_produits" data-label="Transformation 1 : produits" autocomplete="off" spellcheck="false"></td></tr>
+      <tr><td class="rowh">Demi-équations (avec couples)</td>
+          <td colspan="2">
+            <div class="grid2">
+              <div><label class="hint" for="t1_couple_1">Couple 1 (Ox/Red)</label><input type="text" class="eq" id="t1_couple_1" data-id="t1_couple_1" data-label="Transformation 1 : couple n°1" autocomplete="off" spellcheck="false"></div>
+              <div><label class="hint" for="t1_demi_1">Demi-équation 1</label><input type="text" class="eq" id="t1_demi_1" data-id="t1_demi_1" data-label="Transformation 1 : demi-équation n°1" autocomplete="off" spellcheck="false"></div>
+              <div><label class="hint" for="t1_couple_2">Couple 2 (Ox/Red)</label><input type="text" class="eq" id="t1_couple_2" data-id="t1_couple_2" data-label="Transformation 1 : couple n°2" autocomplete="off" spellcheck="false"></div>
+              <div><label class="hint" for="t1_demi_2">Demi-équation 2</label><input type="text" class="eq" id="t1_demi_2" data-id="t1_demi_2" data-label="Transformation 1 : demi-équation n°2" autocomplete="off" spellcheck="false"></div>
+            </div>
+          </td></tr>
+      <tr><td class="rowh">Équation de la transformation</td>
+          <td colspan="2"><input type="text" class="eq" data-id="t1_equation" data-label="Transformation 1 : équation de la transformation" aria-label="Équation de la transformation 1" autocomplete="off" spellcheck="false"></td></tr>
+
+      <tr><td class="rowh tr-title">Transformation 2</td>
+          <td><label class="hint" for="t2_reactifs">Réactifs :</label><input type="text" class="eq" id="t2_reactifs" data-id="t2_reactifs" data-label="Transformation 2 : réactifs" autocomplete="off" spellcheck="false"></td>
+          <td><label class="hint" for="t2_produits">Produits :</label><input type="text" class="eq" id="t2_produits" data-id="t2_produits" data-label="Transformation 2 : produits" autocomplete="off" spellcheck="false"></td></tr>
+      <tr><td class="rowh">Demi-équations (avec couples)</td>
+          <td colspan="2">
+            <div class="grid2">
+              <div><label class="hint" for="t2_couple_1">Couple 1 (Ox/Red)</label><input type="text" class="eq" id="t2_couple_1" data-id="t2_couple_1" data-label="Transformation 2 : couple n°1" autocomplete="off" spellcheck="false"></div>
+              <div><label class="hint" for="t2_demi_1">Demi-équation 1</label><input type="text" class="eq" id="t2_demi_1" data-id="t2_demi_1" data-label="Transformation 2 : demi-équation n°1" autocomplete="off" spellcheck="false"></div>
+              <div><label class="hint" for="t2_couple_2">Couple 2 (Ox/Red)</label><input type="text" class="eq" id="t2_couple_2" data-id="t2_couple_2" data-label="Transformation 2 : couple n°2" autocomplete="off" spellcheck="false"></div>
+              <div><label class="hint" for="t2_demi_2">Demi-équation 2</label><input type="text" class="eq" id="t2_demi_2" data-id="t2_demi_2" data-label="Transformation 2 : demi-équation n°2" autocomplete="off" spellcheck="false"></div>
+            </div>
+          </td></tr>
+      <tr><td class="rowh">Équation de la transformation</td>
+          <td colspan="2"><input type="text" class="eq" data-id="t2_equation" data-label="Transformation 2 : équation de la transformation" aria-label="Équation de la transformation 2" autocomplete="off" spellcheck="false"></td></tr>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PARTIE III ===================== -->
+<section class="part" id="partie3">
+  <h2>III. Expérience de la « bouteille bleue »</h2>
+
+  <div class="safety">⚠ Attention : expérience nécessitant impérativement le port de lunettes et de gants de protection !</div>
+
+  <div class="q">
+    <ol class="steps">
+      <li>Dans un erlenmeyer de 250 mL, introduire 2,4 g d’hydroxyde de sodium NaOH<sub>(s)</sub> en perles.</li>
+      <li>Ajouter 72 mL d’eau, 2,9 g de glucose en poudre puis cinq gouttes de bleu de méthylène.</li>
+      <li>Boucher l’erlenmeyer puis agiter jusqu’à dissolution complète.</li>
+      <li>Laisser reposer. Observer.</li>
+    </ol>
+    <div class="field"><label for="iii_observations" class="hint">Observations</label>
+      <textarea id="iii_observations" data-id="iii_observations" data-label="Bouteille bleue : observations" style="min-height:4em"></textarea></div>
+
+    <div class="data-box">
+      <strong><u>Données</u> :</strong>
+      <ul>
+        <li>La seule espèce colorée dans le mélange réactionnel est la forme oxydée du bleu de méthylène notée BM<sup>+</sup><sub>(aq)</sub> qui donne une coloration bleue ; la forme réduite est notée BMH<sub>(aq)</sub>.</li>
+        <li>Dans les conditions de l’expérience, le glucose noté RCHO<sub>(aq)</sub> réduit le bleu de méthylène.</li>
+        <li>Couples oxydant/réducteur mis en jeu : BM<sup>+</sup><sub>(aq)</sub>/BMH<sub>(aq)</sub> ; O<sub>2(aq)</sub>/H<sub>2</sub>O<sub>(ℓ)</sub> ; RCOOH<sub>(aq)</sub>/RCHO<sub>(aq)</sub></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="q">
+    <h3>1. Équation de la réaction</h3>
+    <p>La réaction (<em>lente</em>) d’oxydoréduction entre le glucose et la forme oxydée du bleu de méthylène a pour équation :</p>
+    <div class="eqbox">RCHO<sub>(aq)</sub> + BM<sup>+</sup><sub>(aq)</sub> + H<sub>2</sub>O<sub>(ℓ)</sub> → RCOOH<sub>(aq)</sub> + BMH<sub>(aq)</sub> + H<sup>+</sup><sub>(aq)</sub> &nbsp;&nbsp;<small>(équation 1)</small></div>
+    <p>Écrire les demi-équations de réduction de la forme BM<sup>+</sup><sub>(aq)</sub> et d’oxydation du glucose.</p>
+    <div class="field"><label for="iii1_reduction">Demi-équation de réduction de BM<sup>+</sup><sub>(aq)</sub></label>
+      <input type="text" class="eq" id="iii1_reduction" data-id="iii1_reduction" data-label="Bouteille bleue 1 : demi-équation de réduction de BM⁺(aq)" autocomplete="off" spellcheck="false"></div>
+    <div class="field"><label for="iii1_oxydation">Demi-équation d’oxydation du glucose</label>
+      <input type="text" class="eq" id="iii1_oxydation" data-id="iii1_oxydation" data-label="Bouteille bleue 1 : demi-équation d’oxydation du glucose" autocomplete="off" spellcheck="false"></div>
+  </div>
+
+  <div class="q">
+    <h3>2. Interprétation des observations</h3>
+    <p>Lorsque l’on agite l’erlenmeyer, une partie du dioxygène de l’air se dissout dans la solution puis réagit en oxydant <em>rapidement</em> la forme réduite du bleu de méthylène selon l’équation :</p>
+    <div class="eqbox">2 BMH<sub>(aq)</sub> + O<sub>2(aq)</sub> + 2 H<sup>+</sup><sub>(aq)</sub> → 2 H<sub>2</sub>O<sub>(ℓ)</sub> + 2 BM<sup>+</sup><sub>(aq)</sub> &nbsp;&nbsp;<small>(équation 2)</small></div>
+    <p>Expliquer alors les variations de couleur observées.</p>
+    <div class="field"><label for="iii2_explication" class="hint">Explication</label>
+      <textarea id="iii2_explication" data-id="iii2_explication" data-label="Bouteille bleue 2 : explication des variations de couleur observées"></textarea></div>
+  </div>
+
+  <div class="q">
+    <h3>3. Étude quantitative <span class="hint">(exercice maison)</span></h3>
+    <p>Soit le bilan simplifié des deux opérations successives : 2 RCHO<sub>(aq)</sub> + O<sub>2(aq)</sub> → 2 RCOOH<sub>(aq)</sub></p>
+    <p class="hint">Écrire les conversions d’unités en puissances de dix (exemple : 250 mL = 250.10^-3 L).</p>
+
+    <p><em>Estimer</em> le volume V(O<sub>2</sub>) puis la quantité initiale n<sub>i</sub>(O<sub>2</sub>) de dioxygène contenu dans l’erlenmeyer bouché, sachant que l’air contient 20 % de dioxygène.<br>
+    <strong><em>Donnée</em> :</strong> volume molaire dans les conditions de l’expérience V<sub>m</sub> = 24,0 L.mol<sup>-1</sup>.</p>
+    <div class="grid2">
+      <div class="field"><label for="iii3_VO2">V(O<sub>2</sub>) (calcul, résultat et unité)</label>
+        <input type="text" class="eq" id="iii3_VO2" data-id="iii3_VO2" data-label="Étude quantitative : volume V(O₂) dans l’erlenmeyer" autocomplete="off" spellcheck="false"></div>
+      <div class="field"><label for="iii3_niO2">n<sub>i</sub>(O<sub>2</sub>) (calcul, résultat et unité)</label>
+        <input type="text" class="eq" id="iii3_niO2" data-id="iii3_niO2" data-label="Étude quantitative : quantité initiale ni(O₂)" autocomplete="off" spellcheck="false"></div>
+    </div>
+
+    <p style="margin-top:16px">Calculer la quantité initiale de glucose prélevée sachant que M(RCHO) = 180,0 g.mol<sup>-1</sup>.</p>
+    <div class="field"><label for="iii3_niRCHO" class="hint">Quantité initiale de glucose n<sub>i</sub>(RCHO) (calcul, résultat et unité)</label>
+      <input type="text" class="eq" id="iii3_niRCHO" data-id="iii3_niRCHO" data-label="Étude quantitative : quantité initiale de glucose ni(RCHO)" autocomplete="off" spellcheck="false"></div>
+
+    <p style="margin-top:16px">Compléter le tableau d’avancement suivant :</p>
+    <div class="tablewrap">
+    <table class="in" id="tabAvancement">
+      <tr><th colspan="2">Équation bilan</th>
+          <th><strong>2</strong> RCHO<sub>(aq)</sub></th><th>O<sub>2(aq)</sub></th><th><strong>2</strong> RCOOH<sub>(aq)</sub></th></tr>
+      <tr><th>État du système</th><th>Avancement</th><th colspan="3"><em>Quantités de matière</em></th></tr>
+      <tr><td class="fixed"><em>initial</em></td><td class="fixed">0</td>
+          <td><input type="text" class="eq ctr" data-id="av_ini_RCHO" data-label="Tableau d’avancement : état initial, quantité de RCHO" aria-label="Initial RCHO" autocomplete="off" spellcheck="false"></td>
+          <td><input type="text" class="eq ctr" data-id="av_ini_O2" data-label="Tableau d’avancement : état initial, quantité de O₂" aria-label="Initial O2" autocomplete="off" spellcheck="false"></td>
+          <td><input type="text" class="eq ctr" data-id="av_ini_RCOOH" data-label="Tableau d’avancement : état initial, quantité de RCOOH" aria-label="Initial RCOOH" autocomplete="off" spellcheck="false"></td></tr>
+      <tr><td class="fixed"><em>intermédiaire</em></td><td class="fixed"><em>x</em></td>
+          <td><input type="text" class="eq ctr" data-id="av_int_RCHO" data-label="Tableau d’avancement : état intermédiaire, quantité de RCHO" aria-label="Intermédiaire RCHO" autocomplete="off" spellcheck="false"></td>
+          <td><input type="text" class="eq ctr" data-id="av_int_O2" data-label="Tableau d’avancement : état intermédiaire, quantité de O₂" aria-label="Intermédiaire O2" autocomplete="off" spellcheck="false"></td>
+          <td><input type="text" class="eq ctr" data-id="av_int_RCOOH" data-label="Tableau d’avancement : état intermédiaire, quantité de RCOOH" aria-label="Intermédiaire RCOOH" autocomplete="off" spellcheck="false"></td></tr>
+      <tr><td class="fixed"><em>final</em></td><td class="fixed"><em>x</em><sub>max</sub></td>
+          <td><input type="text" class="eq ctr" data-id="av_fin_RCHO" data-label="Tableau d’avancement : état final, quantité de RCHO" aria-label="Final RCHO" autocomplete="off" spellcheck="false"></td>
+          <td><input type="text" class="eq ctr" data-id="av_fin_O2" data-label="Tableau d’avancement : état final, quantité de O₂" aria-label="Final O2" autocomplete="off" spellcheck="false"></td>
+          <td><input type="text" class="eq ctr" data-id="av_fin_RCOOH" data-label="Tableau d’avancement : état final, quantité de RCOOH" aria-label="Final RCOOH" autocomplete="off" spellcheck="false"></td></tr>
+    </table>
+    </div>
+
+    <p style="margin-top:16px">Déterminer le réactif limitant. En déduire la masse de glucose n’ayant pas réagi.</p>
+    <div class="field"><label for="iii3_limitant" class="hint">Réactif limitant et masse de glucose restante</label>
+      <textarea id="iii3_limitant" data-id="iii3_limitant" data-label="Étude quantitative : réactif limitant et masse de glucose n’ayant pas réagi"></textarea></div>
+
+    <p style="margin-top:16px">L’expérience peut-elle être poursuivie indéfiniment ? Comment peut-on la relancer ?</p>
+    <div class="field"><label for="iii3_indefiniment" class="hint">Réponse</label>
+      <textarea id="iii3_indefiniment" data-id="iii3_indefiniment" data-label="Étude quantitative : l’expérience peut-elle être poursuivie indéfiniment ? comment la relancer ?"></textarea></div>
+
+    <p class="hint" style="margin-top:14px"><em>Remarque :</em> au cours de l’expérience, le bleu de méthylène est régénéré, mais on ne parviendra pas à décolorer entièrement la solution si on y place plus que le glucose ne peut en décolorer.</p>
+  </div>
+</section>
+
+<footer class="end">
+  Pensez à cliquer sur <strong>Enregistrer</strong> avant de fermer la page.
+</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Identifiant interne (non affiché) : sert à l'import, pas le numéro de TP saisi. */
+  var TP_ID = 'oxydoreduction-bouteille-bleue';
+  var VERSION = '1.1';
+
+  var posteInput = document.getElementById('poste');
+  var tpInput = document.getElementById('numtp');
+  var msgBox = document.getElementById('msg');
+  var fileInput = document.getElementById('fileInput');
+  var fields = Array.prototype.slice.call(document.querySelectorAll('[data-id]'));
+  var byId = {};
+  fields.forEach(function (el) { byId[el.getAttribute('data-id')] = el; });
+
+  /* ---------- Messages ---------- */
+  var msgTimer = null;
+  function showMsg(text, kind, sticky) {
+    msgBox.innerHTML = '';
+    var d = document.createElement('div');
+    d.className = 'm ' + (kind || 'info');
+    /* Les passages encadrés par § sont affichés en italique. */
+    String(text).split('§').forEach(function (part, i) {
+      if (part === '') return;
+      if (i % 2) { var em = document.createElement('em'); em.textContent = part; d.appendChild(em); }
+      else d.appendChild(document.createTextNode(part));
+    });
+    msgBox.appendChild(d);
+    clearTimeout(msgTimer);
+    if (!sticky) msgTimer = setTimeout(function () { msgBox.innerHTML = ''; }, 9000);
+  }
+
+  /* ---------- Boîte de confirmation ---------- */
+  var dlg = document.getElementById('dlg');
+  function askConfirm(title, text, okLabel) {
+    return new Promise(function (resolve) {
+      if (!dlg || typeof dlg.showModal !== 'function') {
+        resolve(window.confirm(title + '\n\n' + text)); return;
+      }
+      document.getElementById('dlgTitle').textContent = title;
+      document.getElementById('dlgText').textContent = text;
+      var ok = document.getElementById('dlgOk'), cancel = document.getElementById('dlgCancel');
+      ok.textContent = okLabel;
+      function done(v) {
+        ok.removeEventListener('click', onOk); cancel.removeEventListener('click', onCancel);
+        dlg.removeEventListener('cancel', onCancel);
+        if (dlg.open) dlg.close();
+        resolve(v);
+      }
+      function onOk() { done(true); }
+      function onCancel(e) { if (e && e.preventDefault) e.preventDefault(); done(false); }
+      ok.addEventListener('click', onOk); cancel.addEventListener('click', onCancel);
+      dlg.addEventListener('cancel', onCancel);
+      dlg.showModal();
+      cancel.focus();
+    });
+  }
+
+  msgBox.addEventListener('click', function () { clearTimeout(msgTimer); msgBox.innerHTML = ''; });
+
+  /* ---------- Numéro de TP et numéro de poste ---------- */
+  tpInput.addEventListener('input', function () {
+    tpInput.value = tpInput.value.replace(/[^0-9A-Za-z\-]/g, '').slice(0, 6);
+  });
+  posteInput.addEventListener('input', function () {
+    posteInput.value = posteInput.value.replace(/[^0-9A-Za-z]/g, '').toUpperCase().slice(0, 4);
+  });
+
+  /* ---------- Date/heure Europe/Paris (ISO 8601) ---------- */
+  function parisStamp(date) {
+    var fmt = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+    });
+    var p = {};
+    fmt.formatToParts(date).forEach(function (x) { p[x.type] = x.value; });
+    var hour = String(parseInt(p.hour, 10) % 24).padStart(2, '0');
+    var asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +hour, +p.minute, +p.second);
+    var offMin = Math.round((asUTC - Math.floor(date.getTime() / 1000) * 1000) / 60000);
+    var sign = offMin >= 0 ? '+' : '-';
+    var abs = Math.abs(offMin);
+    var off = sign + String(Math.floor(abs / 60)).padStart(2, '0') + ':' + String(abs % 60).padStart(2, '0');
+    return {
+      iso: p.year + '-' + p.month + '-' + p.day + 'T' + hour + ':' + p.minute + ':' + p.second + off,
+      file: p.year + '-' + p.month + '-' + p.day + '_' + hour + p.minute
+    };
+  }
+
+  /* ---------- Collecte / application des réponses ---------- */
+  function collect() {
+    return fields.map(function (el) {
+      return { id: el.getAttribute('data-id'), intitule: el.getAttribute('data-label') || '', reponse: el.value };
+    });
+  }
+  function hasAnswers() {
+    return fields.some(function (el) { return el.value.trim() !== ''; });
+  }
+  function applyAnswers(list) {
+    fields.forEach(function (el) { el.value = ''; });
+    list.forEach(function (r) {
+      var el = byId[r.id];
+      if (el && typeof r.reponse === 'string') {
+        if (el.tagName === 'SELECT') {
+          var ok = Array.prototype.some.call(el.options, function (o) { return o.value === r.reponse || o.text === r.reponse; });
+          el.value = ok ? r.reponse : '';
+        } else {
+          el.value = r.reponse;
+        }
+      }
+    });
+  }
+
+  /* ---------- Enregistrer ---------- */
+  function downloadFallback(text, name) {
+    var blob = new Blob([text], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 1000);
+  }
+
+  async function doSave() {
+    var poste = posteInput.value.trim();
+    if (!poste) {
+      showMsg('Numéro de poste manquant : renseignez-le en haut de la page §(pour les classes de secondes, ajouter la lettre du groupe (A ou B))§. Rien n’a été enregistré.', 'warn', true);
+      posteInput.focus();
+      return;
+    }
+    var st = parisStamp(new Date());
+    var numTP = tpInput.value.trim();
+    var payload = {
+      id_tp: TP_ID,
+      version: VERSION,
+      numero_tp: numTP,
+      numero_poste: poste,
+      date_heure: st.iso,
+      reponses: collect()
+    };
+    var text = JSON.stringify(payload, null, 2);
+    var name = (numTP ? 'TP_' + numTP + '_' : '') + 'poste' + poste + '_' + st.file + '.json';
+
+    if (window.showSaveFilePicker) {
+      try {
+        var handle = await window.showSaveFilePicker({
+          suggestedName: name,
+          types: [{ description: 'Fichier JSON', accept: { 'application/json': ['.json'] } }]
+        });
+        var w = await handle.createWritable();
+        await w.write(text);
+        await w.close();
+        showMsg('Réponses enregistrées dans « ' + handle.name + ' ».', 'ok');
+        return;
+      } catch (e) {
+        if (e && e.name === 'AbortError') { showMsg('Enregistrement annulé.', 'info'); return; }
+        /* autre erreur : on bascule sur le téléchargement classique */
+      }
+    }
+    try {
+      downloadFallback(text, name);
+      showMsg('Réponses enregistrées : le fichier « ' + name + ' » a été téléchargé (dossier Téléchargements).', 'ok');
+    } catch (e) {
+      showMsg('L’enregistrement a échoué. Prévenez votre professeur.', 'err', true);
+    }
+  }
+  document.getElementById('btnSave').addEventListener('click', doSave);
+  document.getElementById('btnSaveFab').addEventListener('click', doSave);
+
+
+
+  /* ---------- Importer ---------- */
+  document.getElementById('btnImport').addEventListener('click', function () {
+    fileInput.value = '';
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', function () {
+    var file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onerror = function () { showMsg('Impossible de lire ce fichier.', 'err', true); };
+    reader.onload = async function () {
+      var data;
+      try { data = JSON.parse(String(reader.result)); }
+      catch (e) { showMsg('Ce fichier n’est pas un fichier JSON valide : import annulé.', 'err', true); return; }
+
+      if (!data || typeof data !== 'object' || Array.isArray(data) || !Array.isArray(data.reponses) || !data.id_tp) {
+        showMsg('Ce fichier n’a pas été produit par le bouton « Enregistrer » d’un TP : import annulé.', 'err', true);
+        return;
+      }
+      if (data.id_tp !== TP_ID) {
+        showMsg('Ce fichier correspond à un autre TP : il ne peut pas être chargé dans celui-ci. Import annulé.', 'err', true);
+        return;
+      }
+      if (data.version !== VERSION) {
+        showMsg('Ce fichier a été enregistré avec une autre version de ce TP : il ne peut pas être chargé ici. Import annulé.', 'err', true);
+        return;
+      }
+      if (hasAnswers()) {
+        var ok = await askConfirm('Remplacer vos réponses ?', 'Des réponses sont déjà saisies dans cette page. Les remplacer par celles du fichier « ' + file.name + ' » ?\nLes réponses actuelles seront perdues.', 'Remplacer');
+        if (!ok) { showMsg('Import annulé : vos réponses actuelles sont conservées.', 'info'); return; }
+      }
+      applyAnswers(data.reponses);
+      showMsg('Réponses importées depuis « ' + file.name + ' ». Le numéro de TP et le numéro de poste n’ont pas été modifiés : vérifiez qu’ils sont corrects.', 'ok');
+    };
+    reader.readAsText(file);
+  });
+
+  /* ---------- Effacer ---------- */
+  document.getElementById('btnClear').addEventListener('click', async function () {
+    if (!hasAnswers()) { showMsg('Il n’y a aucune réponse à effacer.', 'info'); return; }
+    var ok = await askConfirm('Effacer toutes vos réponses ?', 'Cette action est irréversible. Pensez à enregistrer avant.', 'Effacer');
+    if (!ok) { showMsg('Effacement annulé : vos réponses sont conservées.', 'info'); return; }
+    fields.forEach(function (el) { el.value = ''; });
+    showMsg('Toutes les réponses ont été effacées.', 'ok');
+  });
+
+  /* ---------- Aide à la saisie ---------- */
+  var lastField = null;
+  document.addEventListener('focusin', function (e) {
+    var t = e.target;
+    if (t && t.hasAttribute && t.hasAttribute('data-id') && (t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && t.type === 'text'))) lastField = t;
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.palette button[data-ins]'), function (b) {
+    b.addEventListener('mousedown', function (e) { e.preventDefault(); });
+    b.addEventListener('click', function () {
+      var el = lastField;
+      if (!el) { showMsg('Cliquez d’abord dans une zone de réponse, puis sur le symbole à insérer.', 'info'); return; }
+      var s = b.getAttribute('data-ins');
+      var a = el.selectionStart, z = el.selectionEnd;
+      if (typeof a !== 'number') { a = z = el.value.length; }
+      el.value = el.value.slice(0, a) + s + el.value.slice(z);
+      var pos = a + s.length;
+      el.focus();
+      try { el.setSelectionRange(pos, pos); } catch (e) { /* ignoré */ }
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
+})();
+</script>
+</body>
+</html>
