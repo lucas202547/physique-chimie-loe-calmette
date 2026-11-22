@@ -112,9 +112,14 @@ table.notes tr:hover td{background:var(--okbg)}
 @media print{#instrTip,nav,.savebar button,.tools,button,#saveState{display:none!important}.page{display:block!important}section{break-inside:avoid}}
 header .savebar{margin-top:10px}
 .savebar input.court{width:5em;text-align:center}#saveState.warn{font-size:14px;font-weight:600;color:var(--bad)}
+#bandeau{position:fixed;top:0;left:0;right:0;z-index:9000;display:none;align-items:flex-start;gap:12px;padding:14px 18px;background:var(--badbg);color:var(--bad);border-bottom:2px solid var(--bad);border-left:8px solid var(--bad);font-size:17px;line-height:1.45;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#bandeau.on{display:flex}#bandeau .ico{font-size:26px;line-height:1.1}#bandeau .txt{flex:1}#bandeau b{font-weight:700}
+#bandeau button{border:none;background:transparent;color:inherit;font-size:24px;line-height:1;padding:0 6px;cursor:pointer}
+#poste.manquant{border:3px solid var(--bad);background:var(--badbg)}
 </style>
 </head>
 <body>
+<div id="bandeau" role="alert" aria-live="assertive"><span class="ico" aria-hidden="true">⚠</span><div class="txt"><b>Numéro de poste manquant.</b> Renseignez-le en haut de la page <i>(pour les classes de secondes, ajouter la lettre du groupe (A ou B))</i>. Rien n'a été enregistré.</div><button type="button" id="bandeauFermer" aria-label="Fermer l'avertissement">×</button></div>
 <header>
   <div class="t"><h1>Caractéristiques d'un son</h1><span>simulation LatisPro</span></div>
   <div class="savebar">
@@ -760,12 +765,16 @@ function setupSave() {
   const poste = document.getElementById('poste'), numTp = document.getElementById('num-tp');
   const say = (html, warn) => { st.className = warn ? 'warn' : ''; st.innerHTML = html; };
   // Numéro de poste : un nombre suivi éventuellement d'une lettre, 4 caractères maximum, en majuscules
-  poste.addEventListener('input', () => { poste.value = poste.value.toUpperCase().replace(/[^0-9A-Z]/g, '').match(/^(\d+[A-Z]?)?/)[0].slice(0, 4); });
+  const bandeau = document.getElementById('bandeau');
+  const cacher = () => { bandeau.classList.remove('on'); poste.classList.remove('manquant'); };
+  document.getElementById('bandeauFermer').onclick = cacher;
+  poste.addEventListener('input', () => { poste.value = poste.value.toUpperCase().replace(/[^0-9A-Z]/g, '').match(/^(\d+[A-Z]?)?/)[0].slice(0, 4); if (poste.value) cacher(); });
   const PICK = { id: 'tp-physique', startIn: 'documents', types: [{ description: 'Réponses du TP (JSON)', accept: { 'application/json': ['.json'] } }] };
 
   document.getElementById('saveFile').onclick = async () => {
     const pn = poste.value.trim();
-    if (!pn) { say('Numéro de poste manquant : renseignez-le en haut de la page <i>(pour les classes de secondes, ajouter la lettre du groupe (A ou B))</i>. Rien n’a été enregistré.', true); poste.focus(); return; }
+    if (!pn) { say(''); bandeau.classList.add('on'); poste.classList.add('manquant'); poste.focus({ preventScroll: true }); return; }
+    cacher();
     const t = parisNow(), tp = numTp.value.trim();
     const data = { identifiant_tp: TP_ID, version: TP_VERSION, numero_tp: tp, numero_poste: pn, date_heure: t.iso,
       reponses: fieldList().map(f => ({ id: f.id, intitule: f.intitule, reponse: readField(f.el) })) };
