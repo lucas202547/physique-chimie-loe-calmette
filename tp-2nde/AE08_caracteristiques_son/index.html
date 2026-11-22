@@ -111,17 +111,18 @@ table.notes tr:hover td{background:var(--okbg)}
 #saveState{font-size:12px;color:var(--muted)}
 @media print{#instrTip,nav,.savebar button,.tools,button,#saveState{display:none!important}.page{display:block!important}section{break-inside:avoid}}
 header .savebar{margin-top:10px}
-.num-act{box-sizing:border-box;width:2.3em;height:1.7em;vertical-align:middle;font:inherit;font-weight:700;color:var(--ink);text-align:center;background:transparent;border:2px dashed var(--muted);border-radius:7px;padding:0 .2em;margin:0 .2em;outline:none;}.num-act:focus{border-style:solid;border-color:var(--ink);}@media print{.num-act{border:none;}}
+.savebar input.court{width:5em;text-align:center}#saveState.warn{font-size:14px;font-weight:600;color:var(--bad)}
 </style>
 </head>
 <body>
 <header>
-  <div class="t"><h1>Caractéristiques d'un son</h1><span>TP n°<input class="num-act" id="num-act" type="text" inputmode="numeric" maxlength="2" autocomplete="off" aria-label="Numéro de l'activité"> · simulation LatisPro</span></div>
+  <div class="t"><h1>Caractéristiques d'un son</h1><span>simulation LatisPro</span></div>
   <div class="savebar">
-    <label for="eleve">N° de poste, Groupe, Nom(s) :</label><input id="eleve" placeholder="Ex : 1A Durand Martin" autocomplete="off">
-    <button id="saveFile" title="Télécharger un fichier contenant toutes les valeurs saisies">💾 Enregistrer</button>
-    <button id="openFile" title="Recharger un fichier enregistré">📂 Ouvrir</button>
-    <button id="resetAll" title="Effacer toutes les valeurs saisies">🗑 Tout effacer</button>
+    <label for="num-tp">Numéro de TP :</label><input class="court" id="num-tp" type="text" inputmode="numeric" maxlength="2" autocomplete="off">
+    <label for="poste">Numéro de poste :</label><input class="court" id="poste" type="text" maxlength="4" autocomplete="off">
+    <button id="saveFile" title="Enregistrer vos réponses dans un fichier">💾 Enregistrer</button>
+    <button id="openFile" title="Recharger un fichier produit par « Enregistrer »">📂 Importer mes réponses d'un jour précédent</button>
+    <button id="resetAll" title="Effacer toutes vos réponses">🗑 Effacer mes réponses</button>
     <input type="file" id="fileIn" accept=".json,application/json" hidden>
     <span id="saveState"></span>
   </div>
@@ -591,7 +592,7 @@ function pluck(i, el) {
 const scope1 = new Scope(document.getElementById('scope1'), { height: 360, ymin: -12, ymax: 12, yunit: 'V', color: '--guitar', tmax: 0.1, view: [0, 0.04], empty: 'Pince une corde puis lance l\'acquisition (F10)' });
 const DT1 = 20e-6, N1 = Math.round(0.1 / DT1) + 1;
 let fGuitar = null, acqString = null;
-let saver = null; const persist = () => saver && saver.save();
+const persist = () => {};
 function acquire1() {
   const st = document.getElementById('acqstatus1');
   if (!lastPluck) { scope1.setData(sample(100, [{ a: 0, ph: 0 }], 0, 0.03, DT1, N1), DT1); st.textContent = 'Aucun son : pince d\'abord une corde !'; fGuitar = null; return; }
@@ -706,49 +707,95 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
 });
 function redrawAll() { scope1.draw(); Object.values(scopes2).forEach(s => s.draw()); }
 
-// ================= Sauvegarde =================
-function setupSave(KEY, APP, collect, apply) {
+// ================= Enregistrement, import, effacement =================
+// Pas de sauvegarde automatique ni de localStorage : les réponses ne sont conservées que par « Enregistrer ».
+const TP_ID = 'tp2-AE08_caracteristiques_son', TP_VERSION = 1;
+const TEXTAREAS = ['q4', 'q5', 'qa', 'qc', 'qb'];
+const fieldList = () => {
+  const L = [];
+  const clean = s => s.replace(/\s+/g, ' ').trim();
+  document.querySelectorAll('#roles select').forEach(s => { const i = +s.dataset.i; L.push({ id: 'role_' + i, intitule: 'Rôle de l’élément : ' + ROLES[i][0], el: s }); });
+  const cols = { T: 'T (ms)', f: 'f (Hz)', k: 'Note', o: 'Octave' };
+  const push = (p, lib) => Object.keys(cols).forEach(c => { const el = document.getElementById(p + c); if (el) L.push({ id: p + c, intitule: lib + ' – ' + cols[c], el }); });
+  STRINGS.forEach(st => push('c' + st.n, 'Corde n°' + st.n));
+  ['q4', 'q5', 'qa'].forEach(id => { const el = document.getElementById(id); L.push({ id, intitule: clean(el.previousElementSibling.textContent), el }); });
+  Object.entries(INSTR).forEach(([id, ins]) => push(id, ins.name));
+  ['qc', 'qb'].forEach(id => { const el = document.getElementById(id); L.push({ id, intitule: clean(el.previousElementSibling.textContent), el }); });
+  return L;
+};
+const readField = el => el.tagName === 'SELECT' ? (el.value === '' ? '' : el.options[el.selectedIndex].text) : el.value;
+const writeField = (el, v) => {
+  if (el.tagName === 'SELECT') { const o = [...el.options].find(o => o.value !== '' && o.text === v); el.value = o ? o.value : ''; }
+  else el.value = v == null ? '' : String(v);
+};
+const hasAnswers = () => fieldList().some(f => readField(f.el) !== '');
+
+function askConfirm(msg, okLabel) {
+  return new Promise(res => {
+    const o = document.createElement('div');
+    o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px';
+    o.innerHTML = '<div role="alertdialog" aria-modal="true" style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:18px 20px;max-width:420px;font-size:15px;line-height:1.45"><p style="margin:0 0 14px"></p><div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" data-r="0">Annuler</button><button type="button" data-r="1" class="primary"></button></div></div>';
+    o.querySelector('p').textContent = msg; o.querySelector('[data-r="1"]').textContent = okLabel;
+    const end = v => { document.removeEventListener('keydown', onKey, true); o.remove(); res(v); };
+    const onKey = e => { if (e.key === 'Escape') { e.preventDefault(); end(false); } };
+    o.addEventListener('click', e => { const b = e.target.closest('button[data-r]'); if (b) end(b.dataset.r === '1'); });
+    document.addEventListener('keydown', onKey, true);
+    document.body.appendChild(o); o.querySelector('[data-r="0"]').focus();
+  });
+}
+
+// Date et heure d'Europe/Paris, au format ISO 8601 avec décalage horaire
+function parisNow() {
+  const now = new Date();
+  const f = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
+  const p = Object.fromEntries(f.formatToParts(now).map(x => [x.type, x.value]));
+  const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);
+  const off = Math.round((asUTC - Math.floor(now.getTime() / 1000) * 1000) / 60000);
+  const a = Math.abs(off), pad = n => String(n).padStart(2, '0');
+  return { iso: `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}${off < 0 ? '-' : '+'}${pad(Math.floor(a / 60))}:${pad(a % 60)}`, jour: `${p.year}-${p.month}-${p.day}`, hm: p.hour + p.minute };
+}
+
+function setupSave() {
   const st = document.getElementById('saveState');
-  const hhmm = () => new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  let t = null, ready = false;
-  const save = () => {
-    if (!ready) return;
-    try { localStorage.setItem(KEY, JSON.stringify(collect())); st.textContent = '✓ Sauvegardé sur cet ordinateur (' + hhmm() + ')'; }
-    catch (e) { st.textContent = '⚠ Sauvegarde automatique indisponible : utilise « Enregistrer ».'; }
-  };
-  const later = () => { clearTimeout(t); t = setTimeout(save, 400); };
-  document.addEventListener('input', later); document.addEventListener('change', later);
-  let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
-  if (saved && saved.app === APP) { try { apply(saved); st.textContent = 'Travail précédent restauré.'; } catch (e) { console.error(e); } }
-  ready = true;
-  const PICK = { id: 'simulations-physique', startIn: 'documents', types: [{ description: 'Travail enregistré (JSON)', accept: { 'application/json': ['.json'] } }] };
+  const poste = document.getElementById('poste'), numTp = document.getElementById('num-tp');
+  const say = (html, warn) => { st.className = warn ? 'warn' : ''; st.innerHTML = html; };
+  // Numéro de poste : un nombre suivi éventuellement d'une lettre, 4 caractères maximum, en majuscules
+  poste.addEventListener('input', () => { poste.value = poste.value.toUpperCase().replace(/[^0-9A-Z]/g, '').match(/^(\d+[A-Z]?)?/)[0].slice(0, 4); });
+  const PICK = { id: 'tp-physique', startIn: 'documents', types: [{ description: 'Réponses du TP (JSON)', accept: { 'application/json': ['.json'] } }] };
+
   document.getElementById('saveFile').onclick = async () => {
-    const d = collect();
-    const name = (d.eleve || 'eleve').normalize('NFD').replace(/[̀-ͯ]/g, '').trim().replace(/[^A-Za-z0-9_-]+/g, '_').replace(/^_+|_+$/g, '') || 'eleve';
-    const fname = `${APP}_${name}_${new Date().toISOString().slice(0, 10)}.json`;
-    const text = JSON.stringify(d, null, 2);
-    save();
+    const pn = poste.value.trim();
+    if (!pn) { say('Numéro de poste manquant : renseignez-le en haut de la page <i>(pour les classes de secondes, ajouter la lettre du groupe (A ou B))</i>. Rien n’a été enregistré.', true); poste.focus(); return; }
+    const t = parisNow(), tp = numTp.value.trim();
+    const data = { identifiant_tp: TP_ID, version: TP_VERSION, numero_tp: tp, numero_poste: pn, date_heure: t.iso,
+      reponses: fieldList().map(f => ({ id: f.id, intitule: f.intitule, reponse: readField(f.el) })) };
+    const tpSeg = tp.replace(/[^A-Za-z0-9-]+/g, '');
+    const fname = `${tpSeg ? 'TP_' + tpSeg + '_' : ''}poste${pn}_${t.jour}_${t.hm}.json`;
+    const text = JSON.stringify(data, null, 2);
     if (window.showSaveFilePicker) {
-      // Chrome / Edge : fenêtre « Enregistrer sous » pour choisir le dossier sur le PC
       try {
         const h = await window.showSaveFilePicker(Object.assign({ suggestedName: fname }, PICK));
         const w = await h.createWritable(); await w.write(text); await w.close();
-        st.textContent = '✓ Enregistré dans le fichier « ' + h.name + ' ».'; return;
+        say('✓ Enregistré dans le fichier « ' + h.name + ' ».'); return;
       } catch (e) {
-        if (e.name === 'AbortError') { st.textContent = 'Enregistrement annulé.'; return; }
+        if (e.name === 'AbortError') { say('Enregistrement annulé.'); return; }
         console.warn(e); // sinon : téléchargement classique ci-dessous
       }
     }
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' })); a.download = fname;
     document.body.appendChild(a); a.click(); setTimeout(() => { a.remove(); URL.revokeObjectURL(a.href); }, 2000);
-    st.textContent = '✓ Fichier « ' + fname + ' » téléchargé. (Pour choisir le dossier : utiliser Chrome ou Edge, ou activer « Toujours demander où enregistrer les fichiers » dans les réglages du navigateur.)';
+    say('✓ Fichier « ' + fname + ' » téléchargé (dossier de téléchargements du navigateur).');
   };
+
   const loadFile = async f => {
-    try {
-      const d = JSON.parse(await f.text());
-      if (d.app !== APP) throw new Error('ce fichier ne correspond pas à cette activité.');
-      apply(d); save(); st.textContent = '✓ Fichier « ' + f.name + ' » chargé.';
-    } catch (e) { st.textContent = '⚠ Impossible d\'ouvrir le fichier : ' + e.message; }
+    let d; try { d = JSON.parse(await f.text()); } catch (e) { d = null; }
+    if (!d || typeof d !== 'object' || !Array.isArray(d.reponses)) { say('Ce fichier n’est pas un fichier de réponses de ce TP : import refusé.', true); return; }
+    if (d.identifiant_tp !== TP_ID) { say('Ce fichier a été enregistré dans un autre TP : import refusé.', true); return; }
+    if (d.version !== TP_VERSION) { say('Ce fichier a été enregistré avec une autre version de ce TP : import refusé.', true); return; }
+    if (hasAnswers() && !(await askConfirm('Des réponses sont déjà saisies. Importer ce fichier va les remplacer. Continuer ?', 'Importer'))) { say('Import annulé : vos réponses n’ont pas été modifiées.'); return; }
+    const map = new Map(d.reponses.map(r => [r.id, r.reponse]));
+    fieldList().forEach(x => writeField(x.el, map.get(x.id)));
+    say('✓ Réponses du fichier « ' + f.name + ' » importées.');
   };
   const fi = document.getElementById('fileIn');
   fi.onchange = () => { if (fi.files[0]) loadFile(fi.files[0]); fi.value = ''; };
@@ -759,40 +806,19 @@ function setupSave(KEY, APP, collect, apply) {
     }
     fi.click();
   };
-  document.getElementById('resetAll').onclick = () => {
-    if (!confirm('Effacer toutes les valeurs saisies ? (pense à « Enregistrer » avant si tu veux les garder)')) return;
-    ready = false; try { localStorage.removeItem(KEY); } catch (e) {} location.reload();
-  };
-  return { save: later };
-}
-const val = id => document.getElementById(id).value;
-const setVal = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.value = v; };
 
-const ansKeys = p => ({ T: val(p + 'T'), f: val(p + 'f'), note: val(p + 'k'), octave: val(p + 'o') });
-const setAns = (p, a) => { if (!a) return; setVal(p + 'T', a.T); setVal(p + 'f', a.f); setVal(p + 'k', a.note); setVal(p + 'o', a.octave); };
-saver = setupSave('ae08-caracteristiques-son', 'AE08', () => ({
-  app: 'AE08', version: 3, savedAt: new Date().toISOString(), eleve: val('eleve'),
-  roles: [...document.querySelectorAll('#roles select')].map(s => s.value),
-  cordes: Object.fromEntries(STRINGS.map(st => [st.n, ansKeys('c' + st.n)])), question4: val('q4'), question5: val('q5'),
-  questionA: val('qa'), questionC: val('qc'), questionB: val('qb'),
-  instruments: Object.fromEntries(Object.keys(INSTR).map(id => [id, ansKeys(id)]))
-}), d => {
-  setVal('eleve', d.eleve);
-  if (Array.isArray(d.roles)) document.querySelectorAll('#roles select').forEach((s, i) => { if (d.roles[i] != null) s.value = d.roles[i]; });
-  if (d.cordes) STRINGS.forEach(st => setAns('c' + st.n, d.cordes[st.n]));
-  else if (d.guitare && d.guitare.corde != null) setAns('c' + d.guitare.corde, d.guitare); // ancien format
-  setVal('q4', d.question4); setVal('q5', d.question5); setVal('qa', d.questionA); setVal('qb', d.questionB); setVal('qc', d.questionC);
-  if (d.instruments) Object.keys(INSTR).forEach(id => setAns(id, d.instruments[id]));
-  else setAns('fl', d.flute); // ancien format
-});
+  document.getElementById('resetAll').onclick = async () => {
+    if (!(await askConfirm('Effacer toutes vos réponses ? Cette action est irréversible. Pensez à enregistrer avant.', 'Effacer'))) return;
+    fieldList().forEach(f => writeField(f.el, ''));
+    say('Réponses effacées.');
+  };
+}
+setupSave();
 fillScopes2();
 window.addEventListener('resize', redrawAll);
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redrawAll);
 redrawAll();
 })();
-</script>
-<script>/* Case du numéro d'activité : remplie par l'élève, mémorisée dans le navigateur */
-(function(){var c=document.getElementById('num-act'),K='tp2-AE08_caracteristiques_son-numero';try{c.value=localStorage.getItem(K)||'';}catch(e){}c.addEventListener('input',function(){try{localStorage.setItem(K,c.value.trim());}catch(e){}});})();
 </script>
 </body>
 </html>
