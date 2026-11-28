@@ -644,6 +644,8 @@ document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.que
 function schemaSym(t,x1,y1,x2,y2,lab,extra){const mx=(x1+x2)/2,my=(y1+y2)/2,ang=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
   return `<g class="sym" transform="translate(${mx},${my}) rotate(${ang}) scale(.8)">${symbol({type:t,closed:true,...(extra||{})})}</g>`+(lab?`<text class="lbl" x="${lab[0]}" y="${lab[1]}" text-anchor="middle">${lab[2]}</text>`:'');}
 const Lw=(x1,y1,x2,y2)=>`<line class="wire" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke-width:2.2"/>`;
+/* pointe de flèche posée sur un fil : sens du courant (0 = droite, 90 = bas, 180 = gauche) */
+const arrowOn=(x,y,ang)=>`<polygon points="-5.5,-4.5 5.5,0 -5.5,4.5" transform="translate(${x},${y}) rotate(${ang})" style="fill:#1d2430"/>`;
 document.getElementById('schema1').innerHTML=
   Lw(40,15,260,15)+Lw(40,15,40,43)+Lw(40,107,40,140)+Lw(40,140,260,140)+Lw(260,15,260,18)+Lw(260,82,260,74)+Lw(260,138,260,140)
   +schemaSym('pile',40,107,40,43,[82,80,'9,0 V'])+schemaSym('res',260,18,260,82,[212,54,'R₁ = 8 Ω'])+schemaSym('res',260,74,260,138,[210,110,'R₂ = 12 Ω'])
@@ -652,7 +654,8 @@ document.getElementById('schema2').innerHTML=
   Lw(30,20,100,20)+Lw(164,20,300,20)+Lw(30,20,30,58)+Lw(30,122,30,160)+Lw(30,160,300,160)+Lw(200,20,200,58)+Lw(200,122,200,160)+Lw(300,20,300,58)+Lw(300,122,300,160)
   +schemaSym('pile',30,122,30,58,[70,94,'6,0 V'])+schemaSym('res',100,20,164,20,[132,46,'R₁ = 8 Ω'])+schemaSym('res',200,58,200,122,[160,94,'R₂ = 12 Ω'])+schemaSym('res',300,58,300,122,[262,94,'R₃ = 15 Ω'])
   +`<circle cx="200" cy="20" r="4.5" fill="#1d2430"/><circle cx="200" cy="160" r="4.5" fill="#1d2430"/><text class="lbl small" x="208" y="13">A</text><text class="lbl small" x="208" y="176">B</text><text class="lbl small" x="18" y="66" style="fill:#c0392b">+</text>`
-  +`<text class="lbl small" x="180" y="14">I₁→</text><text class="lbl small" x="206" y="44">I₂↓</text><text class="lbl small" x="306" y="44">I₃↓</text><text class="lbl small" x="110" y="176">←I₄</text>`;
+  +arrowOn(182,20,0)+arrowOn(200,40,90)+arrowOn(300,40,90)+arrowOn(115,160,180)
+  +`<text class="lbl small" x="182" y="12" text-anchor="middle">I₁</text><text class="lbl small" x="192" y="43" text-anchor="end">I₂</text><text class="lbl small" x="292" y="43" text-anchor="end">I₃</text><text class="lbl small" x="115" y="175" text-anchor="middle">I₄</text>`;
 document.getElementById('docSvg').innerHTML=
   // voltmètre en dérivation
   Lw(20,40,60,40)+Lw(124,40,160,40)+schemaSym('res',60,40,124,40,[92,26,'R'])+Lw(40,40,40,100)+Lw(144,40,144,100)+Lw(40,100,60,100)+Lw(124,100,144,100)
