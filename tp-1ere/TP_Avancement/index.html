@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avancement d'une réaction chimique</title>
+<style>
+:root{
+  --paper:#f7f4ec; --ink:#1d2430; --muted:#5d6675; --line:#d9d3c3;
+  --accent:#0f6e6e; --accent-soft:#d8ecea; --red:#c0392b; --ok:#1e7d3a; --warn:#b26a00;
+  --card:#fffdf8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.5}
+header{display:flex;align-items:center;gap:16px;padding:10px 18px;border-bottom:2px solid var(--ink);background:var(--card)}
+header .tag{font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+header h1{font-size:19px;margin:0}
+button.btn{font:inherit;font-size:13px;border:1.5px solid var(--ink);background:#fff;border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--ink)}
+button.btn:hover{background:var(--accent-soft)}
+button.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button.btn.primary:hover{filter:brightness(1.1)}
+button.btn.danger{border-color:var(--red);color:var(--red)}
+input[type=text]{font:inherit;font-size:14px;padding:4px 6px;border:1.5px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+textarea{font:inherit;font-size:14px;width:100%;padding:6px;border:1.5px solid var(--line);border-radius:6px;background:#fff;margin-top:4px;resize:vertical}
+.savebar{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;padding:8px 18px;background:var(--card);border-bottom:1px solid var(--line);font-size:14px;position:sticky;top:0;z-index:50}
+.savebar input.court{width:5em;text-align:center}
+#saveState{font-size:13px;color:var(--muted)}#saveState.warn{font-size:14px;font-weight:700;color:var(--red)}
+#bandeau{position:fixed;top:0;left:0;right:0;z-index:9000;display:none;align-items:flex-start;gap:12px;padding:14px 18px;background:#fbe3e0;color:#7d1d14;border-bottom:2px solid var(--red);border-left:8px solid var(--red);font-size:17px;line-height:1.45;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#bandeau.on{display:flex}#bandeau .ico{font-size:26px;line-height:1.1}#bandeau .txt{flex:1}#bandeau b{font-weight:700}
+#bandeau button{border:none;background:transparent;color:inherit;font-size:24px;line-height:1;padding:0 6px;cursor:pointer}
+#poste.manquant{border:3px solid var(--red);background:#fbe3e0}
+
+main{max-width:1020px;margin:0 auto;padding:14px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px 18px}
+h2{font-size:18px;margin:2px 0 10px;color:var(--accent)}
+h3{font-size:15.5px;margin:18px 0 6px}
+p{margin:6px 0}
+.obj{background:var(--accent-soft);border-radius:8px;padding:8px 12px;font-size:14px}
+.muted{color:var(--muted);font-size:13px}
+.step{border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin:10px 0;background:#fff}
+.step ul,.step ol{margin:4px 0;padding-left:22px}
+.q{margin:14px 0}
+.q > b{display:block}
+.eq{text-align:center;font-size:17px;margin:10px 0;padding:8px;background:#fff;border:1px solid var(--line);border-radius:8px}
+table.vol,table.av{border-collapse:collapse;margin:8px 0;background:#fff}
+table.vol th,table.vol td,table.av th,table.av td{border:1px solid var(--line);padding:5px 8px;text-align:center}
+table.vol th,table.av th{background:#f1ede0}
+table.av td.lab{text-align:left;font-weight:700;white-space:nowrap}
+table.av input.cell{width:92px;text-align:center}
+table.av input.cell.wide{width:118px}
+.unit{font-size:13px;color:var(--muted)}
+.xm{margin:6px 0}
+.xm input{width:90px;text-align:center}
+.tblwrap{overflow-x:auto}
+/* script python */
+.code{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:8px 0;overflow-x:auto;font-family:ui-monospace,Consolas,"Courier New",monospace;font-size:13px;line-height:1.55}
+.code .cl{display:flex;white-space:pre;padding:0 10px 0 0;min-height:1.55em}
+.code .ln{display:inline-block;width:2.8em;text-align:right;padding-right:10px;color:#9a9484;user-select:none;flex:none}
+.code .c{color:#6a7a5c;font-style:italic}.code .s{color:#1f4fd8}.code .k{color:#8a2be2;font-weight:700}.code .f{color:#0f6e6e}
+.code input.py{font-family:inherit;font-size:13px;width:3.6em;padding:0 4px;margin-left:2px;border:2px solid var(--accent);border-radius:4px;background:#eef7f6;text-align:center}
+.console{background:#fbfaf4;border:1.5px solid var(--line);border-radius:8px;padding:8px 12px;font-family:ui-monospace,Consolas,"Courier New",monospace;font-size:13px;margin-top:10px}
+.console .pr{color:#8a7a00;font-weight:700}
+.console label{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0}
+.console input{font-family:inherit;font-size:13px;width:7em;padding:2px 6px}
+pre.trace{margin:8px 0 0;padding:8px 10px;background:#fbe3e0;border-left:4px solid var(--red);color:#7d1d14;border-radius:0 6px 6px 0;font-size:12.5px;white-space:pre-wrap;display:none}
+pre.trace.on{display:block}
+.fig{margin-top:10px;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:6px;min-height:80px}
+.fig svg{width:100%;height:auto;display:block;max-width:720px;margin:0 auto}
+.fig p{margin:10px;color:var(--muted);font-size:14px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+sub,sup{line-height:0}
+</style>
+</head>
+<body>
+<div id="bandeau" role="alert" aria-live="assertive"><span class="ico" aria-hidden="true">⚠</span><div class="txt"><b>Numéro de poste manquant.</b> Renseignez-le en haut de la page <i>(pour les classes de secondes, ajouter la lettre du groupe (A ou B))</i>. Rien n'a été enregistré.</div><button type="button" id="bandeauFermer" aria-label="Fermer l'avertissement">×</button></div>
+<header>
+  <div><div class="tag">Constitution et transformation de la matière · Première spécialité</div><h1>Avancement d'une réaction chimique</h1></div>
+</header>
+<div class="savebar">
+  <label for="num-tp">Numéro de TP :</label><input class="court" id="num-tp" type="text" inputmode="numeric" maxlength="2" autocomplete="off">
+  <label for="poste">Numéro de poste :</label><input class="court" id="poste" type="text" maxlength="4" autocomplete="off">
+  <button class="btn primary" id="saveFile" title="Enregistrer vos réponses dans un fichier">💾 Enregistrer</button>
+  <button class="btn" id="openFile" title="Recharger un fichier produit par « Enregistrer »">📂 Importer mes réponses d'un jour précédent</button>
+  <button class="btn danger" id="resetAll" title="Effacer toutes vos réponses">🗑 Effacer mes réponses</button>
+  <input type="file" id="fileIn" accept=".json,application/json" hidden>
+  <span id="saveState"></span>
+</div>
+
+<main>
+<!-- ============ INTRO ============ -->
+<section class="card">
+  <p class="obj"><b>Capacité visée :</b> déterminer la composition de l'état final d'un système et l'avancement final d'une réaction.<br><b>Thème :</b> suivi de l'évolution d'un système, siège d'une transformation.</p>
+  <p>Lorsqu'une réaction chimique se produit, il est important d'être capable de prévoir les quantités de réactifs nécessaires pour obtenir les quantités voulues de produits à l'issue de la transformation chimique, ou de connaître la quantité de produits formés connaissant la quantité de réactifs utilisés.</p>
+  <p>Pour répondre à cette problématique, les chimistes utilisent un outil appelé <b>tableau d'avancement</b> qui permet de connaître les quantités des réactifs et des produits au fur et à mesure de l'avancement de la réaction, de son état initial à son état final.</p>
+  <h3>Matériel et solutions</h3>
+  <ul>
+    <li>Tubes à essais, pipettes graduées.</li>
+    <li><b>Solution 1</b> : solution de diiode I<sub>2</sub>(aq) de concentration molaire C<sub>1</sub> = 1,0.10<sup>-2</sup> mol.L<sup>-1</sup>.</li>
+    <li><b>Solution 2</b> : solution de thiosulfate de sodium (2 Na<sup>+</sup>(aq), S<sub>2</sub>O<sub>3</sub><sup>2-</sup>(aq)) de concentration molaire C<sub>2</sub> = 1,0.10<sup>-2</sup> mol.L<sup>-1</sup>.</li>
+  </ul>
+</section>
+
+<!-- ============ PARTIE A ============ -->
+<section class="card">
+  <h2>I. Comment évolue une réaction chimique ?</h2>
+  <h3>Expérience préliminaire</h3>
+  <div class="step"><ul>
+    <li>Dans un tube à essais, verser 2 mL de la solution 2 de thiosulfate de sodium.</li>
+    <li>Verser 2 gouttes (environ) de la solution 1 de diiode. Homogénéiser et observer. On peut ensuite rajouter quelques gouttes.</li>
+  </ul></div>
+  <div class="q"><b>1. Qu'observe-t-on quant à la coloration de la solution ? Comment interpréter cette observation ?</b><textarea data-k="q1" rows="3" placeholder="Ta réponse…"></textarea></div>
+
+  <h3>Expériences</h3>
+  <div class="step"><ul>
+    <li>Pour chacune des deux expériences ci-dessous, verser le contenu du tube à essais 1 dans le tube à essais 2 correspondant.</li>
+    <li>Boucher, agiter puis observer.</li>
+  </ul></div>
+  <div class="tblwrap"><table class="vol">
+    <tr><th colspan="2">Expérience n°1</th><th colspan="2">Expérience n°2</th></tr>
+    <tr><th>Tube à essais 1</th><th>Tube à essais 2</th><th>Tube à essais 1</th><th>Tube à essais 2</th></tr>
+    <tr><td>1,0 mL de solution 1</td><td>4,0 mL de solution 2</td><td>6,0 mL de solution 1</td><td>4,0 mL de solution 2</td></tr>
+  </table></div>
+  <div class="q"><b>2. Identifier le réactif limitant dans chaque expérience en exploitant les observations.</b><textarea data-k="q2" rows="3" placeholder="Ta réponse…"></textarea></div>
+  <div class="q"><b>3. Dans le cas où le diiode est le réactif limitant, quelle expérience simple permettrait de prouver qu'il reste des ions S<sub>2</sub>O<sub>3</sub><sup>2-</sup> ?</b><textarea data-k="q3" rows="3" placeholder="Ta réponse…"></textarea></div>
+  <p class="muted">Réalise ensuite l'expérience que tu as proposée.</p>
+</section>
+
+<!-- ============ PARTIE B ============ -->
+<section class="card">
+  <h2>II. La notion d'avancement x pour une réaction chimique</h2>
+  <p>L'équation de la réaction qui s'est produite s'écrit :</p>
+  <div class="eq">I<sub>2</sub>(aq) + 2 S<sub>2</sub>O<sub>3</sub><sup>2-</sup>(aq) → 2 I<sup>-</sup>(aq) + S<sub>4</sub>O<sub>6</sub><sup>2-</sup>(aq)</div>
+  <p class="muted">Toutes les quantités de matière de cette partie sont exprimées en µmol (1 µmol = 1.10<sup>-6</sup> mol).</p>
+
+  <h3>Expérience n°1</h3>
+  <div class="q"><b>4. Calculer les quantités initiales des réactifs pour l'expérience n°1. Les exprimer en µmol.</b><textarea data-k="q4" rows="3" placeholder="Tes calculs…"></textarea></div>
+  <p>Complète les lignes « initial » et « intermédiaire » du tableau d'avancement.</p>
+  <div class="tblwrap" id="tab1"></div>
+  <div class="q"><b>5. Déterminer, par le calcul, l'avancement maximal x<sub>max</sub>.</b><textarea data-k="q5" rows="3" placeholder="Ton raisonnement…"></textarea>
+    <div class="xm">x<sub>max</sub> = <input type="text" inputmode="decimal" data-k="xmax1" autocomplete="off"> <span class="unit">µmol</span></div></div>
+  <p>Complète la ligne « final » en calculant les quantités finales des réactifs et des produits à l'état final.</p>
+  <div class="q"><b>6. Est-ce en accord avec la couleur finale de la solution ?</b><textarea data-k="q6" rows="3" placeholder="Ta réponse…"></textarea></div>
+
+  <h3>Expérience n°2</h3>
+  <p>Reprends l'étude de l'expérience n°1 pour l'expérience n°2.</p>
+  <div class="tblwrap" id="tab2"></div>
+  <div class="q"><b>7. Calculs et conclusion pour l'expérience n°2.</b> <span class="muted">(quantités initiales, x<sub>max</sub>, accord avec la couleur finale)</span><textarea data-k="q7" rows="4" placeholder="Tes calculs et ta conclusion…"></textarea>
+    <div class="xm">x<sub>max</sub> = <input type="text" inputmode="decimal" data-k="xmax2" autocomplete="off"> <span class="unit">µmol</span></div></div>
+
+  <h3>Évolution des quantités de matière (expérience n°1)</h3>
+  <p>Le graphique est tracé par l'application à partir des valeurs que tu as saisies pour l'expérience n°1 : lignes « initial » et « final » du tableau, et valeur de x<sub>max</sub>.</p>
+  <div class="row"><button class="btn primary" id="plot1">📈 Tracer le graphique de l'expérience n°1</button><span class="muted" id="plot1Msg"></span></div>
+  <div class="fig" id="fig1" aria-live="polite"><p>Le graphique s'affichera ici.</p></div>
+  <div class="q"><b>8. À quoi correspond le coefficient directeur de chaque droite ?</b><textarea data-k="q8" rows="3" placeholder="Ta réponse…"></textarea></div>
+</section>
+
+<!-- ============ PARTIE C ============ -->
+<section class="card">
+  <h2>III. Introduction au langage Python</h2>
+  <div class="step"><ol>
+    <li>Dans le script ci-dessous, repère les lignes correspondant aux coefficients stœchiométriques et complète-les dans les cases bleues.</li>
+    <li>Clique sur « Exécuter » (équivalent de la touche F5) puis renseigne, dans la fenêtre d'exécution, les quantités de matière initiales de chaque réactif (en µmol) utilisées dans l'expérience n°1.</li>
+    <li>Observe la figure obtenue.</li>
+  </ol></div>
+  <h3>Document : script utilisé</h3>
+  <div class="code" id="code" aria-label="Script Python"></div>
+
+  <div class="console" id="console">
+    <div><span class="pr">&gt;&gt;&gt;</span> Exécution du script</div>
+    <label>Que vaut la quantité de matière initiale de diiode ? : <input type="text" data-k="py_no_I2" autocomplete="off" spellcheck="false" aria-label="Quantité initiale de diiode en µmol"> <span class="unit">(µmol)</span></label>
+    <label>Que vaut la quantité de matière initiale d'ions thiosulfate ? : <input type="text" data-k="py_no_S2O32" autocomplete="off" spellcheck="false" aria-label="Quantité initiale d'ions thiosulfate en µmol"> <span class="unit">(µmol)</span></label>
+    <div class="unit" style="font-family:system-ui">En Python, le séparateur décimal est le point : 2.5 et non 2,5.</div>
+  </div>
+  <div class="row"><button class="btn primary" id="runPy">▶ Exécuter le script</button></div>
+  <pre class="trace" id="pyErr" role="alert"></pre>
+  <div class="fig" id="pyFig" aria-live="polite"><p>La figure s'affichera ici après l'exécution du script.</p></div>
+
+  <div class="q"><b>9. Comment peut-on déterminer l'avancement maximum à l'aide des graphiques obtenus ?</b><textarea data-k="q9" rows="3" placeholder="Ta réponse…"></textarea></div>
+
+  <h3>Mélange stœchiométrique</h3>
+  <p>Sans modifier la quantité initiale d'ions thiosulfate, fais varier la quantité initiale de diiode (puis exécute à nouveau le script) afin de tracer le graphique correspondant au <b>mélange stœchiométrique</b>.</p>
+  <div class="q"><b>10. Quelle quantité initiale de diiode as-tu choisie ? Justifie ton choix à l'aide du graphique obtenu.</b><textarea data-k="q10" rows="4" placeholder="Ta réponse…"></textarea></div>
+
+  <div class="step"><p><b>Fin du TP.</b> Clique sur « Enregistrer » en haut de la page pour conserver tes réponses dans un fichier : elles ne sont pas sauvegardées automatiquement.</p></div>
+</section>
+</main>
+
+<script>
+"use strict";
+/* ============ espèces ============ */
+const SP=[
+ {k:'I2',   html:'I<sub>2</sub>',                               txt:'I2',    label:'I2',     color:'#e8830c', mk:'circle'},
+ {k:'S2O32',html:'S<sub>2</sub>O<sub>3</sub><sup>2-</sup>',     txt:'S2O32-',label:'S2O32-', color:'#d62828', mk:'square'},
+ {k:'I',    html:'I<sup>-</sup>',                                txt:'I-',    label:'I-',     color:'#1f4fd8', mk:'diamond'},
+ {k:'S4O62',html:'S<sub>4</sub>O<sub>6</sub><sup>2-</sup>',     txt:'S4O62-',label:'S4O62-', color:'#000000', mk:'triangle'}
+];
+const ROWS=[['i','initial','x = 0','état initial'],['x','intermédiaire','x','état intermédiaire'],['f','final','x<sub>max</sub>','état final']];
+
+/* ============ tableaux d'avancement ============ */
+function buildTable(n){
+  let h='<table class="av"><tr><th colspan="6">Expérience '+n+' : I<sub>2</sub>(aq) + 2 S<sub>2</sub>O<sub>3</sub><sup>2-</sup>(aq) → 2 I<sup>-</sup>(aq) + S<sub>4</sub>O<sub>6</sub><sup>2-</sup>(aq)</th></tr>';
+  h+='<tr><th>État</th><th>Avancement (µmol)</th>'+SP.map(s=>'<th>n('+s.html+') <span class="unit">(µmol)</span></th>').join('')+'</tr>';
+  for(const [r,nom,av] of ROWS){
+    h+='<tr><td class="lab">'+nom+'</td><td>'+av+'</td>'+SP.map(s=>'<td><input type="text" class="cell'+(r==='x'?' wide':'')+'" data-k="t'+n+'_'+r+'_'+s.k+'" autocomplete="off" spellcheck="false" aria-label="Expérience '+n+', '+nom+', n('+s.txt+')"></td>').join('')+'</tr>';
+  }
+  return h+'</table>';
+}
+document.getElementById('tab1').innerHTML=buildTable(1);
+document.getElementById('tab2').innerHTML=buildTable(2);
+
+/* ============ utilitaires ============ */
+const $k=id=>document.querySelector('[data-k="'+id+'"]');
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function pnum(s){if(s==null)return null;s=String(s).trim().replace(/\s/g,'').replace(/−/g,'-').replace(',','.');if(s==='')return null;const v=Number(s);return Number.isFinite(v)?v:null;}
+const fmt=v=>String(+v.toPrecision(6)).replace('.',',');
+
+/* ============ graphique SVG (sans bibliothèque) ============ */
+let chartN=0;
+function niceStep(range,target){const raw=range/target,p=Math.pow(10,Math.floor(Math.log10(raw))),m=raw/p;return (m<=1?1:m<=2?2:m<=2.5?2.5:m<=5?5:10)*p;}
+function ticks(max){const st=niceStep(max,6),a=[];for(let v=0;v<=max*(1+1e-9);v+=st)a.push(+v.toFixed(10));return a;}
+function mark(k,x,y,c){const r=5.5,f=`fill="${c}" stroke="#fff" stroke-width="1"`;
+  if(k==='circle')return `<circle cx="${x}" cy="${y}" r="${r}" ${f}/>`;
+  if(k==='square')return `<rect x="${x-r}" y="${y-r}" width="${2*r}" height="${2*r}" ${f}/>`;
+  if(k==='diamond')return `<polygon points="${x},${y-r-1.5} ${x+r+1.5},${y} ${x},${y+r+1.5} ${x-r-1.5},${y}" ${f}/>`;
+  return `<polygon points="${x},${y-r-1} ${x+r+1.5},${y+r} ${x-r-1.5},${y+r}" ${f}/>`;}
+function drawChart(host,o){
+  const {title,xmax,series}=o,W=640,H=420,L=74,R=26,T=48,B=62,pw=W-L-R,ph=H-T-B;
+  let ymax=Math.max(...series.map(s=>Math.max(s.v0,s.v1)));if(!(ymax>0))ymax=1;
+  const X=v=>L+v/xmax*pw,Y=v=>T+ph-v/ymax*ph,uid='clip'+(++chartN);
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(title)}" font-family="system-ui,Segoe UI,Arial,sans-serif">`;
+  s+=`<defs><clipPath id="${uid}"><rect x="${L}" y="${T}" width="${pw}" height="${ph}"/></clipPath></defs><rect width="${W}" height="${H}" fill="#fff"/>`;
+  for(const v of ticks(xmax)){const x=X(v);s+=`<line x1="${x}" y1="${T}" x2="${x}" y2="${T+ph}" stroke="#d6d6d6" stroke-dasharray="3 3"/><line x1="${x}" y1="${T+ph}" x2="${x}" y2="${T+ph+5}" stroke="#222"/><text x="${x}" y="${T+ph+20}" text-anchor="middle" font-size="13" fill="#222">${fmt(v)}</text>`;}
+  for(const v of ticks(ymax)){const y=Y(v);s+=`<line x1="${L}" y1="${y}" x2="${L+pw}" y2="${y}" stroke="#d6d6d6" stroke-dasharray="3 3"/><line x1="${L-5}" y1="${y}" x2="${L}" y2="${y}" stroke="#222"/><text x="${L-9}" y="${y+4}" text-anchor="end" font-size="13" fill="#222">${fmt(v)}</text>`;}
+  s+=`<rect x="${L}" y="${T}" width="${pw}" height="${ph}" fill="none" stroke="#222" stroke-width="1.3"/>`;
+  s+=`<g clip-path="url(#${uid})">`+series.map(e=>`<line x1="${X(0)}" y1="${Y(e.v0)}" x2="${X(xmax)}" y2="${Y(e.v1)}" stroke="${e.color}" stroke-width="2.4"/>`).join('')+`</g>`;
+  for(const e of series){for(const [x,v] of [[0,e.v0],[xmax,e.v1]])if(v>=-1e-9&&v<=ymax*(1+1e-9))s+=mark(e.mk,X(x),Y(Math.max(0,v)),e.color);}
+  const lx=L+pw/2-62,ly=T+8;
+  s+=`<rect x="${lx}" y="${ly}" width="124" height="${series.length*20+8}" rx="4" fill="#fff" fill-opacity=".92" stroke="#bbb"/>`;
+  series.forEach((e,i)=>{const y=ly+16+i*20;s+=`<line x1="${lx+8}" y1="${y-4}" x2="${lx+36}" y2="${y-4}" stroke="${e.color}" stroke-width="2.4"/>`+mark(e.mk,lx+22,y-4,e.color)+`<text x="${lx+44}" y="${y}" font-size="13" fill="#222">${esc(e.label)}</text>`;});
+  s+=`<text x="${L+pw/2}" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#222">${esc(title)}</text>`;
+  s+=`<text x="${L+pw/2}" y="${H-14}" text-anchor="middle" font-size="14" fill="#222">Avancement (µmol)</text>`;
+  s+=`<text transform="translate(18 ${T+ph/2}) rotate(-90)" text-anchor="middle" font-size="14" fill="#222">Quantité de matière (µmol)</text></svg>`;
+  host.innerHTML=s;
+}
+const FIGHINT1='<p>Le graphique s\'affichera ici.</p>',FIGHINT2='<p>La figure s\'affichera ici après l\'exécution du script.</p>';
+
+/* ---- graphique de l'expérience 1 d'après le tableau de l'élève ---- */
+document.getElementById('plot1').onclick=()=>{
+  const msg=document.getElementById('plot1Msg'),fig=document.getElementById('fig1');
+  const xmax=pnum($k('xmax1').value);const ser=[];let ok=xmax!==null;
+  for(const k of [0,1,3,2]){const s=SP[k],v0=pnum($k('t1_i_'+s.k).value),v1=pnum($k('t1_f_'+s.k).value);if(v0===null||v1===null)ok=false;ser.push({label:s.label,color:s.color,mk:s.mk,v0,v1});}
+  if(!ok){msg.textContent='Complète d\'abord les lignes « initial » et « final » du tableau de l\'expérience n°1 et la valeur de x_max (nombres seulement).';fig.innerHTML=FIGHINT1;return;}
+  if(!(xmax>0)){msg.textContent='x_max doit être strictement positif pour tracer le graphique.';fig.innerHTML=FIGHINT1;return;}
+  msg.textContent='';drawChart(fig,{title:'Expérience n°1 : évolution des quantités de matière',xmax,series:ser});
+};
+
+/* ============ script Python (affichage + simulation) ============ */
+const PY=[
+'#!/usr/bin/env python',
+'# -*- coding: utf-8 -*-',
+'import matplotlib.pyplot as plt',
+'',
+'# Déclaration des coefficients stœchiométriques',
+'cs_I2 = {{cs_I2}}',
+'cs_S2O32 = {{cs_S2O32}}',
+'cs_I = {{cs_I}}',
+'cs_S4O62 = {{cs_S4O62}}',
+'',
+'# Initialisation des quantités de matière initiales (en µmol)',
+'no_I2 = float(input("Que vaut la quantité de matière initiale de diiode ? : "))',
+'no_S2O32 = float(input("Que vaut la quantité de matière initiale d\'ions thiosulfate ? : "))',
+'no_I = 0',
+'no_S4O62 = 0',
+'',
+'# Calcul de l\'avancement maximum',
+'x_max_I2 = no_I2 / cs_I2',
+'x_max_S2O32 = no_S2O32 / cs_S2O32',
+'x_max = min(x_max_S2O32, x_max_I2)',
+'',
+'# Création des listes',
+'x = [ 0, x_max ]',
+'n_I2 = [ (no_I2 - cs_I2*valeur) for valeur in x ]',
+'n_S2O32 = [ (no_S2O32 - cs_S2O32*valeur) for valeur in x ]',
+'n_S4O62 = [ (no_S4O62 + cs_S4O62*valeur) for valeur in x ]',
+'n_I = [ (no_I + cs_I*valeur) for valeur in x ]',
+'',
+'# Création des courbes',
+'plt.plot(x, n_I2, label="I2", color="orange")',
+'plt.plot(x, n_S2O32, label="S2O32-", color="red")',
+'plt.plot(x, n_S4O62, label="S4O62-", color="black")',
+'plt.plot(x, n_I, label="I-", color="blue")',
+'',
+'# Réglages axes et grille',
+'liste_des_n_max = [ max(n_I2), max(n_S2O32), max(n_S4O62), max(n_I) ]',
+'n_max = max(liste_des_n_max)',
+'plt.xlabel("Avancement (µmol)")',
+'plt.ylabel("Quantité de matière (µmol)")',
+'plt.title("Évolution de la réaction de réduction du diiode")',
+'plt.legend(loc="upper center")',
+'plt.axis([0, x_max, 0, n_max])',
+'plt.grid()',
+'',
+'# Affichage de la figure',
+'plt.show()'];
+const LN=name=>PY.findIndex(l=>l.startsWith(name))+1;
+function hl(line){
+  let t=esc(line);
+  t=t.replace(/(#.*$)|("[^"]*")|\b(import|as|for|in)\b|\b(float|input|min|max)\b/g,(m,c,s,k,f)=>c?'<span class="c">'+c+'</span>':s?'<span class="s">'+s+'</span>':k?'<span class="k">'+k+'</span>':'<span class="f">'+f+'</span>');
+  return t.replace(/\{\{(\w+)\}\}/g,(m,id)=>'<input type="text" class="py" data-k="'+id+'" autocomplete="off" spellcheck="false" aria-label="Valeur de '+id+'">');
+}
+document.getElementById('code').innerHTML=PY.map((l,i)=>'<div class="cl"><span class="ln">'+(i+1)+'</span><span>'+hl(l)+'</span></div>').join('');
+
+const PYF='TP_avancement.py';
+function trace(line,kind,msg){return 'Traceback (most recent call last):\n  File "'+PYF+'", line '+line+', in <module>\n    '+PY[line-1].replace(/\{\{(\w+)\}\}/,(m,id)=>($k(id).value||'')).trim()+'\n'+kind+': '+msg;}
+function runPython(){
+  const err=document.getElementById('pyErr'),fig=document.getElementById('pyFig');
+  const fail=t=>{err.textContent=t;err.classList.add('on');fig.innerHTML=FIGHINT2;};
+  err.classList.remove('on');err.textContent='';
+  /* 1. coefficients */
+  const cs={};
+  for(const n of ['cs_I2','cs_S2O32','cs_I','cs_S4O62']){
+    const raw=$k(n).value.trim(),line=LN(n+' =');
+    if(/^[A-Za-z_]\w*$/.test(raw)){fail(trace(line,'NameError',"name '"+raw+"' is not defined"));return;}
+    const v=raw===''?null:(/^[+-]?\d+(\.\d*)?$/.test(raw)?Number(raw):null);
+    if(v===null){fail('  File "'+PYF+'", line '+line+'\n    '+n+' = '+raw+'\n'+' '.repeat(7+n.length+raw.length)+'^\nSyntaxError: invalid syntax');return;}
+    cs[n]=v;
+  }
+  /* 2. quantités saisies */
+  const inp={};
+  for(const [id,name] of [['py_no_I2','no_I2'],['py_no_S2O32','no_S2O32']]){
+    const raw=$k(id).value,t=raw.trim();
+    if(!/^[+-]?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(t)){fail('Traceback (most recent call last):\n  File "'+PYF+'", line '+LN(name+' =')+', in <module>\n    '+PY[LN(name+' =')-1].trim()+"\nValueError: could not convert string to float: '"+raw+"'");return;}
+    inp[name]=Number(t);
+  }
+  /* 3. calculs (copie fidèle du script) */
+  if(cs.cs_I2===0){fail(trace(LN('x_max_I2 ='),'ZeroDivisionError','float division by zero').replace(/\n    .*\n/,'\n    x_max_I2 = no_I2 / cs_I2\n'));return;}
+  if(cs.cs_S2O32===0){fail('Traceback (most recent call last):\n  File "'+PYF+'", line '+LN('x_max_S2O32 =')+', in <module>\n    x_max_S2O32 = no_S2O32 / cs_S2O32\nZeroDivisionError: float division by zero');return;}
+  const xMaxI2=inp.no_I2/cs.cs_I2,xMaxS=inp.no_S2O32/cs.cs_S2O32,xmax=Math.min(xMaxS,xMaxI2);
+  const x=[0,xmax];
+  const nI2=x.map(v=>inp.no_I2-cs.cs_I2*v),nS=x.map(v=>inp.no_S2O32-cs.cs_S2O32*v),nS4=x.map(v=>0+cs.cs_S4O62*v),nI=x.map(v=>0+cs.cs_I*v);
+  if(!(xmax>0)){fig.innerHTML='<p>Avec ces valeurs, x_max n\'est pas strictement positif : la figure ne peut pas être tracée. Vérifie les coefficients et les quantités saisies.</p>';return;}
+  const by={I2:nI2,S2O32:nS,S4O62:nS4,I:nI};
+  const ser=[0,1,3,2].map(k=>{const s=SP[k],a=by[s.k];return {label:s.label,color:s.color,mk:s.mk,v0:a[0],v1:a[1]};});
+  drawChart(fig,{title:'Évolution de la réaction de réduction du diiode',xmax,series:ser});
+}
+document.getElementById('runPy').onclick=runPython;
+
+function clearViews(){document.getElementById('fig1').innerHTML=FIGHINT1;document.getElementById('plot1Msg').textContent='';document.getElementById('pyFig').innerHTML=FIGHINT2;const e=document.getElementById('pyErr');e.classList.remove('on');e.textContent='';}
+
+/* ============ enregistrement, import, effacement ============ */
+// Pas de sauvegarde automatique ni de localStorage : les réponses ne sont conservées que par « Enregistrer ».
+const TP_ID='tp-1spe-avancement_reaction', TP_VERSION=1;
+const FIELDS=[
+ ['q1','1. Qu’observe-t-on quant à la coloration de la solution ? Comment interpréter cette observation ?'],
+ ['q2','2. Réactif limitant dans chaque expérience, d’après les observations'],
+ ['q3','3. Expérience simple prouvant qu’il reste des ions S2O32− si le diiode est limitant'],
+ ['q4','4. Quantités initiales des réactifs pour l’expérience n°1 (calculs, en µmol)']
+];
+const ABR={i:'état initial',x:'état intermédiaire',f:'état final'};
+const NOMSP={I2:'I2',S2O32:'S2O32-',I:'I-',S4O62:'S4O62-'};
+for(const r of ['i','x','f'])for(const s of SP)FIELDS.push(['t1_'+r+'_'+s.k,'Tableau d’avancement, expérience 1 – '+ABR[r]+' – n('+NOMSP[s.k]+')']);
+FIELDS.push(['q5','5. Détermination de xmax par le calcul (expérience 1)'],['xmax1','5. xmax de l’expérience 1 (µmol)'],['q6','6. Accord avec la couleur finale de la solution (expérience 1)']);
+for(const r of ['i','x','f'])for(const s of SP)FIELDS.push(['t2_'+r+'_'+s.k,'Tableau d’avancement, expérience 2 – '+ABR[r]+' – n('+NOMSP[s.k]+')']);
+FIELDS.push(['q7','7. Calculs et conclusion pour l’expérience n°2'],['xmax2','7. xmax de l’expérience 2 (µmol)'],
+ ['q8','8. À quoi correspond le coefficient directeur de chaque droite ?'],
+ ['cs_I2','Python – coefficient stœchiométrique cs_I2'],['cs_S2O32','Python – coefficient stœchiométrique cs_S2O32'],['cs_I','Python – coefficient stœchiométrique cs_I'],['cs_S4O62','Python – coefficient stœchiométrique cs_S4O62'],
+ ['py_no_I2','Python – quantité initiale de diiode saisie (µmol)'],['py_no_S2O32','Python – quantité initiale d’ions thiosulfate saisie (µmol)'],
+ ['q9','9. Comment déterminer l’avancement maximum à l’aide des graphiques ?'],
+ ['q10','10. Mélange stœchiométrique : quantité initiale de diiode choisie et justification']);
+const fieldList=()=>FIELDS.map(([id,intitule])=>({id,intitule,el:document.querySelector('[data-k="'+id+'"]')}));
+const hasAnswers=()=>fieldList().some(f=>f.el&&f.el.value!=='');
+function askConfirm(msg,okLabel){return new Promise(res=>{
+  const o=document.createElement('div');
+  o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px';
+  o.innerHTML='<div role="alertdialog" aria-modal="true" style="background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:18px 20px;max-width:420px;font-size:15px;line-height:1.45"><p style="margin:0 0 14px"></p><div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn" data-r="0">Annuler</button><button type="button" class="btn primary" data-r="1"></button></div></div>';
+  o.querySelector('p').textContent=msg;o.querySelector('[data-r="1"]').textContent=okLabel;
+  const end=v=>{document.removeEventListener('keydown',onKey,true);o.remove();res(v);};
+  const onKey=e=>{if(e.key==='Escape'){e.preventDefault();end(false);}};
+  o.addEventListener('click',e=>{const b=e.target.closest('button[data-r]');if(b)end(b.dataset.r==='1');});
+  document.addEventListener('keydown',onKey,true);document.body.appendChild(o);o.querySelector('[data-r="0"]').focus();});}
+function parisNow(){const now=new Date();
+  const f=new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+  const p=Object.fromEntries(f.formatToParts(now).map(x=>[x.type,x.value]));
+  const asUTC=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second);
+  const off=Math.round((asUTC-Math.floor(now.getTime()/1000)*1000)/60000);const a=Math.abs(off),pad=n=>String(n).padStart(2,'0');
+  return {iso:`${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}${off<0?'-':'+'}${pad(Math.floor(a/60))}:${pad(a%60)}`,jour:`${p.year}-${p.month}-${p.day}`,hm:p.hour+p.minute};}
+function setupSave(){
+  const stEl=document.getElementById('saveState'),poste=document.getElementById('poste'),numTp=document.getElementById('num-tp'),bandeau=document.getElementById('bandeau');
+  const say=(html,warn)=>{stEl.className=warn?'warn':'';stEl.textContent=html;};
+  const cacher=()=>{bandeau.classList.remove('on');poste.classList.remove('manquant');};
+  document.getElementById('bandeauFermer').onclick=cacher;
+  poste.addEventListener('input',()=>{poste.value=poste.value.toUpperCase().replace(/[^0-9A-Z]/g,'').match(/^(\d+[A-Z]?)?/)[0].slice(0,4);if(poste.value)cacher();});
+  const PICK={id:'tp-physique',startIn:'documents',types:[{description:'Réponses du TP (JSON)',accept:{'application/json':['.json']}}]};
+  document.getElementById('saveFile').onclick=async()=>{
+    const pn=poste.value.trim();
+    if(!pn){say('');bandeau.classList.add('on');poste.classList.add('manquant');poste.focus({preventScroll:true});return;}
+    cacher();
+    const t=parisNow(),tp=numTp.value.trim();
+    const data={identifiant_tp:TP_ID,version:TP_VERSION,numero_tp:tp,numero_poste:pn,date_heure:t.iso,
+      reponses:fieldList().map(f=>({id:f.id,intitule:f.intitule,reponse:f.el?f.el.value:''}))};
+    const tpSeg=tp.replace(/[^A-Za-z0-9-]+/g,'');
+    const fname=`${tpSeg?'TP_'+tpSeg+'_':''}poste${pn}_${t.jour}_${t.hm}.json`;
+    const text=JSON.stringify(data,null,2);
+    if(window.showSaveFilePicker){
+      try{const h=await window.showSaveFilePicker(Object.assign({suggestedName:fname},PICK));
+        const w=await h.createWritable();await w.write(text);await w.close();say('✓ Enregistré dans le fichier « '+h.name+' ».');return;}
+      catch(e){if(e.name==='AbortError'){say('Enregistrement annulé.');return;}console.warn(e);}
+    }
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=fname;
+    document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(a.href);},2000);
+    say('✓ Fichier « '+fname+' » téléchargé (dossier de téléchargements du navigateur).');
+  };
+  const loadFile=async f=>{
+    let d;try{d=JSON.parse(await f.text());}catch(e){d=null;}
+    if(!d||typeof d!=='object'||!Array.isArray(d.reponses)){say('Ce fichier n’est pas un fichier de réponses de ce TP : import refusé.',true);return;}
+    if(d.identifiant_tp!==TP_ID){say('Ce fichier a été enregistré dans un autre TP : import refusé.',true);return;}
+    if(d.version!==TP_VERSION){say('Ce fichier a été enregistré avec une autre version de ce TP : import refusé.',true);return;}
+    if(hasAnswers()&&!(await askConfirm('Des réponses sont déjà saisies. Importer ce fichier va les remplacer. Continuer ?','Importer'))){say('Import annulé : vos réponses n’ont pas été modifiées.');return;}
+    const map=new Map(d.reponses.map(r=>[r.id,r.reponse]));
+    fieldList().forEach(x=>{if(x.el){const v=map.get(x.id);x.el.value=v==null?'':String(v);}});
+    clearViews();
+    say('✓ Réponses du fichier « '+f.name+' » importées.');
+  };
+  const fi=document.getElementById('fileIn');
+  fi.onchange=()=>{if(fi.files[0])loadFile(fi.files[0]);fi.value='';};
+  document.getElementById('openFile').onclick=async()=>{
+    if(window.showOpenFilePicker){try{const [h]=await window.showOpenFilePicker(PICK);return loadFile(await h.getFile());}
+      catch(e){if(e.name==='AbortError')return;console.warn(e);}}
+    fi.click();};
+  document.getElementById('resetAll').onclick=async()=>{
+    if(!(await askConfirm('Effacer toutes vos réponses ? Cette action est irréversible. Pensez à enregistrer avant.','Effacer')))return;
+    fieldList().forEach(f=>{if(f.el)f.el.value='';});clearViews();say('Réponses effacées.');};
+}
+setupSave();
+</script>
+</body>
+</html>
