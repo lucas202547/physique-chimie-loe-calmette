@@ -17,8 +17,8 @@ header .tag{font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--acce
 header h1{font-size:19px;margin:0}
 header .sp{flex:1}
 header .tp{font-weight:700;border:2px solid var(--ink);padding:2px 10px;border-radius:4px}
-main{display:grid;grid-template-columns:minmax(0,1fr) 410px;gap:14px;padding:14px;align-items:start}
-@media (max-width:1100px){main{grid-template-columns:1fr}}
+main{display:grid;grid-template-columns:minmax(0,1fr) 14px var(--mw,410px);column-gap:0;padding:14px;align-items:start}
+@media (max-width:1100px){main{grid-template-columns:1fr;row-gap:14px}#split{display:none}}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:10px}
 /* palette */
 #palette{display:flex;flex-wrap:wrap;gap:6px;padding:8px;align-items:center}
@@ -38,7 +38,7 @@ button.btn.danger{border-color:var(--red);color:var(--red)}
 #props.show{display:flex}
 #props b{font-size:14px}
 #boardWrap{position:relative;margin-top:10px;padding:6px}
-svg#board{width:100%;height:auto;display:block;background:#fbfaf4;border-radius:8px;touch-action:none;user-select:none}
+svg#board{width:var(--bw,100%);max-width:100%;height:auto;display:block;background:#fbfaf4;border-radius:8px;touch-action:none;user-select:none}
 svg#board.placing .hit{pointer-events:none}
 svg#board.placing{cursor:crosshair}
 .hit{stroke:transparent;stroke-width:22;fill:none;cursor:pointer;pointer-events:stroke}
@@ -60,8 +60,18 @@ svg#board.placing{cursor:crosshair}
 .st.info{color:var(--muted)}
 .toolbar2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:0 8px 8px}
 .toolbar2 label{font-size:13px;color:var(--muted);display:flex;gap:4px;align-items:center}
+/* poignées de redimensionnement */
+#split{align-self:stretch;min-height:120px;cursor:col-resize;touch-action:none;position:relative;border-radius:6px}
+#split::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:4px;margin-left:-2px;border-radius:2px;background:var(--line);transition:background .15s}
+#split:hover::after,#split:focus-visible::after,#split.drag::after{background:var(--accent)}
+#split:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.grip{display:flex;justify-content:flex-end;align-items:center;gap:6px;padding:2px 8px 6px;font-size:12px;color:var(--muted);touch-action:none;user-select:none}
+.grip span{cursor:ew-resize;border:1.5px solid var(--line);background:#fff;border-radius:6px;padding:2px 8px}
+.grip span:hover,.grip span.drag{border-color:var(--accent);color:var(--accent)}
+#missionGrip{flex:none;justify-content:center;border-top:1px solid var(--line);padding-top:6px}
+#missionGrip span{cursor:ns-resize}
 /* mission panel */
-#mission{position:sticky;top:10px;max-height:calc(100vh - 20px);display:flex;flex-direction:column}
+#mission{position:sticky;top:10px;max-height:var(--mh,calc(100vh - 20px));display:flex;flex-direction:column}
 .tabs{display:flex;border-bottom:1px solid var(--line)}
 .tabs button{flex:1;font:inherit;font-weight:700;border:0;background:none;padding:10px 4px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent}
 .tabs button.on{color:var(--accent);border-bottom-color:var(--accent)}
@@ -131,8 +141,11 @@ kbd{border:1px solid #bbb;border-bottom-width:2px;border-radius:4px;padding:0 4p
     </div>
     <svg id="board" xmlns="http://www.w3.org/2000/svg"></svg>
     <div id="status"></div>
+    <div class="grip"><span id="boardGrip" title="Glisse pour agrandir ou réduire le plan (double-clic : rétablir)">↔ Taille du plan</span></div>
   </div>
 </div>
+
+<div id="split" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Largeur du plan de travail et de la fiche (glisser, ou flèches gauche et droite ; double-clic pour rétablir)" title="Glisse pour changer la largeur (double-clic : rétablir)"></div>
 
 <aside class="panel" id="mission">
   <div class="tabs">
@@ -247,6 +260,7 @@ kbd{border:1px solid #bbb;border-bottom-width:2px;border-radius:4px;padding:0 4p
     </div>
   </section>
   </div>
+  <div class="grip" id="missionGrip"><span id="missionGripBtn" title="Glisse pour changer la hauteur de la fiche (double-clic : rétablir)">↕ Hauteur de la fiche</span></div>
 </aside>
 </main>
 <div id="toast"></div>
@@ -647,6 +661,45 @@ document.getElementById('docSvg').innerHTML=
   +Lw(200,60,225,60)+schemaSym('amp',225,60,289,60)+Lw(289,60,300,60)+schemaSym('res',300,60,340,60)+`<circle cx="235" cy="60" r="3.5" fill="#c0392b"/><circle cx="279" cy="60" r="3.5" fill="#1d2430"/><text class="lbl small" x="233" y="84" style="fill:#c0392b">A</text><text class="lbl small" x="270" y="84">COM</text><text class="lbl small" x="212" y="52">I →</text><text class="lbl small" x="270" y="144" text-anchor="middle">en série</text>`;
 
 buildPalette();render();setupSave();
+
+/* ===== Blocs redimensionnables (mémoire de la session seulement, rien n'est enregistré) ===== */
+(function(){
+  const main=document.querySelector('main'),split=document.getElementById('split'),mis=document.getElementById('mission');
+  const wrap=document.getElementById('boardWrap'),bGrip=document.getElementById('boardGrip'),mGrip=document.getElementById('missionGripBtn');
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  function drag(el,start,move){
+    el.addEventListener('pointerdown',e=>{
+      if(e.button!==undefined&&e.button!==0)return;
+      e.preventDefault();el.setPointerCapture(e.pointerId);el.classList.add('drag');
+      const st=start(e),mv=ev=>move(ev,st),up=()=>{el.classList.remove('drag');el.removeEventListener('pointermove',mv);el.removeEventListener('pointerup',up);el.removeEventListener('pointercancel',up);};
+      el.addEventListener('pointermove',mv);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);
+    });
+  }
+  /* 1. Largeur : plan de travail | fiche */
+  function setMW(px){
+    const maxi=Math.max(280,main.clientWidth-28-14-320);
+    px=clamp(px,280,maxi);main.style.setProperty('--mw',px+'px');
+  }
+  drag(split,e=>({x:e.clientX,w:mis.getBoundingClientRect().width}),(e,st)=>setMW(st.w-(e.clientX-st.x)));
+  split.addEventListener('dblclick',()=>main.style.removeProperty('--mw'));
+  split.addEventListener('keydown',e=>{
+    if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight'&&e.key!=='Home')return;
+    e.preventDefault();
+    if(e.key==='Home'){main.style.removeProperty('--mw');return;}
+    setMW(mis.getBoundingClientRect().width+(e.key==='ArrowLeft'?30:-30));
+  });
+  /* 2. Taille du plan de travail */
+  drag(bGrip,e=>({x:e.clientX,w:document.getElementById('board').getBoundingClientRect().width}),(e,st)=>{
+    const maxi=wrap.clientWidth-12;
+    document.getElementById('board').style.setProperty('--bw',clamp(st.w+(e.clientX-st.x),280,maxi)+'px');
+  });
+  bGrip.addEventListener('dblclick',()=>document.getElementById('board').style.removeProperty('--bw'));
+  /* 3. Hauteur de la fiche */
+  drag(mGrip,e=>({y:e.clientY,h:mis.getBoundingClientRect().height}),(e,st)=>{
+    mis.style.setProperty('--mh',clamp(st.h+(e.clientY-st.y),200,4000)+'px');
+  });
+  mGrip.addEventListener('dblclick',()=>mis.style.removeProperty('--mh'));
+})();
 </script>
 </body>
 </html>
