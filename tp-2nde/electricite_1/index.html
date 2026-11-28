@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deux lois fondamentales en électricité – labo virtuel</title>
+<style>
+:root{
+  --paper:#f7f4ec; --ink:#1d2430; --muted:#5d6675; --line:#d9d3c3;
+  --accent:#0f6e6e; --accent-soft:#d8ecea; --red:#c0392b; --ok:#1e7d3a; --warn:#b26a00;
+  --card:#fffdf8; --lcd:#c9d8b6; --lcd-ink:#1b2a12; --flow:#f2a20c;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.45}
+header{display:flex;align-items:center;gap:16px;padding:10px 18px;border-bottom:2px solid var(--ink);background:var(--card)}
+header .tag{font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+header h1{font-size:19px;margin:0}
+header .sp{flex:1}
+header .tp{font-weight:700;border:2px solid var(--ink);padding:2px 10px;border-radius:4px}
+main{display:grid;grid-template-columns:minmax(0,1fr) 410px;gap:14px;padding:14px;align-items:start}
+@media (max-width:1100px){main{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px}
+/* palette */
+#palette{display:flex;flex-wrap:wrap;gap:6px;padding:8px;align-items:center}
+.tool{display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:4px 5px;cursor:pointer;font:inherit;font-size:12px;color:var(--ink);min-width:64px}
+.tool svg{width:50px;height:24px}
+.tool:hover{border-color:var(--accent)}
+.tool.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent)}
+.sep{width:1px;align-self:stretch;background:var(--line);margin:0 4px}
+.opt{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:2px}
+select,input[type=text],input[type=number]{font:inherit;font-size:14px;padding:4px 6px;border:1.5px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+button.btn{font:inherit;font-size:13px;border:1.5px solid var(--ink);background:#fff;border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--ink)}
+button.btn:hover{background:var(--accent-soft)}
+button.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button.btn.primary:hover{filter:brightness(1.1)}
+button.btn.danger{border-color:var(--red);color:var(--red)}
+#props{display:none;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 10px;border-top:1px dashed var(--line);background:#fbf8ef;border-radius:0 0 10px 10px}
+#props.show{display:flex}
+#props b{font-size:14px}
+#boardWrap{position:relative;margin-top:10px;padding:6px}
+svg#board{width:100%;height:auto;display:block;background:#fbfaf4;border-radius:8px;touch-action:none;user-select:none}
+svg#board.placing .hit{pointer-events:none}
+svg#board.placing{cursor:crosshair}
+.hit{stroke:transparent;stroke-width:22;fill:none;cursor:pointer;pointer-events:stroke}
+.hit.selected{stroke:rgba(15,110,110,.22)}
+.erase .hit:hover{stroke:rgba(192,57,43,.25)}
+.burn .hit{cursor:pointer}
+.wire{stroke:var(--ink);stroke-width:3;stroke-linecap:round}
+.sym line,.sym rect,.sym circle,.sym path{stroke:var(--ink);stroke-width:2.4;fill:none}
+.sym .fillw{fill:#fff}
+.flow{stroke:var(--flow);stroke-width:5;stroke-linecap:round;fill:none;pointer-events:none;stroke-dasharray:0.1 16}
+.lbl{font-size:13px;fill:var(--ink);font-weight:700;pointer-events:none}
+.lbl.small{font-size:11px;font-weight:700}
+.lcdbox{fill:var(--lcd);stroke:#55623f;stroke-width:1.5}
+.lcd{font-family:ui-monospace,Consolas,"Courier New",monospace;font-size:15px;fill:var(--lcd-ink);pointer-events:none}
+#status{min-height:30px;padding:6px 10px;font-size:14px;display:flex;flex-direction:column;gap:4px}
+.st{padding:5px 10px;border-radius:6px}
+.st.warn{background:#fdf0dc;color:#7a4800;border-left:4px solid var(--warn)}
+.st.err{background:#fbe3e0;color:#7d1d14;border-left:4px solid var(--red)}
+.st.info{color:var(--muted)}
+.toolbar2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:0 8px 8px}
+.toolbar2 label{font-size:13px;color:var(--muted);display:flex;gap:4px;align-items:center}
+/* mission panel */
+#mission{position:sticky;top:10px;max-height:calc(100vh - 20px);display:flex;flex-direction:column}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;font:inherit;font-weight:700;border:0;background:none;padding:10px 4px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent}
+.tabs button.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tabc{overflow:auto;padding:12px 14px 20px}
+.tabc section{display:none}.tabc section.on{display:block}
+h2{font-size:17px;margin:4px 0 8px}
+h3{font-size:15px;margin:16px 0 6px;color:var(--accent)}
+.step{border:1px solid var(--line);border-radius:8px;padding:10px;margin:10px 0;background:#fff}
+.step p{margin:4px 0}
+.res{margin-top:6px;font-size:14px}
+.res div{margin:3px 0}
+.ok{color:var(--ok)} .ko{color:var(--red)} .wa{color:var(--warn)}
+table.meas{border-collapse:collapse;margin:6px 0;width:100%}
+table.meas td{padding:3px 4px;border-bottom:1px solid #eee}
+table.meas input{width:90px}
+textarea{font:inherit;font-size:14px;width:100%;padding:6px;border:1.5px solid var(--line);border-radius:6px;background:#fff;margin-top:4px;resize:vertical}
+input.good{border-color:var(--ok);background:#ecf7ef}
+input.bad{border-color:var(--red);background:#fbeceb}
+.blank{width:140px;display:inline-block}
+.q{margin:10px 0}
+.q label{display:block;margin:3px 0;cursor:pointer}
+.doc{background:#eef5f4;border-radius:8px;padding:8px 10px;font-size:14px}
+.doc svg{width:100%;height:auto}
+details{margin:6px 0} summary{cursor:pointer;font-weight:700;color:var(--accent)}
+.story{font-style:italic;background:#fff;border-left:4px solid var(--accent);padding:8px 10px;border-radius:0 8px 8px 0}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:8px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:9;max-width:90vw}
+#toast.show{opacity:1}
+kbd{border:1px solid #bbb;border-bottom-width:2px;border-radius:4px;padding:0 4px;font-size:12px;background:#fff}
+
+.savebar{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;padding:8px 18px;background:var(--card);border-bottom:1px solid var(--line);font-size:14px}
+.savebar input.court{width:5em;text-align:center;font:inherit;font-size:14px;padding:4px 6px;border:1.5px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+.savebar .aide{color:var(--muted);font-size:13px}
+#saveState{font-size:13px;color:var(--muted)}#saveState.warn{font-size:14px;font-weight:700;color:var(--red)}
+#bandeau{position:fixed;top:0;left:0;right:0;z-index:9000;display:none;align-items:flex-start;gap:12px;padding:14px 18px;background:#fbe3e0;color:#7d1d14;border-bottom:2px solid var(--red);border-left:8px solid var(--red);font-size:17px;line-height:1.45;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+#bandeau.on{display:flex}#bandeau .ico{font-size:26px;line-height:1.1}#bandeau .txt{flex:1}#bandeau b{font-weight:700}
+#bandeau button{border:none;background:transparent;color:inherit;font-size:24px;line-height:1;padding:0 6px;cursor:pointer}
+#poste.manquant{border:3px solid var(--red);background:#fbe3e0}
+</style>
+</head>
+<body>
+<div id="bandeau" role="alert" aria-live="assertive"><span class="ico" aria-hidden="true">⚠</span><div class="txt"><b>Numéro de poste manquant.</b> Renseignez-le en haut de la page <i>(pour les classes de secondes, ajouter la lettre du groupe (A ou B))</i>. Rien n'a été enregistré.</div><button type="button" id="bandeauFermer" aria-label="Fermer l'avertissement">×</button></div>
+<header>
+  <div><div class="tag">Ondes et signaux · Seconde</div><h1>Deux lois fondamentales en électricité — labo virtuel</h1></div>
+</header>
+<div class="savebar">
+  <label for="num-tp">Numéro de TP :</label><input class="court" id="num-tp" type="text" inputmode="numeric" maxlength="2" autocomplete="off">
+  <label for="poste">Numéro de poste :</label><input class="court" id="poste" type="text" maxlength="4" autocomplete="off"><span class="aide">(Suivi de A ou B selon le groupe)</span>
+  <button class="btn primary" id="saveFile" title="Enregistrer vos réponses dans un fichier">💾 Enregistrer</button>
+  <button class="btn" id="openFile" title="Recharger un fichier produit par « Enregistrer »">📂 Importer mes réponses d'un jour précédent</button>
+  <button class="btn danger" id="resetAll" title="Effacer toutes vos réponses">🗑 Effacer mes réponses</button>
+  <input type="file" id="fileIn" accept=".json,application/json" hidden>
+  <span id="saveState"></span>
+</div>
+<main>
+<div>
+  <div class="panel">
+    <div id="palette"></div>
+    <div id="props"></div>
+  </div>
+  <div class="panel" id="boardWrap">
+    <div class="toolbar2">
+      <button class="btn" id="undoBtn" title="Ctrl+Z">↶ Annuler</button>
+      <button class="btn danger" id="clearBtn">Tout effacer</button>
+      <button class="btn" id="flowBtn" aria-pressed="true" title="Afficher ou masquer le courant qui se déplace dans les fils">👁 Masquer le courant</button>
+      <span style="flex:1"></span>
+      <span style="font-size:13px;color:var(--muted)" id="hint"></span>
+    </div>
+    <svg id="board" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="status"></div>
+  </div>
+</div>
+
+<aside class="panel" id="mission">
+  <div class="tabs">
+    <button data-t="t0" class="on">Départ</button>
+    <button data-t="t1">Partie I</button>
+    <button data-t="t2">Partie II</button>
+    <button data-t="t3">Partie III</button>
+  </div>
+  <div class="tabc">
+  <!-- ======== DÉPART ======== -->
+  <section id="t0" class="on">
+    <h2>Le problème de l'internaute</h2>
+    <p class="story">Sur un forum de bricolage, un internaute veut fabriquer une guirlande de 10 ampoules. En les mettant <b>en série</b>, la lumière est faible. Le modérateur lui conseille de les mettre <b>en parallèle</b>, en faisant attention au courant sortant du générateur.</p>
+    <p><b>Objectif :</b> comprendre les réponses données à l'internaute et lui apporter une solution claire et adaptée.</p>
+    <h3>Mode d'emploi du labo</h3>
+    <div class="step">
+      <p>1. Choisis un dipôle dans la barre d'outils (règle sa valeur juste à côté).</p>
+      <p>2. Sur le plan de travail, <b>appuie sur un point</b> de la grille puis <b>fais glisser</b> dans la direction voulue : le dipôle se pose entre deux points.</p>
+      <p>3. Avec l'outil <b>Fil</b>, fais glisser d'un point à un autre (horizontalement ou verticalement) pour relier les dipôles.</p>
+      <p>4. Avec l'outil <b>Sélection</b>, clique sur un dipôle pour changer sa valeur, lui donner un nom (R<sub>1</sub>…), l'inverser ou le supprimer.</p>
+      <p>⚠️ Le <b>premier point</b> où tu appuies devient le pôle <b>−</b> de la pile, ou la borne <b>COM</b> d'un multimètre.</p>
+      <p>● Un gros point noir sur la grille indique un <b>nœud</b> (au moins 3 fils reliés). Un petit cercle vide signale une borne <b>non reliée</b>.</p>
+      <p style="color:var(--muted);font-size:13px">Raccourcis : <kbd>Suppr</kbd> efface la sélection, <kbd>Ctrl</kbd>+<kbd>Z</kbd> annule, <kbd>Échap</kbd> revient à la sélection.</p>
+    </div>
+    <h3>Document n°1 : mesurer U (en volt) et I (en ampère)</h3>
+    <div class="doc">
+      <svg viewBox="0 0 360 150" id="docSvg"></svg>
+      <p style="margin:4px 0"><b>Voltmètre : en dérivation</b> aux bornes du dipôle. Borne <b>V</b> (rouge) vers la pointe de la flèche tension, borne <b>COM</b> vers l'autre extrémité.</p>
+      <p style="margin:4px 0"><b>Ampèremètre : en série</b> dans la branche. Le courant entre par la borne <b>A</b> (rouge) et sort par <b>COM</b>.</p>
+    </div>
+  </section>
+
+  <!-- ======== PARTIE I ======== -->
+  <section id="t1">
+    <h2>I. La loi des mailles</h2>
+    <p>Cette loi concerne la <b>tension</b>.</p>
+    <div class="step">
+      <p><b>Étape 1.</b> Réalise le montage : une pile de <b>9,0 V</b> et deux résistances <b>R<sub>1</sub> = 8 Ω</b> et <b>R<sub>2</sub> = 12 Ω</b> en série.</p>
+      <svg viewBox="0 0 300 150" id="schema1" style="width:100%"></svg>
+    </div>
+    <div class="step">
+      <p><b>Étape 2.</b> Branche <b>trois voltmètres</b> pour mesurer U<sub>G</sub>, U<sub>R1</sub> et U<sub>R2</sub> (tensions aux bornes du générateur et de chaque conducteur ohmique). Attention à la borne COM !</p>
+    </div>
+    <div class="step">
+      <p><b>Étape 3.</b> Relève tes mesures (en V) :</p>
+      <table class="meas" data-table="T1">
+        <tr><td>U<sub>G</sub> =</td><td><input type="text" data-k="UG1"> V</td></tr>
+        <tr><td>U<sub>R1</sub> =</td><td><input type="text" data-k="UR11"> V</td></tr>
+        <tr><td>U<sub>R2</sub> =</td><td><input type="text" data-k="UR21"> V</td></tr>
+      </table>
+    </div>
+    <div class="q" data-q="q1"><b>1. Quelle relation peut-on écrire entre ces valeurs ?</b><br><textarea data-k="q1" rows="2" placeholder="Ta réponse…"></textarea></div>
+    <div class="q" data-q="q2"><b>2. Complète l'énoncé de la loi des mailles :</b><br>
+      Dans une maille, la <input type="text" class="blank" data-b="q2a"> algébrique des tensions est toujours nulle.
+    </div>
+    <div class="q" data-q="q3"><b>3. Mesure la tension aux bornes d'un fil :</b> U<sub>fil</sub> ≈ <input type="text" data-k="Ufil" style="width:80px"> V</div>
+  </section>
+
+  <!-- ======== PARTIE II ======== -->
+  <section id="t2">
+    <h2>II. La loi des nœuds</h2>
+    <p>Cette loi concerne l'<b>intensité</b>.</p>
+    <div class="step">
+      <p><b>Étape 1.</b> Réalise le circuit ci-dessous : pile de <b>6,0 V</b>, R<sub>1</sub> = 8 Ω, R<sub>2</sub> = 12 Ω et <b>R<sub>3</sub> = 15 Ω</b>.</p>
+      <svg viewBox="0 0 320 180" id="schema2" style="width:100%"></svg>
+    </div>
+    <div class="step">
+      <p><b>Étape 2.</b> Insère l'<b>ampèremètre</b> en différents points du circuit pour mesurer I<sub>1</sub>, I<sub>2</sub>, I<sub>3</sub> et I<sub>4</sub>. Tu peux en utiliser un seul et le déplacer, ou en placer quatre.</p>
+      <table class="meas" data-table="T2">
+        <tr><td>I<sub>1</sub> =</td><td><input type="text" data-k="I1"> A</td></tr>
+        <tr><td>I<sub>2</sub> =</td><td><input type="text" data-k="I2"> A</td></tr>
+        <tr><td>I<sub>3</sub> =</td><td><input type="text" data-k="I3"> A</td></tr>
+        <tr><td>I<sub>4</sub> =</td><td><input type="text" data-k="I4"> A</td></tr>
+      </table>
+    </div>
+    <div class="q" data-q="q4"><b>4. Quelle relation peut-on écrire entre les différentes valeurs de l'intensité ?</b><br><textarea data-k="q4" rows="2" placeholder="Ta réponse…"></textarea></div>
+    <div class="q" data-q="q5"><b>5. Complète l'énoncé de la loi des nœuds :</b><br>
+      La somme des <input type="text" class="blank" data-b="q5a"> des courants qui entrent par un <input type="text" class="blank" data-b="q5b"> est égale à la somme des intensités des <input type="text" class="blank" data-b="q5c"> qui <input type="text" class="blank" data-b="q5d"> du même nœud.
+    </div>
+    <div class="step">
+      <p><b>Étape 3.</b> Mesure les tensions aux bornes de la pile et des 3 résistances (comme dans la partie I).</p>
+      <table class="meas" data-table="T3">
+        <tr><td>U<sub>G</sub> =</td><td><input type="text" data-k="UG2"> V</td></tr>
+        <tr><td>U<sub>R1</sub> =</td><td><input type="text" data-k="UR12"> V</td></tr>
+        <tr><td>U<sub>R2</sub> =</td><td><input type="text" data-k="UR22"> V</td></tr>
+        <tr><td>U<sub>R3</sub> =</td><td><input type="text" data-k="UR32"> V</td></tr>
+      </table>
+    </div>
+    <div class="q" data-q="q6"><b>6. Écris la loi des mailles dans la maille principale et vérifie-la avec les valeurs relevées.</b><br><textarea data-k="q6" rows="4" placeholder="Ta réponse…"></textarea></div>
+  </section>
+
+  <!-- ======== PARTIE III ======== -->
+  <section id="t3">
+    <h2>III. Application : aidons l'internaute</h2>
+    <p>Les ampoules du labo sont prévues pour <b>6 V</b>. Utilise une pile de <b>6,0 V</b>.</p>
+    <div class="step">
+      <p><b>Expérience A — en série.</b> Place 2, puis 3, puis jusqu'à 10 ampoules <b>en série</b>. Compare leur éclat à celui d'une ampoule seule. Prends ensuite l'outil <b>🔥 Griller</b> et clique sur une ampoule : que se passe-t-il ?</p>
+    </div>
+    <div class="step">
+      <p><b>Expérience B — en dérivation.</b> Efface tout puis place plusieurs ampoules <b>en dérivation</b> (en parallèle) sur la pile. Mesure le courant dans la branche principale avec un ampèremètre à chaque ajout d'ampoule. Avec l'outil <b>🔥 Griller</b>, grille une ampoule : que se passe-t-il ? (Clique à nouveau dessus pour la remplacer.)</p>
+    </div>
+    <div class="step"><p><b>Observations :</b></p>
+      <label style="font-size:14px">Éclat des ampoules en série quand on en ajoute :</label><textarea data-k="obsS" rows="2" placeholder="Ta réponse…"></textarea>
+      <label style="font-size:14px">Courant dans la branche principale en dérivation (1, 2, 3… ampoules) :</label><textarea data-k="obsP" rows="2" placeholder="Ta réponse…"></textarea>
+      <label style="font-size:14px">Quand une ampoule grille (série / dérivation) :</label><textarea data-k="obsG" rows="2" placeholder="Ta réponse…"></textarea>
+    </div>
+    <h3>Complète la réponse à l'internaute</h3>
+    <div class="q">• Plus on place d'ampoules dans le montage <i>en série</i>, plus l'intensité lumineuse de chacune <input type="text" class="blank" data-b="p1">. La tension délivrée par le générateur est <input type="text" class="blank" data-b="p2"> sur chacune des ampoules (de puissance équivalente). De plus, si une des ampoules grille, tout le circuit est <input type="text" class="blank" data-b="p3">.</div>
+    <div class="q">• Dans le montage où l'on place les 10 ampoules <i>en dérivation</i>, chacune est soumise à la tension <input type="text" class="blank" data-b="p4">. (Il faut bien sûr adapter les ampoules à la tension du générateur.) Par contre, à chaque fois que l'on place une ampoule en dérivation, on crée un <input type="text" class="blank" data-b="p5">. Le courant fourni par le générateur devra alors être adapté au fonctionnement des ampoules, car cela augmente le courant envoyé par le générateur et peut donc poser des problèmes de sécurité.</div>
+    <div class="step">
+      <p><b>Fin du TP.</b> Clique sur « Enregistrer » en haut de la page pour conserver tes réponses dans un fichier : elles ne sont pas sauvegardées automatiquement.</p>
+    </div>
+  </section>
+  </div>
+</aside>
+</main>
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ============ constantes ============ */
+const S=40, OX=34, OY=34, COLS=24, ROWS=15;
+const RW=1e-4, RP=1e-3, RB=12, RV=1e7, RA=1e-3;   // fil, pile (r interne), ampoule, voltmètre, ampèremètre
+const PNOM=3; // ampoule 6 V – 3 W
+const FUSE=10; // A
+const NAMES={burn:"Griller",select:"Sélection",wire:"Fil",pile:"Pile",res:"Résistance",bulb:"Ampoule",switch:"Interrupteur",volt:"Voltmètre",amp:"Ampèremètre",erase:"Gomme"};
+const svg=document.getElementById('board');
+const W=OX*2+(COLS-1)*S, H=OY*2+(ROWS-1)*S;
+svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+
+let elems=[], nextId=1, sel=null, tool='select', undo=[], lastSol=null;
+let opts={pile:9,res:8,resCustom:''};
+let drag=null, flowOn=true;
+
+const key=p=>p[0]+','+p[1];
+const px=p=>[OX+p[0]*S, OY+p[1]*S];
+const fr=(v,d)=>{let s=v.toFixed(d); if(/^-0[.,]?0*$/.test(s)) s=s.slice(1); return s.replace('.',',');};
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2800);}
+
+/* ============ géométrie / occupation ============ */
+function nodesAlong(e){const [ax,ay]=e.a,[bx,by]=e.b;const n=Math.max(Math.abs(bx-ax),Math.abs(by-ay));const dx=Math.sign(bx-ax),dy=Math.sign(by-ay);const r=[];for(let i=0;i<=n;i++)r.push([ax+dx*i,ay+dy*i]);return r;}
+function segsOf(e){const p=nodesAlong(e);const r=[];for(let i=0;i<p.length-1;i++){const a=key(p[i]),b=key(p[i+1]);r.push(a<b?a+'|'+b:b+'|'+a);}return r;}
+function occupancy(except){const segs=new Set(),used=new Set(),blocked=new Set();
+  for(const e of elems){if(e===except)continue;segsOf(e).forEach(s=>segs.add(s));const p=nodesAlong(e);
+    if(e.type==='wire')p.forEach(q=>used.add(key(q)));else{used.add(key(p[0]));used.add(key(p[p.length-1]));p.slice(1,-1).forEach(q=>blocked.add(key(q)));}}
+  return {segs,used,blocked};}
+function canPlace(e){const o=occupancy();const p=nodesAlong(e);
+  for(const q of p){if(q[0]<0||q[1]<0||q[0]>=COLS||q[1]>=ROWS)return false;}
+  for(const s of segsOf(e))if(o.segs.has(s))return false;
+  if(e.type==='wire'){for(const q of p)if(o.blocked.has(key(q)))return false;}
+  else{if(o.blocked.has(key(p[0]))||o.blocked.has(key(p[2])))return false;if(o.used.has(key(p[1]))||o.blocked.has(key(p[1])))return false;}
+  return true;}
+
+/* ============ solveur (analyse nodale modifiée) ============ */
+function branches(){const br=[];
+  for(const e of elems){
+    if(e.type==='wire'){const p=nodesAlong(e);for(let i=0;i<p.length-1;i++)br.push({e,seg:i,a:key(p[i]),b:key(p[i+1]),R:RW});}
+    else if(e.type==='pile')br.push({e,a:key(e.a),b:key(e.b),src:true,E:e.value,r:RP});
+    else{let R=null;
+      if(e.type==='res')R=e.value;else if(e.type==='bulb')R=e.burnt?null:RB;else if(e.type==='switch')R=e.closed?RW:null;
+      else if(e.type==='volt')R=RV;else if(e.type==='amp')R=e.blown?null:RA;
+      if(R!=null)br.push({e,a:key(e.a),b:key(e.b),R});}
+  }return br;}
+function gauss(A,z){const N=z.length;
+  for(let c=0;c<N;c++){let p=c,m=Math.abs(A[c][c]);for(let r=c+1;r<N;r++){const v=Math.abs(A[r][c]);if(v>m){m=v;p=r;}}
+    if(m<1e-22)return null;if(p!==c){[A[p],A[c]]=[A[c],A[p]];[z[p],z[c]]=[z[c],z[p]];}
+    const piv=A[c][c];for(let r=c+1;r<N;r++){const f=A[r][c]/piv;if(f!==0){const Ar=A[r],Ac=A[c];for(let k=c;k<N;k++)Ar[k]-=f*Ac[k];z[r]-=f*z[c];}}}
+  const x=new Float64Array(N);for(let r=N-1;r>=0;r--){let s=z[r];for(let k=r+1;k<N;k++)s-=A[r][k]*x[k];x[r]=s/A[r][r];}return x;}
+function solveOnce(){
+  const br=branches();const idx=new Map(),nodes=[];
+  for(const b of br)for(const k of [b.a,b.b])if(!idx.has(k)){idx.set(k,nodes.length);nodes.push(k);}
+  const par=nodes.map((_,i)=>i);const f=i=>par[i]===i?i:(par[i]=f(par[i]));
+  for(const b of br)par[f(idx.get(b.a))]=f(idx.get(b.b));
+  const seen=new Set(),vi=new Array(nodes.length).fill(-1);let n=0;
+  nodes.forEach((k,i)=>{const r=f(i);if(!seen.has(r))seen.add(r);else vi[i]=n++;});
+  const srcs=br.filter(b=>b.src);srcs.forEach((s,j)=>s.ii=n+j);const N=n+srcs.length;
+  const A=Array.from({length:N},()=>new Float64Array(N)),z=new Float64Array(N);
+  for(const b of br){const ia=vi[idx.get(b.a)],ib=vi[idx.get(b.b)];
+    if(b.src){const k=b.ii;if(ia>=0){A[ia][k]+=1;A[k][ia]-=1;}if(ib>=0){A[ib][k]-=1;A[k][ib]+=1;}A[k][k]+=b.r;z[k]+=b.E;}
+    else{const g=1/b.R;if(ia>=0)A[ia][ia]+=g;if(ib>=0)A[ib][ib]+=g;if(ia>=0&&ib>=0){A[ia][ib]-=g;A[ib][ia]-=g;}}}
+  const x=N?gauss(A,z):new Float64Array(0);
+  const V=new Map();nodes.forEach((k,i)=>V.set(k,vi[i]>=0&&x?x[vi[i]]:0));
+  const I={},wI={};
+  for(const b of br){let i;if(b.src)i=x?x[b.ii]:0;else i=(V.get(b.a)-V.get(b.b))/b.R;
+    if(b.e.type==='wire'){(wI[b.e.id]=wI[b.e.id]||[])[b.seg]=i;}else I[b.e.id]=i;}
+  return {V,I,wI,br,ok:!!x};}
+function analyze(){let s,msgs=[];
+  for(let it=0;it<10;it++){s=solveOnce();let ch=false;
+    for(const e of elems){
+      if(e.type==='amp'&&!e.blown&&Math.abs(s.I[e.id]||0)>FUSE){e.blown=true;ch=true;msgs.push('Le fusible de l\'ampèremètre a grillé !');}
+      if(e.type==='bulb'&&!e.burnt){const i=s.I[e.id]||0;if(i*i*RB>2.5*PNOM){e.burnt=true;ch=true;msgs.push('Une ampoule a grillé !');}}}
+    if(!ch)break;}
+  s.v=k=>s.V.get(k)||0;lastSol=s;[...new Set(msgs)].forEach(toast);return s;}
+const curr=e=>lastSol?(lastSol.I[e.id]||0):0;
+function reading(e){if(!lastSol)return 0;if(e.type==='volt')return lastSol.v(key(e.b))-lastSol.v(key(e.a));if(e.type==='amp')return e.blown?0:(lastSol.v(key(e.b))-lastSol.v(key(e.a)))/RA;return 0;}
+
+/* ============ équipotentielles (fils + ampèremètres + interrupteurs fermés) ============ */
+function nets(){const par={};const f=k=>{if(par[k]===undefined)par[k]=k;return par[k]===k?k:(par[k]=f(par[k]));};const u=(a,b)=>{par[f(a)]=f(b);};
+  for(const e of elems){if(e.type==='wire'){const p=nodesAlong(e);for(let i=0;i<p.length-1;i++)u(key(p[i]),key(p[i+1]));}
+    else if((e.type==='amp'&&!e.blown)||(e.type==='switch'&&e.closed))u(key(e.a),key(e.b));}
+  return k=>f(k);}
+
+/* ============ dessin ============ */
+function symbol(e){const t=e.type;let s='';
+  const L=(x1,y1,x2,y2,extra='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" ${extra}/>`;
+  if(t==='res')s=L(-40,0,-20,0)+`<rect x="-20" y="-8" width="40" height="16" class="fillw"/>`+L(20,0,40,0);
+  else if(t==='bulb'){s=L(-40,0,-14,0)+L(14,0,40,0);
+    const br=e._bright||0;
+    if(br>0.01){const R=16+34*br;s+=`<circle r="${R.toFixed(1)}" fill="url(#glow)" style="stroke:none;opacity:${Math.min(1,0.2+br).toFixed(3)}"/>`;
+      if(br>0.15){const n=8,r1=18,r2=18+16*br;for(let k=0;k<n;k++){const a=k*Math.PI/4+Math.PI/8;s+=`<line x1="${(r1*Math.cos(a)).toFixed(1)}" y1="${(r1*Math.sin(a)).toFixed(1)}" x2="${(r2*Math.cos(a)).toFixed(1)}" y2="${(r2*Math.sin(a)).toFixed(1)}" style="stroke:#f2a20c;stroke-width:2.5;opacity:${br.toFixed(2)}"/>`;}}}
+    const lit=Math.sqrt(Math.min(1,br));const mix=(a,b)=>Math.round(a+(b-a)*lit);const col=e.burnt?'#c4c4c4':`rgb(${mix(70,255)},${mix(70,225)},${mix(70,77)})`;
+    s+=`<circle r="14" style="fill:${col}"/>`;
+    s+=e.burnt?L(-9.9,-9.9,-2,-2)+L(9.9,9.9,3,3)+L(-9.9,9.9,9.9,-9.9):L(-9.9,-9.9,9.9,9.9)+L(-9.9,9.9,9.9,-9.9);}
+  else if(t==='pile')s=L(-40,0,-5,0)+L(5,0,40,0)+L(-5,-8,-5,8,'style="stroke-width:6"')+L(5,-17,5,17,'style="stroke-width:2.4"');
+  else if(t==='switch'){s=L(-40,0,-16,0)+L(16,0,40,0)+`<circle cx="-16" r="2.8" class="fillw"/><circle cx="16" r="2.8" class="fillw"/>`;
+    s+=e.closed?L(-16,0,16,0):L(-16,0,13,-15);}
+  else if(t==='volt'||t==='amp'){s=L(-40,0,-16,0)+L(16,0,40,0)+`<circle r="16" class="fillw"/><text x="0" y="6" text-anchor="middle" transform="rotate(${-(e._ang||0)})" style="font-size:18px;font-weight:700;fill:${e.blown?'#c0392b':'#1d2430'};stroke:none">${t==='volt'?'V':'A'}</text>`;}
+  return s;}
+function labelText(e){const n=e.name?e.name+' = ':'';
+  if(e.type==='res')return n+fr(e.value,e.value%1?1:0)+' Ω';
+  if(e.type==='pile')return n+fr(e.value,1)+' V';
+  if(e.type==='bulb')return (e.name?e.name+' ':'')+(e.burnt?'grillée':'');
+  if(e.type==='switch')return e.name||'';
+  return e.name||'';}
+function render(){
+  analyze();
+  let g='<defs><radialGradient id="glow"><stop offset="0" stop-color="#ffe066" stop-opacity="1"/><stop offset=".45" stop-color="#ffd23f" stop-opacity=".6"/><stop offset="1" stop-color="#ffd23f" stop-opacity="0"/></radialGradient></defs>';
+  // grille
+  g+='<g>';for(let x=0;x<COLS;x++)for(let y=0;y<ROWS;y++){const [X,Y]=px([x,y]);g+=`<circle cx="${X}" cy="${Y}" r="1.8" fill="#c9c2ae"/>`;}g+='</g>';
+  // degré des nœuds
+  const deg={};const add=k=>deg[k]=(deg[k]||0)+1;
+  for(const e of elems){const p=nodesAlong(e);if(e.type==='wire'){p.forEach((q,i)=>{const k=key(q);if(i===0||i===p.length-1)add(k);else{add(k);add(k);}});}else{add(key(e.a));add(key(e.b));}}
+  // éléments
+  let flows='';let labels='';let hits='';const flowList=[];
+  for(const e of elems){
+    if(e.type==='bulb'){const i=curr(e);e._bright=e.burnt?0:Math.min(1,Math.pow(i*i*RB/PNOM,0.5));}
+    const [ax,ay]=px(e.a),[bx,by]=px(e.b);
+    if(e.type==='wire'){g+=`<line class="wire" x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}"/>`;}
+    else{const mx=(ax+bx)/2,my=(ay+by)/2,ang=Math.atan2(by-ay,bx-ax)*180/Math.PI;
+      e._ang=ang;g+=`<g class="sym" transform="translate(${mx},${my}) rotate(${ang})">${symbol(e)}</g>`;
+      labels+=decor(e,ax,ay,bx,by,mx,my);}
+    hits+=`<line class="hit${sel===e.id?' selected':''}" data-id="${e.id}" x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}"/>`;
+  }
+  // courant
+  if(flowOn&&lastSol){
+    for(const e of elems){if(e.type==='volt')continue;
+      if(e.type==='wire'){const p=nodesAlong(e),arr=lastSol.wI[e.id]||[];for(let i=0;i<p.length-1;i++){const I=arr[i]||0;if(Math.abs(I)>2e-3)flowList.push({a:px(p[i]),b:px(p[i+1]),I});}}
+      else{const I=curr(e);if(Math.abs(I)>2e-3)flowList.push({a:px(e.a),b:px(e.b),I});}}
+    flowList.forEach((f,i)=>{flows+=`<line class="flow" id="fl${i}" x1="${f.a[0]}" y1="${f.a[1]}" x2="${f.b[0]}" y2="${f.b[1]}"/>`;});
+  }
+  // nœuds et bornes libres
+  let dots='';for(const k in deg){const [x,y]=k.split(',').map(Number);const [X,Y]=px([x,y]);
+    if(deg[k]>=3)dots+=`<circle cx="${X}" cy="${Y}" r="5" fill="#1d2430"/>`;
+    else if(deg[k]===1)dots+=`<circle cx="${X}" cy="${Y}" r="4.5" fill="#fff" stroke="#c0392b" stroke-width="2"/>`;}
+  svg.innerHTML=g+flows+dots+labels+hits+'<g id="preview"></g>';
+  window._flows=flowList;
+  renderStatus();renderProps();
+}
+function decor(e,ax,ay,bx,by,mx,my){
+  const hor=ay===by;const dx=Math.sign(bx-ax),dy=Math.sign(by-ay);const p=hor?[0,-1]:[-1,0];let s='';
+  const txt=labelText(e);
+  if(txt){const lx=mx-p[0]*24,ly=my-p[1]*24+(hor?5:4);s+=`<text class="lbl" x="${lx}" y="${ly}" text-anchor="${hor?'middle':'start'}">${txt}</text>`;}
+  if(e.type==='pile'){
+    s+=`<text class="lbl" x="${bx-dx*24+p[0]*20}" y="${by-dy*24+p[1]*20+5}" text-anchor="middle" style="fill:#c0392b;font-size:16px">+</text>`;
+    s+=`<text class="lbl" x="${ax+dx*24+p[0]*20}" y="${ay+dy*24+p[1]*20+5}" text-anchor="middle" style="font-size:16px">−</text>`;
+    if(Math.abs(curr(e))>20)s+=`<circle cx="${mx}" cy="${my}" r="26" fill="none" stroke="#c0392b" stroke-width="3" stroke-dasharray="5 4"/>`;}
+  if(e.type==='volt'||e.type==='amp'){
+    const term=e.type==='volt'?'V':'A';
+    // bornes
+    s+=`<circle cx="${ax+dx*12}" cy="${ay+dy*12}" r="4" fill="#1d2430"/><circle cx="${bx-dx*12}" cy="${by-dy*12}" r="4" fill="#c0392b"/>`;
+    const right=!hor&&mx+60+40<W;const o=hor?[0,15]:[right?-10:10,0];const anc=hor?'middle':(right?'end':'start');
+    s+=`<text class="lbl small" x="${ax+dx*16+o[0]}" y="${ay+dy*16+o[1]+(hor?0:4)}" text-anchor="${anc}">COM</text>`;
+    s+=`<text class="lbl small" x="${bx-dx*14+o[0]}" y="${by-dy*14+o[1]+(hor?0:4)}" text-anchor="${anc}" style="fill:#c0392b">${term}</text>`;
+    // écran
+    const r=reading(e);let t;
+    if(e.type==='volt')t=fr(r,2)+' V';else t=e.blown?'FUSE':fr(r,3)+' A';
+    const cx=hor?mx:(right?mx+60:mx-60),cy=hor?my-34:my;
+    s+=`<rect class="lcdbox" x="${cx-38}" y="${cy-12}" width="76" height="24" rx="3"/><text class="lcd" x="${cx}" y="${cy+5}" text-anchor="middle">${t}</text>`;}
+  return s;}
+
+/* animation du courant */
+let phase=0,lastT=0;
+function anim(t){const dt=Math.min(0.05,(t-lastT)/1000||0);lastT=t;phase+=dt;
+  const fl=window._flows||[];for(let i=0;i<fl.length;i++){const el=document.getElementById('fl'+i);if(!el)continue;
+    const sp=Math.min(160,Math.max(10,Math.sqrt(Math.abs(fl[i].I))*90));el.style.strokeDashoffset=(-(phase*sp)%16*Math.sign(fl[i].I)).toFixed(2);}
+  requestAnimationFrame(anim);}
+requestAnimationFrame(anim);
+
+/* ============ état / statut ============ */
+function seriesVolt(){ // voltmètre bloquant un circuit : ses deux équipotentielles ne sont reliées que par lui
+  const out=[];const vms=elems.filter(e=>e.type==='volt');if(!vms.length)return out;
+  for(const v of vms){const par={};const f=k=>{if(par[k]===undefined)par[k]=k;return par[k]===k?k:(par[k]=f(par[k]));};let hasPile=false;
+    for(const b of lastSol.br){if(b.e.type==='volt')continue;par[f(b.a)]=f(b.b);}
+    if(f(key(v.a))!==f(key(v.b))){const ra=f(key(v.a)),rb=f(key(v.b));
+      const touch=r=>lastSol.br.some(b=>b.e.type!=='volt'&&f(b.a)===r);
+      const pileIn=lastSol.br.some(b=>b.src&&(f(b.a)===ra||f(b.a)===rb));
+      if(touch(ra)&&touch(rb)&&pileIn)out.push(v);}}
+  return out;}
+function renderStatus(){const st=[];
+  for(const e of elems){
+    if(e.type==='pile'){const i=Math.abs(curr(e));if(i>20)st.push(['err','⚡ Court-circuit de la pile !']);
+      else if(i>3)st.push(['warn',`🔥 Attention : la pile chauffe, elle débite un courant élevé.`]);}
+    if(e.type==='amp'&&e.blown)st.push(['err','💥 Le fusible d\'un ampèremètre a grillé. Pour le remplacer : outil Sélection, clic sur l\'ampèremètre, « Changer le fusible ».']);}
+  const free=svg.querySelectorAll('circle[stroke="#c0392b"]').length;
+  if(!st.length)st.push(['info',elems.length?(free?`○ ${free} borne(s) non reliée(s) (petits cercles rouges).`:'Circuit prêt.'):'Le plan de travail est vide : choisis un dipôle dans la barre d\'outils.']);
+  document.getElementById('status').innerHTML=st.map(([c,m])=>`<div class="st ${c}">${m}</div>`).join('');}
+
+/* ============ palette ============ */
+function icon(t){const e={type:t,value:9,closed:true,_bright:t==='bulb'?0.6:0};
+  if(t==='wire')return `<svg viewBox="-44 -22 88 44"><line x1="-36" y1="0" x2="36" y2="0" stroke="#1d2430" stroke-width="4" stroke-linecap="round"/></svg>`;
+  if(t==='select')return `<svg viewBox="-44 -22 88 44"><path d="M-8 -16 L-8 14 L0 6 L6 18 L10 16 L4 4 L14 4 Z" fill="#1d2430"/></svg>`;
+  if(t==='burn')return `<svg viewBox="-44 -22 88 44"><text x="0" y="9" text-anchor="middle" style="font-size:26px">🔥</text></svg>`;
+  if(t==='erase')return `<svg viewBox="-44 -22 88 44"><rect x="-16" y="-10" width="32" height="20" rx="4" transform="rotate(-25)" fill="#f0a3a0" stroke="#1d2430" stroke-width="2.4"/></svg>`;
+  return `<svg viewBox="-44 -22 88 44"><g class="sym">${symbol(e)}</g></svg>`;}
+function buildPalette(){const p=document.getElementById('palette');let h='';
+  for(const t of ['select','wire','pile','res','bulb','switch','volt','amp','burn','erase']){
+    h+=`<button class="tool" data-tool="${t}">${icon(t)}<span>${NAMES[t]}</span></button>`;
+    if(t==='pile')h+=`<label class="opt">Tension<select id="optPile">${[1.5,4.5,6,9,12].map(v=>`<option value="${v}" ${v===9?'selected':''}>${fr(v,1)} V</option>`).join('')}</select></label>`;
+    if(t==='res')h+=`<label class="opt">Valeur<select id="optRes">${[8,12,15,10,20,47,100].map(v=>`<option value="${v}">${v} Ω</option>`).join('')}<option value="c">autre…</option></select></label>`;
+    if(t==='select'||t==='res'||t==='amp')h+='<span class="sep"></span>';}
+  p.innerHTML=h;
+  p.querySelectorAll('.tool').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+  document.getElementById('optPile').onchange=e=>{opts.pile=+e.target.value;setTool('pile');};
+  document.getElementById('optRes').onchange=e=>{
+    if(e.target.value==='c'){showCustomRes();}else{opts.res=+e.target.value;setTool('res');}};
+  setTool('select');}
+function showCustomRes(){sel=null;const pr=document.getElementById('props');pr.className='show';pr.dataset.custom=1;pr.dataset.sel='';
+  pr.innerHTML=`<b>Résistance personnalisée :</b> <input type="number" id="cres" min="0.1" step="0.1" value="${opts.res}" style="width:90px"> Ω <button class="btn primary" id="cresOk">OK</button>`;
+  document.getElementById('cresOk').onclick=()=>{const v=parseFloat(document.getElementById('cres').value);if(v>0){opts.res=v;delete pr.dataset.custom;const s=document.getElementById('optRes');let o=[...s.options].find(o=>+o.value===v);if(!o){o=new Option(v+' Ω',v);s.add(o,s.options.length-1);}s.value=v;setTool('res');}};}
+function setTool(t){tool=t;if(t!=='res')delete document.getElementById('props').dataset.custom;document.querySelectorAll('.tool').forEach(b=>b.classList.toggle('on',b.dataset.tool===t));
+  svg.classList.toggle('placing',!['select','erase','burn'].includes(t));svg.classList.toggle('erase',t==='erase');svg.classList.toggle('burn',t==='burn');
+  const hints={select:'Clique sur un dipôle pour le modifier (clic sur un interrupteur : ouvrir/fermer).',wire:'Fais glisser d\'un point à un autre pour poser un fil.',erase:'Clique sur un élément pour l\'effacer.',burn:'Clique sur une ampoule pour la griller (clique à nouveau pour la remplacer).',
+    pile:'Appuie sur le pôle − puis glisse vers le pôle +.',volt:'Appuie sur la borne COM puis glisse vers la borne V.',amp:'Appuie sur la borne COM puis glisse vers la borne A.'};
+  document.getElementById('hint').textContent=hints[t]||'Appuie sur un point puis glisse dans une direction.';
+  if(t!=='select'){sel=null;}render();}
+
+/* ============ propriétés de la sélection ============ */
+function renderProps(){const pr=document.getElementById('props');const e=elems.find(x=>x.id===sel);
+  if(!e){if(pr.dataset.custom)return;pr.className='';pr.innerHTML='';pr.dataset.sel='';pr.dataset.sig='';return;}
+  delete pr.dataset.custom;
+  if(pr.dataset.sel==String(e.id)&&pr.contains(document.activeElement)&&document.activeElement.tagName==='INPUT')return;
+  pr.className='show';let h=`<b>${NAMES[e.type]}</b>`;
+  if(e.type!=='wire')h+=` <label style="font-size:13px">Nom <input type="text" id="pName" value="${e.name||''}" placeholder="${{res:'R1',pile:'G',bulb:'L1',volt:'',amp:'',switch:'K'}[e.type]||''}" style="width:60px"></label>`;
+  if(e.type==='res')h+=` <label style="font-size:13px">Valeur <input type="number" id="pVal" value="${e.value}" min="0.1" step="0.1" style="width:80px"> Ω</label>`;
+  if(e.type==='pile')h+=` <label style="font-size:13px">Tension <select id="pVal">${[1.5,4.5,6,9,12].map(v=>`<option value="${v}" ${v===e.value?'selected':''}>${fr(v,1)} V</option>`).join('')}</select></label>`;
+  if(e.type!=='wire')h+=` <button class="btn" id="pFlip">⇄ Inverser</button>`;
+  if(e.type==='switch')h+=` <button class="btn" id="pSw">${e.closed?'Ouvrir':'Fermer'}</button>`;
+  if(e.type==='bulb')h+=` <button class="btn" id="pBurn">${e.burnt?'Changer l\'ampoule':'Griller l\'ampoule'}</button>`;
+  if(e.type==='amp'&&e.blown)h+=` <button class="btn" id="pFuse">Changer le fusible</button>`;
+  if(e.type==='res'||e.type==='bulb'){const i=Math.abs(curr(e));h+=` <span style="font-size:13px;color:var(--muted)">${i>1e-4?'parcouru par un courant':'aucun courant'}</span>`;}
+  h+=` <button class="btn danger" id="pDel">Supprimer</button>`;
+  if(pr.dataset.sel==String(e.id)&&pr.dataset.sig===h)return;pr.dataset.sel=e.id;pr.dataset.sig=h;
+  pr.innerHTML=h;const $=id=>document.getElementById(id);
+  if($('pName'))$('pName').oninput=ev=>{e.name=ev.target.value.trim().slice(0,6);render();};
+  if($('pName'))$('pName').onfocus=()=>push();
+  if($('pVal'))$('pVal').onchange=ev=>{const v=parseFloat(ev.target.value);if(v>0){push();e.value=v;render();}};
+  if($('pFlip'))$('pFlip').onclick=()=>{push();[e.a,e.b]=[e.b,e.a];render();};
+  if($('pSw'))$('pSw').onclick=()=>{push();e.closed=!e.closed;render();};
+  if($('pBurn'))$('pBurn').onclick=()=>{push();e.burnt=!e.burnt;render();};
+  if($('pFuse'))$('pFuse').onclick=()=>{push();e.blown=false;render();};
+  $('pDel').onclick=()=>{push();elems=elems.filter(x=>x!==e);sel=null;render();};}
+
+/* ============ interactions ============ */
+function svgPt(ev){const pt=svg.createSVGPoint();pt.x=ev.clientX;pt.y=ev.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse());}
+function nearNode(p){const x=Math.round((p.x-OX)/S),y=Math.round((p.y-OY)/S);if(x<0||y<0||x>=COLS||y>=ROWS)return null;
+  const [X,Y]=px([x,y]);if(Math.hypot(p.x-X,p.y-Y)>S*0.55)return null;return [x,y];}
+function push(){undo.push(JSON.stringify({elems,nextId}));if(undo.length>60)undo.shift();}
+function candidate(p){if(!drag)return null;const [sx,sy]=px(drag.start);let dx=p.x-sx,dy=p.y-sy;
+  if(tool==='wire'){let end;if(Math.abs(dx)>=Math.abs(dy))end=[drag.start[0]+Math.round(dx/S),drag.start[1]];else end=[drag.start[0],drag.start[1]+Math.round(dy/S)];
+    end[0]=Math.max(0,Math.min(COLS-1,end[0]));end[1]=Math.max(0,Math.min(ROWS-1,end[1]));
+    if(end[0]===drag.start[0]&&end[1]===drag.start[1])return null;return {type:'wire',a:drag.start,b:end};}
+  let d;if(Math.hypot(dx,dy)<12)d=[1,0];else d=Math.abs(dx)>=Math.abs(dy)?[Math.sign(dx),0]:[0,Math.sign(dy)];
+  const e={type:tool,a:drag.start,b:[drag.start[0]+2*d[0],drag.start[1]+2*d[1]]};
+  if(tool==='pile')e.value=opts.pile;if(tool==='res')e.value=opts.res;if(tool==='switch')e.closed=true;return e;}
+function drawPreview(e){const g=document.getElementById('preview');if(!g)return;if(!e){g.innerHTML='';return;}
+  const ok=canPlace(e);const [ax,ay]=px(e.a),[bx,by]=px(e.b);let s;
+  if(e.type==='wire')s=`<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="${ok?'#0f6e6e':'#c0392b'}" stroke-width="4" stroke-linecap="round" stroke-dasharray="6 5"/>`;
+  else{const ang=Math.atan2(by-ay,bx-ax)*180/Math.PI;e._ang=ang;s=`<g class="sym" style="opacity:.55" transform="translate(${(ax+bx)/2},${(ay+by)/2}) rotate(${ang})">${symbol(e)}</g>`;
+    if(!ok)s+=`<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="#c0392b" stroke-width="18" opacity=".25"/>`;}
+  s+=`<circle cx="${ax}" cy="${ay}" r="6" fill="#0f6e6e"/>`;g.innerHTML=s;}
+svg.addEventListener('pointerdown',ev=>{
+  const p=svgPt(ev);
+  if(tool==='burn'){const id=ev.target.dataset&&ev.target.dataset.id;const e=id&&elems.find(x=>x.id==id);
+    if(e&&e.type==='bulb'){push();e.burnt=!e.burnt;toast(e.burnt?'Ampoule grillée : son filament est coupé.':'Ampoule remplacée.');render();}
+    else toast('Clique sur une ampoule.');return;}
+  if(tool==='select'||tool==='erase'){const id=ev.target.dataset&&ev.target.dataset.id;
+    if(id){const e=elems.find(x=>x.id==id);
+      if(tool==='erase'){push();elems=elems.filter(x=>x!==e);sel=null;render();return;}
+      if(e.type==='switch'&&sel===e.id){push();e.closed=!e.closed;}
+      sel=e.id;render();}
+    else{sel=null;render();}return;}
+  const n=nearNode(p);if(!n)return;drag={start:n};svg.setPointerCapture(ev.pointerId);drawPreview(candidate(p));});
+svg.addEventListener('pointermove',ev=>{if(!drag)return;drawPreview(candidate(svgPt(ev)));});
+svg.addEventListener('pointerup',ev=>{if(!drag)return;const e=candidate(svgPt(ev));drag=null;drawPreview(null);
+  if(!e)return;if(!canPlace(e)){toast('Emplacement occupé ou hors du plan de travail.');return;}
+  push();e.id=nextId++;elems.push(e);render();});
+svg.addEventListener('pointercancel',()=>{drag=null;drawPreview(null);});
+document.addEventListener('keydown',ev=>{if(ev.target.tagName==='INPUT'||ev.target.tagName==='SELECT')return;
+  if((ev.key==='Delete'||ev.key==='Backspace')&&sel){push();elems=elems.filter(x=>x.id!==sel);sel=null;render();ev.preventDefault();}
+  if((ev.ctrlKey||ev.metaKey)&&ev.key.toLowerCase()==='z'){doUndo();ev.preventDefault();}
+  if(ev.key==='Escape')setTool('select');});
+function doUndo(){const s=undo.pop();if(!s)return;const o=JSON.parse(s);elems=o.elems;nextId=o.nextId;sel=null;render();}
+document.getElementById('undoBtn').onclick=doUndo;
+const clearBtn=document.getElementById('clearBtn');
+clearBtn.onclick=()=>{if(!clearBtn.dataset.arm){clearBtn.dataset.arm=1;clearBtn.textContent='Confirmer ?';setTimeout(()=>{delete clearBtn.dataset.arm;clearBtn.textContent='Tout effacer';},2500);return;}
+  push();elems=[];sel=null;delete clearBtn.dataset.arm;clearBtn.textContent='Tout effacer';render();};
+document.getElementById('flowBtn').onclick=()=>{flowOn=!flowOn;const b=document.getElementById('flowBtn');b.textContent=flowOn?'👁 Masquer le courant':'👁 Afficher le courant';b.setAttribute('aria-pressed',flowOn);render();};
+
+/* ============ enregistrement, import, effacement ============ */
+// Pas de sauvegarde automatique ni de localStorage : les réponses ne sont conservées que par « Enregistrer ».
+const TP_ID='tp2-lois_electricite', TP_VERSION=1;
+const FIELDS=[
+ ['UG1','Partie I, étape 3 – UG (V)'],['UR11','Partie I, étape 3 – UR1 (V)'],['UR21','Partie I, étape 3 – UR2 (V)'],
+ ['q1','1. Quelle relation peut-on écrire entre ces valeurs ?'],
+ ['q2a','2. Énoncé de la loi des mailles – mot manquant'],
+ ['Ufil','3. Tension aux bornes d’un fil (V)'],
+ ['I1','Partie II, étape 2 – I1 (A)'],['I2','Partie II, étape 2 – I2 (A)'],['I3','Partie II, étape 2 – I3 (A)'],['I4','Partie II, étape 2 – I4 (A)'],
+ ['q4','4. Quelle relation peut-on écrire entre les différentes valeurs de l’intensité ?'],
+ ['q5a','5. Énoncé de la loi des nœuds – mot manquant n°1 (la somme des …)'],['q5b','5. Énoncé de la loi des nœuds – mot manquant n°2 (… qui entrent par un …)'],
+ ['q5c','5. Énoncé de la loi des nœuds – mot manquant n°3 (somme des intensités des …)'],['q5d','5. Énoncé de la loi des nœuds – mot manquant n°4 (… qui … du même nœud)'],
+ ['UG2','Partie II, étape 3 – UG (V)'],['UR12','Partie II, étape 3 – UR1 (V)'],['UR22','Partie II, étape 3 – UR2 (V)'],['UR32','Partie II, étape 3 – UR3 (V)'],
+ ['q6','6. Loi des mailles dans la maille principale et vérification'],
+ ['obsS','Observations – éclat des ampoules en série'],['obsP','Observations – courant dans la branche principale en dérivation'],['obsG','Observations – quand une ampoule grille (série / dérivation)'],
+ ['p1','Réponse à l’internaute – série : intensité lumineuse de chaque ampoule'],['p2','Réponse à l’internaute – série : tension du générateur sur chaque ampoule'],['p3','Réponse à l’internaute – série : si une ampoule grille, le circuit est…'],
+ ['p4','Réponse à l’internaute – dérivation : tension aux bornes de chaque ampoule'],['p5','Réponse à l’internaute – dérivation : chaque ampoule ajoutée crée un…']];
+const fieldList=()=>FIELDS.map(([id,intitule])=>({id,intitule,el:document.querySelector(`[data-k="${id}"],[data-b="${id}"]`)}));
+const hasAnswers=()=>fieldList().some(f=>f.el&&f.el.value!=='');
+function askConfirm(msg,okLabel){return new Promise(res=>{
+  const o=document.createElement('div');
+  o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px';
+  o.innerHTML='<div role="alertdialog" aria-modal="true" style="background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:18px 20px;max-width:420px;font-size:15px;line-height:1.45"><p style="margin:0 0 14px"></p><div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="btn" data-r="0">Annuler</button><button type="button" class="btn primary" data-r="1"></button></div></div>';
+  o.querySelector('p').textContent=msg;o.querySelector('[data-r="1"]').textContent=okLabel;
+  const end=v=>{document.removeEventListener('keydown',onKey,true);o.remove();res(v);};
+  const onKey=e=>{if(e.key==='Escape'){e.preventDefault();end(false);}};
+  o.addEventListener('click',e=>{const b=e.target.closest('button[data-r]');if(b)end(b.dataset.r==='1');});
+  document.addEventListener('keydown',onKey,true);document.body.appendChild(o);o.querySelector('[data-r="0"]').focus();});}
+function parisNow(){const now=new Date();
+  const f=new Intl.DateTimeFormat('fr-FR',{timeZone:'Europe/Paris',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+  const p=Object.fromEntries(f.formatToParts(now).map(x=>[x.type,x.value]));
+  const asUTC=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second);
+  const off=Math.round((asUTC-Math.floor(now.getTime()/1000)*1000)/60000);const a=Math.abs(off),pad=n=>String(n).padStart(2,'0');
+  return {iso:`${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}${off<0?'-':'+'}${pad(Math.floor(a/60))}:${pad(a%60)}`,jour:`${p.year}-${p.month}-${p.day}`,hm:p.hour+p.minute};}
+function setupSave(){
+  const stEl=document.getElementById('saveState'),poste=document.getElementById('poste'),numTp=document.getElementById('num-tp'),bandeau=document.getElementById('bandeau');
+  const say=(html,warn)=>{stEl.className=warn?'warn':'';stEl.textContent=html;};
+  const cacher=()=>{bandeau.classList.remove('on');poste.classList.remove('manquant');};
+  document.getElementById('bandeauFermer').onclick=cacher;
+  poste.addEventListener('input',()=>{poste.value=poste.value.toUpperCase().replace(/[^0-9A-Z]/g,'').match(/^(\d+[A-Z]?)?/)[0].slice(0,4);if(poste.value)cacher();});
+  const PICK={id:'tp-physique',startIn:'documents',types:[{description:'Réponses du TP (JSON)',accept:{'application/json':['.json']}}]};
+  document.getElementById('saveFile').onclick=async()=>{
+    const pn=poste.value.trim();
+    if(!pn){say('');bandeau.classList.add('on');poste.classList.add('manquant');poste.focus({preventScroll:true});return;}
+    cacher();
+    const t=parisNow(),tp=numTp.value.trim();
+    const data={identifiant_tp:TP_ID,version:TP_VERSION,numero_tp:tp,numero_poste:pn,date_heure:t.iso,
+      reponses:fieldList().map(f=>({id:f.id,intitule:f.intitule,reponse:f.el?f.el.value:''}))};
+    const tpSeg=tp.replace(/[^A-Za-z0-9-]+/g,'');
+    const fname=`${tpSeg?'TP_'+tpSeg+'_':''}poste${pn}_${t.jour}_${t.hm}.json`;
+    const text=JSON.stringify(data,null,2);
+    if(window.showSaveFilePicker){
+      try{const h=await window.showSaveFilePicker(Object.assign({suggestedName:fname},PICK));
+        const w=await h.createWritable();await w.write(text);await w.close();say('✓ Enregistré dans le fichier « '+h.name+' ».');return;}
+      catch(e){if(e.name==='AbortError'){say('Enregistrement annulé.');return;}console.warn(e);}
+    }
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=fname;
+    document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(a.href);},2000);
+    say('✓ Fichier « '+fname+' » téléchargé (dossier de téléchargements du navigateur).');
+  };
+  const loadFile=async f=>{
+    let d;try{d=JSON.parse(await f.text());}catch(e){d=null;}
+    if(!d||typeof d!=='object'||!Array.isArray(d.reponses)){say('Ce fichier n’est pas un fichier de réponses de ce TP : import refusé.',true);return;}
+    if(d.identifiant_tp!==TP_ID){say('Ce fichier a été enregistré dans un autre TP : import refusé.',true);return;}
+    if(d.version!==TP_VERSION){say('Ce fichier a été enregistré avec une autre version de ce TP : import refusé.',true);return;}
+    if(hasAnswers()&&!(await askConfirm('Des réponses sont déjà saisies. Importer ce fichier va les remplacer. Continuer ?','Importer'))){say('Import annulé : vos réponses n’ont pas été modifiées.');return;}
+    const map=new Map(d.reponses.map(r=>[r.id,r.reponse]));
+    fieldList().forEach(x=>{if(x.el){const v=map.get(x.id);x.el.value=v==null?'':String(v);}});
+    say('✓ Réponses du fichier « '+f.name+' » importées.');
+  };
+  const fi=document.getElementById('fileIn');
+  fi.onchange=()=>{if(fi.files[0])loadFile(fi.files[0]);fi.value='';};
+  document.getElementById('openFile').onclick=async()=>{
+    if(window.showOpenFilePicker){try{const [h]=await window.showOpenFilePicker(PICK);return loadFile(await h.getFile());}
+      catch(e){if(e.name==='AbortError')return;console.warn(e);}}
+    fi.click();};
+  document.getElementById('resetAll').onclick=async()=>{
+    if(!(await askConfirm('Effacer toutes vos réponses ? Cette action est irréversible. Pensez à enregistrer avant.','Effacer')))return;
+    fieldList().forEach(f=>{if(f.el)f.el.value='';});say('Réponses effacées.');};
+}
+
+/* onglets */
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.tabc section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));document.querySelector('.tabc').scrollTop=0;});
+
+/* schémas des consignes */
+function schemaSym(t,x1,y1,x2,y2,lab,extra){const mx=(x1+x2)/2,my=(y1+y2)/2,ang=Math.atan2(y2-y1,x2-x1)*180/Math.PI;
+  return `<g class="sym" transform="translate(${mx},${my}) rotate(${ang}) scale(.8)">${symbol({type:t,closed:true,...(extra||{})})}</g>`+(lab?`<text class="lbl" x="${lab[0]}" y="${lab[1]}" text-anchor="middle">${lab[2]}</text>`:'');}
+const Lw=(x1,y1,x2,y2)=>`<line class="wire" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke-width:2.2"/>`;
+document.getElementById('schema1').innerHTML=
+  Lw(40,15,260,15)+Lw(40,15,40,43)+Lw(40,107,40,140)+Lw(40,140,260,140)+Lw(260,15,260,18)+Lw(260,82,260,74)+Lw(260,138,260,140)
+  +schemaSym('pile',40,107,40,43,[82,80,'9,0 V'])+schemaSym('res',260,18,260,82,[212,54,'R₁ = 8 Ω'])+schemaSym('res',260,74,260,138,[210,110,'R₂ = 12 Ω'])
+  +`<text class="lbl small" x="28" y="52" style="fill:#c0392b">+</text>`;
+document.getElementById('schema2').innerHTML=
+  Lw(30,20,100,20)+Lw(164,20,300,20)+Lw(30,20,30,58)+Lw(30,122,30,160)+Lw(30,160,300,160)+Lw(200,20,200,58)+Lw(200,122,200,160)+Lw(300,20,300,58)+Lw(300,122,300,160)
+  +schemaSym('pile',30,122,30,58,[70,94,'6,0 V'])+schemaSym('res',100,20,164,20,[132,46,'R₁ = 8 Ω'])+schemaSym('res',200,58,200,122,[160,94,'R₂ = 12 Ω'])+schemaSym('res',300,58,300,122,[262,94,'R₃ = 15 Ω'])
+  +`<circle cx="200" cy="20" r="4.5" fill="#1d2430"/><circle cx="200" cy="160" r="4.5" fill="#1d2430"/><text class="lbl small" x="208" y="13">A</text><text class="lbl small" x="208" y="176">B</text><text class="lbl small" x="18" y="66" style="fill:#c0392b">+</text>`
+  +`<text class="lbl small" x="180" y="14">I₁→</text><text class="lbl small" x="206" y="44">I₂↓</text><text class="lbl small" x="306" y="44">I₃↓</text><text class="lbl small" x="110" y="176">←I₄</text>`;
+document.getElementById('docSvg').innerHTML=
+  // voltmètre en dérivation
+  Lw(20,40,60,40)+Lw(124,40,160,40)+schemaSym('res',60,40,124,40,[92,26,'R'])+Lw(40,40,40,100)+Lw(144,40,144,100)+Lw(40,100,60,100)+Lw(124,100,144,100)
+  +schemaSym('volt',60,100,124,100)+`<circle cx="70" cy="100" r="3.5" fill="#1d2430"/><circle cx="114" cy="100" r="3.5" fill="#c0392b"/><text class="lbl small" x="64" y="124">COM</text><text class="lbl small" x="112" y="124" style="fill:#c0392b">V</text><text class="lbl small" x="92" y="144" text-anchor="middle">en dérivation</text>`
+  // ampèremètre en série
+  +Lw(200,60,225,60)+schemaSym('amp',225,60,289,60)+Lw(289,60,300,60)+schemaSym('res',300,60,340,60)+`<circle cx="235" cy="60" r="3.5" fill="#c0392b"/><circle cx="279" cy="60" r="3.5" fill="#1d2430"/><text class="lbl small" x="233" y="84" style="fill:#c0392b">A</text><text class="lbl small" x="270" y="84">COM</text><text class="lbl small" x="212" y="52">I →</text><text class="lbl small" x="270" y="144" text-anchor="middle">en série</text>`;
+
+buildPalette();render();setupSave();
+</script>
+</body>
+</html>
